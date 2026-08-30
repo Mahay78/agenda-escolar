@@ -123,8 +123,13 @@ Aquí tienes las funcionalidades planificadas para las siguientes versiones del 
 - [ ] **🖨️ Modo Impresión Limpio:**
   - Estilos CSS `@media print` optimizados para imprimir el horario escolar o la lista de tareas en folio físico.
 
-- [ ] **☁️ Sincronización en la Nube Opcional (Peer-to-Peer / Google Drive):**
-  - Sincronización opcional entre dispositivos sin perder la filosofía *offline-first*.
+- [ ] **☁️ Sincronización en la Nube con Firebase / Firestore (Híbrido Offline-First):**
+  - **Inicio de Sesión con Google (Firebase Auth):** Conectar tu cuenta de Google con un solo clic para sincronizar la agenda entre tu móvil, tablet y PC sin perder nada.
+  - **Base de Datos en Tiempo Real (Cloud Firestore):** Guardado automático en la nube de deberes, exámenes, notas, horario y portafolio de proyectos.
+  - **Arquitectura Híbrida Segura:**
+    - *Modo Sin Conexión / Sin Cuenta:* Todo funciona al 100% de forma local en el dispositivo usando `IndexedDB`.
+    - *Modo Conectado:* Al iniciar sesión, sincroniza los cambios en segundo plano con la nube en tiempo real.
+  - **Guía de Configuración:** Proyecto en `console.firebase.google.com` con `Authentication (Google)` y `Cloud Firestore` conectado mediante módulo `firebase-sync.js`.
 
 ---
 
