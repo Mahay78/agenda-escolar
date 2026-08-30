@@ -74,9 +74,15 @@ Aquí tienes las funcionalidades planificadas para las siguientes versiones del 
   - Procesamiento offline de fotos de pizarra y libros con `Tesseract.js` para extraer texto automáticamente.
   - Búsqueda instantánea de palabras clave dentro de las fotos sacadas en clase.
 
-- [ ] **📄 Generador y Exportador a PDF:**
-  - Exportar tareas, fotos anotadas y temarios en un único documento PDF limpio y descargable (`jsPDF` / `pdf-lib`).
-  - Informe de calificaciones trimestrales en formato boletín PDF.
+- [ ] **📄 Generador y Exportador a PDF (100% Offline con `pdf-lib` / `jsPDF`):**
+  - **Exportar Apuntes y Fotos a PDF:** Crear un documento PDF paginado con las fotos de pizarras, apuntes, dibujos y notas de texto asociadas a cada asignatura.
+  - **Dossier de Proyectos Artísticos:** Generar un PDF con la memoria del proyecto, técnicas empleadas y fotos de la evolución de la obra.
+  - **Horario Escolar en PDF:** Descargar el horario semanal en formato PDF listo para imprimir o enviar.
+  - **Boletín de Calificaciones:** Informe detallado de notas por evaluación y notas medias.
+
+- [ ] **🎙️ Mejoras Avanzadas en Notas de Voz:**
+  - **Transcripción de Voz a Texto (Dictado):** Dictar deberes y notas con la voz utilizando `Web Speech API` para que se conviertan en texto automáticamente.
+  - **Notas de voz en Proyectos y Exámenes:** Permitir adjuntar notas de audio directamente a las obras del portafolio y temarios de examen.
 
 - [ ] **🔔 Notificaciones Push Locales:**
   - Recordatorios en el móvil el día antes de un examen o cuando vence una tarea pendiente.
