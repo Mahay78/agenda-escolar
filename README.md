@@ -124,7 +124,11 @@ Aquí tienes las funcionalidades planificadas para las siguientes versiones del 
   - Estilos CSS `@media print` optimizados para imprimir el horario escolar o la lista de tareas en folio físico.
 
 - [ ] **☁️ Sincronización en la Nube con Firebase / Firestore (Híbrido Offline-First):**
-  - **Inicio de Sesión con Google (Firebase Auth):** Conectar tu cuenta de Google con un solo clic para sincronizar la agenda entre tu móvil, tablet y PC sin perder nada.
+  - **Inicio de Sesión con Google (Firebase Auth):** Conectar con un solo clic para sincronizar la agenda entre móvil, tablet y PC en tiempo real.
+  - **Gestión Multi-cuenta y Cuentas Escolares (Google Classroom):**
+    - *Rol Administrador (Padre):* Crea y gestiona el proyecto gratuito en la consola de Firebase con su correo.
+    - *Rol Estudiante (Hijo):* Inicia sesión en la web con **su propia cuenta escolar de Google Classroom** o su Gmail personal.
+    - *Casillero Privado Aislado:* Firebase asigna un identificador único (`uid`) por usuario, garantizando que cada estudiante tenga sus datos, deberes y notas totalmente privados y separados.
   - **Base de Datos en Tiempo Real (Cloud Firestore):** Guardado automático en la nube de deberes, exámenes, notas, horario y portafolio de proyectos.
   - **Arquitectura Híbrida Segura:**
     - *Modo Sin Conexión / Sin Cuenta:* Todo funciona al 100% de forma local en el dispositivo usando `IndexedDB`.
