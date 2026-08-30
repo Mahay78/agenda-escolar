@@ -87,11 +87,38 @@ Aquí tienes las funcionalidades planificadas para las siguientes versiones del 
 - [ ] **🔔 Notificaciones Push Locales:**
   - Recordatorios en el móvil el día antes de un examen o cuando vence una tarea pendiente.
 
-- [ ] **🗂️ Fichas de Estudio Interactivas (Flashcards):**
-  - Módulo de tarjetas de preguntas y respuestas con sistema de repetición espaciada para preparar exámenes.
+- [ ] **🎨 Paquete y Selector Visual de Iconos para Asignaturas y Materias:**
+  - Catálogo interactivo de iconos y emojis organizados por categorías (*Artes Plásticas, Música, Ciencias, Letras, Idiomas, Tecnología, Deporte*).
+  - Selector visual intuitivo al crear o editar asignaturas sin tener que buscarlos en el teclado del móvil.
 
-- [ ] **📊 Gráficos y Estadísticas Visuales:**
-  - Gráficas de evolución de notas a lo largo del curso y desglose del tiempo dedicado en el Pomodoro por asignatura.
+- [ ] **🎨 Herramientas Especiales de Taller y Arte:**
+  - **Cuentagotas Digital de Color (Color Picker en fotos):** Extrae la paleta de colores (códigos HEX, RGB y nombres de pigmentos) tocando cualquier punto de una foto.
+  - **Guía de Proporciones en Cámara:** Cuadrícula de regla de tercios y proporción áurea superpuesta para encuadrar dibujos y fotos de bodegones.
+  - **Lienzo en Blanco para Bocetos:** Pizarra digital en blanco dentro de la app para realizar bocetos, esquemas o cálculos rápidos durante la clase.
+
+- [ ] **🧮 Simulador de Notas y Calificaciones Ponderadas:**
+  - **Simulador "¿Qué nota necesito?":** Calcula automáticamente qué nota necesitas en el próximo examen para alcanzar la media deseada.
+  - **Ponderaciones personalizables:** Porcentajes por exámenes, trabajos y actitud (ej. *70% Exámenes / 30% Prácticas*).
+  - **Calculadora EBAU / Selectividad:** Simulador de nota media de bachillerato y ponderación de materias específicas.
+
+- [ ] **📅 Integración con Calendarios Nativos (`.ics` / Google / Apple / Outlook):**
+  - Exportación de exámenes y horarios a formato `.ics` para sincronizarlos con la app de Calendario de tu móvil en un clic.
+
+- [ ] **🎮 Gamificación y Hábitos de Estudio:**
+  - **Rachas de Estudio (*Streaks*):** Registro de días consecutivos completando tareas y sesiones de concentración.
+  - **Temas Desbloqueables:** Nuevos temas visuales (*Cuaderno de Bocetos, Pizarra Clásica, Neón Cyberpunk*) al alcanzar metas.
+
+- [ ] **📚 Biblioteca de Recursos y Enlaces por Asignatura:**
+  - Guardar enlaces directos a Google Classroom, vídeos explicativos de YouTube, webs de museos o temarios PDF dentro de cada asignatura.
+
+- [ ] **⏱️ Modo Simulacro de Examen:**
+  - Cronómetro a pantalla completa sin distracciones para practicar exámenes con límite de tiempo real (ej. 50 o 90 minutos).
+
+- [ ] **👁️ Accesibilidad y Personalización Visual:**
+  - Modo con tipografía especial para dislexia (*OpenDyslexic*) y tamaño de texto ajustable.
+
+- [ ] **🗑️ Papelera de Reciclaje (30 días):**
+  - Recuperación de tareas, fotos, proyectos o notas eliminadas accidentalmente.
 
 - [ ] **🖨️ Modo Impresión Limpio:**
   - Estilos CSS `@media print` optimizados para imprimir el horario escolar o la lista de tareas en folio físico.
