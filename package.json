@@ -1,0 +1,11 @@
+{
+  "name": "agenda-escolar-instituto",
+  "version": "1.0.0",
+  "description": "Web App de Agenda Escolar para el Instituto, 100% Online y Offline con captura de fotos y PWA instalable.",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": ["agenda", "escolar", "instituto", "pwa", "offline", "deberes", "examenes", "horario"],
+  "author": "",
+  "license": "MIT"
+}

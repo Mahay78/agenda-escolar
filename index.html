@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Agenda Escolar - Instituto</title>
+  
+  <!-- PWA & Meta Tags -->
+  <meta name="description" content="Agenda escolar moderna para el instituto con horario, tareas, exámenes, notas y cámara para pizarras y apuntes. Funciona 100% offline." />
+  <meta name="theme-color" content="#3b82f6" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Agenda Escolar" />
+  
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" type="image/svg+xml" href="./icon.svg" />
+  <link rel="apple-touch-icon" href="./icon.svg" />
+  
+  <!-- Estilos -->
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+
+  <!-- CABECERA -->
+  <header class="app-header">
+    <div class="brand-section">
+      <img src="./icon.svg" alt="Logo Agenda" class="app-logo" />
+      <div class="brand-info">
+        <h1 id="header-student-name">Agenda Escolar</h1>
+        <p id="header-school-name">Instituto de Educación Secundaria</p>
+      </div>
+    </div>
+    
+    <div class="header-actions">
+      <!-- Indicador Online / Offline -->
+      <div id="connection-status" class="status-pill">
+        <span class="status-dot"></span>
+        <span id="connection-text">Online</span>
+      </div>
+      
+      <!-- Botón Compartir / WhatsApp / QR -->
+      <button id="btn-open-share" class="btn-icon" title="Compartir por WhatsApp o Código QR" style="background: rgba(37, 211, 102, 0.15); color: #25D366; border-color: rgba(37, 211, 102, 0.3);">
+        <span>💬</span>
+      </button>
+      
+      <!-- Botón Instalar PWA (aparece si el navegador lo permite) -->
+      <button id="btn-install-pwa" class="btn-icon hidden" title="Instalar Aplicación en el móvil/PC">📲</button>
+      
+      <!-- Cambiar Tema Claro/Oscuro -->
+      <button id="btn-toggle-theme" class="btn-icon" title="Cambiar tema de color">🌓</button>
+    </div>
+  </header>
+
+  <!-- BARRA DE NAVEGACIÓN -->
+  <nav class="app-nav">
+    <button class="nav-tab active" data-tab="tab-today">
+      <span>🏠</span> Hoy
+    </button>
+    <button class="nav-tab" data-tab="tab-tasks">
+      <span>📋</span> Deberes <span id="badge-pending-tasks" class="tab-badge hidden">0</span>
+    </button>
+    <button class="nav-tab" data-tab="tab-schedule">
+      <span>📅</span> Horario
+    </button>
+    <button class="nav-tab" data-tab="tab-backpack">
+      <span>🎒</span> Mochila
+    </button>
+    <button class="nav-tab" data-tab="tab-projects">
+      <span>🎨</span> Proyectos
+    </button>
+    <button class="nav-tab" data-tab="tab-pomodoro">
+      <span>⏱️</span> Pomodoro
+    </button>
+    <button class="nav-tab" data-tab="tab-exams">
+      <span>📝</span> Exámenes <span id="badge-upcoming-exams" class="tab-badge hidden">0</span>
+    </button>
+    <button class="nav-tab" data-tab="tab-grades">
+      <span>📊</span> Notas
+    </button>
+    <button class="nav-tab" data-tab="tab-gallery">
+      <span>📸</span> Fotos Apuntes
+    </button>
+    <button class="nav-tab" data-tab="tab-settings">
+      <span>⚙️</span> Ajustes
+    </button>
+  </nav>
+
+  <!-- CONTENEDOR PRINCIPAL -->
+  <main class="main-container">
+
+    <!-- 1. PESTAÑA: HOY (DASHBOARD) -->
+    <section id="tab-today" class="tab-panel active">
+      <div class="hero-banner">
+        <div class="hero-text">
+          <h2 id="today-greeting">¡Hola! 👋</h2>
+          <p id="today-summary">Cargando horario y tareas de hoy...</p>
+        </div>
+        <div id="today-date-badge" class="hero-date-badge">Hoy</div>
+      </div>
+
+      <div class="dashboard-grid">
+        <!-- Clases de hoy -->
+        <div class="card">
+          <div class="section-header">
+            <h3 class="section-title"><span>🕒</span> Clases de Hoy</h3>
+            <span id="today-day-name" class="section-subtitle">Lunes</span>
+          </div>
+          <div id="today-schedule-list" class="schedule-timeline">
+            <p class="section-subtitle">No hay clases registradas para hoy.</p>
+          </div>
+        </div>
+
+        <!-- Deberes urgentes / próximos -->
+        <div class="card">
+          <div class="section-header">
+            <h3 class="section-title"><span>⏰</span> Deberes para Mañana</h3>
+            <button id="btn-quick-add-task" class="btn-action-small">➕ Añadir</button>
+          </div>
+          <div id="today-urgent-tasks">
+            <p class="section-subtitle">¡Genial! No tienes tareas pendientes para mañana.</p>
+          </div>
+        </div>
+
+        <!-- Próximo examen -->
+        <div class="card">
+          <div class="section-header">
+            <h3 class="section-title"><span>📝</span> Próximo Examen</h3>
+          </div>
+          <div id="today-next-exam">
+            <p class="section-subtitle">No hay exámenes programados próximamente.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. PESTAÑA: DEBERES Y TAREAS -->
+    <section id="tab-tasks" class="tab-panel">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title"><span>📋</span> Tareas y Deberes</h2>
+          <p class="section-subtitle">Gestiona tus deberes con fotos de la pizarra o ejercicios</p>
+        </div>
+        <button id="btn-open-new-task" class="btn-primary" style="width: auto;">
+          ➕ Nueva Tarea
+        </button>
+      </div>
+
+      <!-- Filtros -->
+      <div class="filters-bar">
+        <button class="filter-chip active" data-task-filter="all">Todas</button>
+        <button class="filter-chip" data-task-filter="pending">⏳ Pendientes</button>
+        <button class="filter-chip" data-task-filter="today">📅 Para Hoy</button>
+        <button class="filter-chip" data-task-filter="week">📆 Esta Semana</button>
+        <button class="filter-chip" data-task-filter="photos">📸 Con Fotos</button>
+        <button class="filter-chip" data-task-filter="done">✅ Completadas</button>
+      </div>
+
+      <!-- Lista de tareas -->
+      <div id="tasks-container">
+        <p class="section-subtitle">Cargando tareas...</p>
+      </div>
+    </section>
+
+    <!-- 3. PESTAÑA: HORARIO SEMANAL -->
+    <section id="tab-schedule" class="tab-panel">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title"><span>📅</span> Horario Escolar</h2>
+          <p class="section-subtitle">Selecciona el día de la semana para ver y editar tus clases</p>
+        </div>
+      </div>
+
+      <!-- Selector de día -->
+      <div class="day-selector-pills">
+        <button class="day-pill active" data-day="1">Lunes</button>
+        <button class="day-pill" data-day="2">Martes</button>
+        <button class="day-pill" data-day="3">Miércoles</button>
+        <button class="day-pill" data-day="4">Jueves</button>
+        <button class="day-pill" data-day="5">Viernes</button>
+      </div>
+
+      <!-- Horario del día seleccionado -->
+      <div id="schedule-timeline-container" class="schedule-timeline">
+        <!-- Renderizado dinámicamente -->
+      </div>
+    </section>
+
+    <!-- PESTAÑA: MOCHILA Y MATERIALES DE TALLER -->
+    <section id="tab-backpack" class="tab-panel">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title"><span>🎒</span> Mochila y Materiales de Taller</h2>
+          <p class="section-subtitle">Prepara tus materiales de dibujo, láminas y taller según las clases</p>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button id="btn-reset-backpack" class="btn-secondary" style="width: auto;">🔄 Desmarcar Todo</button>
+          <button id="btn-add-material" class="btn-primary" style="width: auto;">➕ Añadir Material</button>
+        </div>
+      </div>
+
+      <!-- Filtro de materiales -->
+      <div class="filters-bar">
+        <button class="filter-chip active" data-material-filter="all">Todos los Materiales</button>
+        <button class="filter-chip" data-material-filter="tomorrow">📅 Para Clases de Mañana</button>
+        <button class="filter-chip" data-material-filter="unpacked">⏳ Por Meter en Mochila</button>
+        <button class="filter-chip" data-material-filter="packed">✅ En la Mochila</button>
+      </div>
+
+      <!-- Barra de progreso de mochila -->
+      <div class="card" style="margin-bottom: 16px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+          <span style="font-weight: 600; font-size: 0.9rem;">Estado de la Mochila:</span>
+          <span id="backpack-progress-text" style="font-weight: 700; color: var(--primary);">0% lista</span>
+        </div>
+        <div class="progress-bar-bg" style="background: var(--bg-input); height: 10px; border-radius: var(--radius-full); overflow: hidden;">
+          <div id="backpack-progress-fill" style="width: 0%; height: 100%; background: var(--success); transition: width 0.3s ease;"></div>
+        </div>
+      </div>
+
+      <div id="materials-container">
+        <!-- Lista de materiales -->
+      </div>
+    </section>
+
+    <!-- PESTAÑA: PORTAFOLIO DE PROYECTOS Y OBRAS -->
+    <section id="tab-projects" class="tab-panel">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title"><span>🎨</span> Portafolio de Proyectos y Obras</h2>
+          <p class="section-subtitle">Seguimiento de obras artísticas, bocetos, maquetas y láminas</p>
+        </div>
+        <button id="btn-open-new-project" class="btn-primary" style="width: auto;">
+          ➕ Nuevo Proyecto / Obra
+        </button>
+      </div>
+
+      <!-- Filtros de proyectos -->
+      <div class="filters-bar">
+        <button class="filter-chip active" data-project-filter="all">Todos</button>
+        <button class="filter-chip" data-project-filter="boceto">✏️ Bocetos / Idea</button>
+        <button class="filter-chip" data-project-filter="proceso">⏳ En Proceso</button>
+        <button class="filter-chip" data-project-filter="terminado">✅ Terminado</button>
+        <button class="filter-chip" data-project-filter="entregado">🏆 Entregado</button>
+      </div>
+
+      <div id="projects-container">
+        <!-- Lista de proyectos -->
+      </div>
+    </section>
+
+    <!-- PESTAÑA: TEMPORIZADOR POMODORO DE ESTUDIO -->
+    <section id="tab-pomodoro" class="tab-panel">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title"><span>⏱️</span> Temporizador Pomodoro de Concentración</h2>
+          <p class="section-subtitle">Técnica 25 min de foco + 5 min de descanso con campana sonora offline</p>
+        </div>
+      </div>
+
+      <div class="card" style="max-width: 500px; margin: 0 auto; text-align: center; padding: 30px 20px;">
+        <div class="filters-bar" style="justify-content: center; margin-bottom: 20px;">
+          <button id="pomo-mode-work" class="filter-chip active" data-pomo-time="25">📚 Estudio (25m)</button>
+          <button id="pomo-mode-short" class="filter-chip" data-pomo-time="5">☕ Descanso (5m)</button>
+          <button id="pomo-mode-long" class="filter-chip" data-pomo-time="15">🌴 Descanso Largo (15m)</button>
+        </div>
+
+        <div id="pomodoro-display" style="font-size: 4rem; font-weight: 800; font-variant-numeric: tabular-nums; margin: 10px 0; color: var(--text-main); letter-spacing: 2px;">25:00</div>
+        <div id="pomodoro-status-text" class="section-subtitle" style="margin-bottom: 24px; font-weight: 600;">Modo Concentración 🎯</div>
+
+        <div style="display: flex; gap: 12px; justify-content: center; margin-bottom: 24px;">
+          <button id="btn-pomo-start" class="btn-primary" style="font-size: 1.05rem; padding: 12px 28px; width: auto;">▶️ Iniciar</button>
+          <button id="btn-pomo-pause" class="btn-secondary hidden" style="font-size: 1.05rem; padding: 12px 28px; width: auto;">⏸️ Pausar</button>
+          <button id="btn-pomo-reset" class="btn-secondary" style="font-size: 1.05rem; padding: 12px 20px; width: auto;">🔄 Reiniciar</button>
+        </div>
+
+        <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-around;">
+          <div>
+            <div id="pomo-count-today" style="font-size: 1.4rem; font-weight: 800; color: var(--primary);">0</div>
+            <div class="grade-metric-label">Pomodoros Hoy</div>
+          </div>
+          <div>
+            <div id="pomo-focus-time" style="font-size: 1.4rem; font-weight: 800; color: var(--success);">0 min</div>
+            <div class="grade-metric-label">Tiempo Enfocado</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. PESTAÑA: EXÁMENES -->
+    <section id="tab-exams" class="tab-panel">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title"><span>📝</span> Exámenes y Evaluaciones</h2>
+          <p class="section-subtitle">Planifica tus exámenes y adjunta fotos del temario</p>
+        </div>
+        <button id="btn-open-new-exam" class="btn-primary" style="width: auto;">
+          ➕ Nuevo Examen
+        </button>
+      </div>
+
+      <div id="exams-container">
+        <p class="section-subtitle">Cargando exámenes...</p>
+      </div>
+    </section>
+
+    <!-- 5. PESTAÑA: NOTAS Y CALIFICACIONES -->
+    <section id="tab-grades" class="tab-panel">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title"><span>📊</span> Control de Calificaciones</h2>
+          <p class="section-subtitle">Registra tus notas por trimestre y calcula tus medias</p>
+        </div>
+        <button id="btn-open-new-grade" class="btn-primary" style="width: auto;">
+          ➕ Añadir Nota
+        </button>
+      </div>
+
+      <!-- Resumen de media -->
+      <div class="grades-summary-card">
+        <div>
+          <div id="stat-overall-average" class="grade-metric-num">--</div>
+          <div class="grade-metric-label">Nota Media Global</div>
+        </div>
+        <div>
+          <div id="stat-total-grades" class="grade-metric-num">0</div>
+          <div class="grade-metric-label">Notas Registradas</div>
+        </div>
+      </div>
+
+      <!-- Selector de Trimestre -->
+      <div class="filters-bar">
+        <button class="filter-chip active" data-term-filter="all">Todos los Trimestres</button>
+        <button class="filter-chip" data-term-filter="1">1º Trimestre</button>
+        <button class="filter-chip" data-term-filter="2">2º Trimestre</button>
+        <button class="filter-chip" data-term-filter="3">3º Trimestre</button>
+      </div>
+
+      <div id="grades-list-container">
+        <p class="section-subtitle">No hay notas registradas todavía.</p>
+      </div>
+    </section>
+
+    <!-- 6. PESTAÑA: GALERÍA DE FOTOS / APUNTES -->
+    <section id="tab-gallery" class="tab-panel">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title"><span>📸</span> Fotos de Pizarras y Apuntes</h2>
+          <p class="section-subtitle">Acceso visual a todas las fotos sacadas en clase</p>
+        </div>
+        <button id="btn-quick-photo-capture" class="btn-primary" style="width: auto;">
+          📷 Sacar Foto Rápida
+        </button>
+      </div>
+
+      <div id="gallery-container">
+        <p class="section-subtitle">Cargando fotos guardadas...</p>
+      </div>
+    </section>
+
+    <!-- 7. PESTAÑA: AJUSTES -->
+    <section id="tab-settings" class="tab-panel">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title"><span>⚙️</span> Ajustes y Configuración</h2>
+          <p class="section-subtitle">Personaliza tus datos, asignaturas y gestiona tus copias de seguridad</p>
+        </div>
+      </div>
+
+      <!-- Datos del estudiante e instituto -->
+      <div class="card">
+        <h3 class="section-title" style="margin-bottom: 12px;">👤 Perfil del Alumno</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nombre del Alumno / Hijo</label>
+            <input type="text" id="setting-student-name" class="form-input" placeholder="Ej: Mario" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Curso</label>
+            <input type="text" id="setting-student-course" class="form-input" placeholder="Ej: 1º Bachillerato de Artes" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nombre del Instituto / Escuela de Arte</label>
+          <input type="text" id="setting-school-name" class="form-input" placeholder="Ej: IES / Escuela de Arte" />
+        </div>
+        <button id="btn-save-profile" class="btn-primary" style="width: auto;">💾 Guardar Perfil</button>
+      </div>
+
+      <!-- Asignaturas -->
+      <div class="card">
+        <div class="section-header">
+          <div>
+            <h3 class="section-title"><span>🎨</span> Asignaturas de Bachillerato de Artes</h3>
+            <p class="section-subtitle">Plantillas automáticas o añade asignaturas a tu medida</p>
+          </div>
+          <button id="btn-add-subject" class="btn-action-small">➕ Añadir Asignatura</button>
+        </div>
+        
+        <!-- Botones de plantilla de Artes -->
+        <div style="display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;">
+          <button id="btn-load-preset-plasticas" class="btn-secondary" style="font-size: 0.8rem; padding: 6px 12px;">
+            🎨 Cargar Artes Plásticas, Imagen y Diseño
+          </button>
+          <button id="btn-load-preset-escenicas" class="btn-secondary" style="font-size: 0.8rem; padding: 6px 12px;">
+            🎭 Cargar Música y Artes Escénicas
+          </button>
+        </div>
+
+        <div id="settings-subjects-list">
+          <!-- Lista de asignaturas editables -->
+        </div>
+      </div>
+
+      <!-- Copia de seguridad Offline -->
+      <div class="card">
+        <h3 class="section-title" style="margin-bottom: 12px;">💾 Copia de Seguridad Offline</h3>
+        <p class="section-subtitle" style="margin-bottom: 16px;">
+          Tus datos y fotos están guardados en este dispositivo. Puedes exportar un archivo de copia de seguridad para no perder nada o pasarlo a otro móvil o PC.
+        </p>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <button id="btn-export-backup" class="btn-secondary">
+            <span>📥</span> Exportar Copia (JSON)
+          </button>
+          <button id="btn-import-backup-trigger" class="btn-secondary">
+            <span>📤</span> Restaurar Copia
+          </button>
+          <input type="file" id="backup-file-input" accept=".json" class="hidden" />
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BOTÓN FLOTANTE (+) ACCIÓN RÁPIDA -->
+  <div class="fab-container">
+    <button id="fab-main-btn" class="fab-main" title="Añadir rápido">➕</button>
+    <div id="fab-menu" class="fab-menu">
+      <button id="fab-new-task" class="fab-option">
+        <span>📋</span> Nueva Tarea / Deber
+      </button>
+      <button id="fab-new-exam" class="fab-option">
+        <span>📝</span> Nuevo Examen
+      </button>
+      <button id="fab-take-photo" class="fab-option">
+        <span>📸</span> Sacar Foto Pizarra
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODALES
+       ======================================================================== -->
+
+  <!-- 1. MODAL: TAREA / DEBER -->
+  <div id="task-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="task-modal-title" class="modal-title">Nueva Tarea / Deber</h3>
+        <button class="btn-close" data-close="task-modal">&times;</button>
+      </div>
+      <form id="task-form">
+        <input type="hidden" id="task-id" />
+        <div class="form-group">
+          <label class="form-label">Título del Deber o Trabajo *</label>
+          <input type="text" id="task-title-input" class="form-input" placeholder="Ej: Ejercicios 3, 4 y 5 pág 78" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Asignatura *</label>
+            <select id="task-subject-select" class="form-select" required></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fecha de Entrega *</label>
+            <input type="date" id="task-due-date" class="form-input" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Prioridad</label>
+          <select id="task-priority-select" class="form-select">
+            <option value="baja">Baja</option>
+            <option value="media" selected>Normal / Media</option>
+            <option value="alta">Urgente / Alta</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Descripción / Notas adicionales</label>
+          <textarea id="task-desc-input" class="form-textarea" rows="3" placeholder="Detalles de la tarea, instrucciones del profesor..."></textarea>
+        </div>
+        
+        <!-- Fotos adjuntas en la tarea -->
+        <div class="form-group">
+          <label class="form-label">Fotos de la Pizarra o Libro</label>
+          <div style="display: flex; gap: 10px; margin-bottom: 8px;">
+            <button type="button" id="btn-task-camera" class="btn-secondary" style="flex: 1;">
+              📷 Sacar Foto con Cámara
+            </button>
+            <button type="button" id="btn-task-gallery" class="btn-secondary" style="flex: 1;">
+              🖼️ Galería / Archivo
+            </button>
+          </div>
+          <div id="task-photos-preview" class="task-photos-grid"></div>
+        </div>
+
+        <!-- Grabación de Notas de Voz -->
+        <div class="form-group">
+          <label class="form-label">🎙️ Nota de Voz / Explicación del Profesor</label>
+          <div class="audio-record-box" style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+            <button type="button" id="btn-record-audio" class="btn-secondary" style="flex: 1;">
+              <span id="record-audio-icon">🎙️</span> <span id="record-audio-text">Grabar Nota de Voz</span>
+            </button>
+            <span id="record-timer" class="record-timer hidden" style="font-weight: 700; color: var(--danger); font-size: 0.9rem;">00:00</span>
+            <button type="button" id="btn-cancel-recording" class="btn-action-small danger hidden">❌</button>
+          </div>
+          <div id="task-audio-preview" class="hidden" style="margin-top: 8px; padding: 8px; background: var(--bg-input); border-radius: var(--radius-sm);">
+            <audio id="task-audio-player" controls style="width: 100%; height: 36px;"></audio>
+            <button type="button" id="btn-remove-audio" class="btn-action-small danger" style="margin-top: 6px;">🗑️ Eliminar Audio</button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary">💾 Guardar Tarea</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. MODAL: EXAMEN -->
+  <div id="exam-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="exam-modal-title" class="modal-title">Nuevo Examen</h3>
+        <button class="btn-close" data-close="exam-modal">&times;</button>
+      </div>
+      <form id="exam-form">
+        <input type="hidden" id="exam-id" />
+        <div class="form-group">
+          <label class="form-label">Título / Temario *</label>
+          <input type="text" id="exam-title-input" class="form-input" placeholder="Ej: Examen Tema 3 y 4: Ecuaciones" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Asignatura *</label>
+            <select id="exam-subject-select" class="form-select" required></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fecha del Examen *</label>
+            <input type="date" id="exam-date-input" class="form-input" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Temas a estudiar / Contenido</label>
+          <textarea id="exam-topics-input" class="form-textarea" rows="3" placeholder="Puntos clave, páginas a repasar, fórmulas..."></textarea>
+        </div>
+        <!-- Fotos del temario -->
+        <div class="form-group">
+          <label class="form-label">Fotos de Apuntes o Temario</label>
+          <div style="display: flex; gap: 10px; margin-bottom: 8px;">
+            <button type="button" id="btn-exam-camera" class="btn-secondary" style="flex: 1;">
+              📷 Sacar Foto
+            </button>
+          </div>
+          <div id="exam-photos-preview" class="task-photos-grid"></div>
+        </div>
+
+        <button type="submit" class="btn-primary">💾 Guardar Examen</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. MODAL: NOTA / CALIFICACIÓN -->
+  <div id="grade-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="grade-modal-title" class="modal-title">Añadir Calificación</h3>
+        <button class="btn-close" data-close="grade-modal">&times;</button>
+      </div>
+      <form id="grade-form">
+        <input type="hidden" id="grade-id" />
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Asignatura *</label>
+            <select id="grade-subject-select" class="form-select" required></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Trimestre *</label>
+            <select id="grade-term-select" class="form-select">
+              <option value="1">1º Trimestre</option>
+              <option value="2">2º Trimestre</option>
+              <option value="3">3º Trimestre</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Concepto / Examen / Trabajo *</label>
+          <input type="text" id="grade-title-input" class="form-input" placeholder="Ej: Control de Polinomios" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nota (0 - 10) *</label>
+            <input type="number" id="grade-score-input" class="form-input" min="0" max="10" step="0.05" placeholder="Ej: 8.5" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fecha</label>
+            <input type="date" id="grade-date-input" class="form-input" />
+          </div>
+        </div>
+        <button type="submit" class="btn-primary">💾 Guardar Calificación</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. MODAL: ASIGNAR CLASE EN HORARIO -->
+  <div id="slot-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="slot-modal-title" class="modal-title">Asignar Clase</h3>
+        <button class="btn-close" data-close="slot-modal">&times;</button>
+      </div>
+      <form id="slot-form">
+        <input type="hidden" id="slot-day" />
+        <input type="hidden" id="slot-index" />
+        <div class="form-group">
+          <label class="form-label">Asignatura</label>
+          <select id="slot-subject-select" class="form-select">
+            <option value="">-- Sin Asignatura (Hora Libre) --</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Aula / Ubicación (Opcional)</label>
+          <input type="text" id="slot-classroom-input" class="form-input" placeholder="Ej: Aula 201 o Gimnasio" />
+        </div>
+        <button type="submit" class="btn-primary">💾 Guardar en Horario</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. MODAL: ASIGNATURA (CREAR / EDITAR) -->
+  <div id="subject-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="subject-modal-title" class="modal-title">Asignatura</h3>
+        <button class="btn-close" data-close="subject-modal">&times;</button>
+      </div>
+      <form id="subject-form">
+        <input type="hidden" id="subject-id" />
+        <div class="form-group">
+          <label class="form-label">Nombre de la Asignatura *</label>
+          <input type="text" id="subject-name-input" class="form-input" placeholder="Ej: Matemáticas" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Icono / Emoji</label>
+            <input type="text" id="subject-icon-input" class="form-input" placeholder="📐" maxlength="4" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Color Identificativo</label>
+            <input type="color" id="subject-color-input" class="form-input" value="#3b82f6" style="height: 42px; padding: 4px;" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Profesor / Profesora</label>
+            <input type="text" id="subject-teacher-input" class="form-input" placeholder="Ej: Prof. García" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Aula Habitual</label>
+            <input type="text" id="subject-classroom-input" class="form-input" placeholder="Ej: Aula 201" />
+          </div>
+        </div>
+        <button type="submit" class="btn-primary">💾 Guardar Asignatura</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 6. MODAL DE CÁMARA EN VIVO -->
+  <div id="camera-modal" class="modal-overlay hidden">
+    <div class="modal-content" style="max-width: 600px; padding: 16px;">
+      <div class="modal-header" style="margin-bottom: 10px;">
+        <h3 class="modal-title">📷 Cámara - Pizarra y Apuntes</h3>
+        <button id="btn-close-camera" class="btn-close">&times;</button>
+      </div>
+
+      <div class="camera-container">
+        <video id="camera-video" class="camera-video" playsinline autoplay muted></video>
+        <img id="camera-preview-img" class="camera-preview-img hidden" alt="Foto capturada" />
+        <canvas id="camera-canvas" class="hidden"></canvas>
+        <div id="camera-flash" class="camera-flash"></div>
+      </div>
+
+      <!-- Controles de captura en vivo -->
+      <div id="camera-controls" class="camera-bar">
+        <button id="btn-switch-camera" class="btn-icon" title="Cambiar cámara delantera/trasera">🔄</button>
+        <button id="btn-capture-photo" class="btn-capture" title="Tomar Fotografía"></button>
+        <button id="btn-upload-gallery" class="btn-icon" title="Subir desde la Galería">🖼️</button>
+      </div>
+
+      <!-- Controles de confirmación tras captura -->
+      <div id="preview-controls" class="camera-bar hidden">
+        <button id="btn-retake-photo" class="btn-secondary">🔄 Repetir Foto</button>
+        <button id="btn-accept-photo" class="btn-primary" style="width: auto;">✅ Usar Esta Foto</button>
+      </div>
+
+      <!-- Input invisible para selección de archivo / cámara nativa -->
+      <input type="file" id="camera-file-input" accept="image/*" capture="environment" class="hidden" />
+    </div>
+  </div>
+
+  <!-- 7. MODAL: VISOR DE FOTO A PANTALLA COMPLETA -->
+  <div id="image-viewer-modal" class="modal-overlay image-viewer-modal hidden">
+    <div class="modal-content">
+      <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <h4 id="image-viewer-title" style="color: #fff; font-size: 1rem;">Fotografía</h4>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <button type="button" id="btn-viewer-annotate" class="btn-action-small" style="background: var(--primary); color: #fff; font-size: 0.85rem; padding: 4px 10px;">✏️ Anotar / Dibujar</button>
+          <button id="btn-close-viewer" class="btn-close" style="color: #fff;">&times;</button>
+        </div>
+      </div>
+      <img id="image-viewer-img" src="" alt="Foto en alta resolución" />
+    </div>
+  </div>
+
+  <!-- 8. MODAL: COMPARTIR Y SINCRONIZAR (WHATSAPP & CÓDIGO QR) -->
+  <div id="share-modal" class="modal-overlay hidden">
+    <div class="modal-content" style="max-width: 560px;">
+      <div class="modal-header">
+        <h3 class="modal-title">📲 Compartir y Sincronizar</h3>
+        <button class="btn-close" data-close="share-modal">&times;</button>
+      </div>
+
+      <!-- Pestañas internas del modal -->
+      <div class="filters-bar" style="margin-bottom: 16px;">
+        <button id="share-tab-wa-btn" class="filter-chip active">💬 Enviar a WhatsApp</button>
+        <button id="share-tab-qr-btn" class="filter-chip">📱 Generar Código QR</button>
+        <button id="share-tab-scan-btn" class="filter-chip">📷 Escanear QR</button>
+      </div>
+
+      <!-- Panel 1: WhatsApp -->
+      <div id="share-panel-wa">
+        <div class="form-group">
+          <label class="form-label">¿Qué deseas enviar por WhatsApp?</label>
+          <select id="wa-content-type" class="form-select">
+            <option value="tasks_tomorrow">📅 Deberes para mañana</option>
+            <option value="tasks_today">🚨 Deberes para hoy</option>
+            <option value="tasks_all">📋 Todas las tareas pendientes</option>
+            <option value="exams">📝 Próximos exámenes</option>
+            <option value="schedule">📅 Horario escolar semanal</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Vista previa del mensaje:</label>
+          <textarea id="wa-preview-text" class="form-textarea" rows="7" placeholder="Generando mensaje..."></textarea>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <button type="button" id="btn-send-whatsapp" class="btn-primary" style="background: #25D366; flex: 2;">
+            <span>💬</span> Abrir en WhatsApp
+          </button>
+          <button type="button" id="btn-copy-wa-text" class="btn-secondary" style="flex: 1;">
+            📋 Copiar
+          </button>
+        </div>
+      </div>
+
+      <!-- Panel 2: Generar Código QR -->
+      <div id="share-panel-qr" class="hidden">
+        <div class="form-group">
+          <label class="form-label">Contenido del Código QR:</label>
+          <select id="qr-content-type" class="form-select">
+            <option value="app_url">🌐 Abrir / Instalar Agenda en el móvil</option>
+            <option value="tasks_tomorrow">📅 Deberes para mañana</option>
+            <option value="tasks_today">🚨 Deberes para hoy</option>
+            <option value="exams">📝 Próximos exámenes</option>
+            <option value="schedule">📅 Horario escolar</option>
+          </select>
+        </div>
+
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px; background: var(--bg-input); border-radius: var(--radius-md); margin-bottom: 16px;">
+          <canvas id="qr-code-canvas" style="border-radius: var(--radius-sm); max-width: 100%; height: auto;"></canvas>
+          <p id="qr-description" class="section-subtitle" style="text-align: center; margin-top: 10px; font-size: 0.85rem;">
+            Escanea este código con la cámara de tu móvil para abrir la agenda al instante.
+          </p>
+        </div>
+
+        <button type="button" id="btn-download-qr" class="btn-secondary" style="width: 100%; justify-content: center;">
+          💾 Descargar Código QR en Imagen
+        </button>
+      </div>
+
+      <!-- Panel 3: Escanear QR -->
+      <div id="share-panel-scan" class="hidden">
+        <p class="section-subtitle" style="margin-bottom: 14px;">
+          Apunta la cámara a un código QR para leer deberes, apuntes o enlaces de la agenda.
+        </p>
+        <button type="button" id="btn-start-qr-scan" class="btn-primary" style="margin-bottom: 16px;">
+          📷 Iniciar Escáner de Código QR
+        </button>
+        <div id="qr-scan-result-card" class="card hidden">
+          <h4 style="font-size: 0.95rem; margin-bottom: 6px;">Resultado del escáner:</h4>
+          <pre id="qr-scan-result-text" style="font-size: 0.82rem; white-space: pre-wrap; word-break: break-word; color: var(--text-main);"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9. MODAL: MATERIAL DE MOCHILA -->
+  <div id="material-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="material-modal-title" class="modal-title">Añadir Material a la Mochila</h3>
+        <button class="btn-close" data-close="material-modal">&times;</button>
+      </div>
+      <form id="material-form">
+        <input type="hidden" id="material-id" />
+        <div class="form-group">
+          <label class="form-label">Nombre del Material o Herramienta *</label>
+          <input type="text" id="material-name-input" class="form-input" placeholder="Ej: Portaminas 0.5mm 2B" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Asignatura Asociada</label>
+            <select id="material-subject-select" class="form-select"></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Icono / Emoji</label>
+            <input type="text" id="material-icon-input" class="form-input" placeholder="✏️" maxlength="4" />
+          </div>
+        </div>
+        <button type="submit" class="btn-primary">💾 Guardar Material</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 10. MODAL: PROYECTO / OBRA ARTÍSTICA -->
+  <div id="project-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="project-modal-title" class="modal-title">Nuevo Proyecto Artístico</h3>
+        <button class="btn-close" data-close="project-modal">&times;</button>
+      </div>
+      <form id="project-form">
+        <input type="hidden" id="project-id" />
+        <div class="form-group">
+          <label class="form-label">Título de la Obra o Proyecto *</label>
+          <input type="text" id="project-title-input" class="form-input" placeholder="Ej: Escultura de escayola o Lámina A3" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Asignatura *</label>
+            <select id="project-subject-select" class="form-select" required></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fase de la Obra</label>
+            <select id="project-status-select" class="form-select">
+              <option value="boceto">✏️ Fase 1: Boceto / Idea</option>
+              <option value="proceso" selected>⏳ Fase 2: En Proceso / Taller</option>
+              <option value="terminado">✅ Fase 3: Obra Terminada</option>
+              <option value="entregado">🏆 Fase 4: Entregado / Evaluado</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Técnica / Soporte</label>
+            <input type="text" id="project-technique-input" class="form-input" placeholder="Ej: Acrílico sobre tabla, Carboncillo..." />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fecha Límite de Entrega</label>
+            <input type="date" id="project-due-date" class="form-input" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Descripción y Criterios del Profesor</label>
+          <textarea id="project-desc-input" class="form-textarea" rows="3" placeholder="Requisitos del encargo, medidas, pautas de evaluación..."></textarea>
+        </div>
+        <!-- Fotos del proceso -->
+        <div class="form-group">
+          <label class="form-label">Fotos de Proceso / Bocetos / Obra Final</label>
+          <div style="display: flex; gap: 10px; margin-bottom: 8px;">
+            <button type="button" id="btn-project-camera" class="btn-secondary" style="flex: 1;">
+              📷 Sacar Foto
+            </button>
+            <button type="button" id="btn-project-gallery" class="btn-secondary" style="flex: 1;">
+              🖼️ Galería / Archivo
+            </button>
+          </div>
+          <div id="project-photos-preview" class="task-photos-grid"></div>
+        </div>
+        <button type="submit" class="btn-primary">💾 Guardar Proyecto</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 11. MODAL: EDITOR DE ANOTACIONES Y CORRECCIONES EN FOTOS -->
+  <div id="annotation-modal" class="modal-overlay hidden">
+    <div class="modal-content" style="max-width: 850px; padding: 16px;">
+      <div class="modal-header">
+        <h3 class="modal-title">✏️ Correcciones y Anotaciones</h3>
+        <button class="btn-close" data-close="annotation-modal">&times;</button>
+      </div>
+
+      <!-- Barra de herramientas de anotación -->
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: space-between; margin-bottom: 12px; padding: 10px; background: var(--bg-input); border-radius: var(--radius-sm);">
+        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+          <button type="button" class="btn-action-small active" data-anno-tool="brush" title="Pincel libre">✏️ Trazo</button>
+          <button type="button" class="btn-action-small" data-anno-tool="arrow" title="Flecha de corrección">➡️ Flecha</button>
+          <button type="button" class="btn-action-small" data-anno-tool="rect" title="Recuadro">⬜ Marco</button>
+          <button type="button" class="btn-action-small" data-anno-tool="circle" title="Círculo">⭕ Círculo</button>
+          <button type="button" class="btn-action-small" data-anno-tool="text" title="Texto">🔤 Texto</button>
+        </div>
+
+        <div style="display: flex; gap: 6px; align-items: center;">
+          <button type="button" class="color-dot active" data-anno-color="#ef4444" style="width: 24px; height: 24px; border-radius: 50%; background: #ef4444; border: 2px solid #fff; cursor: pointer;"></button>
+          <button type="button" class="color-dot" data-anno-color="#3b82f6" style="width: 24px; height: 24px; border-radius: 50%; background: #3b82f6; border: 2px solid transparent; cursor: pointer;"></button>
+          <button type="button" class="color-dot" data-anno-color="#10b981" style="width: 24px; height: 24px; border-radius: 50%; background: #10b981; border: 2px solid transparent; cursor: pointer;"></button>
+          <button type="button" class="color-dot" data-anno-color="#eab308" style="width: 24px; height: 24px; border-radius: 50%; background: #eab308; border: 2px solid transparent; cursor: pointer;"></button>
+          <button type="button" class="color-dot" data-anno-color="#ffffff" style="width: 24px; height: 24px; border-radius: 50%; background: #ffffff; border: 2px solid transparent; cursor: pointer;"></button>
+        </div>
+
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <select id="anno-line-width" class="form-select" style="padding: 4px 8px; font-size: 0.8rem; width: auto;">
+            <option value="2">2px Fino</option>
+            <option value="4" selected>4px Medio</option>
+            <option value="8">8px Grueso</option>
+            <option value="14">14px Resaltador</option>
+          </select>
+          <button type="button" id="btn-anno-undo" class="btn-action-small" title="Deshacer último trazo">↩️ Deshacer</button>
+        </div>
+      </div>
+
+      <!-- Canvas de dibujo centrado -->
+      <div style="display: flex; justify-content: center; align-items: center; background: #000; border-radius: var(--radius-sm); overflow: hidden; max-height: 60vh;">
+        <canvas id="annotation-canvas" style="touch-action: none; max-width: 100%; max-height: 60vh; object-fit: contain; cursor: crosshair;"></canvas>
+      </div>
+
+      <!-- Acciones de guardar -->
+      <div style="display: flex; gap: 10px; margin-top: 14px;">
+        <button type="button" id="btn-anno-cancel" class="btn-secondary" style="flex: 1;">Cancelar</button>
+        <button type="button" id="btn-anno-save" class="btn-primary" style="flex: 2;">💾 Guardar Anotaciones</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOASTS DE NOTIFICACIÓN -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- SCRIPTS -->
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
