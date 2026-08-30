@@ -66,6 +66,10 @@ Una aplicación web progresiva (**Progressive Web App - PWA**) moderna, ultrarr�
 
 Aquí tienes las funcionalidades planificadas para las siguientes versiones del proyecto:
 
+- [ ] **📱 Menú Desplegable / Lateral (Hamburguesa / Drawer) para Móviles y Tablets:**
+  - Menú lateral deslizable o desplegable táctil optimizado para pantallas pequeñas y tablets.
+  - Navegación rápida con una sola mano entre todas las secciones (Hoy, Deberes, Horario, Mochila, Proyectos, Pomodoro, Exámenes, Notas, Galería y Ajustes).
+
 - [ ] **🔍 OCR (Reconocimiento Óptico de Caracteres):**
   - Procesamiento offline de fotos de pizarra y libros con `Tesseract.js` para extraer texto automáticamente.
   - Búsqueda instantánea de palabras clave dentro de las fotos sacadas en clase.
