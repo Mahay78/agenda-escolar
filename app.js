@@ -38,6 +38,12 @@ import {
   formatScheduleForWhatsApp,
   sendToWhatsApp
 } from './qr.js';
+import {
+  recognizeImageText,
+  loadTesseractScript,
+  getCachedOcrText,
+  setCachedOcrText
+} from './ocr.js';
 
 // Estado global de la aplicación
 const AppState = {
@@ -47,6 +53,8 @@ const AppState = {
   termFilter: 'all',
   materialFilter: 'all',
   projectFilter: 'all',
+  gallerySearchQuery: '',
+  globalSearchActiveFilter: 'all',
   subjects: [],
   schedule: [],
   tasks: [],
@@ -107,6 +115,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     initVoiceDictation();
     initGradeSimulator();
     initPrintActions();
+    initGlobalSearch();
+    initOcrModule();
+    initGallerySearch();
 
     // 4. Renderizar vistas
     renderAllViews();
@@ -1445,6 +1456,19 @@ function renderGalleryView() {
     }
   });
 
+  // Filtrar fotos por consulta de búsqueda (incluyendo texto OCR reconocido)
+  let filteredPhotos = allPhotos;
+  if (AppState.gallerySearchQuery) {
+    const q = AppState.gallerySearchQuery.toLowerCase().trim();
+    filteredPhotos = allPhotos.filter((item) => {
+      const matchTitle = (item.title || '').toLowerCase().includes(q);
+      const matchSub = (item.subject || '').toLowerCase().includes(q);
+      const ocrText = getCachedOcrText(item.src) || '';
+      const matchOcr = ocrText.toLowerCase().includes(q);
+      return matchTitle || matchSub || matchOcr;
+    });
+  }
+
   if (allPhotos.length === 0) {
     container.innerHTML = `
       <div class="card" style="text-align: center; padding: 40px 20px;">
@@ -1457,20 +1481,35 @@ function renderGalleryView() {
     return;
   }
 
+  if (filteredPhotos.length === 0) {
+    container.innerHTML = `
+      <div class="card" style="text-align: center; padding: 30px 20px;">
+        <span style="font-size: 2rem;">🔍</span>
+        <h4 style="margin-top: 8px;">No hay fotos que coincidan</h4>
+        <p class="section-subtitle">Prueba a buscar por otra palabra clave o limpia el filtro.</p>
+      </div>
+    `;
+    return;
+  }
+
   container.innerHTML = `
     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px;">
-      ${allPhotos
-        .map(
-          (item) => `
-        <div class="card" style="padding: 8px; cursor: pointer; margin-bottom: 0;" onclick="window.openImageViewer('${item.src}', '${escapeHTML(item.title)}')">
-          <img src="${item.src}" alt="${escapeHTML(item.title)}" style="width: 100%; height: 140px; object-fit: cover; border-radius: var(--radius-sm);" />
+      ${filteredPhotos
+        .map((item) => {
+          const hasOcr = !!getCachedOcrText(item.src);
+          return `
+        <div class="card" style="padding: 8px; cursor: pointer; margin-bottom: 0; position: relative;" onclick="window.openImageViewer('${item.src}', '${escapeHTML(item.title)}')">
+          <div style="position: relative;">
+            <img src="${item.src}" alt="${escapeHTML(item.title)}" style="width: 100%; height: 140px; object-fit: cover; border-radius: var(--radius-sm);" />
+            ${hasOcr ? `<span style="position: absolute; bottom: 6px; right: 6px; background: rgba(16, 185, 129, 0.9); color: #fff; font-size: 0.68rem; font-weight: 700; padding: 2px 6px; border-radius: var(--radius-full);">🔍 OCR</span>` : ''}
+          </div>
           <div style="margin-top: 6px; font-size: 0.8rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
             ${escapeHTML(item.title)}
           </div>
           <span class="tag-subject" style="background: ${item.color}; font-size: 0.7rem; margin-top: 4px;">${item.icon} ${item.subject}</span>
         </div>
-      `
-        )
+      `;
+        })
         .join('')}
     </div>
   `;
@@ -2626,6 +2665,395 @@ function initPrintActions() {
 
   document.getElementById('btn-print-grades')?.addEventListener('click', () => {
     window.print();
+  });
+}
+
+// --- BUSCADOR GLOBAL INTELIGENTE (SPOTLIGHT / CTRL + K) ---
+function initGlobalSearch() {
+  const modal = document.getElementById('global-search-modal');
+  const input = document.getElementById('global-search-input');
+  const resultsContainer = document.getElementById('global-search-results');
+  const btnOpenHeader = document.getElementById('btn-open-global-search');
+  const btnOpenDrawer = document.getElementById('drawer-btn-search');
+
+  function openSearch() {
+    if (!modal || !input) return;
+    modal.classList.remove('hidden');
+    input.value = '';
+    AppState.globalSearchActiveFilter = 'all';
+    document.querySelectorAll('.search-tag').forEach((t) => {
+      t.classList.toggle('active', t.getAttribute('data-search-filter') === 'all');
+    });
+    renderSearchResults('');
+    setTimeout(() => input.focus(), 60);
+  }
+
+  function closeSearch() {
+    modal?.classList.add('hidden');
+  }
+
+  btnOpenHeader?.addEventListener('click', openSearch);
+  btnOpenDrawer?.addEventListener('click', () => {
+    document.getElementById('app-drawer')?.classList.remove('open');
+    document.getElementById('drawer-overlay')?.classList.remove('active');
+    openSearch();
+  });
+
+  // Atajos de teclado globales (Ctrl + K, Cmd + K, / y navegación con flechas)
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      if (modal?.classList.contains('hidden')) {
+        openSearch();
+      } else {
+        closeSearch();
+      }
+      return;
+    }
+
+    if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) {
+      e.preventDefault();
+      openSearch();
+      return;
+    }
+
+    if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
+      closeSearch();
+      return;
+    }
+
+    if (modal && !modal.classList.contains('hidden')) {
+      const items = Array.from(resultsContainer?.querySelectorAll('.search-result-item') || []);
+      if (items.length === 0) return;
+      const currentIdx = items.findIndex((el) => el.classList.contains('selected'));
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const nextIdx = currentIdx < items.length - 1 ? currentIdx + 1 : 0;
+        items.forEach((el) => el.classList.remove('selected'));
+        items[nextIdx].classList.add('selected');
+        items[nextIdx].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        const prevIdx = currentIdx > 0 ? currentIdx - 1 : items.length - 1;
+        items.forEach((el) => el.classList.remove('selected'));
+        items[prevIdx].classList.add('selected');
+        items[prevIdx].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        const selected = items.find((el) => el.classList.contains('selected')) || items[0];
+        if (selected) selected.click();
+      }
+    }
+  });
+
+  // Filtro por etiquetas de categoría
+  document.querySelectorAll('.search-tag').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.search-tag').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      AppState.globalSearchActiveFilter = btn.getAttribute('data-search-filter') || 'all';
+      renderSearchResults(input?.value || '');
+    });
+  });
+
+  input?.addEventListener('input', (e) => {
+    renderSearchResults(e.target.value);
+  });
+
+  function renderSearchResults(query) {
+    if (!resultsContainer) return;
+    const q = query.toLowerCase().trim();
+    const filter = AppState.globalSearchActiveFilter || 'all';
+
+    if (!q) {
+      resultsContainer.innerHTML = `
+        <div style="text-align: center; padding: 25px 0;">
+          <span style="font-size: 2.2rem;">🔍</span>
+          <p class="section-subtitle" style="margin-top: 6px;">Escribe para buscar deberes, exámenes, apuntes, asignaturas, materiales o notas...</p>
+        </div>
+      `;
+      return;
+    }
+
+    const matches = [];
+
+    // 1. Tareas / Deberes
+    if (filter === 'all' || filter === 'tasks') {
+      AppState.tasks.forEach((t) => {
+        const sub = AppState.subjects.find((s) => s.id === t.subjectId);
+        const text = `${t.title} ${t.description || ''} ${sub?.name || ''}`.toLowerCase();
+        if (text.includes(q)) {
+          matches.push({
+            type: 'tasks',
+            typeLabel: '📋 Deberes',
+            title: t.title,
+            subtitle: `${sub?.icon || '📘'} ${sub?.name || 'General'} • Entrega: ${t.dueDate}`,
+            badge: t.status === 'completed' ? '✅ Hecho' : '⏳ Pendiente',
+            badgeColor: t.status === 'completed' ? 'var(--success)' : 'var(--warning)',
+            action: () => {
+              closeSearch();
+              switchTab('tab-tasks');
+              openTaskModal(t.id);
+            }
+          });
+        }
+      });
+    }
+
+    // 2. Exámenes
+    if (filter === 'all' || filter === 'exams') {
+      AppState.exams.forEach((e) => {
+        const sub = AppState.subjects.find((s) => s.id === e.subjectId);
+        const text = `${e.title} ${e.topics || ''} ${sub?.name || ''}`.toLowerCase();
+        if (text.includes(q)) {
+          matches.push({
+            type: 'exams',
+            typeLabel: '📝 Examen',
+            title: e.title,
+            subtitle: `${sub?.icon || '📘'} ${sub?.name || 'General'} • Fecha: ${e.date}`,
+            badge: '📅 Examen',
+            badgeColor: '#8b5cf6',
+            action: () => {
+              closeSearch();
+              switchTab('tab-exams');
+              openExamModal(e.id);
+            }
+          });
+        }
+      });
+    }
+
+    // 3. Proyectos Artísticos
+    if (filter === 'all' || filter === 'projects') {
+      AppState.projects.forEach((p) => {
+        const sub = AppState.subjects.find((s) => s.id === p.subjectId);
+        const text = `${p.title} ${p.technique || ''} ${p.description || ''} ${sub?.name || ''}`.toLowerCase();
+        if (text.includes(q)) {
+          matches.push({
+            type: 'projects',
+            typeLabel: '🎨 Proyecto',
+            title: p.title,
+            subtitle: `${sub?.icon || '🎨'} ${sub?.name || 'Arte'} • ${p.technique || 'Técnica libre'}`,
+            badge: p.status || 'En Proceso',
+            badgeColor: '#ec4899',
+            action: () => {
+              closeSearch();
+              switchTab('tab-projects');
+              openProjectModal(p.id);
+            }
+          });
+        }
+      });
+    }
+
+    // 4. Calificaciones / Notas
+    if (filter === 'all' || filter === 'grades') {
+      AppState.grades.forEach((g) => {
+        const sub = AppState.subjects.find((s) => s.id === g.subjectId);
+        const text = `${g.title} ${sub?.name || ''} Trimestre ${g.term}`.toLowerCase();
+        if (text.includes(q)) {
+          matches.push({
+            type: 'grades',
+            typeLabel: '📊 Nota',
+            title: `${g.title} (${g.score})`,
+            subtitle: `${sub?.icon || '📊'} ${sub?.name || 'General'} • ${g.term}º Trimestre`,
+            badge: `Nota: ${parseFloat(g.score).toFixed(1)}`,
+            badgeColor: parseFloat(g.score) >= 5 ? 'var(--success)' : 'var(--danger)',
+            action: () => {
+              closeSearch();
+              switchTab('tab-grades');
+            }
+          });
+        }
+      });
+    }
+
+    // 5. Mochila y Materiales
+    if (filter === 'all' || filter === 'materials') {
+      AppState.materials.forEach((m) => {
+        const sub = AppState.subjects.find((s) => s.id === m.subjectId);
+        const text = `${m.name} ${sub?.name || ''}`.toLowerCase();
+        if (text.includes(q)) {
+          matches.push({
+            type: 'materials',
+            typeLabel: '🎒 Mochila',
+            title: `${m.icon || '🎒'} ${m.name}`,
+            subtitle: sub ? `Asociado a ${sub.name}` : 'Material general',
+            badge: m.isPacked ? '✅ Guardado' : '⏳ Falta meter',
+            badgeColor: m.isPacked ? 'var(--success)' : 'var(--warning)',
+            action: () => {
+              closeSearch();
+              switchTab('tab-backpack');
+            }
+          });
+        }
+      });
+    }
+
+    // 6. Fotos de Pizarra y Apuntes (incluyendo texto OCR)
+    if (filter === 'all' || filter === 'photos') {
+      const checkedPhotos = new Set();
+      const allP = [];
+      AppState.tasks.forEach((t) => (t.photos || []).forEach((src) => allP.push({ src, title: t.title, sub: AppState.subjects.find((s) => s.id === t.subjectId) })));
+      AppState.exams.forEach((e) => (e.photos || []).forEach((src) => allP.push({ src, title: `Examen: ${e.title}`, sub: AppState.subjects.find((s) => s.id === e.subjectId) })));
+      AppState.projects.forEach((pr) => (pr.photos || []).forEach((src) => allP.push({ src, title: `Proyecto: ${pr.title}`, sub: AppState.subjects.find((s) => s.id === pr.subjectId) })));
+
+      allP.forEach((photoObj) => {
+        if (checkedPhotos.has(photoObj.src)) return;
+        checkedPhotos.add(photoObj.src);
+
+        const ocr = getCachedOcrText(photoObj.src) || '';
+        const text = `${photoObj.title} ${photoObj.sub?.name || ''} ${ocr}`.toLowerCase();
+        if (text.includes(q)) {
+          matches.push({
+            type: 'photos',
+            typeLabel: '📸 Foto / OCR',
+            title: photoObj.title,
+            subtitle: ocr ? `Texto OCR: "${ocr.substring(0, 45)}..."` : `Foto de ${photoObj.sub?.name || 'clase'}`,
+            badge: ocr ? '🔍 Texto OCR' : '📸 Foto',
+            badgeColor: '#10b981',
+            action: () => {
+              closeSearch();
+              openImageViewer(photoObj.src, photoObj.title);
+            }
+          });
+        }
+      });
+    }
+
+    if (matches.length === 0) {
+      resultsContainer.innerHTML = `
+        <div style="text-align: center; padding: 25px 0;">
+          <span style="font-size: 2rem;">❌</span>
+          <p class="section-subtitle" style="margin-top: 6px;">No se encontraron resultados para "<strong>${escapeHTML(q)}</strong>".</p>
+        </div>
+      `;
+      return;
+    }
+
+    resultsContainer.innerHTML = matches
+      .map((item, idx) => `
+        <div class="search-result-item ${idx === 0 ? 'selected' : ''}" data-match-index="${idx}">
+          <div>
+            <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-main);">
+              ${escapeHTML(item.title)}
+            </div>
+            <div class="search-result-meta">
+              <span>${escapeHTML(item.typeLabel)}</span>
+              <span>•</span>
+              <span>${escapeHTML(item.subtitle)}</span>
+            </div>
+          </div>
+          <span style="background: ${item.badgeColor}; color: #fff; font-size: 0.7rem; font-weight: 700; padding: 3px 8px; border-radius: var(--radius-full); white-space: nowrap; margin-left: 8px;">
+            ${escapeHTML(item.badge)}
+          </span>
+        </div>
+      `)
+      .join('');
+
+    resultsContainer.querySelectorAll('.search-result-item').forEach((el, idx) => {
+      el.addEventListener('click', () => {
+        matches[idx].action();
+      });
+    });
+  }
+}
+
+// --- RECONOCIMIENTO ÓPTICO DE CARACTERES (OCR CON TESSERACT.JS) ---
+function initOcrModule() {
+  const btnViewerOcr = document.getElementById('btn-viewer-ocr');
+  const ocrModal = document.getElementById('ocr-result-modal');
+  const ocrTextArea = document.getElementById('ocr-extracted-text');
+  const ocrStatusText = document.getElementById('ocr-status-text');
+  const ocrPercentageText = document.getElementById('ocr-percentage-text');
+  const ocrProgressFill = document.getElementById('ocr-progress-fill');
+  const btnCopy = document.getElementById('btn-ocr-copy');
+  const btnToTask = document.getElementById('btn-ocr-to-task');
+  const btnToExam = document.getElementById('btn-ocr-to-exam');
+
+  btnViewerOcr?.addEventListener('click', async () => {
+    const imgEl = document.getElementById('image-viewer-img');
+    const src = imgEl?.src;
+    if (!src) return;
+
+    if (!ocrModal || !ocrTextArea) return;
+    ocrModal.classList.remove('hidden');
+    ocrTextArea.value = '';
+    if (ocrStatusText) ocrStatusText.textContent = 'Iniciando motor OCR...';
+    if (ocrPercentageText) ocrPercentageText.textContent = '0%';
+    if (ocrProgressFill) ocrProgressFill.style.width = '0%';
+
+    try {
+      const result = await recognizeImageText(src, {
+        lang: 'spa',
+        onProgress: (p) => {
+          if (ocrStatusText) ocrStatusText.textContent = p.status;
+          const pct = Math.round((p.progress || 0) * 100);
+          if (ocrPercentageText) ocrPercentageText.textContent = `${pct}%`;
+          if (ocrProgressFill) ocrProgressFill.style.width = `${pct}%`;
+        }
+      });
+
+      ocrTextArea.value = result.text || '(No se detectó texto legible en la imagen)';
+      showToast('✅ Texto extraído con éxito', 'success');
+      renderGalleryView(); // Refrescar para mostrar el badge OCR en la galería
+    } catch (err) {
+      console.error('Error OCR:', err);
+      if (ocrStatusText) ocrStatusText.textContent = 'Error al procesar';
+      ocrTextArea.value = `Hubo un inconveniente al procesar la imagen: ${err.message}`;
+      showToast('⚠️ No se pudo extraer el texto de la imagen', 'error');
+    }
+  });
+
+  btnCopy?.addEventListener('click', async () => {
+    const text = ocrTextArea?.value;
+    if (!text) return;
+    try {
+      await navigator.clipboard.writeText(text);
+      showToast('📋 Texto copiado al portapapeles', 'success');
+    } catch (e) {
+      showToast('No se pudo copiar automáticamente');
+    }
+  });
+
+  btnToTask?.addEventListener('click', () => {
+    const text = ocrTextArea?.value;
+    if (!text) return;
+    ocrModal?.classList.add('hidden');
+    document.getElementById('image-viewer-modal')?.classList.add('hidden');
+    switchTab('tab-tasks');
+    openTaskModal();
+    setTimeout(() => {
+      const descInput = document.getElementById('task-desc-input');
+      if (descInput) {
+        descInput.value = (descInput.value ? descInput.value + '\n\n' : '') + `[Apuntes extraídos por OCR]:\n${text}`;
+      }
+    }, 100);
+  });
+
+  btnToExam?.addEventListener('click', () => {
+    const text = ocrTextArea?.value;
+    if (!text) return;
+    ocrModal?.classList.add('hidden');
+    document.getElementById('image-viewer-modal')?.classList.add('hidden');
+    switchTab('tab-exams');
+    openExamModal();
+    setTimeout(() => {
+      const topicsInput = document.getElementById('exam-topics-input');
+      if (topicsInput) {
+        topicsInput.value = (topicsInput.value ? topicsInput.value + '\n\n' : '') + `[Temario extraído por OCR]:\n${text}`;
+      }
+    }, 100);
+  });
+}
+
+// --- BÚSQUEDA EN LA GALERÍA DE FOTOS ---
+function initGallerySearch() {
+  const input = document.getElementById('gallery-search-input');
+  input?.addEventListener('input', (e) => {
+    AppState.gallerySearchQuery = e.target.value || '';
+    renderGalleryView();
   });
 }
 

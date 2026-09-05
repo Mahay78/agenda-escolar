@@ -1662,6 +1662,158 @@ input, textarea, select, button {
 }
 
 /* ==========================================================================
+   BUSCADOR GLOBAL INTELIGENTE (SPOTLIGHT / CTRL + K)
+   ========================================================================== */
+.btn-global-search {
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: var(--transition);
+  user-select: none;
+}
+.btn-global-search:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--primary);
+  color: var(--text-main);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+}
+.search-kbd {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+@media (max-width: 640px) {
+  .btn-global-search .search-hint,
+  .btn-global-search .search-kbd {
+    display: none;
+  }
+  .btn-global-search {
+    padding: 8px 10px;
+  }
+}
+
+.global-search-modal-content {
+  max-width: 680px;
+  padding: 18px 22px;
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+.search-bar-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+.global-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 1.15rem;
+  color: var(--text-main);
+  outline: none;
+  font-family: inherit;
+}
+.search-quick-tags {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-color);
+  scrollbar-width: none;
+}
+.search-quick-tags::-webkit-scrollbar {
+  display: none;
+}
+.search-tag {
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  padding: 4px 11px;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text-muted);
+  white-space: nowrap;
+  transition: var(--transition);
+}
+.search-tag:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-main);
+}
+.search-tag.active {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+}
+.global-search-results {
+  max-height: 52vh;
+  overflow-y: auto;
+  padding: 12px 2px 4px 2px;
+}
+.search-result-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  margin-bottom: 6px;
+  border: 1px solid transparent;
+  background: var(--bg-input);
+}
+.search-result-item:hover,
+.search-result-item.selected {
+  background: var(--bg-card-hover);
+  border-color: var(--primary);
+  transform: translateX(3px);
+}
+.search-result-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+.search-footer-hint {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  padding-top: 10px;
+  border-top: 1px solid var(--border-color);
+}
+.search-footer-hint kbd {
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+/* OCR Progress */
+.ocr-status-container {
+  background: var(--bg-input);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+}
+
+/* ==========================================================================
    MODO IMPRESIÓN LIMPIO Y BOLETÍN / HORARIO PDF (@media print)
    ========================================================================== */
 @media print {

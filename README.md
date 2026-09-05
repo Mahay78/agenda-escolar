@@ -70,9 +70,15 @@ Aquí tienes las funcionalidades planificadas para las siguientes versiones del 
   - Menú lateral deslizable o desplegable táctil optimizado para pantallas pequeñas y tablets.
   - Navegación rápida con una sola mano entre todas las secciones (Hoy, Deberes, Horario, Mochila, Proyectos, Pomodoro, Exámenes, Notas, Galería y Ajustes).
 
-- [ ] **🔍 OCR (Reconocimiento Óptico de Caracteres):**
-  - Procesamiento offline de fotos de pizarra y libros con `Tesseract.js` para extraer texto automáticamente.
-  - Búsqueda instantánea de palabras clave dentro de las fotos sacadas en clase.
+- [x] **🔍 OCR (Reconocimiento Óptico de Caracteres):**
+  - Procesamiento offline de fotos de pizarra y libros con `Tesseract.js` para extraer texto automáticamente sin necesidad de servidores externos.
+  - Inserción directa del texto extraído en tareas de deberes o temarios de exámenes.
+  - Búsqueda instantánea de palabras clave dentro de las fotos guardadas en la galería.
+
+- [x] **🔎 Buscador Global Inteligente (Ctrl + K / Spotlight):**
+  - Barra de búsqueda estilo Spotlight accesible mediante atajo de teclado (`Ctrl + K`) o botón en cabecera y menú drawer.
+  - Búsqueda en tiempo real indexando tareas, exámenes, proyectos artísticos, calificaciones, materiales de la mochila y fotos/apuntes con OCR.
+  - Filtros por chips de categoría y navegación por teclado (flechas y Enter).
 
 - [ ] **📄 Generador y Exportador a PDF (100% Offline con `pdf-lib` / `jsPDF`):**
   - **Exportar Apuntes y Fotos a PDF:** Crear un documento PDF paginado con las fotos de pizarras, apuntes, dibujos y notas de texto asociadas a cada asignatura.
@@ -148,9 +154,11 @@ Aquí tienes las funcionalidades planificadas para las siguientes versiones del 
 ├── annotations.js        # Editor de dibujo y correcciones sobre fotografías
 ├── audio.js              # Grabadora de notas de voz y sintetizador de sonido Web Audio API
 ├── qr.js                 # Generador, lector de QR y formateador de mensajes WhatsApp
+├── ocr.js                # Motor de OCR y extracción de texto de imágenes con Tesseract.js
+├── libs/                 # Librerías cliente offline (Tesseract core & worker)
 ├── server.js             # Servidor HTTP local en Node.js (cero dependencias externas)
 ├── iniciar_agenda.bat    # Acceso directo para iniciar la app en Windows con doble clic
-├── sw.js                 # Service Worker para funcionamiento 100% Offline
+├── sw.js                 # Service Worker para funcionamiento 100% Offline (PWA v2.4.0)
 ├── manifest.webmanifest  # Configuración PWA para instalación como app nativa
 └── icon.svg              # Logotipo vectorial de la aplicación
 ```

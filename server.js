@@ -23,7 +23,9 @@ const MIME_TYPES = {
   '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg',
   '.ico': 'image/x-icon',
-  '.webp': 'image/webp'
+  '.webp': 'image/webp',
+  '.wasm': 'application/wasm',
+  '.gz': 'application/gzip'
 };
 
 function getLocalIpAddresses() {
