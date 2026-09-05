@@ -505,6 +505,66 @@ function initEventListeners() {
     }
   });
 
+  // Botón Eliminar en el Visor de fotos
+  document.getElementById('btn-viewer-delete')?.addEventListener('click', async () => {
+    const imgEl = document.getElementById('image-viewer-img');
+    const src = imgEl?.src;
+    if (!src) return;
+
+    if (!confirm('¿Seguro que deseas eliminar esta fotografía?')) return;
+
+    // 1. Eliminar de arrays temporales
+    const tIdx = AppState.tempTaskPhotos.indexOf(src);
+    if (tIdx !== -1) {
+      AppState.tempTaskPhotos.splice(tIdx, 1);
+      renderPhotosPreview('task-photos-preview', AppState.tempTaskPhotos);
+    }
+
+    const eIdx = AppState.tempExamPhotos.indexOf(src);
+    if (eIdx !== -1) {
+      AppState.tempExamPhotos.splice(eIdx, 1);
+      renderPhotosPreview('exam-photos-preview', AppState.tempExamPhotos);
+    }
+
+    const pIdx = AppState.tempProjectPhotos.indexOf(src);
+    if (pIdx !== -1) {
+      AppState.tempProjectPhotos.splice(pIdx, 1);
+      renderPhotosPreview('project-photos-preview', AppState.tempProjectPhotos);
+    }
+
+    // 2. Eliminar de tareas persistidas
+    for (const task of AppState.tasks) {
+      if (task.photos && task.photos.includes(src)) {
+        task.photos = task.photos.filter((p) => p !== src);
+        await saveItem('tasks', task);
+      }
+    }
+
+    // 3. Eliminar de exámenes persistidos
+    for (const exam of AppState.exams) {
+      if (exam.photos && exam.photos.includes(src)) {
+        exam.photos = exam.photos.filter((p) => p !== src);
+        await saveItem('exams', exam);
+      }
+    }
+
+    // 4. Eliminar de proyectos persistidos
+    for (const project of AppState.projects) {
+      if (project.photos && project.photos.includes(src)) {
+        project.photos = project.photos.filter((p) => p !== src);
+        await saveItem('projects', project);
+      }
+    }
+
+    // Cerrar visor a pantalla completa
+    document.getElementById('image-viewer-modal')?.classList.add('hidden');
+    if (imgEl) imgEl.src = '';
+
+    await loadAllData();
+    renderAllViews();
+    showToast('🗑️ Fotografía eliminada con éxito', 'success');
+  });
+
   // Botón Compartir / WhatsApp / QR
   document.getElementById('btn-open-share')?.addEventListener('click', openShareModal);
 
