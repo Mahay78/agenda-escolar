@@ -254,13 +254,16 @@
       </div>
     </section>
 
-    <!-- 3. PESTAÑA: HORARIO SEMANAL -->
+    <!-- 3. PESTAÑA: HORARIO ESCOLAR -->
     <section id="tab-schedule" class="tab-panel">
       <div class="section-header">
         <div>
           <h2 class="section-title"><span>📅</span> Horario Escolar</h2>
           <p class="section-subtitle">Selecciona el día de la semana para ver y editar tus clases</p>
         </div>
+        <button id="btn-print-schedule" class="btn-secondary" style="width: auto; display: inline-flex; align-items: center; gap: 6px;" title="Imprimir horario o guardar en PDF">
+          <span>🖨️</span> Imprimir / PDF
+        </button>
       </div>
 
       <!-- Selector de día -->
@@ -403,9 +406,52 @@
           <h2 class="section-title"><span>📊</span> Control de Calificaciones</h2>
           <p class="section-subtitle">Registra tus notas por trimestre y calcula tus medias</p>
         </div>
-        <button id="btn-open-new-grade" class="btn-primary" style="width: auto;">
-          ➕ Añadir Nota
-        </button>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button id="btn-toggle-grade-simulator" class="btn-secondary" style="width: auto; display: inline-flex; align-items: center; gap: 6px;" title="Calcular qué nota necesitas">
+            <span>🧮</span> Simulador
+          </button>
+          <button id="btn-print-grades" class="btn-secondary" style="width: auto; display: inline-flex; align-items: center; gap: 6px;" title="Imprimir o guardar boletín en PDF">
+            <span>🖨️</span> Boletín PDF
+          </button>
+          <button id="btn-open-new-grade" class="btn-primary" style="width: auto;">
+            ➕ Añadir Nota
+          </button>
+        </div>
+      </div>
+
+      <!-- Simulador interactivo: ¿Qué nota necesito? -->
+      <div id="grade-simulator-card" class="card hidden" style="margin-bottom: 20px; border-left: 4px solid var(--primary);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <h3 style="font-size: 1.05rem; margin: 0; display: flex; align-items: center; gap: 8px;">
+            <span>🧮</span> Simulador "¿Qué nota necesito?"
+          </h3>
+          <button type="button" id="btn-close-grade-simulator" class="btn-action-small" style="font-size: 0.8rem;">✕ Cerrar</button>
+        </div>
+        <p class="section-subtitle" style="margin-bottom: 12px;">
+          Calcula la nota mínima necesaria en tu próximo examen o entrega para lograr tu calificación objetivo.
+        </p>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nota Media Actual (0 - 10)</label>
+            <input type="number" id="sim-current-grade" class="form-input" min="0" max="10" step="0.1" placeholder="Ej: 6.2" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Media Deseada / Objetivo (0 - 10)</label>
+            <input type="number" id="sim-target-grade" class="form-input" min="0" max="10" step="0.1" placeholder="Ej: 7.0 (Notable)" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Peso del Próximo Examen (%)</label>
+            <input type="number" id="sim-exam-weight" class="form-input" min="1" max="100" value="40" placeholder="Ej: 40%" />
+          </div>
+          <div class="form-group" style="display: flex; align-items: flex-end;">
+            <button type="button" id="btn-calc-simulator" class="btn-primary" style="width: 100%;">
+              ⚡ Calcular Nota Necesaria
+            </button>
+          </div>
+        </div>
+        <div id="sim-result-box" class="hidden" style="margin-top: 12px; padding: 12px; border-radius: var(--radius-sm); font-size: 0.95rem;"></div>
       </div>
 
       <!-- Resumen de media -->
@@ -555,7 +601,12 @@
         <input type="hidden" id="task-id" />
         <div class="form-group">
           <label class="form-label">Título del Deber o Trabajo *</label>
-          <input type="text" id="task-title-input" class="form-input" placeholder="Ej: Ejercicios 3, 4 y 5 pág 78" required />
+          <div class="input-with-voice-btn">
+            <input type="text" id="task-title-input" class="form-input" placeholder="Ej: Ejercicios 3, 4 y 5 pág 78" required />
+            <button type="button" class="btn-voice-dictate" data-voice-target="task-title-input" title="Dictar por voz 🎙️">
+              <span>🎙️</span>
+            </button>
+          </div>
         </div>
         <div class="form-row">
           <div class="form-group">
@@ -576,7 +627,12 @@
           </select>
         </div>
         <div class="form-group">
-          <label class="form-label">Descripción / Notas adicionales</label>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <label class="form-label" style="margin-bottom: 0;">Descripción / Notas adicionales</label>
+            <button type="button" class="btn-voice-dictate btn-voice-dictate-sm" data-voice-target="task-desc-input" title="Dictar descripción por voz 🎙️">
+              <span>🎙️ Dictar</span>
+            </button>
+          </div>
           <textarea id="task-desc-input" class="form-textarea" rows="3" placeholder="Detalles de la tarea, instrucciones del profesor..."></textarea>
         </div>
         
@@ -626,7 +682,12 @@
         <input type="hidden" id="exam-id" />
         <div class="form-group">
           <label class="form-label">Título / Temario *</label>
-          <input type="text" id="exam-title-input" class="form-input" placeholder="Ej: Examen Tema 3 y 4: Ecuaciones" required />
+          <div class="input-with-voice-btn">
+            <input type="text" id="exam-title-input" class="form-input" placeholder="Ej: Examen Tema 3 y 4: Ecuaciones" required />
+            <button type="button" class="btn-voice-dictate" data-voice-target="exam-title-input" title="Dictar por voz 🎙️">
+              <span>🎙️</span>
+            </button>
+          </div>
         </div>
         <div class="form-row">
           <div class="form-group">
@@ -639,7 +700,12 @@
           </div>
         </div>
         <div class="form-group">
-          <label class="form-label">Temas a estudiar / Contenido</label>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <label class="form-label" style="margin-bottom: 0;">Temas a estudiar / Contenido</label>
+            <button type="button" class="btn-voice-dictate btn-voice-dictate-sm" data-voice-target="exam-topics-input" title="Dictar temario por voz 🎙️">
+              <span>🎙️ Dictar</span>
+            </button>
+          </div>
           <textarea id="exam-topics-input" class="form-textarea" rows="3" placeholder="Puntos clave, páginas a repasar, fórmulas..."></textarea>
         </div>
         <!-- Fotos del temario -->
@@ -651,6 +717,22 @@
             </button>
           </div>
           <div id="exam-photos-preview" class="task-photos-grid"></div>
+        </div>
+
+        <!-- Notas de voz para exámenes -->
+        <div class="form-group">
+          <label class="form-label">Nota de Voz / Indicaciones del Examen</label>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <button type="button" id="btn-record-exam-audio" class="btn-secondary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;">
+              <span id="record-exam-audio-icon">🎙️</span> <span id="record-exam-audio-text">Grabar Nota de Voz</span>
+            </button>
+            <span id="record-exam-timer" class="record-timer hidden" style="font-weight: 700; color: var(--danger); font-size: 0.9rem;">00:00</span>
+            <button type="button" id="btn-cancel-exam-recording" class="btn-action-small danger hidden">❌</button>
+          </div>
+          <div id="exam-audio-preview" class="hidden" style="margin-top: 8px; padding: 8px; background: var(--bg-input); border-radius: var(--radius-sm);">
+            <audio id="exam-audio-player" controls style="width: 100%; height: 36px;"></audio>
+            <button type="button" id="btn-remove-exam-audio" class="btn-action-small danger" style="margin-top: 6px;">🗑️ Eliminar Audio</button>
+          </div>
         </div>
 
         <button type="submit" class="btn-primary">💾 Guardar Examen</button>
@@ -955,7 +1037,12 @@
         <input type="hidden" id="project-id" />
         <div class="form-group">
           <label class="form-label">Título de la Obra o Proyecto *</label>
-          <input type="text" id="project-title-input" class="form-input" placeholder="Ej: Escultura de escayola o Lámina A3" required />
+          <div class="input-with-voice-btn">
+            <input type="text" id="project-title-input" class="form-input" placeholder="Ej: Escultura de escayola o Lámina A3" required />
+            <button type="button" class="btn-voice-dictate" data-voice-target="project-title-input" title="Dictar por voz 🎙️">
+              <span>🎙️</span>
+            </button>
+          </div>
         </div>
         <div class="form-row">
           <div class="form-group">
@@ -983,7 +1070,12 @@
           </div>
         </div>
         <div class="form-group">
-          <label class="form-label">Descripción y Criterios del Profesor</label>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <label class="form-label" style="margin-bottom: 0;">Descripción y Criterios del Profesor</label>
+            <button type="button" class="btn-voice-dictate btn-voice-dictate-sm" data-voice-target="project-desc-input" title="Dictar descripción por voz 🎙️">
+              <span>🎙️ Dictar</span>
+            </button>
+          </div>
           <textarea id="project-desc-input" class="form-textarea" rows="3" placeholder="Requisitos del encargo, medidas, pautas de evaluación..."></textarea>
         </div>
         <!-- Fotos del proceso -->
@@ -999,6 +1091,23 @@
           </div>
           <div id="project-photos-preview" class="task-photos-grid"></div>
         </div>
+
+        <!-- Notas de voz para proyectos -->
+        <div class="form-group">
+          <label class="form-label">Nota de Voz / Memoria Artística Hablada</label>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <button type="button" id="btn-record-project-audio" class="btn-secondary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;">
+              <span id="record-project-audio-icon">🎙️</span> <span id="record-project-audio-text">Grabar Nota de Voz</span>
+            </button>
+            <span id="record-project-timer" class="record-timer hidden" style="font-weight: 700; color: var(--danger); font-size: 0.9rem;">00:00</span>
+            <button type="button" id="btn-cancel-project-recording" class="btn-action-small danger hidden">❌</button>
+          </div>
+          <div id="project-audio-preview" class="hidden" style="margin-top: 8px; padding: 8px; background: var(--bg-input); border-radius: var(--radius-sm);">
+            <audio id="project-audio-player" controls style="width: 100%; height: 36px;"></audio>
+            <button type="button" id="btn-remove-project-audio" class="btn-action-small danger" style="margin-top: 6px;">🗑️ Eliminar Audio</button>
+          </div>
+        </div>
+
         <button type="submit" class="btn-primary">💾 Guardar Proyecto</button>
       </form>
     </div>

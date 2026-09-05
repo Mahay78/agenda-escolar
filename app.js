@@ -20,7 +20,17 @@ import {
 
 import { initCameraModule, openCamera, openImageViewer } from './camera.js';
 import { initAnnotationModule, openAnnotationEditor } from './annotations.js';
-import { startRecording, stopRecording, cancelRecording, playPomodoroBell, playBreakBell } from './audio.js';
+import {
+  startRecording,
+  stopRecording,
+  cancelRecording,
+  playPomodoroBell,
+  playBreakBell,
+  startSpeechDictation,
+  stopSpeechDictation,
+  isSpeechRecognitionSupported,
+  isDictating
+} from './audio.js';
 import {
   renderQRCodeToCanvas,
   formatTasksForWhatsApp,
@@ -50,8 +60,12 @@ const AppState = {
   tempExamPhotos: [],
   tempProjectPhotos: [],
   tempTaskAudio: null,
+  tempExamAudio: null,
+  tempProjectAudio: null,
   currentViewedImageSrc: null,
   isRecordingAudio: false,
+  isRecordingExamAudio: false,
+  isRecordingProjectAudio: false,
   pomodoro: {
     timeLeft: 25 * 60,
     totalTime: 25 * 60,
@@ -90,6 +104,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     initPWAInstallPrompt();
     initEventListeners();
     initSubjectIconPicker();
+    initVoiceDictation();
+    initGradeSimulator();
+    initPrintActions();
 
     // 4. Renderizar vistas
     renderAllViews();
@@ -1110,6 +1127,15 @@ function renderProjectsView() {
           ${project.dueDate ? `<div class="section-subtitle">📅 <strong>Entrega:</strong> ${formatDateSpanish(project.dueDate)}</div>` : ''}
           ${project.description ? `<div class="task-description" style="margin-top: 8px;">${escapeHTML(project.description)}</div>` : ''}
           ${photosHtml}
+          ${
+            project.audioUrl
+              ? `
+            <div style="margin-top: 8px;">
+              <audio controls src="${project.audioUrl}" style="width: 100%; max-width: 320px; height: 32px;"></audio>
+            </div>
+          `
+              : ''
+          }
 
           <div class="task-actions" style="margin-top: 12px;">
             <button class="btn-action-small" onclick="window.openProjectModal('${project.id}')">✏️ Editar</button>
@@ -1224,6 +1250,15 @@ function renderExamsView() {
           <div class="section-subtitle">📅 Fecha: ${formatDateSpanish(exam.date)}</div>
           ${exam.topics ? `<div class="task-description"><strong>Temario:</strong>\n${escapeHTML(exam.topics)}</div>` : ''}
           ${photosHtml}
+          ${
+            exam.audioUrl
+              ? `
+            <div style="margin-top: 8px;">
+              <audio controls src="${exam.audioUrl}" style="width: 100%; max-width: 320px; height: 32px;"></audio>
+            </div>
+          `
+              : ''
+          }
           <div class="task-actions">
             <button class="btn-action-small" onclick="window.openExamModal('${exam.id}')">✏️ Editar</button>
             <button class="btn-action-small danger" onclick="window.confirmDeleteExam('${exam.id}')">🗑️ Eliminar</button>
@@ -1534,6 +1569,8 @@ window.openExamModal = function (examId = null) {
   const subjectSelect = document.getElementById('exam-subject-select');
   const dateInput = document.getElementById('exam-date-input');
   const topicsInput = document.getElementById('exam-topics-input');
+  const audioPreview = document.getElementById('exam-audio-preview');
+  const audioPlayer = document.getElementById('exam-audio-player');
 
   populateSubjectSelect(subjectSelect);
 
@@ -1547,6 +1584,14 @@ window.openExamModal = function (examId = null) {
       dateInput.value = exam.date;
       topicsInput.value = exam.topics || '';
       AppState.tempExamPhotos = [...(exam.photos || [])];
+      AppState.tempExamAudio = exam.audioUrl || null;
+      if (AppState.tempExamAudio && audioPreview && audioPlayer) {
+        audioPlayer.src = AppState.tempExamAudio;
+        audioPreview.classList.remove('hidden');
+      } else if (audioPreview) {
+        audioPreview.classList.add('hidden');
+        if (audioPlayer) audioPlayer.src = '';
+      }
     }
   } else {
     titleEl.textContent = 'Nuevo Examen';
@@ -1555,6 +1600,9 @@ window.openExamModal = function (examId = null) {
     dateInput.value = getTomorrowDateString();
     topicsInput.value = '';
     AppState.tempExamPhotos = [];
+    AppState.tempExamAudio = null;
+    if (audioPreview) audioPreview.classList.add('hidden');
+    if (audioPlayer) audioPlayer.src = '';
   }
 
   renderPhotosPreview('exam-photos-preview', AppState.tempExamPhotos);
@@ -1576,6 +1624,7 @@ async function handleExamFormSubmit(e) {
     date,
     topics,
     photos: [...AppState.tempExamPhotos],
+    audioUrl: AppState.tempExamAudio || null,
     updatedAt: new Date().toISOString()
   };
 
@@ -2116,15 +2165,23 @@ async function handleStartQRScan() {
 
 // --- GRABADORA DE NOTAS DE VOZ (AUDIO OFFLINE) ---
 function initAudioRecorder() {
-  const btnRecord = document.getElementById('btn-record-audio');
-  const btnCancel = document.getElementById('btn-cancel-recording');
-  const btnRemove = document.getElementById('btn-remove-audio');
+  // 1. Tareas
+  document.getElementById('btn-record-audio')?.addEventListener('click', handleToggleAudioRecording);
+  document.getElementById('btn-cancel-recording')?.addEventListener('click', handleCancelAudioRecording);
+  document.getElementById('btn-remove-audio')?.addEventListener('click', handleRemoveAudio);
 
-  btnRecord?.addEventListener('click', handleToggleAudioRecording);
-  btnCancel?.addEventListener('click', handleCancelAudioRecording);
-  btnRemove?.addEventListener('click', handleRemoveAudio);
+  // 2. Exámenes
+  document.getElementById('btn-record-exam-audio')?.addEventListener('click', handleToggleExamAudioRecording);
+  document.getElementById('btn-cancel-exam-recording')?.addEventListener('click', handleCancelExamAudioRecording);
+  document.getElementById('btn-remove-exam-audio')?.addEventListener('click', handleRemoveExamAudio);
+
+  // 3. Proyectos
+  document.getElementById('btn-record-project-audio')?.addEventListener('click', handleToggleProjectAudioRecording);
+  document.getElementById('btn-cancel-project-recording')?.addEventListener('click', handleCancelProjectAudioRecording);
+  document.getElementById('btn-remove-project-audio')?.addEventListener('click', handleRemoveProjectAudio);
 }
 
+// Audio para tareas
 async function handleToggleAudioRecording() {
   const icon = document.getElementById('record-audio-icon');
   const text = document.getElementById('record-audio-text');
@@ -2202,6 +2259,314 @@ function handleRemoveAudio() {
   if (audioPreview) audioPreview.classList.add('hidden');
   if (audioPlayer) audioPlayer.src = '';
   showToast('🗑️ Audio eliminado');
+}
+
+// Audio para exámenes
+async function handleToggleExamAudioRecording() {
+  const icon = document.getElementById('record-exam-audio-icon');
+  const text = document.getElementById('record-exam-audio-text');
+  const timer = document.getElementById('record-exam-timer');
+  const btnCancel = document.getElementById('btn-cancel-exam-recording');
+  const btnRecord = document.getElementById('btn-record-exam-audio');
+  const audioPreview = document.getElementById('exam-audio-preview');
+  const audioPlayer = document.getElementById('exam-audio-player');
+
+  if (!AppState.isRecordingExamAudio) {
+    try {
+      await startRecording((sec) => {
+        const m = String(Math.floor(sec / 60)).padStart(2, '0');
+        const s = String(sec % 60).padStart(2, '0');
+        if (timer) timer.textContent = `${m}:${s}`;
+      });
+      AppState.isRecordingExamAudio = true;
+      if (icon) icon.textContent = '⏹️';
+      if (text) text.textContent = 'Detener Grabación';
+      if (timer) {
+        timer.textContent = '00:00';
+        timer.classList.remove('hidden');
+      }
+      btnCancel?.classList.remove('hidden');
+      btnRecord?.classList.add('recording-active');
+      showToast('🎙️ Grabando nota para el examen...');
+    } catch (err) {
+      alert('Error al acceder al micrófono: ' + err.message);
+    }
+  } else {
+    try {
+      const audioData = await stopRecording();
+      AppState.isRecordingExamAudio = false;
+      if (icon) icon.textContent = '🎙️';
+      if (text) text.textContent = 'Volver a Grabar';
+      timer?.classList.add('hidden');
+      btnCancel?.classList.add('hidden');
+      btnRecord?.classList.remove('recording-active');
+
+      if (audioData && audioData.dataUrl) {
+        AppState.tempExamAudio = audioData.dataUrl;
+        if (audioPreview && audioPlayer) {
+          audioPlayer.src = audioData.dataUrl;
+          audioPreview.classList.remove('hidden');
+        }
+        showToast('✅ Nota de voz del examen guardada', 'success');
+      }
+    } catch (err) {
+      alert('Error al procesar el audio: ' + err.message);
+    }
+  }
+}
+
+function handleCancelExamAudioRecording() {
+  cancelRecording();
+  AppState.isRecordingExamAudio = false;
+  const icon = document.getElementById('record-exam-audio-icon');
+  const text = document.getElementById('record-exam-audio-text');
+  const timer = document.getElementById('record-exam-timer');
+  const btnCancel = document.getElementById('btn-cancel-exam-recording');
+  const btnRecord = document.getElementById('btn-record-exam-audio');
+
+  if (icon) icon.textContent = '🎙️';
+  if (text) text.textContent = 'Grabar Nota de Voz';
+  timer?.classList.add('hidden');
+  btnCancel?.classList.add('hidden');
+  btnRecord?.classList.remove('recording-active');
+  showToast('Grabación cancelada');
+}
+
+function handleRemoveExamAudio() {
+  AppState.tempExamAudio = null;
+  const audioPreview = document.getElementById('exam-audio-preview');
+  const audioPlayer = document.getElementById('exam-audio-player');
+  if (audioPreview) audioPreview.classList.add('hidden');
+  if (audioPlayer) audioPlayer.src = '';
+  showToast('🗑️ Audio eliminado');
+}
+
+// Audio para proyectos artísticos
+async function handleToggleProjectAudioRecording() {
+  const icon = document.getElementById('record-project-audio-icon');
+  const text = document.getElementById('record-project-audio-text');
+  const timer = document.getElementById('record-project-timer');
+  const btnCancel = document.getElementById('btn-cancel-project-recording');
+  const btnRecord = document.getElementById('btn-record-project-audio');
+  const audioPreview = document.getElementById('project-audio-preview');
+  const audioPlayer = document.getElementById('project-audio-player');
+
+  if (!AppState.isRecordingProjectAudio) {
+    try {
+      await startRecording((sec) => {
+        const m = String(Math.floor(sec / 60)).padStart(2, '0');
+        const s = String(sec % 60).padStart(2, '0');
+        if (timer) timer.textContent = `${m}:${s}`;
+      });
+      AppState.isRecordingProjectAudio = true;
+      if (icon) icon.textContent = '⏹️';
+      if (text) text.textContent = 'Detener Grabación';
+      if (timer) {
+        timer.textContent = '00:00';
+        timer.classList.remove('hidden');
+      }
+      btnCancel?.classList.remove('hidden');
+      btnRecord?.classList.add('recording-active');
+      showToast('🎙️ Grabando memoria artística...');
+    } catch (err) {
+      alert('Error al acceder al micrófono: ' + err.message);
+    }
+  } else {
+    try {
+      const audioData = await stopRecording();
+      AppState.isRecordingProjectAudio = false;
+      if (icon) icon.textContent = '🎙️';
+      if (text) text.textContent = 'Volver a Grabar';
+      timer?.classList.add('hidden');
+      btnCancel?.classList.add('hidden');
+      btnRecord?.classList.remove('recording-active');
+
+      if (audioData && audioData.dataUrl) {
+        AppState.tempProjectAudio = audioData.dataUrl;
+        if (audioPreview && audioPlayer) {
+          audioPlayer.src = audioData.dataUrl;
+          audioPreview.classList.remove('hidden');
+        }
+        showToast('✅ Nota de voz del proyecto guardada', 'success');
+      }
+    } catch (err) {
+      alert('Error al procesar el audio: ' + err.message);
+    }
+  }
+}
+
+function handleCancelProjectAudioRecording() {
+  cancelRecording();
+  AppState.isRecordingProjectAudio = false;
+  const icon = document.getElementById('record-project-audio-icon');
+  const text = document.getElementById('record-project-audio-text');
+  const timer = document.getElementById('record-project-timer');
+  const btnCancel = document.getElementById('btn-cancel-project-recording');
+  const btnRecord = document.getElementById('btn-record-project-audio');
+
+  if (icon) icon.textContent = '🎙️';
+  if (text) text.textContent = 'Grabar Nota de Voz';
+  timer?.classList.add('hidden');
+  btnCancel?.classList.add('hidden');
+  btnRecord?.classList.remove('recording-active');
+  showToast('Grabación cancelada');
+}
+
+function handleRemoveProjectAudio() {
+  AppState.tempProjectAudio = null;
+  const audioPreview = document.getElementById('project-audio-preview');
+  const audioPlayer = document.getElementById('project-audio-player');
+  if (audioPreview) audioPreview.classList.add('hidden');
+  if (audioPlayer) audioPlayer.src = '';
+  showToast('🗑️ Audio eliminado');
+}
+
+// --- TRANSCRIPCIÓN Y DICTADO POR VOZ A TEXTO (WEB SPEECH API) ---
+function initVoiceDictation() {
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.btn-voice-dictate');
+    if (!btn) return;
+    e.preventDefault();
+    e.stopPropagation();
+
+    const targetId = btn.getAttribute('data-voice-target');
+    const targetInput = document.getElementById(targetId);
+    if (!targetInput) return;
+
+    if (!isSpeechRecognitionSupported()) {
+      showToast('⚠️ Tu navegador no soporta dictado por voz (Web Speech API)', 'warning');
+      return;
+    }
+
+    if (btn.classList.contains('listening')) {
+      stopSpeechDictation();
+      btn.classList.remove('listening');
+      showToast('🛑 Dictado detenido');
+      return;
+    }
+
+    // Detener cualquier otro botón que estuviese escuchando
+    document.querySelectorAll('.btn-voice-dictate.listening').forEach((b) => {
+      b.classList.remove('listening');
+    });
+
+    btn.classList.add('listening');
+    showToast('🎙️ Escuchando... habla claramente', 'info');
+
+    startSpeechDictation({
+      targetInput,
+      lang: 'es-ES',
+      onStatusChange: (status, message) => {
+        if (status === 'stopped' || status === 'error') {
+          btn.classList.remove('listening');
+          if (message) {
+            showToast(status === 'error' ? `⚠️ ${message}` : message);
+          }
+        }
+      }
+    });
+  });
+
+  // Si se cierra algún modal, detener dictado activo
+  document.querySelectorAll('[data-close]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      if (isDictating()) {
+        stopSpeechDictation();
+        document.querySelectorAll('.btn-voice-dictate.listening').forEach((b) => b.classList.remove('listening'));
+      }
+    });
+  });
+}
+
+// --- SIMULADOR DE NOTAS ("¿QUÉ NOTA NECESITO?") ---
+function initGradeSimulator() {
+  const card = document.getElementById('grade-simulator-card');
+  const btnToggle = document.getElementById('btn-toggle-grade-simulator');
+  const btnClose = document.getElementById('btn-close-grade-simulator');
+  const btnCalc = document.getElementById('btn-calc-simulator');
+  const resultBox = document.getElementById('sim-result-box');
+
+  btnToggle?.addEventListener('click', () => {
+    if (!card) return;
+    const isHidden = card.classList.contains('hidden');
+    if (isHidden) {
+      // Autocompletar con la media actual si existe
+      const currentAvgEl = document.getElementById('stat-overall-average');
+      const currentInput = document.getElementById('sim-current-grade');
+      if (currentInput && currentAvgEl && currentAvgEl.textContent !== '--') {
+        const val = parseFloat(currentAvgEl.textContent);
+        if (!isNaN(val) && !currentInput.value) {
+          currentInput.value = val.toFixed(1);
+        }
+      }
+      card.classList.remove('hidden');
+      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } else {
+      card.classList.add('hidden');
+    }
+  });
+
+  btnClose?.addEventListener('click', () => {
+    card?.classList.add('hidden');
+  });
+
+  btnCalc?.addEventListener('click', () => {
+    if (!resultBox) return;
+    const currentVal = parseFloat(document.getElementById('sim-current-grade')?.value);
+    const targetVal = parseFloat(document.getElementById('sim-target-grade')?.value);
+    const weightVal = parseFloat(document.getElementById('sim-exam-weight')?.value);
+
+    if (isNaN(currentVal) || isNaN(targetVal) || isNaN(weightVal)) {
+      showToast('⚠️ Completa la nota actual, la deseada y el peso del examen', 'warning');
+      return;
+    }
+
+    if (weightVal <= 0 || weightVal > 100) {
+      showToast('⚠️ El peso del examen debe estar entre 1% y 100%', 'warning');
+      return;
+    }
+
+    const w = weightVal / 100;
+    // target = current * (1 - w) + required * w
+    // required = (target - current * (1 - w)) / w
+    const requiredGrade = (targetVal - currentVal * (1 - w)) / w;
+    const rounded = Math.round(requiredGrade * 100) / 100;
+
+    resultBox.className = 'sim-result-box';
+    resultBox.classList.remove('hidden');
+
+    if (rounded <= 0) {
+      resultBox.classList.add('success');
+      resultBox.innerHTML = `
+        <strong>🎉 ¡Meta conseguida por adelantado!</strong><br>
+        Con tu nota media actual de <strong>${currentVal.toFixed(1)}</strong>, ya alcanzas tu objetivo de <strong>${targetVal.toFixed(1)}</strong> aunque sacaras un <strong>0.00</strong> en este examen.
+      `;
+    } else if (rounded <= 10) {
+      const cls = rounded <= 5 ? 'success' : rounded <= 7 ? 'warning' : 'danger';
+      resultBox.classList.add(cls);
+      resultBox.innerHTML = `
+        <strong>🎯 Nota necesaria calculada:</strong><br>
+        Necesitas sacar al menos un <strong style="font-size: 1.25rem;">${rounded.toFixed(2)}</strong> en el próximo examen (peso ${weightVal}%) para lograr una media final de <strong>${targetVal.toFixed(1)}</strong>.
+      `;
+    } else {
+      resultBox.classList.add('danger');
+      resultBox.innerHTML = `
+        <strong>⚠️ Matemáticamente inalcanzable con este examen solo:</strong><br>
+        Necesitarías sacar un <strong>${rounded.toFixed(2)}</strong> (superior a 10) para alcanzar una media de <strong>${targetVal.toFixed(1)}</strong> ponderando al ${weightVal}%. Te recomendamos ajustar tu objetivo o consultar trabajos voluntarios para sumar puntos.
+      `;
+    }
+  });
+}
+
+// --- IMPRESIÓN LIMPIA Y DESCARGA A PDF ---
+function initPrintActions() {
+  document.getElementById('btn-print-schedule')?.addEventListener('click', () => {
+    window.print();
+  });
+
+  document.getElementById('btn-print-grades')?.addEventListener('click', () => {
+    window.print();
+  });
 }
 
 // --- TEMPORIZADOR POMODORO (CONCENTRACIÓN OFFLINE) ---
@@ -2346,6 +2711,8 @@ window.openProjectModal = function (projectId = null) {
   const techInput = document.getElementById('project-technique-input');
   const dueInput = document.getElementById('project-due-date');
   const descInput = document.getElementById('project-desc-input');
+  const audioPreview = document.getElementById('project-audio-preview');
+  const audioPlayer = document.getElementById('project-audio-player');
 
   populateSubjectSelect(subSelect);
 
@@ -2361,6 +2728,14 @@ window.openProjectModal = function (projectId = null) {
       if (dueInput) dueInput.value = project.dueDate || '';
       if (descInput) descInput.value = project.description || '';
       AppState.tempProjectPhotos = [...(project.photos || [])];
+      AppState.tempProjectAudio = project.audioUrl || null;
+      if (AppState.tempProjectAudio && audioPreview && audioPlayer) {
+        audioPlayer.src = AppState.tempProjectAudio;
+        audioPreview.classList.remove('hidden');
+      } else if (audioPreview) {
+        audioPreview.classList.add('hidden');
+        if (audioPlayer) audioPlayer.src = '';
+      }
     }
   } else {
     if (titleEl) titleEl.textContent = 'Nuevo Proyecto Artístico';
@@ -2371,6 +2746,9 @@ window.openProjectModal = function (projectId = null) {
     if (dueInput) dueInput.value = '';
     if (descInput) descInput.value = '';
     AppState.tempProjectPhotos = [];
+    AppState.tempProjectAudio = null;
+    if (audioPreview) audioPreview.classList.add('hidden');
+    if (audioPlayer) audioPlayer.src = '';
   }
 
   renderPhotosPreview('project-photos-preview', AppState.tempProjectPhotos);
@@ -2396,6 +2774,7 @@ async function handleProjectFormSubmit(e) {
     dueDate,
     description,
     photos: [...AppState.tempProjectPhotos],
+    audioUrl: AppState.tempProjectAudio || null,
     updatedAt: new Date().toISOString()
   };
 

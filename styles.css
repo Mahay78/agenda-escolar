@@ -1080,6 +1080,61 @@ input, textarea, select, button {
   100% { transform: scale(1); opacity: 1; }
 }
 
+/* ==========================================================================
+   BOTONES Y CONTROL DE DICTADO POR VOZ (SPEECH TO TEXT)
+   ========================================================================== */
+.input-with-voice-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.input-with-voice-btn .form-input {
+  flex: 1;
+}
+
+.btn-voice-dictate {
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  cursor: pointer;
+  transition: var(--transition);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.btn-voice-dictate:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: scale(1.05);
+}
+
+.btn-voice-dictate-sm {
+  width: auto !important;
+  height: 30px !important;
+  padding: 4px 10px !important;
+  font-size: 0.78rem !important;
+  font-weight: 600;
+  gap: 5px;
+  border-radius: var(--radius-full);
+}
+
+.btn-voice-dictate.listening {
+  background: rgba(239, 68, 68, 0.2) !important;
+  border-color: var(--danger) !important;
+  color: var(--danger) !important;
+  animation: pulseRecording 1.1s infinite ease-in-out;
+}
+
 /* Anotaciones */
 .color-dot.active {
   border: 2px solid #ffffff !important;
@@ -1580,3 +1635,102 @@ input, textarea, select, button {
     right: 16px;
   }
 }
+
+/* ==========================================================================
+   SIMULADOR DE NOTAS Y RESULTADOS
+   ========================================================================== */
+.sim-result-box {
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  margin-top: 14px;
+  border: 1px solid transparent;
+}
+.sim-result-box.success {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.35);
+  color: var(--success);
+}
+.sim-result-box.warning {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.35);
+  color: var(--warning);
+}
+.sim-result-box.danger {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: var(--danger);
+}
+
+/* ==========================================================================
+   MODO IMPRESIÓN LIMPIO Y BOLETÍN / HORARIO PDF (@media print)
+   ========================================================================== */
+@media print {
+  /* Ocultar elementos de navegación y de interfaz interactiva */
+  .app-header,
+  .app-nav,
+  .app-drawer,
+  .drawer-overlay,
+  .fab-container,
+  .filters-bar,
+  .modal-overlay,
+  .btn-primary,
+  .btn-secondary,
+  .btn-action-small,
+  .btn-voice-dictate,
+  #grade-simulator-card,
+  .day-selector-pills,
+  .record-timer {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #111827 !important;
+    font-size: 11pt !important;
+    margin: 0 !important;
+    padding: 10mm !important;
+  }
+
+  .main-container {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .tab-panel {
+    display: none !important;
+  }
+
+  .tab-panel.active {
+    display: block !important;
+  }
+
+  .card,
+  .grades-summary-card,
+  .timeline-item,
+  .grade-subject-group {
+    background: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+    box-shadow: none !important;
+    color: #111827 !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    margin-bottom: 12px !important;
+  }
+
+  .section-title {
+    color: #111827 !important;
+    font-size: 16pt !important;
+  }
+
+  .section-subtitle {
+    color: #4b5563 !important;
+  }
+
+  /* Mostrar enlaces e imágenes de forma limpia */
+  a {
+    text-decoration: none !important;
+    color: inherit !important;
+  }
+}
+

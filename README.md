@@ -80,8 +80,8 @@ Aquí tienes las funcionalidades planificadas para las siguientes versiones del 
   - **Horario Escolar en PDF:** Descargar el horario semanal en formato PDF listo para imprimir o enviar.
   - **Boletín de Calificaciones:** Informe detallado de notas por evaluación y notas medias.
 
-- [ ] **🎙️ Mejoras Avanzadas en Notas de Voz:**
-  - **Transcripción de Voz a Texto (Dictado):** Dictar deberes y notas con la voz utilizando `Web Speech API` para que se conviertan en texto automáticamente.
+- [x] **🎙️ Mejoras Avanzadas en Notas de Voz:**
+  - **Transcripción de Voz a Texto (Dictado):** Dictar deberes, notas, exámenes y proyectos con la voz utilizando `Web Speech API` para que se conviertan en texto automáticamente.
   - **Notas de voz en Proyectos y Exámenes:** Permitir adjuntar notas de audio directamente a las obras del portafolio y temarios de examen.
 
 - [ ] **🔔 Notificaciones Push Locales:**
@@ -96,8 +96,8 @@ Aquí tienes las funcionalidades planificadas para las siguientes versiones del 
   - **Guía de Proporciones en Cámara:** Cuadrícula de regla de tercios y proporción áurea superpuesta para encuadrar dibujos y fotos de bodegones.
   - **Lienzo en Blanco para Bocetos:** Pizarra digital en blanco dentro de la app para realizar bocetos, esquemas o cálculos rápidos durante la clase.
 
-- [ ] **🧮 Simulador de Notas y Calificaciones Ponderadas:**
-  - **Simulador "¿Qué nota necesito?":** Calcula automáticamente qué nota necesitas en el próximo examen para alcanzar la media deseada.
+- [x] **🧮 Simulador de Notas y Calificaciones Ponderadas:**
+  - **Simulador "¿Qué nota necesito?":** Calcula automáticamente qué nota necesitas en el próximo examen para alcanzar la media deseada con análisis de viabilidad en tiempo real.
   - **Ponderaciones personalizables:** Porcentajes por exámenes, trabajos y actitud (ej. *70% Exámenes / 30% Prácticas*).
   - **Calculadora EBAU / Selectividad:** Simulador de nota media de bachillerato y ponderación de materias específicas.
 
@@ -120,8 +120,8 @@ Aquí tienes las funcionalidades planificadas para las siguientes versiones del 
 - [ ] **🗑️ Papelera de Reciclaje (30 días):**
   - Recuperación de tareas, fotos, proyectos o notas eliminadas accidentalmente.
 
-- [ ] **🖨️ Modo Impresión Limpio:**
-  - Estilos CSS `@media print` optimizados para imprimir el horario escolar o la lista de tareas en folio físico.
+- [x] **🖨️ Modo Impresión Limpio y Boletín / Horario PDF:**
+  - Estilos CSS `@media print` y botones integrados en Horario y Notas para imprimir en papel o guardar en PDF de forma limpia y profesional.
 
 - [ ] **☁️ Sincronización en la Nube con Firebase / Firestore (Híbrido Offline-First):**
   - **Inicio de Sesión con Google (Firebase Auth):** Conectar con un solo clic para sincronizar la agenda entre móvil, tablet y PC en tiempo real.

@@ -185,3 +185,136 @@ export function playBreakBell() {
     console.warn('Audio feedback:', err);
   }
 }
+
+// ==========================================================================
+// TRANSCRIPCIÓN Y DICTADO DE VOZ A TEXTO (WEB SPEECH API)
+// ==========================================================================
+let activeRecognition = null;
+let currentDictationTarget = null;
+let isDictatingActive = false;
+
+/**
+ * Comprueba si el navegador soporta Web Speech API
+ */
+export function isSpeechRecognitionSupported() {
+  return !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+}
+
+export function isDictating() {
+  return isDictatingActive;
+}
+
+export function getCurrentDictationTarget() {
+  return currentDictationTarget;
+}
+
+/**
+ * Detiene cualquier dictado en curso
+ */
+export function stopSpeechDictation() {
+  if (activeRecognition) {
+    try {
+      activeRecognition.stop();
+    } catch (e) {
+      // ignore
+    }
+    activeRecognition = null;
+  }
+  isDictatingActive = false;
+  currentDictationTarget = null;
+}
+
+/**
+ * Inicia el dictado por voz y transcribe en el input o textarea especificado
+ * @param {Object} options
+ * @param {HTMLInputElement|HTMLTextAreaElement} options.targetInput Elemento donde escribir
+ * @param {Function} options.onStatusChange Callback(status: 'listening' | 'stopped' | 'error', message?: string)
+ * @param {string} [options.lang='es-ES'] Código de idioma
+ */
+export function startSpeechDictation({ targetInput, onStatusChange, lang = 'es-ES' }) {
+  const SpeechRecognitionClass = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognitionClass) {
+    if (onStatusChange) onStatusChange('error', 'El dictado por voz no es compatible con este navegador.');
+    return;
+  }
+
+  // Si ya estaba activo sobre el mismo objetivo, detenerlo
+  if (isDictatingActive && currentDictationTarget === targetInput) {
+    stopSpeechDictation();
+    if (onStatusChange) onStatusChange('stopped', 'Dictado detenido');
+    return;
+  }
+
+  // Detener dictado previo si había otro
+  stopSpeechDictation();
+
+  try {
+    const recognition = new SpeechRecognitionClass();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = lang;
+
+    currentDictationTarget = targetInput;
+    let baseText = targetInput ? (targetInput.value || '') : '';
+    if (baseText && !baseText.endsWith(' ') && !baseText.endsWith('\n')) {
+      baseText += ' ';
+    }
+    let finalTranscript = '';
+
+    recognition.onstart = () => {
+      isDictatingActive = true;
+      activeRecognition = recognition;
+      if (onStatusChange) onStatusChange('listening', 'Escuchando... habla ahora');
+    };
+
+    recognition.onresult = (event) => {
+      let interimTranscript = '';
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          finalTranscript += transcript + ' ';
+        } else {
+          interimTranscript += transcript;
+        }
+      }
+
+      if (targetInput) {
+        targetInput.value = baseText + finalTranscript + interimTranscript;
+        targetInput.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+    };
+
+    recognition.onerror = (event) => {
+      console.warn('SpeechRecognition error:', event.error);
+      isDictatingActive = false;
+      activeRecognition = null;
+      currentDictationTarget = null;
+      let msg = 'Error en el micrófono.';
+      if (event.error === 'not-allowed') {
+        msg = 'Permiso de micrófono denegado. Concede permisos para usar el dictado.';
+      } else if (event.error === 'no-speech') {
+        msg = 'No se ha detectado voz.';
+      }
+      if (onStatusChange) onStatusChange('error', msg);
+    };
+
+    recognition.onend = () => {
+      isDictatingActive = false;
+      activeRecognition = null;
+      currentDictationTarget = null;
+      if (targetInput) {
+        targetInput.value = targetInput.value.trimEnd();
+        targetInput.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+      if (onStatusChange) onStatusChange('stopped', 'Dictado finalizado');
+    };
+
+    recognition.start();
+  } catch (err) {
+    console.error('Error al iniciar dictado:', err);
+    isDictatingActive = false;
+    activeRecognition = null;
+    currentDictationTarget = null;
+    if (onStatusChange) onStatusChange('error', err.message);
+  }
+}
