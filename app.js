@@ -89,6 +89,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initServiceWorker();
     initPWAInstallPrompt();
     initEventListeners();
+    initSubjectIconPicker();
 
     // 4. Renderizar vistas
     renderAllViews();
@@ -200,6 +201,15 @@ function initPWAInstallPrompt() {
 /**
  * Configuración del tema Oscuro / Claro
  */
+window.toggleTheme = async function () {
+  document.body.classList.toggle('light-theme');
+  const isLight = document.body.classList.contains('light-theme');
+  if (!AppState.studentInfo) AppState.studentInfo = {};
+  AppState.studentInfo.theme = isLight ? 'light' : 'dark';
+  await setSetting('studentInfo', AppState.studentInfo);
+  showToast(isLight ? 'Tema Claro activado ☀️' : 'Tema Oscuro activado 🌙');
+};
+
 function initTheme() {
   const toggleBtn = document.getElementById('btn-toggle-theme');
   const currentTheme = AppState.studentInfo?.theme || 'dark';
@@ -209,34 +219,134 @@ function initTheme() {
   }
 
   if (toggleBtn) {
-    toggleBtn.addEventListener('click', async () => {
-      document.body.classList.toggle('light-theme');
-      const isLight = document.body.classList.contains('light-theme');
-      AppState.studentInfo.theme = isLight ? 'light' : 'dark';
-      await setSetting('studentInfo', AppState.studentInfo);
-      showToast(isLight ? 'Tema Claro activado ☀️' : 'Tema Oscuro activado 🌙');
-    });
+    toggleBtn.addEventListener('click', window.toggleTheme);
   }
 }
 
 /**
- * Navegación por pestañas
+ * Navegación por pestañas y Menú Lateral (Drawer)
  */
 function initNavigation() {
   const tabs = document.querySelectorAll('.nav-tab');
   tabs.forEach((tab) => {
     tab.addEventListener('click', () => {
       const targetId = tab.getAttribute('data-tab');
-      switchTab(targetId);
+      if (targetId) {
+        switchTab(targetId);
+      }
     });
   });
+
+  // Inicializar navegación del cajón lateral (Drawer)
+  initDrawerNavigation();
+}
+
+function initDrawerNavigation() {
+  const drawer = document.getElementById('app-drawer');
+  const overlay = document.getElementById('drawer-overlay');
+  const btnOpen = document.getElementById('btn-open-drawer');
+  const btnClose = document.getElementById('btn-close-drawer');
+  const btnMobileMore = document.getElementById('btn-mobile-more');
+
+  window.openDrawer = function () {
+    if (drawer && overlay) {
+      drawer.classList.add('open');
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+  };
+
+  window.closeDrawer = function () {
+    if (drawer && overlay) {
+      drawer.classList.remove('open');
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  };
+
+  window.toggleDrawer = function () {
+    if (drawer && drawer.classList.contains('open')) {
+      window.closeDrawer();
+    } else {
+      window.openDrawer();
+    }
+  };
+
+  btnOpen?.addEventListener('click', window.openDrawer);
+  btnClose?.addEventListener('click', window.closeDrawer);
+  overlay?.addEventListener('click', window.closeDrawer);
+  btnMobileMore?.addEventListener('click', window.toggleDrawer);
+
+  // Navegación dentro del menú lateral
+  document.querySelectorAll('.drawer-nav-item').forEach((item) => {
+    item.addEventListener('click', () => {
+      const targetTab = item.getAttribute('data-tab');
+      if (targetTab) {
+        switchTab(targetTab);
+        window.closeDrawer();
+      }
+    });
+  });
+
+  // Botones de pie en el Drawer
+  document.getElementById('drawer-btn-theme')?.addEventListener('click', () => {
+    window.toggleTheme();
+  });
+
+  document.getElementById('drawer-btn-share')?.addEventListener('click', () => {
+    window.closeDrawer();
+    openShareModal();
+  });
+
+  // Cerrar menú con la tecla Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && drawer && drawer.classList.contains('open')) {
+      window.closeDrawer();
+    }
+  });
+
+  // Soporte táctil / swipe para cerrar menú lateral deslizando a la izquierda
+  let touchStartX = 0;
+  let touchStartY = 0;
+
+  drawer?.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+  }, { passive: true });
+
+  drawer?.addEventListener('touchend', (e) => {
+    const touchEndX = e.changedTouches[0].screenX;
+    const touchEndY = e.changedTouches[0].screenY;
+    const diffX = touchStartX - touchEndX;
+    const diffY = Math.abs(touchStartY - touchEndY);
+    if (diffX > 50 && diffY < 90) {
+      window.closeDrawer();
+    }
+  }, { passive: true });
 }
 
 function switchTab(tabId) {
+  if (!tabId) return;
   AppState.activeTab = tabId;
+
+  // Sincronizar barra superior
   document.querySelectorAll('.nav-tab').forEach((t) => {
     t.classList.toggle('active', t.getAttribute('data-tab') === tabId);
   });
+
+  // Sincronizar menú lateral (Drawer)
+  document.querySelectorAll('.drawer-nav-item').forEach((item) => {
+    item.classList.toggle('active', item.getAttribute('data-tab') === tabId);
+  });
+
+  // En móvil, si la sección activa es secundaria, resaltar botón "Menú"
+  const mobileMoreBtn = document.getElementById('btn-mobile-more');
+  if (mobileMoreBtn) {
+    const mainTabs = ['tab-today', 'tab-tasks', 'tab-schedule', 'tab-backpack'];
+    mobileMoreBtn.classList.toggle('active', !mainTabs.includes(tabId));
+  }
+
+  // Paneles de contenido
   document.querySelectorAll('.tab-panel').forEach((p) => {
     p.classList.toggle('active', p.id === tabId);
   });
@@ -503,13 +613,23 @@ function renderAllViews() {
 function updateHeaderInfo() {
   const nameEl = document.getElementById('header-student-name');
   const schoolEl = document.getElementById('header-school-name');
-  if (nameEl) nameEl.textContent = AppState.studentInfo.studentName ? `Agenda de ${AppState.studentInfo.studentName}` : 'Agenda Escolar';
-  if (schoolEl) schoolEl.textContent = `${AppState.studentInfo.schoolName || 'Instituto'} - ${AppState.studentInfo.course || ''}`;
+  const drawerNameEl = document.getElementById('drawer-student-name');
+  const drawerSchoolEl = document.getElementById('drawer-school-name');
+
+  const studentTitle = AppState.studentInfo?.studentName ? `Agenda de ${AppState.studentInfo.studentName}` : 'Agenda Escolar';
+  const schoolSubtitle = `${AppState.studentInfo?.schoolName || 'Instituto'} - ${AppState.studentInfo?.course || ''}`;
+
+  if (nameEl) nameEl.textContent = studentTitle;
+  if (schoolEl) schoolEl.textContent = schoolSubtitle;
+  if (drawerNameEl) drawerNameEl.textContent = studentTitle;
+  if (drawerSchoolEl) drawerSchoolEl.textContent = schoolSubtitle;
 }
 
 function updateBadges() {
   const pendingTasks = AppState.tasks.filter((t) => t.status !== 'completed').length;
   const badgeTasks = document.getElementById('badge-pending-tasks');
+  const drawerBadgeTasks = document.getElementById('drawer-badge-pending-tasks');
+
   if (badgeTasks) {
     if (pendingTasks > 0) {
       badgeTasks.textContent = pendingTasks;
@@ -518,16 +638,34 @@ function updateBadges() {
       badgeTasks.classList.add('hidden');
     }
   }
+  if (drawerBadgeTasks) {
+    if (pendingTasks > 0) {
+      drawerBadgeTasks.textContent = pendingTasks;
+      drawerBadgeTasks.classList.remove('hidden');
+    } else {
+      drawerBadgeTasks.classList.add('hidden');
+    }
+  }
 
   const todayStr = getTodayDateString();
   const upcomingExams = AppState.exams.filter((e) => e.date >= todayStr).length;
   const badgeExams = document.getElementById('badge-upcoming-exams');
+  const drawerBadgeExams = document.getElementById('drawer-badge-upcoming-exams');
+
   if (badgeExams) {
     if (upcomingExams > 0) {
       badgeExams.textContent = upcomingExams;
       badgeExams.classList.remove('hidden');
     } else {
       badgeExams.classList.add('hidden');
+    }
+  }
+  if (drawerBadgeExams) {
+    if (upcomingExams > 0) {
+      drawerBadgeExams.textContent = upcomingExams;
+      drawerBadgeExams.classList.remove('hidden');
+    } else {
+      drawerBadgeExams.classList.add('hidden');
     }
   }
 }
@@ -1542,6 +1680,111 @@ async function handleSlotFormSubmit(e) {
   showToast('📅 Horario actualizado');
 }
 
+// --- SELECTOR VISUAL DE ICONOS PARA ASIGNATURAS ---
+const SUBJECT_ICON_CATALOG = {
+  artes: {
+    name: 'Artes y Taller',
+    icons: ['🎨', '🖌️', '✏️', '📐', '📏', '🖼️', '🎭', '🏺', '✂️', '🪵', '🧵', '🖍️', '📷', '💡', '🪨', '🗿']
+  },
+  musica: {
+    name: 'Música',
+    icons: ['🎵', '🎶', '🎸', '🎹', '🎻', '🥁', '🎷', '🎺', '🎙️', '🎧', '🎼', '📻', '🪗', '🪕']
+  },
+  ciencias: {
+    name: 'Ciencias y Matemáticas',
+    icons: ['📐', '🔢', '➕', '🧪', '🔬', '🧬', '🔭', '🧮', '⚗️', '🌍', '⚡', '🌿', '🪐', '📊', '☄️', '⚛️']
+  },
+  letras: {
+    name: 'Letras e Idiomas',
+    icons: ['📖', '📚', '✍️', '🗣️', '📜', '🏛️', '✒️', '🇬🇧', '🇫🇷', '🇩🇪', '🗺️', '📝', '🗞️', '💬', '🔤', '🇪🇸']
+  },
+  tecno: {
+    name: 'Tecnología e Informática',
+    icons: ['💻', '🖥️', '🤖', '⚙️', '🔌', '🔋', '⌨️', '🖱️', '📡', '💾', '📱', '🔧', '🕹️', '🌐', '🖨️', '🛰️']
+  },
+  deporte: {
+    name: 'Educación Física y Deporte',
+    icons: ['⚽', '🏀', '🏐', '🎾', '🏃', '🏊', '🚴', '🥋', '🏆', '🥇', '🏸', '🏓', '🧗', '🥊', '🛹', '🏹']
+  },
+  humanidades: {
+    name: 'Valores y Humanidades',
+    icons: ['🧠', '⚖️', '🧭', '🕊️', '🤝', '💡', '🕯️', '👥', '💬', '🌟', '🌱', '🌍', '❤️', '🛡️', '☀️', '⭐']
+  }
+};
+
+let currentIconCategory = 'all';
+
+function initSubjectIconPicker() {
+  const iconInput = document.getElementById('subject-icon-input');
+  const previewEl = document.getElementById('subject-icon-preview');
+  const toggleBtn = document.getElementById('btn-toggle-icon-picker');
+  const pickerBox = document.getElementById('subject-icon-picker');
+  const catTabs = document.querySelectorAll('[data-icon-cat]');
+
+  // Alternar visibilidad del catálogo
+  toggleBtn?.addEventListener('click', () => {
+    if (pickerBox) {
+      pickerBox.classList.toggle('hidden');
+    }
+  });
+
+  // Filtro de pestañas de categorías
+  catTabs.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      catTabs.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentIconCategory = btn.getAttribute('data-icon-cat');
+      renderSubjectIconGrid(currentIconCategory, iconInput?.value.trim());
+    });
+  });
+
+  // Entrada manual de emoji / texto en el input
+  iconInput?.addEventListener('input', () => {
+    const val = iconInput.value.trim();
+    if (previewEl) {
+      previewEl.textContent = val || '📖';
+    }
+    // Resaltar en la rejilla si coincide
+    document.querySelectorAll('.icon-picker-btn').forEach((b) => {
+      b.classList.toggle('active', b.textContent === val);
+    });
+  });
+}
+
+function renderSubjectIconGrid(category = 'all', selectedIcon = '') {
+  const grid = document.getElementById('icon-picker-grid');
+  const iconInput = document.getElementById('subject-icon-input');
+  const previewEl = document.getElementById('subject-icon-preview');
+  if (!grid) return;
+
+  grid.innerHTML = '';
+  let iconsToShow = [];
+
+  if (category === 'all') {
+    Object.values(SUBJECT_ICON_CATALOG).forEach((cat) => {
+      iconsToShow.push(...cat.icons);
+    });
+    iconsToShow = [...new Set(iconsToShow)];
+  } else if (SUBJECT_ICON_CATALOG[category]) {
+    iconsToShow = SUBJECT_ICON_CATALOG[category].icons;
+  }
+
+  iconsToShow.forEach((emoji) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = `icon-picker-btn ${selectedIcon === emoji ? 'active' : ''}`;
+    btn.textContent = emoji;
+    btn.title = `Elegir icono ${emoji}`;
+    btn.addEventListener('click', () => {
+      if (iconInput) iconInput.value = emoji;
+      if (previewEl) previewEl.textContent = emoji;
+      document.querySelectorAll('.icon-picker-btn').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+    grid.appendChild(btn);
+  });
+}
+
 // --- GESTIÓN DE ASIGNATURAS ---
 window.openSubjectModal = function (subId = null) {
   const modal = document.getElementById('subject-modal');
@@ -1549,9 +1792,16 @@ window.openSubjectModal = function (subId = null) {
   const idInput = document.getElementById('subject-id');
   const nameInput = document.getElementById('subject-name-input');
   const iconInput = document.getElementById('subject-icon-input');
+  const previewEl = document.getElementById('subject-icon-preview');
   const colorInput = document.getElementById('subject-color-input');
   const teacherInput = document.getElementById('subject-teacher-input');
   const classInput = document.getElementById('subject-classroom-input');
+  const pickerBox = document.getElementById('subject-icon-picker');
+
+  // Asegurar que el catálogo de iconos esté visible
+  if (pickerBox) pickerBox.classList.remove('hidden');
+
+  let activeIcon = '📖';
 
   if (subId) {
     const sub = AppState.subjects.find((s) => s.id === subId);
@@ -1559,7 +1809,8 @@ window.openSubjectModal = function (subId = null) {
       titleEl.textContent = 'Editar Asignatura';
       idInput.value = sub.id;
       nameInput.value = sub.name;
-      iconInput.value = sub.icon || '📖';
+      activeIcon = sub.icon || '📖';
+      iconInput.value = activeIcon;
       colorInput.value = sub.color || '#3b82f6';
       teacherInput.value = sub.teacher || '';
       classInput.value = sub.classroom || '';
@@ -1568,11 +1819,17 @@ window.openSubjectModal = function (subId = null) {
     titleEl.textContent = 'Nueva Asignatura';
     idInput.value = '';
     nameInput.value = '';
+    activeIcon = '📖';
     iconInput.value = '📖';
     colorInput.value = '#3b82f6';
     teacherInput.value = '';
     classInput.value = '';
   }
+
+  if (previewEl) previewEl.textContent = activeIcon;
+
+  // Renderizar catálogo con el icono activo seleccionado
+  renderSubjectIconGrid(currentIconCategory, activeIcon);
 
   modal.classList.remove('hidden');
 };

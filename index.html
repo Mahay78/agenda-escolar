@@ -24,6 +24,11 @@
   <!-- CABECERA -->
   <header class="app-header">
     <div class="brand-section">
+      <button id="btn-open-drawer" class="btn-hamburger" title="Abrir Menú Lateral" aria-label="Abrir Menú Lateral">
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+      </button>
       <img src="./icon.svg" alt="Logo Agenda" class="app-logo" />
       <div class="brand-info">
         <h1 id="header-student-name">Agenda Escolar</h1>
@@ -83,7 +88,95 @@
     <button class="nav-tab" data-tab="tab-settings">
       <span>⚙️</span> Ajustes
     </button>
+    <button id="btn-mobile-more" class="nav-tab nav-tab-mobile-more" title="Abrir Menú Completo">
+      <span>☰</span> Menú
+    </button>
   </nav>
+
+  <!-- MENÚ LATERAL / DRAWER DESLIZABLE (MÓVILES & TABLETS) -->
+  <div id="drawer-overlay" class="drawer-overlay"></div>
+  <aside id="app-drawer" class="app-drawer" aria-label="Menú de Navegación">
+    <div class="drawer-header">
+      <div class="drawer-brand">
+        <img src="./icon.svg" alt="Logo Agenda" class="drawer-logo" />
+        <div class="drawer-brand-text">
+          <h3 id="drawer-student-name">Agenda Escolar</h3>
+          <p id="drawer-school-name">Instituto de Educación Secundaria</p>
+        </div>
+      </div>
+      <button id="btn-close-drawer" class="btn-drawer-close" title="Cerrar Menú" aria-label="Cerrar Menú">✕</button>
+    </div>
+
+    <div class="drawer-body">
+      <div class="drawer-group-label">ACADÉMICO</div>
+      <div class="drawer-nav-list">
+        <button class="drawer-nav-item active" data-tab="tab-today">
+          <span class="drawer-nav-icon">🏠</span>
+          <span class="drawer-nav-text">Hoy (Panel Principal)</span>
+        </button>
+        <button class="drawer-nav-item" data-tab="tab-tasks">
+          <span class="drawer-nav-icon">📋</span>
+          <span class="drawer-nav-text">Deberes y Tareas</span>
+          <span id="drawer-badge-pending-tasks" class="tab-badge hidden">0</span>
+        </button>
+        <button class="drawer-nav-item" data-tab="tab-schedule">
+          <span class="drawer-nav-icon">📅</span>
+          <span class="drawer-nav-text">Horario Semanal</span>
+        </button>
+        <button class="drawer-nav-item" data-tab="tab-exams">
+          <span class="drawer-nav-icon">📝</span>
+          <span class="drawer-nav-text">Exámenes y Evaluaciones</span>
+          <span id="drawer-badge-upcoming-exams" class="tab-badge hidden">0</span>
+        </button>
+        <button class="drawer-nav-item" data-tab="tab-grades">
+          <span class="drawer-nav-icon">📊</span>
+          <span class="drawer-nav-text">Notas y Calificaciones</span>
+        </button>
+      </div>
+
+      <div class="drawer-group-label">TALLER & ESTUDIO</div>
+      <div class="drawer-nav-list">
+        <button class="drawer-nav-item" data-tab="tab-backpack">
+          <span class="drawer-nav-icon">🎒</span>
+          <span class="drawer-nav-text">Mochila y Materiales</span>
+        </button>
+        <button class="drawer-nav-item" data-tab="tab-projects">
+          <span class="drawer-nav-icon">🎨</span>
+          <span class="drawer-nav-text">Portafolio de Proyectos</span>
+        </button>
+        <button class="drawer-nav-item" data-tab="tab-pomodoro">
+          <span class="drawer-nav-icon">⏱️</span>
+          <span class="drawer-nav-text">Pomodoro de Concentración</span>
+        </button>
+        <button class="drawer-nav-item" data-tab="tab-gallery">
+          <span class="drawer-nav-icon">📸</span>
+          <span class="drawer-nav-text">Fotos de Apuntes y Pizarras</span>
+        </button>
+      </div>
+
+      <div class="drawer-group-label">SISTEMA</div>
+      <div class="drawer-nav-list">
+        <button class="drawer-nav-item" data-tab="tab-settings">
+          <span class="drawer-nav-icon">⚙️</span>
+          <span class="drawer-nav-text">Ajustes y Copia de Seguridad</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="drawer-footer">
+      <div class="drawer-footer-actions">
+        <button id="drawer-btn-theme" class="drawer-action-btn" title="Alternar tema claro/oscuro">
+          <span>🌓</span> Tema
+        </button>
+        <button id="drawer-btn-share" class="drawer-action-btn" title="Compartir por WhatsApp o QR">
+          <span>💬</span> Compartir
+        </button>
+      </div>
+      <div class="drawer-footer-info">
+        <span class="drawer-mode-indicator">⚡ 100% Offline & PWA Instalable</span>
+      </div>
+    </div>
+  </aside>
 
   <!-- CONTENEDOR PRINCIPAL -->
   <main class="main-container">
@@ -648,12 +741,34 @@
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Icono / Emoji</label>
-            <input type="text" id="subject-icon-input" class="form-input" placeholder="📐" maxlength="4" />
+            <div class="icon-input-row">
+              <span id="subject-icon-preview" class="icon-preview-badge">📖</span>
+              <input type="text" id="subject-icon-input" class="form-input icon-code-input" placeholder="📖" maxlength="4" />
+              <button type="button" id="btn-toggle-icon-picker" class="btn-picker-toggle" title="Mostrar/Ocultar catálogo">🎨 Catálogo...</button>
+            </div>
           </div>
           <div class="form-group">
             <label class="form-label">Color Identificativo</label>
             <input type="color" id="subject-color-input" class="form-input" value="#3b82f6" style="height: 42px; padding: 4px;" />
           </div>
+        </div>
+
+        <!-- SELECTOR VISUAL DE ICONOS POR CATEGORÍAS -->
+        <div id="subject-icon-picker" class="icon-picker-box">
+          <div class="icon-picker-header">
+            <span class="icon-picker-title">Catálogo de Iconos por Materia</span>
+          </div>
+          <div class="icon-picker-tabs">
+            <button type="button" class="icon-tab-chip active" data-icon-cat="all">Todos</button>
+            <button type="button" class="icon-tab-chip" data-icon-cat="artes">🎨 Artes</button>
+            <button type="button" class="icon-tab-chip" data-icon-cat="musica">🎵 Música</button>
+            <button type="button" class="icon-tab-chip" data-icon-cat="ciencias">🔬 Ciencias</button>
+            <button type="button" class="icon-tab-chip" data-icon-cat="letras">📖 Letras</button>
+            <button type="button" class="icon-tab-chip" data-icon-cat="tecno">💻 Tecno</button>
+            <button type="button" class="icon-tab-chip" data-icon-cat="deporte">⚽ Deporte</button>
+            <button type="button" class="icon-tab-chip" data-icon-cat="humanidades">🧠 Valores</button>
+          </div>
+          <div id="icon-picker-grid" class="icon-picker-grid"></div>
         </div>
         <div class="form-row">
           <div class="form-group">

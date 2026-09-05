@@ -66,7 +66,7 @@ Una aplicación web progresiva (**Progressive Web App - PWA**) moderna, ultrarr�
 
 Aquí tienes las funcionalidades planificadas para las siguientes versiones del proyecto:
 
-- [ ] **📱 Menú Desplegable / Lateral (Hamburguesa / Drawer) para Móviles y Tablets:**
+- [x] **📱 Menú Desplegable / Lateral (Hamburguesa / Drawer) para Móviles y Tablets:**
   - Menú lateral deslizable o desplegable táctil optimizado para pantallas pequeñas y tablets.
   - Navegación rápida con una sola mano entre todas las secciones (Hoy, Deberes, Horario, Mochila, Proyectos, Pomodoro, Exámenes, Notas, Galería y Ajustes).
 
@@ -87,7 +87,7 @@ Aquí tienes las funcionalidades planificadas para las siguientes versiones del 
 - [ ] **🔔 Notificaciones Push Locales:**
   - Recordatorios en el móvil el día antes de un examen o cuando vence una tarea pendiente.
 
-- [ ] **🎨 Paquete y Selector Visual de Iconos para Asignaturas y Materias:**
+- [x] **🎨 Paquete y Selector Visual de Iconos para Asignaturas y Materias:**
   - Catálogo interactivo de iconos y emojis organizados por categorías (*Artes Plásticas, Música, Ciencias, Letras, Idiomas, Tecnología, Deporte*).
   - Selector visual intuitivo al crear o editar asignaturas sin tener que buscarlos en el teclado del móvil.
 
