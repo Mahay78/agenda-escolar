@@ -51,11 +51,24 @@ import {
 import {
   initFirebase,
   loginWithGoogle,
+  loginAnonymously,
   logoutFirebase,
   getCurrentUser,
   uploadToCloud,
   downloadFromCloud
 } from './firebase-sync.js';
+import {
+  connectGoogleDrive,
+  disconnectGoogleDrive,
+  getConnectedGoogleUser,
+  getSavedGoogleUser,
+  isGoogleDriveConnected,
+  getGoogleClientId,
+  setGoogleClientId,
+  uploadBackupToGoogleDrive,
+  listBackupsFromGoogleDrive,
+  downloadBackupFromGoogleDrive
+} from './google-drive-sync.js';
 import {
   startRecording,
   stopRecording,
@@ -163,6 +176,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initNotificationsModule();
     initPdfExportModule();
     initIcsExportModule();
+    initGoogleDriveModule();
     initFirebaseSyncModule();
 
     // 4. Renderizar vistas
@@ -3998,7 +4012,232 @@ function initPdfExportModule() {
 }
 
 // ==========================================================================
-// 7. MÓDULO: SINCRONIZACIÓN EN LA NUBE CON FIREBASE
+// 7. MÓDULO: COPIAS DE SEGURIDAD EN GOOGLE DRIVE (INDEPENDIENTE)
+// ==========================================================================
+
+function initGoogleDriveModule() {
+  const btnOpenModal = document.getElementById('btn-open-gdrive-modal');
+  const btnDrawerDrive = document.getElementById('drawer-btn-gdrive');
+  const btnQuickUpload = document.getElementById('btn-gdrive-quick-upload');
+  const modal = document.getElementById('google-drive-modal');
+  const btnDisconnect = document.getElementById('btn-gdrive-disconnect');
+  const statusBadge = document.getElementById('gdrive-status-badge');
+  const accountCard = document.getElementById('gdrive-account-card');
+  const userAvatar = document.getElementById('gdrive-user-avatar');
+  const userNameEl = document.getElementById('gdrive-user-name');
+  const userEmailEl = document.getElementById('gdrive-user-email');
+
+  // Elementos dentro del modal
+  const modalAvatar = document.getElementById('modal-gdrive-avatar');
+  const modalFallback = document.getElementById('modal-gdrive-icon-fallback');
+  const modalName = document.getElementById('modal-gdrive-name');
+  const modalEmail = document.getElementById('modal-gdrive-email');
+  const btnModalAuth = document.getElementById('btn-modal-gdrive-auth');
+  const clientIdInput = document.getElementById('gdrive-client-id-input');
+  const btnSaveClientId = document.getElementById('btn-save-gdrive-client-id');
+  const btnUploadNow = document.getElementById('btn-gdrive-upload-now');
+  const btnRefreshList = document.getElementById('btn-gdrive-refresh-list');
+  const backupsList = document.getElementById('gdrive-backups-list');
+
+  const updateDriveUI = (user, isLiveToken = false) => {
+    if (user) {
+      if (statusBadge) {
+        statusBadge.textContent = isLiveToken ? 'Conectado ✅' : 'Vinculado (Token renovable)';
+        statusBadge.style.background = isLiveToken ? 'rgba(34, 197, 94, 0.15)' : 'rgba(245, 158, 11, 0.15)';
+        statusBadge.style.color = isLiveToken ? 'var(--success)' : '#f59e0b';
+      }
+      if (accountCard) accountCard.classList.remove('hidden');
+      if (userAvatar) {
+        if (user.picture) {
+          userAvatar.src = user.picture;
+          userAvatar.style.display = 'block';
+        } else {
+          userAvatar.style.display = 'none';
+        }
+      }
+      if (userNameEl) userNameEl.textContent = user.name || 'Usuario Google';
+      if (userEmailEl) userEmailEl.textContent = user.email || '';
+
+      if (modalAvatar) {
+        if (user.picture) {
+          modalAvatar.src = user.picture;
+          modalAvatar.style.display = 'block';
+          if (modalFallback) modalFallback.style.display = 'none';
+        } else {
+          modalAvatar.style.display = 'none';
+          if (modalFallback) modalFallback.style.display = 'block';
+        }
+      }
+      if (modalName) modalName.textContent = user.name || 'Usuario Google';
+      if (modalEmail) modalEmail.textContent = user.email || '';
+      if (btnModalAuth) btnModalAuth.textContent = isLiveToken ? '🚪 Cerrar Sesión' : '🔑 Reconectar Google';
+    } else {
+      if (statusBadge) {
+        statusBadge.textContent = 'No conectado';
+        statusBadge.style.background = 'rgba(59, 130, 246, 0.12)';
+        statusBadge.style.color = 'var(--primary)';
+      }
+      if (accountCard) accountCard.classList.add('hidden');
+      if (modalAvatar) modalAvatar.style.display = 'none';
+      if (modalFallback) modalFallback.style.display = 'block';
+      if (modalName) modalName.textContent = 'No conectado';
+      if (modalEmail) modalEmail.textContent = 'Pulsa conectar para vincular tu Drive';
+      if (btnModalAuth) btnModalAuth.textContent = '🔑 Conectar Google';
+      if (backupsList) {
+        backupsList.innerHTML = '<p class="section-subtitle" style="text-align: center; padding: 12px 0;">Conecta tu cuenta para ver tus copias en Google Drive.</p>';
+      }
+    }
+  };
+
+  // Cargar Client ID y usuario guardado previamente
+  getGoogleClientId().then((cid) => {
+    if (clientIdInput && cid) clientIdInput.value = cid;
+  });
+
+  getSavedGoogleUser().then((user) => {
+    if (user) {
+      updateDriveUI(user, isGoogleDriveConnected());
+    }
+  });
+
+  const openDriveModal = async () => {
+    modal?.classList.remove('hidden');
+    window.closeDrawer?.();
+    const user = await getSavedGoogleUser();
+    updateDriveUI(user, isGoogleDriveConnected());
+    if (isGoogleDriveConnected()) {
+      fetchAndRenderBackups();
+    }
+  };
+
+  btnOpenModal?.addEventListener('click', openDriveModal);
+  btnDrawerDrive?.addEventListener('click', openDriveModal);
+
+  btnSaveClientId?.addEventListener('click', async () => {
+    const val = clientIdInput?.value.trim();
+    if (!val) {
+      showToast('Por favor introduce un Client ID válido', 'error');
+      return;
+    }
+    await setGoogleClientId(val);
+    showToast('⚙️ Google Client ID guardado con éxito', 'success');
+  });
+
+  btnModalAuth?.addEventListener('click', async () => {
+    if (isGoogleDriveConnected()) {
+      await disconnectGoogleDrive();
+      updateDriveUI(null);
+      showToast('Sesión de Google Drive cerrada');
+    } else {
+      try {
+        showToast('Abriendo inicio de sesión de Google...', 'info');
+        const { user } = await connectGoogleDrive((token, u) => {
+          updateDriveUI(u, true);
+        });
+        showToast(`✅ Conectado a Google Drive como ${user?.name || user?.email}`, 'success');
+        fetchAndRenderBackups();
+      } catch (err) {
+        console.error(err);
+        showToast(err.message, 'error');
+      }
+    }
+  });
+
+  btnDisconnect?.addEventListener('click', async () => {
+    await disconnectGoogleDrive();
+    updateDriveUI(null);
+    showToast('Sesión de Google Drive cerrada');
+  });
+
+  const performDriveUpload = async () => {
+    if (!isGoogleDriveConnected()) {
+      showToast('Primero conecta tu cuenta de Google para subir a Drive', 'info');
+      openDriveModal();
+      return;
+    }
+    try {
+      showToast('⬆️ Subiendo copia de seguridad a tu Google Drive...', 'info');
+      const backupData = await exportBackup();
+      await uploadBackupToGoogleDrive(backupData);
+      showToast('✅ Copia guardada en la carpeta "🎒 Agenda Escolar" de tu Google Drive', 'success');
+      fetchAndRenderBackups();
+    } catch (err) {
+      console.error(err);
+      showToast('Error al subir a Google Drive: ' + err.message, 'error');
+    }
+  };
+
+  btnQuickUpload?.addEventListener('click', performDriveUpload);
+  btnUploadNow?.addEventListener('click', performDriveUpload);
+
+  const fetchAndRenderBackups = async () => {
+    if (!isGoogleDriveConnected()) {
+      if (backupsList) {
+        backupsList.innerHTML = '<p class="section-subtitle" style="text-align: center; padding: 12px 0;">Debes conectar tu cuenta de Google para consultar tus copias.</p>';
+      }
+      return;
+    }
+
+    if (backupsList) {
+      backupsList.innerHTML = '<p class="section-subtitle" style="text-align: center; padding: 12px 0;">Consultando copias en Google Drive...</p>';
+    }
+
+    try {
+      const files = await listBackupsFromGoogleDrive();
+      if (!files || files.length === 0) {
+        if (backupsList) {
+          backupsList.innerHTML = '<p class="section-subtitle" style="text-align: center; padding: 12px 0;">No se encontraron copias de seguridad anteriores en tu Google Drive.</p>';
+        }
+        return;
+      }
+
+      backupsList.innerHTML = files.map((f) => {
+        const dateStr = f.createdTime ? new Date(f.createdTime).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' }) : 'Fecha desconocida';
+        const sizeKb = f.size ? Math.round(Number(f.size) / 1024) + ' KB' : 'N/A';
+        return `
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; background: var(--bg-input); border-radius: var(--radius-sm); margin-bottom: 6px; border: 1px solid var(--border-color);">
+            <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 8px;">
+              <div style="font-weight: 600; font-size: 0.85rem; color: var(--text-main);">📄 ${escapeHTML(f.name)}</div>
+              <div style="font-size: 0.74rem; color: var(--text-muted);">${dateStr} &bull; ${sizeKb}</div>
+            </div>
+            <div style="display: flex; gap: 6px; flex-shrink: 0;">
+              <button type="button" class="btn-action-small" onclick="window.handleRestoreFromGoogleDrive('${f.id}')" title="Restaurar esta copia de seguridad">
+                🔄 Restaurar
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    } catch (err) {
+      if (backupsList) {
+        backupsList.innerHTML = `<p class="section-subtitle" style="text-align: center; padding: 12px 0; color: var(--danger);">Error al listar copias: ${escapeHTML(err.message)}</p>`;
+      }
+    }
+  };
+
+  btnRefreshList?.addEventListener('click', fetchAndRenderBackups);
+
+  window.handleRestoreFromGoogleDrive = async function (fileId) {
+    if (!confirm('¿Deseas restaurar esta copia de seguridad de Google Drive en tu agenda escolar? Los datos locales se actualizarán.')) {
+      return;
+    }
+    try {
+      showToast('⬇️ Descargando copia desde Google Drive...', 'info');
+      const jsonContent = await downloadBackupFromGoogleDrive(fileId);
+      await importBackup(jsonContent);
+      await loadAllData();
+      renderAllViews();
+      showToast('✅ ¡Agenda escolar restaurada con éxito desde Google Drive!', 'success');
+      modal?.classList.add('hidden');
+    } catch (err) {
+      console.error(err);
+      showToast('Error al restaurar desde Google Drive: ' + err.message, 'error');
+    }
+  };
+}
+
+// ==========================================================================
+// 8. MÓDULO: BASE DE DATOS EN LA NUBE CON FIREBASE / FIRESTORE
 // ==========================================================================
 
 function initFirebaseSyncModule() {
@@ -4009,11 +4248,13 @@ function initFirebaseSyncModule() {
   const formConfig = document.getElementById('firebase-config-form');
   const jsonInput = document.getElementById('firebase-config-json');
   const btnLoginGoogle = document.getElementById('btn-firebase-login-google');
+  const btnLoginAnon = document.getElementById('btn-firebase-login-anon');
   const btnUpload = document.getElementById('btn-sync-cloud-upload');
   const btnDownload = document.getElementById('btn-sync-cloud-download');
   const userIndicator = document.getElementById('firebase-user-indicator');
   const userNameEl = document.getElementById('firebase-user-name');
   const userEmailEl = document.getElementById('firebase-user-email');
+  const statusBadge = document.getElementById('firebase-status-badge');
 
   const openFirebaseModal = async () => {
     const savedConfig = await getSetting('firebaseConfig');
@@ -4027,23 +4268,39 @@ function initFirebaseSyncModule() {
   btnOpenConfig?.addEventListener('click', openFirebaseModal);
   btnDrawerCloud?.addEventListener('click', openFirebaseModal);
 
+  const updateFirebaseUI = (user) => {
+    if (user) {
+      const name = user.isAnonymous ? 'Usuario Anónimo' : (user.displayName || user.email || 'Conectado');
+      const email = user.isAnonymous ? 'Sesión Temporal Anónima' : (user.email || 'Cuenta vinculada');
+      if (userIndicator) userIndicator.textContent = `Firestore: ${name}`;
+      if (userNameEl) userNameEl.textContent = name;
+      if (userEmailEl) userEmailEl.textContent = email;
+      if (btnLoginGoogle) btnLoginGoogle.textContent = '🚪 Cerrar Sesión';
+      if (statusBadge) {
+        statusBadge.textContent = 'Online ✅';
+        statusBadge.style.background = 'rgba(34, 197, 94, 0.15)';
+        statusBadge.style.color = 'var(--success)';
+      }
+    } else {
+      if (userIndicator) userIndicator.textContent = 'Modo 100% Offline Local';
+      if (userNameEl) userNameEl.textContent = 'No conectado';
+      if (userEmailEl) userEmailEl.textContent = 'Sin cuenta asociada';
+      if (btnLoginGoogle) btnLoginGoogle.textContent = '🔑 Iniciar con Google';
+      if (statusBadge) {
+        statusBadge.textContent = 'Offline';
+        statusBadge.style.background = 'rgba(245, 158, 11, 0.12)';
+        statusBadge.style.color = '#f59e0b';
+      }
+    }
+  };
+
   // Inicializar Firebase si ya hay configuración
   getSetting('firebaseConfig').then(async (config) => {
     if (config) {
       try {
         const parsed = typeof config === 'string' ? JSON.parse(config) : config;
         await initFirebase(parsed, (user) => {
-          if (user) {
-            if (userIndicator) userIndicator.textContent = `Conectado: ${user.displayName || user.email}`;
-            if (userNameEl) userNameEl.textContent = user.displayName || 'Usuario Google';
-            if (userEmailEl) userEmailEl.textContent = user.email || '';
-            if (btnLoginGoogle) btnLoginGoogle.textContent = '🚪 Cerrar Sesión';
-          } else {
-            if (userIndicator) userIndicator.textContent = 'Modo 100% Offline Local';
-            if (userNameEl) userNameEl.textContent = 'No conectado';
-            if (userEmailEl) userEmailEl.textContent = 'Sin cuenta asociada';
-            if (btnLoginGoogle) btnLoginGoogle.textContent = '🔑 Iniciar con Google';
-          }
+          updateFirebaseUI(user);
         });
       } catch (e) {
         console.warn('Configuración de Firebase no válida:', e);
@@ -4061,7 +4318,7 @@ function initFirebaseSyncModule() {
     try {
       const parsed = JSON.parse(raw);
       await setSetting('firebaseConfig', parsed);
-      await initFirebase(parsed);
+      await initFirebase(parsed, (user) => updateFirebaseUI(user));
       showToast('⚙️ Configuración de Firebase guardada', 'success');
     } catch (err) {
       showToast('JSON de configuración no válido: ' + err.message, 'error');
@@ -4072,45 +4329,58 @@ function initFirebaseSyncModule() {
     const user = getCurrentUser();
     if (user) {
       await logoutFirebase();
+      updateFirebaseUI(null);
       showToast('Sesión de Firebase cerrada', 'info');
     } else {
       try {
-        showToast('Iniciando sesión con Google...', 'info');
+        showToast('Iniciando sesión en Firebase...', 'info');
         const loggedUser = await loginWithGoogle();
-        showToast(`¡Bienvenido/a, ${loggedUser.displayName || loggedUser.email}!`, 'success');
+        updateFirebaseUI(loggedUser);
+        showToast(`¡Bienvenido/a a Firestore, ${loggedUser.displayName || loggedUser.email}!`, 'success');
       } catch (err) {
         showToast('Error de inicio de sesión: ' + err.message, 'error');
       }
     }
   });
 
+  btnLoginAnon?.addEventListener('click', async () => {
+    try {
+      showToast('Iniciando sesión anónima en Firebase...', 'info');
+      const anonUser = await loginAnonymously();
+      updateFirebaseUI(anonUser);
+      showToast('Sesión anónima iniciada en Firestore', 'success');
+    } catch (err) {
+      showToast('Error al iniciar anónimo: ' + err.message, 'error');
+    }
+  });
+
   const performCloudUpload = async () => {
     try {
-      showToast('☁️ Subiendo agenda a la nube...', 'info');
+      showToast('🔥 Sincronizando con Cloud Firestore...', 'info');
       const backupData = JSON.parse(await exportBackup());
       await uploadToCloud(backupData);
-      showToast('✅ Agenda respaldada en la nube con éxito', 'success');
+      showToast('✅ Datos sincronizados en Cloud Firestore con éxito', 'success');
     } catch (err) {
-      showToast('Error al subir: ' + err.message, 'error');
+      showToast('Error al subir a Firestore: ' + err.message, 'error');
     }
   };
 
   const performCloudDownload = async () => {
     try {
-      showToast('☁️ Descargando agenda de la nube...', 'info');
+      showToast('🔥 Descargando datos de Cloud Firestore...', 'info');
       const cloudData = await downloadFromCloud();
       if (!cloudData) {
-        showToast('No se encontraron datos en tu casillero en la nube', 'info');
+        showToast('No se encontraron datos en tu casillero de Firestore', 'info');
         return;
       }
-      if (confirm('¿Restaurar los datos de la nube en este dispositivo? Se actualizará tu agenda escolar.')) {
+      if (confirm('¿Restaurar los datos de Firestore en este dispositivo? Se actualizará tu agenda escolar.')) {
         await importBackup(JSON.stringify(cloudData));
         await loadAllData();
         renderAllViews();
-        showToast('✅ Agenda restaurada desde la nube con éxito', 'success');
+        showToast('✅ Agenda actualizada desde Cloud Firestore con éxito', 'success');
       }
     } catch (err) {
-      showToast('Error al descargar: ' + err.message, 'error');
+      showToast('Error al descargar de Firestore: ' + err.message, 'error');
     }
   };
 

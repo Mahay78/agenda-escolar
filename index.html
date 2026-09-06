@@ -185,9 +185,13 @@
           <span class="drawer-nav-text">Papelera de Reciclaje</span>
           <span id="drawer-badge-trash" class="tab-badge hidden">0</span>
         </button>
+        <button class="drawer-nav-item" id="drawer-btn-gdrive">
+          <span class="drawer-nav-icon">📁</span>
+          <span class="drawer-nav-text">Google Drive (Copias)</span>
+        </button>
         <button class="drawer-nav-item" id="drawer-btn-cloud">
-          <span class="drawer-nav-icon">☁️</span>
-          <span class="drawer-nav-text">Sincronización en la Nube</span>
+          <span class="drawer-nav-icon">🔥</span>
+          <span class="drawer-nav-text">Firebase (Base de Datos)</span>
         </button>
       </div>
 
@@ -670,18 +674,63 @@
         </div>
       </div>
 
-      <!-- Sincronización Híbrida en la Nube con Firebase / Firestore -->
+      <!-- 1. Copias de Seguridad en Google Drive (Independiente) -->
       <div class="card">
-        <h3 class="section-title" style="margin-bottom: 12px;">☁️ Sincronización en la Nube (Firebase & Google)</h3>
-        <p class="section-subtitle" style="margin-bottom: 16px;">
-          Conecta tu propia cuenta de Google o escolar para respaldar y sincronizar tu agenda entre ordenador, tablet y teléfono móvil en tiempo real.
-        </p>
+        <div class="section-header">
+          <div>
+            <h3 class="section-title"><span>📁</span> Google Drive (Copias y Respaldo Escolar)</h3>
+            <p class="section-subtitle">
+              Conecta tu cuenta de Google o de Google Classroom para respaldar y restaurar tus copias de seguridad directamente en tu Google Drive.
+            </p>
+          </div>
+          <span id="gdrive-status-badge" class="badge" style="background: rgba(59, 130, 246, 0.12); color: var(--primary); padding: 4px 10px; border-radius: var(--radius-sm); font-size: 0.8rem;">
+            No conectado
+          </span>
+        </div>
+
+        <!-- Perfil Google conectado -->
+        <div id="gdrive-account-card" class="hidden" style="background: var(--bg-input); padding: 10px 14px; border-radius: var(--radius-sm); margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid var(--border-color);">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <img id="gdrive-user-avatar" src="" alt="Avatar Google" style="width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--primary);" />
+            <div>
+              <div id="gdrive-user-name" style="font-weight: 700; font-size: 0.9rem; color: var(--text-main);">Usuario Google</div>
+              <div id="gdrive-user-email" style="font-size: 0.78rem; color: var(--text-muted);">correo@gmail.com</div>
+            </div>
+          </div>
+          <button type="button" id="btn-gdrive-disconnect" class="btn-action-small danger" title="Cerrar sesión de Google Drive">
+            Cerrar Sesión
+          </button>
+        </div>
+
         <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
-          <button id="btn-open-firebase-config" class="btn-primary" style="width: auto;">
+          <button type="button" id="btn-open-gdrive-modal" class="btn-primary" style="width: auto;">
+            <span>📁</span> Gestionar Google Drive
+          </button>
+          <button type="button" id="btn-gdrive-quick-upload" class="btn-secondary" style="width: auto;">
+            <span>⬆️</span> Subir Copia a Drive
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. Base de Datos en Tiempo Real con Firebase / Firestore (Independiente) -->
+      <div class="card">
+        <div class="section-header">
+          <div>
+            <h3 class="section-title"><span>🔥</span> Base de Datos en la Nube (Firebase Firestore)</h3>
+            <p class="section-subtitle">
+              Sincroniza tus deberes, exámenes y horarios en tiempo real con una base de datos Cloud Firestore independiente de Google Drive.
+            </p>
+          </div>
+          <span id="firebase-status-badge" class="badge" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b; padding: 4px 10px; border-radius: var(--radius-sm); font-size: 0.8rem;">
+            Offline
+          </span>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+          <button type="button" id="btn-open-firebase-config" class="btn-primary" style="width: auto;">
             <span>⚙️</span> Configurar Firebase
           </button>
-          <button id="btn-firebase-sync-now" class="btn-secondary" style="width: auto;">
-            <span>🔄</span> Sincronizar Ahora
+          <button type="button" id="btn-firebase-sync-now" class="btn-secondary" style="width: auto;">
+            <span>🔄</span> Sincronizar Firestore
           </button>
           <span id="firebase-user-indicator" style="font-size: 0.82rem; color: var(--text-muted);">
             Modo 100% Offline Local
@@ -1510,27 +1559,90 @@
     </div>
   </div>
 
-  <!-- 13. MODAL: CONFIGURACIÓN FIREBASE & SINCRONIZACIÓN -->
+  <!-- 13. MODAL: COPIAS DE SEGURIDAD EN GOOGLE DRIVE -->
+  <div id="google-drive-modal" class="modal-overlay hidden">
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3 class="modal-title">📁 Copias de Seguridad en Google Drive</h3>
+        <button class="btn-close" data-close="google-drive-modal">&times;</button>
+      </div>
+
+      <p class="section-subtitle" style="margin-bottom: 14px;">
+        Conecta tu cuenta de Google (personal o escolar de Classroom) para guardar copias completas de tu agenda directamente en tu Google Drive (carpeta <strong>🎒 Agenda Escolar</strong>).
+      </p>
+
+      <!-- Estado de Cuenta Google para Drive -->
+      <div id="modal-gdrive-account-box" style="background: var(--bg-input); padding: 12px 14px; border-radius: var(--radius-sm); margin-bottom: 14px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <img id="modal-gdrive-avatar" src="" alt="Google Avatar" style="width: 40px; height: 40px; border-radius: 50%; display: none; border: 2px solid var(--primary);" />
+          <div id="modal-gdrive-icon-fallback" style="font-size: 1.8rem;">👤</div>
+          <div>
+            <div id="modal-gdrive-name" style="font-weight: 700; font-size: 0.92rem; color: var(--text-main);">No conectado</div>
+            <div id="modal-gdrive-email" style="font-size: 0.78rem; color: var(--text-muted);">Pulsa conectar para vincular tu Drive</div>
+          </div>
+        </div>
+        <button type="button" id="btn-modal-gdrive-auth" class="btn-primary" style="width: auto; padding: 7px 14px; font-size: 0.85rem;">
+          🔑 Conectar Google
+        </button>
+      </div>
+
+      <!-- Configuración OAuth Client ID (Desplegable) -->
+      <details style="margin-bottom: 14px; background: var(--bg-input); padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); font-size: 0.82rem;">
+        <summary style="cursor: pointer; font-weight: 600; color: var(--text-main); user-select: none;">⚙️ Configuración de Google OAuth Client ID</summary>
+        <div style="margin-top: 10px;">
+          <label class="form-label" style="font-size: 0.78rem;">Google Cloud OAuth Client ID:</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="gdrive-client-id-input" class="form-input" style="font-size: 0.8rem;" placeholder="Ej: 123456789-abcdef.apps.googleusercontent.com" />
+            <button type="button" id="btn-save-gdrive-client-id" class="btn-secondary" style="width: auto; padding: 4px 10px; font-size: 0.8rem;">💾 Guardar</button>
+          </div>
+          <p style="font-size: 0.72rem; color: var(--text-muted); margin-top: 6px;">
+            Para obtener tu Client ID gratis: entra en <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener noreferrer" style="color: var(--primary);">Google Cloud Console</a> &rarr; Credenciales &rarr; Crear Credenciales &rarr; ID de cliente OAuth (Web) &rarr; añade tu dominio como origen JavaScript autorizado.
+          </p>
+        </div>
+      </details>
+
+      <!-- Botones de Acción de Google Drive -->
+      <div style="display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;">
+        <button type="button" id="btn-gdrive-upload-now" class="btn-primary" style="flex: 2; min-width: 180px;">
+          ⬆️ Subir Copia Actual a Drive
+        </button>
+        <button type="button" id="btn-gdrive-refresh-list" class="btn-secondary" style="flex: 1; min-width: 120px;">
+          🔄 Actualizar Lista
+        </button>
+      </div>
+
+      <!-- Lista de copias de seguridad en Google Drive -->
+      <h4 style="margin: 0 0 8px 0; font-size: 0.9rem; color: var(--text-main);">Copias Guardadas en tu Google Drive</h4>
+      <div id="gdrive-backups-list" style="max-height: 220px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 8px; background: var(--bg-card);">
+        <p class="section-subtitle" style="text-align: center; padding: 12px 0;">Conecta tu cuenta para ver tus copias en Google Drive.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 14. MODAL: BASE DE DATOS FIREBASE & FIRESTORE (INDEPENDIENTE) -->
   <div id="firebase-modal" class="modal-overlay hidden">
     <div class="modal-content" style="max-width: 580px;">
       <div class="modal-header">
-        <h3 class="modal-title">☁️ Conectar Firebase (Nube Gratuita)</h3>
+        <h3 class="modal-title">🔥 Base de Datos en la Nube (Firebase Firestore)</h3>
         <button class="btn-close" data-close="firebase-modal">&times;</button>
       </div>
 
       <p class="section-subtitle" style="margin-bottom: 14px;">
-        Conecta un proyecto gratuito de <strong>Google Firebase</strong> para sincronizar tu agenda con tu cuenta de Google o escolar de Google Classroom.
+        Sincronización multi-dispositivo en tiempo real con <strong>Cloud Firestore</strong>. Independiente de las copias de Google Drive.
       </p>
 
-      <!-- Estado actual de sesión -->
-      <div id="firebase-auth-status-card" style="background: var(--bg-input); padding: 12px 14px; border-radius: var(--radius-sm); margin-bottom: 14px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+      <!-- Estado actual de sesión en Firebase -->
+      <div id="firebase-auth-status-card" style="background: var(--bg-input); padding: 12px 14px; border-radius: var(--radius-sm); margin-bottom: 14px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; gap: 10px;">
         <div>
           <div id="firebase-user-name" style="font-weight: 700; font-size: 0.95rem; color: var(--text-main);">No conectado</div>
           <div id="firebase-user-email" style="font-size: 0.8rem; color: var(--text-muted);">Sin cuenta asociada</div>
         </div>
-        <div id="firebase-auth-action-btn">
+        <div id="firebase-auth-action-btn" style="display: flex; gap: 6px;">
           <button type="button" id="btn-firebase-login-google" class="btn-primary" style="width: auto; padding: 6px 12px; font-size: 0.85rem;">
             🔑 Iniciar con Google
+          </button>
+          <button type="button" id="btn-firebase-login-anon" class="btn-secondary" style="width: auto; padding: 6px 10px; font-size: 0.85rem;" title="Iniciar sesión anónima sin registrarte">
+            👤 Anónimo
           </button>
         </div>
       </div>
@@ -1538,7 +1650,7 @@
       <!-- Formulario de Configuración de Firebase -->
       <form id="firebase-config-form">
         <div class="form-group">
-          <label class="form-label">Configuración del Proyecto Firebase (JSON o campos)</label>
+          <label class="form-label">Configuración del Proyecto Firebase (JSON)</label>
           <textarea id="firebase-config-json" class="form-textarea" rows="5" placeholder='Pega tu objeto firebaseConfig aquí:
 {
   "apiKey": "AIzaSy...",
@@ -1548,17 +1660,17 @@
 }'></textarea>
         </div>
         <p style="font-size: 0.75rem; color: var(--text-dim); margin-top: -6px; margin-bottom: 12px;">
-          * Puedes crear un proyecto gratis en <code>console.firebase.google.com</code>, activar Authentication (Google) y Firestore Database.
+          * Puedes crear un proyecto gratuito en <code>console.firebase.google.com</code> y habilitar Cloud Firestore Database.
         </p>
         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
           <button type="submit" class="btn-primary" style="flex: 1;">
             💾 Guardar y Conectar
           </button>
           <button type="button" id="btn-sync-cloud-upload" class="btn-secondary" style="flex: 1;">
-            ⬆️ Subir a Nube
+            ⬆️ Subir a Firestore
           </button>
           <button type="button" id="btn-sync-cloud-download" class="btn-secondary" style="flex: 1;">
-            ⬇️ Bajar de Nube
+            ⬇️ Bajar de Firestore
           </button>
         </div>
       </form>

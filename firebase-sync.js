@@ -80,7 +80,7 @@ export async function initFirebase(config, onAuthStateChange = null) {
 }
 
 /**
- * Inicia sesión con cuenta de Google (incluye cuentas escolares de Google Workspace / Classroom)
+ * Inicia sesión con cuenta de Google (opcional en Firebase, independiente de Google Drive)
  */
 export async function loginWithGoogle() {
   const mods = await loadFirebaseModules();
@@ -97,6 +97,45 @@ export async function loginWithGoogle() {
 }
 
 /**
+ * Inicia sesión en Firebase con correo electrónico y contraseña
+ */
+export async function loginWithEmail(email, password) {
+  const mods = await loadFirebaseModules();
+  if (!firebaseAuth) {
+    throw new Error('Firebase no está configurado aún. Introduce tu configuración en Ajustes.');
+  }
+  const result = await mods.signInWithEmailAndPassword(firebaseAuth, email.trim(), password);
+  currentUser = result.user;
+  return currentUser;
+}
+
+/**
+ * Registra una nueva cuenta en Firebase con correo electrónico y contraseña
+ */
+export async function registerWithEmail(email, password) {
+  const mods = await loadFirebaseModules();
+  if (!firebaseAuth) {
+    throw new Error('Firebase no está configurado aún. Introduce tu configuración en Ajustes.');
+  }
+  const result = await mods.createUserWithEmailAndPassword(firebaseAuth, email.trim(), password);
+  currentUser = result.user;
+  return currentUser;
+}
+
+/**
+ * Inicia sesión de forma anónima en Firebase (modo privado sin registro)
+ */
+export async function loginAnonymously() {
+  const mods = await loadFirebaseModules();
+  if (!firebaseAuth) {
+    throw new Error('Firebase no está configurado aún. Introduce tu configuración en Ajustes.');
+  }
+  const result = await mods.signInAnonymously(firebaseAuth);
+  currentUser = result.user;
+  return currentUser;
+}
+
+/**
  * Cierra la sesión activa de Firebase
  */
 export async function logoutFirebase() {
@@ -107,7 +146,7 @@ export async function logoutFirebase() {
 }
 
 /**
- * Obtiene el usuario autenticado actual
+ * Obtiene el usuario autenticado actual de Firebase
  */
 export function getCurrentUser() {
   return currentUser;
@@ -119,10 +158,10 @@ export function getCurrentUser() {
  */
 export async function uploadToCloud(data) {
   if (!currentUser) {
-    throw new Error('Debes iniciar sesión con Google para sincronizar en la nube.');
+    throw new Error('Debes iniciar sesión en Firebase (Google, Email o Anónimo) para sincronizar en Firestore.');
   }
   if (!firestoreDb || !firebaseModules) {
-    throw new Error('La base de datos de Firebase no está conectada.');
+    throw new Error('La base de datos Cloud Firestore de Firebase no está conectada.');
   }
 
   const { doc, setDoc } = firebaseModules;
@@ -130,8 +169,8 @@ export async function uploadToCloud(data) {
 
   const payload = {
     updatedAt: new Date().toISOString(),
-    userEmail: currentUser.email,
-    userName: currentUser.displayName,
+    userEmail: currentUser.email || 'anonimo@agenda',
+    userName: currentUser.displayName || 'Usuario Firebase',
     version: 3,
     ...data
   };
@@ -147,10 +186,10 @@ export async function uploadToCloud(data) {
  */
 export async function downloadFromCloud() {
   if (!currentUser) {
-    throw new Error('Debes iniciar sesión con Google para descargar datos de la nube.');
+    throw new Error('Debes iniciar sesión en Firebase para descargar datos de Firestore.');
   }
   if (!firestoreDb || !firebaseModules) {
-    throw new Error('Firebase no está conectado.');
+    throw new Error('Firebase Firestore no está conectado.');
   }
 
   const { doc, getDoc } = firebaseModules;
