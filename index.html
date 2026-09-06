@@ -1764,7 +1764,7 @@
       </div>
 
       <p class="section-subtitle" style="margin-bottom: 14px;">
-        Conecta tu cuenta de Google (personal o escolar de Classroom) para guardar copias completas de tu agenda directamente en tu Google Drive (carpeta <strong>🎒 Agenda Escolar</strong>).
+        Pulsa <strong>🔑 Conectar Google</strong> para iniciar sesión con tu <strong>correo y contraseña</strong> en la ventana oficial de Google. Tus copias se guardarán en tu carpeta <strong>🎒 Agenda Escolar</strong> de Drive.
       </p>
 
       <!-- Estado de Cuenta Google para Drive -->
@@ -1774,7 +1774,7 @@
           <div id="modal-gdrive-icon-fallback" style="font-size: 1.8rem;">👤</div>
           <div>
             <div id="modal-gdrive-name" style="font-weight: 700; font-size: 0.92rem; color: var(--text-main);">No conectado</div>
-            <div id="modal-gdrive-email" style="font-size: 0.78rem; color: var(--text-muted);">Pulsa conectar para vincular tu Drive</div>
+            <div id="modal-gdrive-email" style="font-size: 0.78rem; color: var(--text-muted);">Inicia sesión con tu correo de Google</div>
           </div>
         </div>
         <button type="button" id="btn-modal-gdrive-auth" class="btn-primary" style="width: auto; padding: 7px 14px; font-size: 0.85rem;">
@@ -1782,18 +1782,17 @@
         </button>
       </div>
 
-      <!-- Configuración OAuth Client ID (Desplegable) -->
+      <!-- Configuración Avanzada Opcional (Desplegable) -->
       <details style="margin-bottom: 14px; background: var(--bg-input); padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); font-size: 0.82rem;">
-        <summary style="cursor: pointer; font-weight: 600; color: var(--text-main); user-select: none;">⚙️ Configuración de Google OAuth Client ID</summary>
+        <summary style="cursor: pointer; font-weight: 600; color: var(--text-muted); user-select: none;">⚙️ Opciones avanzadas (Client ID personalizado opcional)</summary>
         <div style="margin-top: 10px;">
-          <label class="form-label" style="font-size: 0.78rem;">Google Cloud OAuth Client ID:</label>
+          <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px;">
+            La app ya incluye un Client ID preconfigurado. Solo si tienes tu propio proyecto en Google Cloud Console, puedes personalizarlo aquí:
+          </p>
           <div style="display: flex; gap: 8px;">
-            <input type="text" id="gdrive-client-id-input" class="form-input" style="font-size: 0.8rem;" placeholder="Ej: 123456789-abcdef.apps.googleusercontent.com" />
+            <input type="text" id="gdrive-client-id-input" class="form-input" style="font-size: 0.8rem;" placeholder="Client ID personalizado (opcional)" />
             <button type="button" id="btn-save-gdrive-client-id" class="btn-secondary" style="width: auto; padding: 4px 10px; font-size: 0.8rem;">💾 Guardar</button>
           </div>
-          <p style="font-size: 0.72rem; color: var(--text-muted); margin-top: 6px;">
-            Para obtener tu Client ID gratis: entra en <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener noreferrer" style="color: var(--primary);">Google Cloud Console</a> &rarr; Credenciales &rarr; Crear Credenciales &rarr; ID de cliente OAuth (Web) &rarr; añade tu dominio como origen JavaScript autorizado.
-          </p>
         </div>
       </details>
 

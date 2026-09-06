@@ -35,11 +35,23 @@ export function loadGisScript() {
   });
 }
 
+// Client ID preconfigurado por defecto para inicio de sesión directo con correo y contraseña
+export const DEFAULT_GOOGLE_CLIENT_ID = '930814986618-pghhckd46lcv043p7n2puvq7f776q21c.apps.googleusercontent.com';
+
 /**
- * Obtiene el Client ID de Google configurado
+ * Obtiene el Client ID de Google configurado o el predeterminado
  */
 export async function getGoogleClientId() {
-  return await getSetting('googleDriveClientId', '');
+  const custom = await getSetting('googleDriveClientId', '');
+  if (custom) return custom;
+
+  // Si el usuario configuró Firebase previamente, verificar si contiene clientId
+  const fbConfig = await getSetting('firebaseConfig', null);
+  if (fbConfig && typeof fbConfig === 'object' && fbConfig.clientId) {
+    return fbConfig.clientId;
+  }
+
+  return DEFAULT_GOOGLE_CLIENT_ID;
 }
 
 /**
@@ -57,9 +69,6 @@ export async function connectGoogleDrive(onTokenSuccess) {
   await loadGisScript();
 
   const clientId = await getGoogleClientId();
-  if (!clientId) {
-    throw new Error('Primero debes introducir tu Google Cloud OAuth Client ID en la configuración.');
-  }
 
   return new Promise((resolve, reject) => {
     try {
@@ -68,7 +77,12 @@ export async function connectGoogleDrive(onTokenSuccess) {
         scope: DRIVE_SCOPE,
         callback: async (tokenResponse) => {
           if (tokenResponse.error) {
-            reject(new Error('Error de autenticación Google: ' + tokenResponse.error));
+            const errCode = tokenResponse.error;
+            let msg = 'Error de inicio de sesión en Google: ' + (tokenResponse.error_description || errCode);
+            if (errCode === 'origin_mismatch') {
+              msg = `Para conectar con este dominio (${window.location.origin}), añade tu propio Client ID en las opciones avanzadas del modal.`;
+            }
+            reject(new Error(msg));
             return;
           }
 
