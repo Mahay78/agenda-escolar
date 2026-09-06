@@ -71,11 +71,13 @@ export async function checkDueReminders(tasks = [], exams = [], subjects = []) {
 
   const subjectMap = new Map((subjects || []).map(s => [s.id, s]));
 
+  const pad = (n) => String(n).padStart(2, '0');
   const now = new Date();
-  const todayStr = now.toISOString().split('T')[0];
+  const todayStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+  
   const tomorrow = new Date(now);
   tomorrow.setDate(tomorrow.getDate() + 1);
-  const tomorrowStr = tomorrow.toISOString().split('T')[0];
+  const tomorrowStr = `${tomorrow.getFullYear()}-${pad(tomorrow.getMonth() + 1)}-${pad(tomorrow.getDate())}`;
 
   // Registro de notificaciones ya enviadas hoy en localStorage para evitar spam
   const storageKey = `notified_reminders_${todayStr}`;

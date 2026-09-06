@@ -96,10 +96,11 @@ function getTodayDateStr() {
  */
 function daysDifference(dateStrA, dateStrB) {
   if (!dateStrA || !dateStrB) return 999;
-  const a = new Date(dateStrA);
-  const b = new Date(dateStrB);
-  const diffTime = Math.abs(b - a);
-  return Math.round(diffTime / (1000 * 60 * 60 * 24));
+  const [y1, m1, d1] = dateStrA.split('-').map(Number);
+  const [y2, m2, d2] = dateStrB.split('-').map(Number);
+  const utcA = Date.UTC(y1, m1 - 1, d1);
+  const utcB = Date.UTC(y2, m2 - 1, d2);
+  return Math.round(Math.abs(utcB - utcA) / (1000 * 60 * 60 * 24));
 }
 
 /**

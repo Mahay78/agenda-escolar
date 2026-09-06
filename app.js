@@ -482,6 +482,24 @@ function initEventListeners() {
     });
   });
 
+  // Cerrar modal al hacer clic en el fondo oscuro exterior
+  document.querySelectorAll('.modal-overlay').forEach((modal) => {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.add('hidden');
+      }
+    });
+  });
+
+  // Cerrar modales abiertos con la tecla Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal-overlay:not(.hidden)').forEach((modal) => {
+        modal.classList.add('hidden');
+      });
+    }
+  });
+
   // Botones de abrir modales en pestañas
   document.getElementById('btn-open-new-task')?.addEventListener('click', () => openTaskModal());
   document.getElementById('btn-quick-add-task')?.addEventListener('click', () => openTaskModal());
@@ -883,9 +901,7 @@ function renderTodayView() {
   }
 
   // Tareas para mañana
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const tomorrowStr = tomorrow.toISOString().split('T')[0];
+  const tomorrowStr = getTomorrowDateString();
   const urgentTasksContainer = document.getElementById('today-urgent-tasks');
   const tomorrowTasks = AppState.tasks.filter((t) => t.dueDate === tomorrowStr && t.status !== 'completed');
 
@@ -979,7 +995,7 @@ function renderTasksView() {
   } else if (AppState.taskFilter === 'week') {
     const nextWeek = new Date();
     nextWeek.setDate(nextWeek.getDate() + 7);
-    const nextWeekStr = nextWeek.toISOString().split('T')[0];
+    const nextWeekStr = getLocalDateString(nextWeek);
     filtered = filtered.filter((t) => t.dueDate >= todayStr && t.dueDate <= nextWeekStr);
   } else if (AppState.taskFilter === 'photos') {
     filtered = filtered.filter((t) => t.photos && t.photos.length > 0);
@@ -3520,6 +3536,13 @@ function getTodayDateString() {
 function getTomorrowDateString() {
   const d = new Date();
   d.setDate(d.getDate() + 1);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function getLocalDateString(d = new Date()) {
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, '0');
   const day = String(d.getDate()).padStart(2, '0');

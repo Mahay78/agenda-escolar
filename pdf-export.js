@@ -8,14 +8,14 @@
  * @returns {Promise<Function>} Constructor jsPDF
  */
 async function loadJsPDF() {
-  if (window.jspdf && window.jspdf.jsPDF) {
-    return window.jspdf.jsPDF;
+  if (window.jspdf) {
+    return window.jspdf.jsPDF || window.jspdf;
   }
 
   return new Promise((resolve, reject) => {
     const existingScript = document.querySelector('script[src*="jspdf"]');
     if (existingScript) {
-      existingScript.addEventListener('load', () => resolve(window.jspdf.jsPDF));
+      existingScript.addEventListener('load', () => resolve(window.jspdf?.jsPDF || window.jspdf));
       existingScript.addEventListener('error', reject);
       return;
     }
@@ -23,8 +23,8 @@ async function loadJsPDF() {
     const script = document.createElement('script');
     script.src = './libs/jspdf.umd.min.js';
     script.onload = () => {
-      if (window.jspdf && window.jspdf.jsPDF) {
-        resolve(window.jspdf.jsPDF);
+      if (window.jspdf) {
+        resolve(window.jspdf.jsPDF || window.jspdf);
       } else {
         reject(new Error('jsPDF no se cargó correctamente.'));
       }
@@ -118,7 +118,7 @@ export async function exportSchedulePDF(schedule, subjects = [], timeSlots = [],
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(8);
       doc.setTextColor(180, 83, 9);
-      const breakText = `☕ ${slot.label || 'RECREO'} (${slot.start} - ${slot.end})`;
+      const breakText = `${slot.label || 'RECREO'} (${slot.start} - ${slot.end})`;
       doc.text(breakText, pageWidth / 2, currentY + 5, { align: 'center' });
       currentY += 7;
       return;
@@ -423,10 +423,14 @@ export async function exportProjectDossierPDF(project, subject = {}) {
   doc.setTextColor(71, 85, 105);
 
   const statusMap = {
-    'idea': '💡 Boceto / Idea Inicial',
-    'in_progress': '⏳ En Proceso en Taller',
-    'finished': '✅ Obra Terminada',
-    'graded': '🏆 Entregada y Evaluada'
+    'idea': 'Boceto / Idea Inicial',
+    'boceto': 'Boceto / Idea Inicial',
+    'in_progress': 'En Proceso en Taller',
+    'proceso': 'En Proceso en Taller',
+    'finished': 'Obra Terminada',
+    'terminado': 'Obra Terminada',
+    'graded': 'Entregada y Evaluada',
+    'entregado': 'Entregada y Evaluada'
   };
 
   doc.text(`Estado: ${statusMap[project.status] || project.status || 'En Proceso'}`, margin + 6, currentY + 16);

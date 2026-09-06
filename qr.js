@@ -584,12 +584,15 @@ export function formatTasksForWhatsApp(tasks, subjects, studentInfo, filterType 
   const school = studentInfo.schoolName || 'Instituto';
   const course = studentInfo.course || '';
 
-  let header = `🎒 *DEBERES DE ${name.toUpperCase()}* (${school}${course ? ' - ' + course : ''})\n`;
-  const today = new Date().toISOString().split('T')[0];
+  const pad = (n) => String(n).padStart(2, '0');
+  const now = new Date();
+  const today = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 
-  const tomorrow = new Date();
+  const tomorrow = new Date(now);
   tomorrow.setDate(tomorrow.getDate() + 1);
-  const tomorrowStr = tomorrow.toISOString().split('T')[0];
+  const tomorrowStr = `${tomorrow.getFullYear()}-${pad(tomorrow.getMonth() + 1)}-${pad(tomorrow.getDate())}`;
+
+  let header = `🎒 *DEBERES DE ${name.toUpperCase()}* (${school}${course ? ' - ' + course : ''})\n`;
 
   let relevantTasks = [];
   let subheader = '';
@@ -630,7 +633,9 @@ export function formatTasksForWhatsApp(tasks, subjects, studentInfo, filterType 
 export function formatExamsForWhatsApp(exams, subjects, studentInfo) {
   const name = studentInfo.studentName || 'Estudiante';
   const header = `📝 *PRÓXIMOS EXÁMENES DE ${name.toUpperCase()}*\n`;
-  const today = new Date().toISOString().split('T')[0];
+  const pad = (n) => String(n).padStart(2, '0');
+  const now = new Date();
+  const today = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 
   const upcoming = exams
     .filter((e) => e.date >= today)
