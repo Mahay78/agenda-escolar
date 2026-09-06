@@ -18,6 +18,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "jspdf": "^4.2.1",
     "tesseract.js": "^7.0.0"
   }
 }

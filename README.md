@@ -80,18 +80,17 @@ Aquí tienes las funcionalidades planificadas para las siguientes versiones del 
   - Búsqueda en tiempo real indexando tareas, exámenes, proyectos artísticos, calificaciones, materiales de la mochila y fotos/apuntes con OCR.
   - Filtros por chips de categoría y navegación por teclado (flechas y Enter).
 
-- [ ] **📄 Generador y Exportador a PDF (100% Offline con `pdf-lib` / `jsPDF`):**
-  - **Exportar Apuntes y Fotos a PDF:** Crear un documento PDF paginado con las fotos de pizarras, apuntes, dibujos y notas de texto asociadas a cada asignatura.
-  - **Dossier de Proyectos Artísticos:** Generar un PDF con la memoria del proyecto, técnicas empleadas y fotos de la evolución de la obra.
-  - **Horario Escolar en PDF:** Descargar el horario semanal en formato PDF listo para imprimir o enviar.
-  - **Boletín de Calificaciones:** Informe detallado de notas por evaluación y notas medias.
+- [x] **📄 Generador y Exportador a PDF (100% Offline con `jsPDF`):**
+  - **Exportar Horario Escolar en PDF:** Descarga tu horario semanal en formato PDF apaisado listo para imprimir o compartir.
+  - **Boletín Oficial de Calificaciones:** Generación de informe académico con notas por evaluación y media global ponderada.
+  - **Dossier de Proyectos Artísticos:** PDF técnico con ficha del proyecto, técnicas y registro fotográfico de la evolución de la obra.
 
 - [x] **🎙️ Mejoras Avanzadas en Notas de Voz:**
   - **Transcripción de Voz a Texto (Dictado):** Dictar deberes, notas, exámenes y proyectos con la voz utilizando `Web Speech API` para que se conviertan en texto automáticamente.
   - **Notas de voz en Proyectos y Exámenes:** Permitir adjuntar notas de audio directamente a las obras del portafolio y temarios de examen.
 
-- [ ] **🔔 Notificaciones Push Locales:**
-  - Recordatorios en el móvil el día antes de un examen o cuando vence una tarea pendiente.
+- [x] **🔔 Notificaciones Push Locales:**
+  - Recordatorios en el móvil o navegador el día antes de un examen o cuando vence una tarea pendiente con la API nativa de notificaciones web.
 
 - [x] **🎨 Paquete y Selector Visual de Iconos para Asignaturas y Materias:**
   - Catálogo interactivo de iconos y emojis organizados por categorías (*Artes Plásticas, Música, Ciencias, Letras, Idiomas, Tecnología, Deporte*).
@@ -107,15 +106,15 @@ Aquí tienes las funcionalidades planificadas para las siguientes versiones del 
   - **Ponderaciones personalizables:** Porcentajes por exámenes, trabajos y actitud (ej. *70% Exámenes / 30% Prácticas*).
   - **Calculadora EBAU / Selectividad:** Simulador de nota media de bachillerato y ponderación de materias específicas.
 
-- [ ] **📅 Integración con Calendarios Nativos (`.ics` / Google / Apple / Outlook):**
-  - Exportación de exámenes y horarios a formato `.ics` para sincronizarlos con la app de Calendario de tu móvil en un clic.
+- [x] **📅 Integración con Calendarios Nativos (`.ics` / Google / Apple / Outlook):**
+  - Exportación de exámenes y horario semanal a formato estándar `.ics` (RFC 5545) con recordatorios y alarmas de 24h previas en un clic.
 
-- [ ] **🎮 Gamificación y Hábitos de Estudio:**
-  - **Rachas de Estudio (*Streaks*):** Registro de días consecutivos completando tareas y sesiones de concentración.
-  - **Temas Desbloqueables:** Nuevos temas visuales (*Cuaderno de Bocetos, Pizarra Clásica, Neón Cyberpunk*) al alcanzar metas.
+- [x] **🎮 Gamificación y Hábitos de Estudio:**
+  - **Rachas de Estudio Diarias (*Streaks*):** Registro de días consecutivos completando tareas y sesiones Pomodoro con contador en la cabecera.
+  - **Sistema de Logros y Desafíos:** Medallas y trofeos desbloqueables (*Primer Paso, En Racha, Semana Perfecta, Maestro de la Concentración*).
 
-- [ ] **📚 Biblioteca de Recursos y Enlaces por Asignatura:**
-  - Guardar enlaces directos a Google Classroom, vídeos explicativos de YouTube, webs de museos o temarios PDF dentro de cada asignatura.
+- [x] **📚 Biblioteca de Recursos y Enlaces por Asignatura:**
+  - Guardar enlaces directos a Google Classroom, carpetas de Google Drive, aulas virtuales Moodle o recursos didácticos dentro de cada materia.
 
 - [ ] **⏱️ Modo Simulacro de Examen:**
   - Cronómetro a pantalla completa sin distracciones para practicar exámenes con límite de tiempo real (ej. 50 o 90 minutos).
@@ -123,23 +122,20 @@ Aquí tienes las funcionalidades planificadas para las siguientes versiones del 
 - [ ] **👁️ Accesibilidad y Personalización Visual:**
   - Modo con tipografía especial para dislexia (*OpenDyslexic*) y tamaño de texto ajustable.
 
-- [ ] **🗑️ Papelera de Reciclaje (30 días):**
-  - Recuperación de tareas, fotos, proyectos o notas eliminadas accidentalmente.
+- [x] **🗑️ Papelera de Reciclaje (30 días):**
+  - Recuperación y restauración de tareas, exámenes, notas, materiales o proyectos eliminados accidentalmente, con auto-purga a los 30 días.
 
 - [x] **🖨️ Modo Impresión Limpio y Boletín / Horario PDF:**
   - Estilos CSS `@media print` y botones integrados en Horario y Notas para imprimir en papel o guardar en PDF de forma limpia y profesional.
 
-- [ ] **☁️ Sincronización en la Nube con Firebase / Firestore (Híbrido Offline-First):**
-  - **Inicio de Sesión con Google (Firebase Auth):** Conectar con un solo clic para sincronizar la agenda entre móvil, tablet y PC en tiempo real.
+- [x] **☁️ Sincronización en la Nube con Firebase / Firestore (Híbrido Offline-First):**
+  - **Inicio de Sesión con Google (Firebase Auth):** Conectar con un solo clic para respaldar y sincronizar la agenda entre móvil, tablet y PC.
   - **Gestión Multi-cuenta y Cuentas Escolares (Google Classroom):**
-    - *Rol Administrador (Padre):* Crea y gestiona el proyecto gratuito en la consola de Firebase con su correo.
-    - *Rol Estudiante (Hijo):* Inicia sesión en la web con **su propia cuenta escolar de Google Classroom** o su Gmail personal.
-    - *Casillero Privado Aislado:* Firebase asigna un identificador único (`uid`) por usuario, garantizando que cada estudiante tenga sus datos, deberes y notas totalmente privados y separados.
+    - Identificador único (`uid`) por usuario para aislamiento total de datos de cada alumno.
   - **Base de Datos en Tiempo Real (Cloud Firestore):** Guardado automático en la nube de deberes, exámenes, notas, horario y portafolio de proyectos.
   - **Arquitectura Híbrida Segura:**
     - *Modo Sin Conexión / Sin Cuenta:* Todo funciona al 100% de forma local en el dispositivo usando `IndexedDB`.
-    - *Modo Conectado:* Al iniciar sesión, sincroniza los cambios en segundo plano con la nube en tiempo real.
-  - **Guía de Configuración:** Proyecto en `console.firebase.google.com` con `Authentication (Google)` y `Cloud Firestore` conectado mediante módulo `firebase-sync.js`.
+    - *Modo Conectado:* Sincronización manual o en tiempo real con la nube.
 
 ---
 

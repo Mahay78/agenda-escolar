@@ -44,6 +44,11 @@
         <kbd class="search-kbd">Ctrl K</kbd>
       </button>
 
+      <!-- Contador y Racha de Estudio -->
+      <button id="btn-open-streak" class="btn-streak-badge" title="Racha de estudio y hábitos (Pulsa para ver logros)">
+        🔥 <span id="header-streak-days">1</span> d
+      </button>
+
       <!-- Indicador Online / Offline -->
       <div id="connection-status" class="status-pill">
         <span class="status-dot"></span>
@@ -165,6 +170,27 @@
         </button>
       </div>
 
+      <div class="drawer-group-label">HERRAMIENTAS & LOGROS</div>
+      <div class="drawer-nav-list">
+        <button class="drawer-nav-item" id="drawer-btn-streak">
+          <span class="drawer-nav-icon">🏆</span>
+          <span class="drawer-nav-text">Logros y Racha (<span id="drawer-streak-text">1 día</span>)</span>
+        </button>
+        <button class="drawer-nav-item" id="drawer-btn-resources">
+          <span class="drawer-nav-icon">🔗</span>
+          <span class="drawer-nav-text">Enlaces y Recursos</span>
+        </button>
+        <button class="drawer-nav-item" id="drawer-btn-trash">
+          <span class="drawer-nav-icon">🗑️</span>
+          <span class="drawer-nav-text">Papelera de Reciclaje</span>
+          <span id="drawer-badge-trash" class="tab-badge hidden">0</span>
+        </button>
+        <button class="drawer-nav-item" id="drawer-btn-cloud">
+          <span class="drawer-nav-icon">☁️</span>
+          <span class="drawer-nav-text">Sincronización en la Nube</span>
+        </button>
+      </div>
+
       <div class="drawer-group-label">SISTEMA</div>
       <div class="drawer-nav-list">
         <button class="drawer-nav-item" data-tab="tab-settings">
@@ -272,9 +298,17 @@
           <h2 class="section-title"><span>📅</span> Horario Escolar</h2>
           <p class="section-subtitle">Selecciona el día de la semana para ver y editar tus clases</p>
         </div>
-        <button id="btn-print-schedule" class="btn-secondary" style="width: auto; display: inline-flex; align-items: center; gap: 6px;" title="Imprimir horario o guardar en PDF">
-          <span>🖨️</span> Imprimir / PDF
-        </button>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button id="btn-export-schedule-pdf" class="btn-primary" style="width: auto; display: inline-flex; align-items: center; gap: 6px;" title="Descargar Horario Oficial en PDF">
+            <span>📄</span> Descargar PDF
+          </button>
+          <button id="btn-export-schedule-ics" class="btn-secondary" style="width: auto; display: inline-flex; align-items: center; gap: 6px;" title="Exportar horario a Google/Apple/Outlook Calendar">
+            <span>📅</span> Calendario (.ics)
+          </button>
+          <button id="btn-print-schedule" class="btn-secondary" style="width: auto; display: inline-flex; align-items: center; gap: 6px;" title="Imprimir horario directamente">
+            <span>🖨️</span> Imprimir
+          </button>
+        </div>
       </div>
 
       <!-- Selector de día -->
@@ -400,9 +434,14 @@
           <h2 class="section-title"><span>📝</span> Exámenes y Evaluaciones</h2>
           <p class="section-subtitle">Planifica tus exámenes y adjunta fotos del temario</p>
         </div>
-        <button id="btn-open-new-exam" class="btn-primary" style="width: auto;">
-          ➕ Nuevo Examen
-        </button>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button id="btn-export-exams-ics" class="btn-secondary" style="width: auto; display: inline-flex; align-items: center; gap: 6px;" title="Exportar todos los exámenes a Google/Apple/Outlook Calendar">
+            <span>📅</span> Exportar a Calendario (.ics)
+          </button>
+          <button id="btn-open-new-exam" class="btn-primary" style="width: auto;">
+            ➕ Nuevo Examen
+          </button>
+        </div>
       </div>
 
       <div id="exams-container">
@@ -421,8 +460,11 @@
           <button id="btn-toggle-grade-simulator" class="btn-secondary" style="width: auto; display: inline-flex; align-items: center; gap: 6px;" title="Calcular qué nota necesitas">
             <span>🧮</span> Simulador
           </button>
-          <button id="btn-print-grades" class="btn-secondary" style="width: auto; display: inline-flex; align-items: center; gap: 6px;" title="Imprimir o guardar boletín en PDF">
-            <span>🖨️</span> Boletín PDF
+          <button id="btn-export-grades-pdf" class="btn-primary" style="width: auto; display: inline-flex; align-items: center; gap: 6px;" title="Descargar Boletín Oficial en PDF">
+            <span>📄</span> Descargar PDF
+          </button>
+          <button id="btn-print-grades" class="btn-secondary" style="width: auto; display: inline-flex; align-items: center; gap: 6px;" title="Imprimir o guardar boletín">
+            <span>🖨️</span> Imprimir
           </button>
           <button id="btn-open-new-grade" class="btn-primary" style="width: auto;">
             ➕ Añadir Nota
@@ -580,6 +622,70 @@
             <span>📤</span> Restaurar Copia
           </button>
           <input type="file" id="backup-file-input" accept=".json" class="hidden" />
+        </div>
+      </div>
+
+      <!-- Notificaciones y Recordatorios Locales -->
+      <div class="card">
+        <h3 class="section-title" style="margin-bottom: 12px;">🔔 Recordatorios y Notificaciones Locales</h3>
+        <p class="section-subtitle" style="margin-bottom: 16px;">
+          Recibe avisos en tu navegador o móvil el día antes de un examen o cuando venza una tarea importante.
+        </p>
+        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+          <button id="btn-toggle-notifications" class="btn-primary" style="width: auto;">
+            <span>🔔</span> <span id="notification-status-text">Activar Notificaciones</span>
+          </button>
+          <button id="btn-test-notification" class="btn-secondary" style="width: auto;">
+            <span>🧪</span> Probar Notificación
+          </button>
+          <span id="notification-perm-badge" class="badge" style="background: var(--bg-input); padding: 6px 12px; border-radius: var(--radius-sm); font-size: 0.8rem;">
+            Estado: Comprobando...
+          </span>
+        </div>
+      </div>
+
+      <!-- Papelera de Reciclaje Temporal -->
+      <div class="card">
+        <div class="section-header">
+          <div>
+            <h3 class="section-title"><span>🗑️</span> Papelera de Reciclaje (30 Días)</h3>
+            <p class="section-subtitle">Recupera tareas, exámenes o notas eliminadas recientemente antes de que se borren permanentemente.</p>
+          </div>
+          <button id="btn-open-trash-settings" class="btn-secondary" style="width: auto;">
+            <span>🗑️</span> Ver Papelera (<span id="settings-trash-count">0</span>)
+          </button>
+        </div>
+      </div>
+
+      <!-- Recursos y Enlaces por Asignatura -->
+      <div class="card">
+        <div class="section-header">
+          <div>
+            <h3 class="section-title"><span>🔗</span> Enlaces y Recursos de Asignaturas</h3>
+            <p class="section-subtitle">Acceso directo a Google Classroom, Google Drive, temarios y webs de apoyo de tus materias.</p>
+          </div>
+          <button id="btn-open-resources-settings" class="btn-secondary" style="width: auto;">
+            <span>📚</span> Gestionar Recursos
+          </button>
+        </div>
+      </div>
+
+      <!-- Sincronización Híbrida en la Nube con Firebase / Firestore -->
+      <div class="card">
+        <h3 class="section-title" style="margin-bottom: 12px;">☁️ Sincronización en la Nube (Firebase & Google)</h3>
+        <p class="section-subtitle" style="margin-bottom: 16px;">
+          Conecta tu propia cuenta de Google o escolar para respaldar y sincronizar tu agenda entre ordenador, tablet y teléfono móvil en tiempo real.
+        </p>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+          <button id="btn-open-firebase-config" class="btn-primary" style="width: auto;">
+            <span>⚙️</span> Configurar Firebase
+          </button>
+          <button id="btn-firebase-sync-now" class="btn-secondary" style="width: auto;">
+            <span>🔄</span> Sincronizar Ahora
+          </button>
+          <span id="firebase-user-indicator" style="font-size: 0.82rem; color: var(--text-muted);">
+            Modo 100% Offline Local
+          </span>
         </div>
       </div>
     </section>
@@ -1287,6 +1393,175 @@
           ➕ Añadir a Examen
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- 10. MODAL: LOGROS Y RACHA DE ESTUDIO -->
+  <div id="achievements-modal" class="modal-overlay hidden">
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3 class="modal-title">🏆 Hábitos de Estudio y Logros</h3>
+        <button class="btn-close" data-close="achievements-modal">&times;</button>
+      </div>
+      
+      <!-- Panel de Racha Actual -->
+      <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(239, 68, 68, 0.15)); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: var(--radius-md); padding: 18px; text-align: center; margin-bottom: 16px;">
+        <div style="font-size: 2.5rem; line-height: 1; margin-bottom: 6px;">🔥</div>
+        <h2 id="modal-streak-days" style="margin: 0 0 4px 0; font-size: 1.8rem; color: #f59e0b;">1 Día en Racha</h2>
+        <p style="margin: 0; font-size: 0.85rem; color: var(--text-muted);">
+          ¡Cada día que completas tareas o estudias con Pomodoro mantienes tu llama encendida!
+        </p>
+        <div style="display: flex; justify-content: space-around; margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(245, 158, 11, 0.25);">
+          <div>
+            <div id="stat-best-streak" style="font-weight: 800; font-size: 1.15rem; color: var(--text-main);">1</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Mejor Racha</div>
+          </div>
+          <div>
+            <div id="stat-tasks-done" style="font-weight: 800; font-size: 1.15rem; color: var(--primary);">0</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Tareas Completadas</div>
+          </div>
+          <div>
+            <div id="stat-pomo-sessions" style="font-weight: 800; font-size: 1.15rem; color: var(--success);">0</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Sesiones Pomodoro</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cuadrícula de Medallas y Trofeos -->
+      <h4 style="margin: 0 0 10px 0; font-size: 0.95rem; color: var(--text-main);">Medallas y Desafíos</h4>
+      <div id="achievements-container" class="achievements-grid">
+        <!-- Renderizado dinámico de logros -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 11. MODAL: PAPELERA DE RECICLAJE (30 DÍAS) -->
+  <div id="trash-modal" class="modal-overlay hidden">
+    <div class="modal-content" style="max-width: 650px;">
+      <div class="modal-header">
+        <h3 class="modal-title">🗑️ Papelera de Reciclaje</h3>
+        <button class="btn-close" data-close="trash-modal">&times;</button>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <p class="section-subtitle" style="margin: 0;">
+          Los elementos borrados permanecen aquí 30 días antes de su eliminación permanente.
+        </p>
+        <button id="btn-empty-trash" class="btn-action-small" style="color: var(--danger); border-color: rgba(239, 68, 68, 0.3);">
+          Vaciar Todo
+        </button>
+      </div>
+
+      <div id="trash-items-container" class="trash-list">
+        <p class="section-subtitle">La papelera está vacía.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 12. MODAL: GESTIÓN DE RECURSOS Y ENLACES POR ASIGNATURA -->
+  <div id="subject-resources-modal" class="modal-overlay hidden">
+    <div class="modal-content" style="max-width: 620px;">
+      <div class="modal-header">
+        <h3 class="modal-title">🔗 Enlaces y Recursos de Asignatura</h3>
+        <button class="btn-close" data-close="subject-resources-modal">&times;</button>
+      </div>
+
+      <!-- Selector de Asignatura -->
+      <div class="form-group" style="margin-bottom: 14px;">
+        <label class="form-label">Seleccionar Asignatura</label>
+        <select id="resources-subject-select" class="form-select">
+          <!-- Asignaturas cargadas dinámicamente -->
+        </select>
+      </div>
+
+      <!-- Formulario para añadir nuevo enlace -->
+      <form id="form-add-resource" style="background: var(--bg-input); padding: 12px; border-radius: var(--radius-sm); margin-bottom: 16px; border: 1px solid var(--border-color);">
+        <h4 style="margin: 0 0 10px 0; font-size: 0.9rem; color: var(--text-main);">➕ Añadir Nuevo Enlace o Recurso</h4>
+        <div class="form-row">
+          <div class="form-group" style="flex: 2;">
+            <label class="form-label">Título del Recurso</label>
+            <input type="text" id="resource-title" class="form-input" placeholder="Ej: Google Classroom, Apuntes Drive, Vídeos" required />
+          </div>
+          <div class="form-group" style="flex: 1;">
+            <label class="form-label">Tipo</label>
+            <select id="resource-type" class="form-select">
+              <option value="classroom">🏫 Classroom</option>
+              <option value="drive">📁 Drive</option>
+              <option value="moodle">🎓 Moodle / Aula</option>
+              <option value="youtube">📺 Vídeo / YT</option>
+              <option value="web">🌐 Web / Enlace</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Dirección Web (URL)</label>
+          <input type="url" id="resource-url" class="form-input" placeholder="https://..." required />
+        </div>
+        <button type="submit" class="btn-primary" style="width: auto; padding: 6px 14px; font-size: 0.85rem;">
+          Guardar Enlace
+        </button>
+      </form>
+
+      <!-- Lista de enlaces de la asignatura seleccionada -->
+      <h4 style="margin: 0 0 8px 0; font-size: 0.9rem; color: var(--text-main);">Enlaces Guardados</h4>
+      <div id="subject-resources-container" class="resource-list">
+        <p class="section-subtitle">No hay enlaces añadidos para esta asignatura.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 13. MODAL: CONFIGURACIÓN FIREBASE & SINCRONIZACIÓN -->
+  <div id="firebase-modal" class="modal-overlay hidden">
+    <div class="modal-content" style="max-width: 580px;">
+      <div class="modal-header">
+        <h3 class="modal-title">☁️ Conectar Firebase (Nube Gratuita)</h3>
+        <button class="btn-close" data-close="firebase-modal">&times;</button>
+      </div>
+
+      <p class="section-subtitle" style="margin-bottom: 14px;">
+        Conecta un proyecto gratuito de <strong>Google Firebase</strong> para sincronizar tu agenda con tu cuenta de Google o escolar de Google Classroom.
+      </p>
+
+      <!-- Estado actual de sesión -->
+      <div id="firebase-auth-status-card" style="background: var(--bg-input); padding: 12px 14px; border-radius: var(--radius-sm); margin-bottom: 14px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div id="firebase-user-name" style="font-weight: 700; font-size: 0.95rem; color: var(--text-main);">No conectado</div>
+          <div id="firebase-user-email" style="font-size: 0.8rem; color: var(--text-muted);">Sin cuenta asociada</div>
+        </div>
+        <div id="firebase-auth-action-btn">
+          <button type="button" id="btn-firebase-login-google" class="btn-primary" style="width: auto; padding: 6px 12px; font-size: 0.85rem;">
+            🔑 Iniciar con Google
+          </button>
+        </div>
+      </div>
+
+      <!-- Formulario de Configuración de Firebase -->
+      <form id="firebase-config-form">
+        <div class="form-group">
+          <label class="form-label">Configuración del Proyecto Firebase (JSON o campos)</label>
+          <textarea id="firebase-config-json" class="form-textarea" rows="5" placeholder='Pega tu objeto firebaseConfig aquí:
+{
+  "apiKey": "AIzaSy...",
+  "authDomain": "tu-proyecto.firebaseapp.com",
+  "projectId": "tu-proyecto",
+  "appId": "1:..."
+}'></textarea>
+        </div>
+        <p style="font-size: 0.75rem; color: var(--text-dim); margin-top: -6px; margin-bottom: 12px;">
+          * Puedes crear un proyecto gratis en <code>console.firebase.google.com</code>, activar Authentication (Google) y Firestore Database.
+        </p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="submit" class="btn-primary" style="flex: 1;">
+            💾 Guardar y Conectar
+          </button>
+          <button type="button" id="btn-sync-cloud-upload" class="btn-secondary" style="flex: 1;">
+            ⬆️ Subir a Nube
+          </button>
+          <button type="button" id="btn-sync-cloud-download" class="btn-secondary" style="flex: 1;">
+            ⬇️ Bajar de Nube
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 

@@ -4,7 +4,7 @@
  */
 
 const DB_NAME = 'AgendaEscolarDB';
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 
 let dbInstance = null;
 
@@ -25,7 +25,7 @@ export function initDB() {
 
     request.onsuccess = (event) => {
       dbInstance = event.target.result;
-      console.log('IndexedDB inicializada correctamente');
+      console.log('IndexedDB inicializada correctamente (v' + DB_VERSION + ')');
       resolve(dbInstance);
     };
 
@@ -84,6 +84,13 @@ export function initDB() {
       if (!db.objectStoreNames.contains('materials')) {
         const materialStore = db.createObjectStore('materials', { keyPath: 'id' });
         materialStore.createIndex('subjectId', 'subjectId', { unique: false });
+      }
+
+      // 9. Papelera de reciclaje temporal (30 días)
+      if (!db.objectStoreNames.contains('trash')) {
+        const trashStore = db.createObjectStore('trash', { keyPath: 'id' });
+        trashStore.createIndex('originalStore', 'originalStore', { unique: false });
+        trashStore.createIndex('deletedAt', 'deletedAt', { unique: false });
       }
     };
   });
@@ -149,6 +156,79 @@ export async function getSetting(key, defaultValue = null) {
 
 export async function setSetting(key, value) {
   return saveItem('settings', { key, value });
+}
+
+// --- GESTIÓN DE PAPELERA DE RECICLAJE (30 DÍAS) ---
+
+/**
+ * Mueve un elemento a la papelera en lugar de borrarlo directamente
+ * @param {string} originalStore Nombre del store de origen ('tasks', 'exams', 'projects', etc.)
+ * @param {Object} item El objeto completo
+ * @param {string} label Nombre o título descriptivo para la papelera
+ */
+export async function moveToTrash(originalStore, item, label = '') {
+  if (!item || !item.id) return false;
+  const trashItem = {
+    id: `trash_${Date.now()}_${item.id}`,
+    originalStore,
+    originalId: item.id,
+    label: label || item.title || item.name || item.text || 'Elemento sin título',
+    data: { ...item },
+    deletedAt: Date.now()
+  };
+  await saveItem('trash', trashItem);
+  await deleteItem(originalStore, item.id);
+  return trashItem;
+}
+
+/**
+ * Obtiene todos los elementos en la papelera, purgando los que tengan más de 30 días
+ */
+export async function getTrashItems() {
+  await purgeOldTrash(30);
+  return getAll('trash');
+}
+
+/**
+ * Restaura un elemento de la papelera a su tienda original
+ */
+export async function restoreFromTrash(trashId) {
+  const trashItem = await getById('trash', trashId);
+  if (!trashItem) return false;
+  await saveItem(trashItem.originalStore, trashItem.data);
+  await deleteItem('trash', trashId);
+  return trashItem;
+}
+
+/**
+ * Elimina definitivamente un elemento de la papelera
+ */
+export async function deletePermanentlyFromTrash(trashId) {
+  return deleteItem('trash', trashId);
+}
+
+/**
+ * Vacía completamente la papelera
+ */
+export async function emptyTrash() {
+  return clearStore('trash');
+}
+
+/**
+ * Purga automáticamente elementos eliminados hace más de X días (por defecto 30 días)
+ */
+export async function purgeOldTrash(days = 30) {
+  try {
+    const trashItems = await getAll('trash');
+    const cutoff = Date.now() - (days * 24 * 60 * 60 * 1000);
+    for (const item of trashItems) {
+      if (item.deletedAt && item.deletedAt < cutoff) {
+        await deleteItem('trash', item.id);
+      }
+    }
+  } catch (err) {
+    console.warn('Error purgando papelera:', err);
+  }
 }
 
 // Catálogos de asignaturas por modalidad
@@ -301,7 +381,7 @@ export function compressImage(source, maxWidth = 1280, maxHeight = 1280, quality
 // Exportar copia de seguridad completa a JSON
 export async function exportBackup() {
   const data = {
-    version: 2,
+    version: 3,
     exportDate: new Date().toISOString(),
     subjects: await getAll('subjects'),
     schedule: await getAll('schedule'),
@@ -310,6 +390,7 @@ export async function exportBackup() {
     grades: await getAll('grades'),
     projects: await getAll('projects'),
     materials: await getAll('materials'),
+    trash: await getAll('trash'),
     settings: await getAll('settings')
   };
   return JSON.stringify(data, null, 2);
@@ -331,6 +412,7 @@ export async function importBackup(jsonString) {
     await clearStore('grades');
     await clearStore('projects');
     await clearStore('materials');
+    await clearStore('trash');
     await clearStore('settings');
 
     // Restaurar datos
@@ -341,6 +423,7 @@ export async function importBackup(jsonString) {
     for (const g of data.grades || []) await saveItem('grades', g);
     for (const p of data.projects || []) await saveItem('projects', p);
     for (const m of data.materials || []) await saveItem('materials', m);
+    for (const tr of data.trash || []) await saveItem('trash', tr);
     for (const st of data.settings || []) await saveItem('settings', st);
 
     return true;

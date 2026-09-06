@@ -1886,3 +1886,166 @@ input, textarea, select, button {
   }
 }
 
+/* ==========================================================================
+   ESTILOS NUEVAS FUNCIONALIDADES: RACHAS, LOGROS, PAPELERA, RECURSOS Y NUBE
+   ========================================================================== */
+
+/* Botón indicador de Racha en Header */
+.btn-streak-badge {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(239, 68, 68, 0.18));
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #f59e0b;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: var(--transition);
+  user-select: none;
+}
+.btn-streak-badge:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.35);
+}
+
+/* Tarjetas de Logros / Gamificación */
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+.achievement-card {
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: var(--transition);
+  opacity: 0.55;
+  filter: grayscale(80%);
+}
+.achievement-card.unlocked {
+  opacity: 1;
+  filter: none;
+  border-color: rgba(245, 158, 11, 0.45);
+  background: linear-gradient(135deg, var(--bg-input), rgba(245, 158, 11, 0.08));
+}
+.achievement-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+.achievement-info h4 {
+  font-size: 0.95rem;
+  margin: 0 0 3px 0;
+  color: var(--text-main);
+}
+.achievement-info p {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Tarjetas de Papelera de Reciclaje */
+.trash-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 55vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.trash-item-card {
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  transition: var(--transition);
+}
+.trash-item-card:hover {
+  border-color: var(--primary);
+}
+.trash-item-info {
+  flex: 1;
+  overflow: hidden;
+}
+.trash-item-title {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 3px;
+}
+.trash-item-meta {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.trash-type-badge {
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.trash-badge-task { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+.trash-badge-exam { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+.trash-badge-project { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+.trash-badge-grade { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+
+/* Recursos y Enlaces por Asignatura */
+.resource-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+.resource-link-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+.resource-link-item:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--primary);
+}
+.resource-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--primary);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+

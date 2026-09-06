@@ -15,11 +15,47 @@ import {
   applySubjectPreset,
   exportBackup,
   importBackup,
-  compressImage
+  compressImage,
+  moveToTrash,
+  getTrashItems,
+  restoreFromTrash,
+  deletePermanentlyFromTrash,
+  emptyTrash
 } from './db.js';
 
 import { initCameraModule, openCamera, openImageViewer } from './camera.js';
 import { initAnnotationModule, openAnnotationEditor } from './annotations.js';
+import {
+  exportSchedulePDF,
+  exportGradesReportPDF,
+  exportProjectDossierPDF
+} from './pdf-export.js';
+import {
+  downloadICS,
+  generateExamsICS,
+  generateScheduleICS,
+  exportSingleExam
+} from './ics-export.js';
+import {
+  getGamificationStats,
+  recordStudyActivity,
+  ACHIEVEMENTS
+} from './gamification.js';
+import {
+  areNotificationsSupported,
+  getNotificationPermission,
+  requestNotificationPermission,
+  sendTestNotification,
+  checkDueReminders
+} from './notifications.js';
+import {
+  initFirebase,
+  loginWithGoogle,
+  logoutFirebase,
+  getCurrentUser,
+  uploadToCloud,
+  downloadFromCloud
+} from './firebase-sync.js';
 import {
   startRecording,
   stopRecording,
@@ -84,7 +120,8 @@ const AppState = {
     timerId: null,
     countToday: 0,
     totalFocusMinutes: 0
-  }
+  },
+  trash: []
 };
 
 // Variable para el evento de instalación PWA
@@ -120,6 +157,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     initGlobalSearch();
     initOcrModule();
     initGallerySearch();
+    initGamification();
+    initTrashModule();
+    initSubjectResourcesModule();
+    initNotificationsModule();
+    initPdfExportModule();
+    initIcsExportModule();
+    initFirebaseSyncModule();
 
     // 4. Renderizar vistas
     renderAllViews();
@@ -142,6 +186,7 @@ async function loadAllData() {
   AppState.grades = await getAll('grades');
   AppState.projects = await getAll('projects');
   AppState.materials = await getAll('materials');
+  AppState.trash = await getTrashItems();
   AppState.timeSlots = await getSetting('timeSlots', []);
   AppState.studentInfo = await getSetting('studentInfo', {
     studentName: 'Estudiante',
@@ -155,6 +200,8 @@ async function loadAllData() {
     AppState.pomodoro.countToday = savedPomo.countToday || 0;
     AppState.pomodoro.totalFocusMinutes = savedPomo.totalFocusMinutes || 0;
   }
+
+  updateTrashCounters();
 }
 
 /**
@@ -1211,6 +1258,7 @@ function renderProjectsView() {
           }
 
           <div class="task-actions" style="margin-top: 12px;">
+            <button class="btn-action-small" onclick="window.handleExportProjectPDF('${project.id}')" title="Descargar Dossier del Proyecto en PDF">📄 Dossier PDF</button>
             <button class="btn-action-small" onclick="window.openProjectModal('${project.id}')">✏️ Editar</button>
             <button class="btn-action-small danger" onclick="window.confirmDeleteProject('${project.id}')">🗑️ Eliminar</button>
           </div>
@@ -1333,6 +1381,7 @@ function renderExamsView() {
               : ''
           }
           <div class="task-actions">
+            <button class="btn-action-small" onclick="window.handleExportSingleExamICS('${exam.id}')" title="Añadir este examen a Google/Apple Calendar (.ics)">📅 Calendario</button>
             <button class="btn-action-small" onclick="window.openExamModal('${exam.id}')">✏️ Editar</button>
             <button class="btn-action-small danger" onclick="window.confirmDeleteExam('${exam.id}')">🗑️ Eliminar</button>
           </div>
@@ -1648,16 +1697,30 @@ window.toggleTaskComplete = async function (taskId) {
     await saveItem('tasks', task);
     await loadAllData();
     renderAllViews();
-    showToast(task.status === 'completed' ? '🎉 ¡Tarea completada!' : 'Tarea marcada como pendiente');
+    if (task.status === 'completed') {
+      showToast('🎉 ¡Tarea completada!', 'success');
+      const { newlyUnlocked } = await recordStudyActivity('task_completed');
+      const stats = await getGamificationStats();
+      updateGamificationUI(stats);
+      if (newlyUnlocked && newlyUnlocked.length > 0) {
+        for (const ach of newlyUnlocked) {
+          showToast(`🏆 ¡Logro Desbloqueado!: ${ach.title}`, 'success');
+        }
+      }
+    } else {
+      showToast('Tarea marcada como pendiente');
+    }
   }
 };
 
 window.confirmDeleteTask = async function (taskId) {
-  if (confirm('¿Seguro que deseas eliminar esta tarea?')) {
-    await deleteItem('tasks', taskId);
+  const task = AppState.tasks.find((t) => t.id === taskId);
+  if (!task) return;
+  if (confirm('¿Mover esta tarea a la papelera de reciclaje?')) {
+    await moveToTrash('tasks', task, task.title || 'Tarea');
     await loadAllData();
     renderAllViews();
-    showToast('🗑️ Tarea eliminada');
+    showToast('🗑️ Tarea movida a la papelera (30 días)');
   }
 };
 
@@ -1737,11 +1800,13 @@ async function handleExamFormSubmit(e) {
 }
 
 window.confirmDeleteExam = async function (examId) {
-  if (confirm('¿Seguro que deseas eliminar este examen?')) {
-    await deleteItem('exams', examId);
+  const exam = AppState.exams.find((e) => e.id === examId);
+  if (!exam) return;
+  if (confirm('¿Mover este examen a la papelera de reciclaje?')) {
+    await moveToTrash('exams', exam, exam.title || exam.topics || 'Examen');
     await loadAllData();
     renderAllViews();
-    showToast('🗑️ Examen eliminado');
+    showToast('🗑️ Examen movido a la papelera (30 días)');
   }
 };
 
@@ -1768,6 +1833,7 @@ async function handleGradeFormSubmit(e) {
 
   const grade = { id, subjectId, term, title, score, date };
   await saveItem('grades', grade);
+  await recordStudyActivity('grade_added');
   await loadAllData();
   renderAllViews();
   document.getElementById('grade-modal').classList.add('hidden');
@@ -1775,11 +1841,13 @@ async function handleGradeFormSubmit(e) {
 }
 
 window.confirmDeleteGrade = async function (gradeId) {
-  if (confirm('¿Eliminar esta calificación?')) {
-    await deleteItem('grades', gradeId);
+  const grade = AppState.grades.find((g) => g.id === gradeId);
+  if (!grade) return;
+  if (confirm('¿Mover esta calificación a la papelera de reciclaje?')) {
+    await moveToTrash('grades', grade, `Nota: ${grade.score} (${grade.title || 'Evaluación'})`);
     await loadAllData();
     renderAllViews();
-    showToast('🗑️ Calificación eliminada');
+    showToast('🗑️ Calificación movida a la papelera');
   }
 };
 
@@ -3173,6 +3241,12 @@ function startPomodoro() {
         AppState.pomodoro.totalFocusMinutes += Math.round(AppState.pomodoro.totalTime / 60);
         savePomodoroStats();
         showToast('🔔 ¡Sesión de estudio completada! Tómate un descanso ☕', 'success');
+        recordStudyActivity('pomodoro_completed').then(({ newlyUnlocked }) => {
+          getGamificationStats().then(updateGamificationUI);
+          if (newlyUnlocked && newlyUnlocked.length > 0) {
+            newlyUnlocked.forEach(a => showToast(`🏆 ¡Logro Desbloqueado!: ${a.title}`, 'success'));
+          }
+        });
         setPomodoroMode('short', 5);
       } else {
         playBreakBell();
@@ -3243,11 +3317,13 @@ window.toggleMaterialPacked = async function (matId) {
 };
 
 window.confirmDeleteMaterial = async function (matId) {
-  if (confirm('¿Eliminar este material de la lista?')) {
-    await deleteItem('materials', matId);
+  const mat = AppState.materials.find((m) => m.id === matId);
+  if (!mat) return;
+  if (confirm('¿Mover este material a la papelera?')) {
+    await moveToTrash('materials', mat, mat.name || 'Material');
     await loadAllData();
     renderBackpackView();
-    showToast('🗑️ Material eliminado');
+    showToast('🗑️ Material movido a la papelera');
   }
 };
 
@@ -3349,11 +3425,13 @@ async function handleProjectFormSubmit(e) {
 }
 
 window.confirmDeleteProject = async function (projectId) {
-  if (confirm('¿Eliminar este proyecto de arte y sus fotos?')) {
-    await deleteItem('projects', projectId);
+  const project = AppState.projects.find((p) => p.id === projectId);
+  if (!project) return;
+  if (confirm('¿Mover este proyecto y sus fotos a la papelera?')) {
+    await moveToTrash('projects', project, project.title || 'Proyecto');
     await loadAllData();
     renderAllViews();
-    showToast('🗑️ Proyecto eliminado');
+    showToast('🗑️ Proyecto movido a la papelera');
   }
 };
 
@@ -3468,3 +3546,553 @@ function escapeHTML(str) {
   if (!str) return '';
   return str.replace(/[&<>'"]/g, (tag) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
 }
+
+// ==========================================================================
+// 1. MÓDULO: GAMIFICACIÓN, RACHAS Y LOGROS
+// ==========================================================================
+
+async function initGamification() {
+  const { stats, newlyUnlocked } = await recordStudyActivity('app_opened');
+  updateGamificationUI(stats);
+  if (newlyUnlocked && newlyUnlocked.length > 0) {
+    for (const ach of newlyUnlocked) {
+      showToast(`🏆 ¡Logro Desbloqueado!: ${ach.title}`, 'success');
+    }
+  }
+
+  const btnStreak = document.getElementById('btn-open-streak');
+  const drawerBtnStreak = document.getElementById('drawer-btn-streak');
+  const modal = document.getElementById('achievements-modal');
+
+  const openAchievements = async () => {
+    const currentStats = await getGamificationStats();
+    updateGamificationUI(currentStats);
+    renderAchievementsList(currentStats);
+    modal?.classList.remove('hidden');
+    window.closeDrawer?.();
+  };
+
+  btnStreak?.addEventListener('click', openAchievements);
+  drawerBtnStreak?.addEventListener('click', openAchievements);
+}
+
+function updateGamificationUI(stats) {
+  const headerDays = document.getElementById('header-streak-days');
+  const drawerText = document.getElementById('drawer-streak-text');
+  const modalStreakDays = document.getElementById('modal-streak-days');
+  const statBestStreak = document.getElementById('stat-best-streak');
+  const statTasksDone = document.getElementById('stat-tasks-done');
+  const statPomoSessions = document.getElementById('stat-pomo-sessions');
+
+  const days = stats.currentStreak || 1;
+  if (headerDays) headerDays.textContent = days;
+  if (drawerText) drawerText.textContent = `${days} ${days === 1 ? 'día' : 'días'}`;
+  if (modalStreakDays) modalStreakDays.textContent = `${days} ${days === 1 ? 'Día' : 'Días'} en Racha`;
+  if (statBestStreak) statBestStreak.textContent = stats.bestStreak || 1;
+  if (statTasksDone) statTasksDone.textContent = stats.completedTasksCount || 0;
+  if (statPomoSessions) statPomoSessions.textContent = stats.pomodoroSessionsCount || 0;
+}
+
+function renderAchievementsList(stats) {
+  const container = document.getElementById('achievements-container');
+  if (!container) return;
+
+  const unlockedSet = new Set(stats.unlockedAchievements || []);
+  container.innerHTML = ACHIEVEMENTS.map(ach => {
+    const isUnlocked = unlockedSet.has(ach.id);
+    return `
+      <div class="achievement-card ${isUnlocked ? 'unlocked' : ''}">
+        <div class="achievement-icon-box">${ach.icon}</div>
+        <div class="achievement-info">
+          <h4>${escapeHTML(ach.title)} ${isUnlocked ? '✅' : '🔒'}</h4>
+          <p>${escapeHTML(ach.desc)}</p>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ==========================================================================
+// 2. MÓDULO: PAPELERA DE RECICLAJE (30 DÍAS)
+// ==========================================================================
+
+function updateTrashCounters() {
+  const count = (AppState.trash || []).length;
+  const badge1 = document.getElementById('settings-trash-count');
+  const badge2 = document.getElementById('drawer-badge-trash');
+  if (badge1) badge1.textContent = count;
+  if (badge2) {
+    badge2.textContent = count;
+    badge2.classList.toggle('hidden', count === 0);
+  }
+}
+
+function initTrashModule() {
+  const btnSettings = document.getElementById('btn-open-trash-settings');
+  const btnDrawer = document.getElementById('drawer-btn-trash');
+  const btnEmpty = document.getElementById('btn-empty-trash');
+  const modal = document.getElementById('trash-modal');
+
+  const openTrash = async () => {
+    AppState.trash = await getTrashItems();
+    updateTrashCounters();
+    renderTrashItems();
+    modal?.classList.remove('hidden');
+    window.closeDrawer?.();
+  };
+
+  btnSettings?.addEventListener('click', openTrash);
+  btnDrawer?.addEventListener('click', openTrash);
+
+  btnEmpty?.addEventListener('click', async () => {
+    if ((AppState.trash || []).length === 0) return;
+    if (confirm('¿Vaciar toda la papelera de reciclaje? Esta acción eliminará permanentemente todos los elementos.')) {
+      await emptyTrash();
+      AppState.trash = [];
+      updateTrashCounters();
+      renderTrashItems();
+      showToast('🗑️ Papelera vaciada');
+    }
+  });
+}
+
+function renderTrashItems() {
+  const container = document.getElementById('trash-items-container');
+  if (!container) return;
+
+  if (!AppState.trash || AppState.trash.length === 0) {
+    container.innerHTML = '<p class="section-subtitle">La papelera está vacía. ¡Todo al día!</p>';
+    return;
+  }
+
+  container.innerHTML = AppState.trash.map(item => {
+    const typeBadgeClass = `trash-badge-${item.originalStore === 'tasks' ? 'task' : item.originalStore === 'exams' ? 'exam' : item.originalStore === 'projects' ? 'project' : 'grade'}`;
+    const typeLabel = item.originalStore === 'tasks' ? 'Tarea' : item.originalStore === 'exams' ? 'Examen' : item.originalStore === 'projects' ? 'Proyecto' : item.originalStore === 'materials' ? 'Material' : 'Nota';
+    const dateStr = new Date(item.deletedAt).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' });
+
+    return `
+      <div class="trash-item-card" id="trash-card-${item.id}">
+        <div class="trash-item-info">
+          <div class="trash-item-title">${escapeHTML(item.label)}</div>
+          <div class="trash-item-meta">
+            <span class="trash-type-badge ${typeBadgeClass}">${typeLabel}</span>
+            <span>Borrado: ${dateStr}</span>
+          </div>
+        </div>
+        <div style="display: flex; gap: 6px;">
+          <button class="btn-action-small" onclick="window.handleRestoreTrash('${item.id}')" title="Restaurar elemento">
+            🔄 Restaurar
+          </button>
+          <button class="btn-action-small" style="color: var(--danger); border-color: rgba(239,68,68,0.3);" onclick="window.handlePermanentDeleteTrash('${item.id}')" title="Eliminar definitivamente">
+            ✕
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+window.handleRestoreTrash = async function(trashId) {
+  const restored = await restoreFromTrash(trashId);
+  if (restored) {
+    await loadAllData();
+    renderAllViews();
+    renderTrashItems();
+    showToast('✅ Elemento restaurado con éxito', 'success');
+  }
+};
+
+window.handlePermanentDeleteTrash = async function(trashId) {
+  if (confirm('¿Eliminar permanentemente este elemento?')) {
+    await deletePermanentlyFromTrash(trashId);
+    AppState.trash = await getTrashItems();
+    updateTrashCounters();
+    renderTrashItems();
+    showToast('🗑️ Eliminado permanentemente');
+  }
+};
+
+// ==========================================================================
+// 3. MÓDULO: RECURSOS Y ENLACES POR ASIGNATURA
+// ==========================================================================
+
+function initSubjectResourcesModule() {
+  const btnSettings = document.getElementById('btn-open-resources-settings');
+  const btnDrawer = document.getElementById('drawer-btn-resources');
+  const modal = document.getElementById('subject-resources-modal');
+  const selectSubject = document.getElementById('resources-subject-select');
+  const formAdd = document.getElementById('form-add-resource');
+
+  const openResourcesModal = (subId = null) => {
+    populateSubjectSelect(selectSubject);
+    if (subId && selectSubject) {
+      selectSubject.value = subId;
+    }
+    renderSubjectResourcesList();
+    modal?.classList.remove('hidden');
+    window.closeDrawer?.();
+  };
+
+  btnSettings?.addEventListener('click', () => openResourcesModal());
+  btnDrawer?.addEventListener('click', () => openResourcesModal());
+  selectSubject?.addEventListener('change', () => renderSubjectResourcesList());
+
+  formAdd?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const subId = selectSubject.value;
+    if (!subId) {
+      showToast('Por favor selecciona una asignatura', 'error');
+      return;
+    }
+
+    const sub = AppState.subjects.find(s => s.id === subId);
+    if (!sub) return;
+
+    const titleInput = document.getElementById('resource-title');
+    const typeSelect = document.getElementById('resource-type');
+    const urlInput = document.getElementById('resource-url');
+
+    const newResource = {
+      id: `res_${Date.now()}`,
+      title: titleInput.value.trim(),
+      type: typeSelect.value,
+      url: urlInput.value.trim()
+    };
+
+    if (!sub.resources) sub.resources = [];
+    sub.resources.push(newResource);
+    await saveItem('subjects', sub);
+    await loadAllData();
+
+    titleInput.value = '';
+    urlInput.value = '';
+    renderSubjectResourcesList();
+    showToast(`🔗 Enlace guardado para ${sub.name}`, 'success');
+  });
+
+  window.openSubjectResourcesModal = openResourcesModal;
+}
+
+function renderSubjectResourcesList() {
+  const selectSubject = document.getElementById('resources-subject-select');
+  const container = document.getElementById('subject-resources-container');
+  if (!selectSubject || !container) return;
+
+  const subId = selectSubject.value;
+  const sub = AppState.subjects.find(s => s.id === subId);
+  const resources = sub?.resources || [];
+
+  if (resources.length === 0) {
+    container.innerHTML = '<p class="section-subtitle">No hay enlaces o recursos guardados para esta materia.</p>';
+    return;
+  }
+
+  const iconMap = {
+    classroom: '🏫',
+    drive: '📁',
+    moodle: '🎓',
+    youtube: '📺',
+    web: '🌐'
+  };
+
+  container.innerHTML = resources.map(res => {
+    const icon = iconMap[res.type] || '🔗';
+    return `
+      <div class="resource-link-item">
+        <a href="${escapeHTML(res.url)}" target="_blank" rel="noopener noreferrer" class="resource-link-btn" title="Abrir en nueva pestaña">
+          <span>${icon}</span>
+          <span>${escapeHTML(res.title)}</span>
+          <span style="font-size: 0.72rem; opacity: 0.7;">↗</span>
+        </a>
+        <button class="btn-action-small" style="color: var(--danger); border-color: rgba(239,68,68,0.25);" onclick="window.handleDeleteResource('${sub.id}', '${res.id}')" title="Eliminar recurso">
+          ✕
+        </button>
+      </div>
+    `;
+  }).join('');
+}
+
+window.handleDeleteResource = async function(subId, resId) {
+  const sub = AppState.subjects.find(s => s.id === subId);
+  if (!sub || !sub.resources) return;
+  sub.resources = sub.resources.filter(r => r.id !== resId);
+  await saveItem('subjects', sub);
+  await loadAllData();
+  renderSubjectResourcesList();
+  showToast('Enlace eliminado');
+};
+
+// ==========================================================================
+// 4. MÓDULO: NOTIFICACIONES PUSH LOCALES
+// ==========================================================================
+
+async function initNotificationsModule() {
+  const toggleBtn = document.getElementById('btn-toggle-notifications');
+  const testBtn = document.getElementById('btn-test-notification');
+  const permBadge = document.getElementById('notification-perm-badge');
+  const statusText = document.getElementById('notification-status-text');
+
+  const updateUI = () => {
+    const perm = getNotificationPermission();
+    if (permBadge) {
+      if (perm === 'granted') {
+        permBadge.textContent = 'Permiso: Concedido ✅';
+        permBadge.style.color = 'var(--success)';
+        if (statusText) statusText.textContent = 'Notificaciones Activas';
+      } else if (perm === 'denied') {
+        permBadge.textContent = 'Permiso: Denegado ❌';
+        permBadge.style.color = 'var(--danger)';
+        if (statusText) statusText.textContent = 'Permiso Denegado';
+      } else {
+        permBadge.textContent = 'Permiso: No solicitado';
+        permBadge.style.color = 'var(--text-muted)';
+        if (statusText) statusText.textContent = 'Activar Notificaciones';
+      }
+    }
+  };
+
+  updateUI();
+
+  toggleBtn?.addEventListener('click', async () => {
+    try {
+      const perm = await requestNotificationPermission();
+      updateUI();
+      if (perm === 'granted') {
+        showToast('🔔 ¡Notificaciones y recordatorios activados!', 'success');
+        checkDueReminders(AppState.tasks, AppState.exams, AppState.subjects);
+      } else {
+        showToast('Permiso de notificaciones no concedido', 'error');
+      }
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
+  });
+
+  testBtn?.addEventListener('click', async () => {
+    try {
+      await sendTestNotification();
+      showToast('🔔 Notificación de prueba enviada', 'success');
+    } catch (err) {
+      showToast('Error al enviar prueba: ' + err.message, 'error');
+    }
+  });
+
+  // Comprobar avisos al inicio y cuando la pestaña vuelve a ser visible
+  checkDueReminders(AppState.tasks, AppState.exams, AppState.subjects);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      checkDueReminders(AppState.tasks, AppState.exams, AppState.subjects);
+    }
+  });
+}
+
+// ==========================================================================
+// 5. MÓDULO: EXPORTACIÓN A CALENDARIOS NATIVOS (.ICS)
+// ==========================================================================
+
+function initIcsExportModule() {
+  const btnScheduleICS = document.getElementById('btn-export-schedule-ics');
+  const btnExamsICS = document.getElementById('btn-export-exams-ics');
+
+  btnScheduleICS?.addEventListener('click', () => {
+    try {
+      const ics = generateScheduleICS(AppState.schedule, AppState.subjects, AppState.timeSlots);
+      downloadICS(ics, 'Horario_Escolar_Agenda.ics');
+      showToast('📅 Horario exportado a calendario (.ics)', 'success');
+    } catch (err) {
+      console.error(err);
+      showToast('Error al exportar horario: ' + err.message, 'error');
+    }
+  });
+
+  btnExamsICS?.addEventListener('click', () => {
+    try {
+      if ((AppState.exams || []).length === 0) {
+        showToast('No hay exámenes registrados para exportar', 'info');
+        return;
+      }
+      const ics = generateExamsICS(AppState.exams, AppState.subjects);
+      downloadICS(ics, 'Examenes_Agenda_Escolar.ics');
+      showToast('📅 Exámenes exportados a calendario (.ics) con alarmas', 'success');
+    } catch (err) {
+      console.error(err);
+      showToast('Error al exportar exámenes: ' + err.message, 'error');
+    }
+  });
+
+  window.handleExportSingleExamICS = function(examId) {
+    const exam = AppState.exams.find(e => e.id === examId);
+    if (!exam) return;
+    const sub = AppState.subjects.find(s => s.id === exam.subjectId);
+    exportSingleExam(exam, sub);
+    showToast('📅 Examen exportado a calendario (.ics)', 'success');
+  };
+}
+
+// ==========================================================================
+// 6. MÓDULO: GENERADOR Y EXPORTADOR A PDF OFFLINE
+// ==========================================================================
+
+function initPdfExportModule() {
+  const btnSchedulePDF = document.getElementById('btn-export-schedule-pdf');
+  const btnGradesPDF = document.getElementById('btn-export-grades-pdf');
+
+  btnSchedulePDF?.addEventListener('click', async () => {
+    try {
+      showToast('📄 Generando PDF del horario semanal...', 'info');
+      await exportSchedulePDF(AppState.schedule, AppState.subjects, AppState.timeSlots, AppState.studentInfo);
+      showToast('✅ Horario en PDF descargado', 'success');
+    } catch (err) {
+      console.error(err);
+      showToast('Error generando PDF: ' + err.message, 'error');
+    }
+  });
+
+  btnGradesPDF?.addEventListener('click', async () => {
+    try {
+      showToast('📄 Generando Boletín Oficial en PDF...', 'info');
+      await exportGradesReportPDF(AppState.grades, AppState.subjects, AppState.studentInfo);
+      showToast('✅ Boletín en PDF descargado', 'success');
+    } catch (err) {
+      console.error(err);
+      showToast('Error generando PDF: ' + err.message, 'error');
+    }
+  });
+
+  window.handleExportProjectPDF = async function(projectId) {
+    const proj = AppState.projects.find(p => p.id === projectId);
+    if (!proj) return;
+    const sub = AppState.subjects.find(s => s.id === proj.subjectId);
+    try {
+      showToast('📄 Generando Dossier de Proyecto en PDF...', 'info');
+      await exportProjectDossierPDF(proj, sub);
+      showToast('✅ Dossier PDF descargado', 'success');
+    } catch (err) {
+      console.error(err);
+      showToast('Error al generar PDF: ' + err.message, 'error');
+    }
+  };
+}
+
+// ==========================================================================
+// 7. MÓDULO: SINCRONIZACIÓN EN LA NUBE CON FIREBASE
+// ==========================================================================
+
+function initFirebaseSyncModule() {
+  const btnOpenConfig = document.getElementById('btn-open-firebase-config');
+  const btnDrawerCloud = document.getElementById('drawer-btn-cloud');
+  const btnSyncNow = document.getElementById('btn-firebase-sync-now');
+  const modal = document.getElementById('firebase-modal');
+  const formConfig = document.getElementById('firebase-config-form');
+  const jsonInput = document.getElementById('firebase-config-json');
+  const btnLoginGoogle = document.getElementById('btn-firebase-login-google');
+  const btnUpload = document.getElementById('btn-sync-cloud-upload');
+  const btnDownload = document.getElementById('btn-sync-cloud-download');
+  const userIndicator = document.getElementById('firebase-user-indicator');
+  const userNameEl = document.getElementById('firebase-user-name');
+  const userEmailEl = document.getElementById('firebase-user-email');
+
+  const openFirebaseModal = async () => {
+    const savedConfig = await getSetting('firebaseConfig');
+    if (savedConfig && jsonInput) {
+      jsonInput.value = typeof savedConfig === 'string' ? savedConfig : JSON.stringify(savedConfig, null, 2);
+    }
+    modal?.classList.remove('hidden');
+    window.closeDrawer?.();
+  };
+
+  btnOpenConfig?.addEventListener('click', openFirebaseModal);
+  btnDrawerCloud?.addEventListener('click', openFirebaseModal);
+
+  // Inicializar Firebase si ya hay configuración
+  getSetting('firebaseConfig').then(async (config) => {
+    if (config) {
+      try {
+        const parsed = typeof config === 'string' ? JSON.parse(config) : config;
+        await initFirebase(parsed, (user) => {
+          if (user) {
+            if (userIndicator) userIndicator.textContent = `Conectado: ${user.displayName || user.email}`;
+            if (userNameEl) userNameEl.textContent = user.displayName || 'Usuario Google';
+            if (userEmailEl) userEmailEl.textContent = user.email || '';
+            if (btnLoginGoogle) btnLoginGoogle.textContent = '🚪 Cerrar Sesión';
+          } else {
+            if (userIndicator) userIndicator.textContent = 'Modo 100% Offline Local';
+            if (userNameEl) userNameEl.textContent = 'No conectado';
+            if (userEmailEl) userEmailEl.textContent = 'Sin cuenta asociada';
+            if (btnLoginGoogle) btnLoginGoogle.textContent = '🔑 Iniciar con Google';
+          }
+        });
+      } catch (e) {
+        console.warn('Configuración de Firebase no válida:', e);
+      }
+    }
+  });
+
+  formConfig?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const raw = jsonInput.value.trim();
+    if (!raw) {
+      showToast('Pega la configuración de tu proyecto Firebase', 'error');
+      return;
+    }
+    try {
+      const parsed = JSON.parse(raw);
+      await setSetting('firebaseConfig', parsed);
+      await initFirebase(parsed);
+      showToast('⚙️ Configuración de Firebase guardada', 'success');
+    } catch (err) {
+      showToast('JSON de configuración no válido: ' + err.message, 'error');
+    }
+  });
+
+  btnLoginGoogle?.addEventListener('click', async () => {
+    const user = getCurrentUser();
+    if (user) {
+      await logoutFirebase();
+      showToast('Sesión de Firebase cerrada', 'info');
+    } else {
+      try {
+        showToast('Iniciando sesión con Google...', 'info');
+        const loggedUser = await loginWithGoogle();
+        showToast(`¡Bienvenido/a, ${loggedUser.displayName || loggedUser.email}!`, 'success');
+      } catch (err) {
+        showToast('Error de inicio de sesión: ' + err.message, 'error');
+      }
+    }
+  });
+
+  const performCloudUpload = async () => {
+    try {
+      showToast('☁️ Subiendo agenda a la nube...', 'info');
+      const backupData = JSON.parse(await exportBackup());
+      await uploadToCloud(backupData);
+      showToast('✅ Agenda respaldada en la nube con éxito', 'success');
+    } catch (err) {
+      showToast('Error al subir: ' + err.message, 'error');
+    }
+  };
+
+  const performCloudDownload = async () => {
+    try {
+      showToast('☁️ Descargando agenda de la nube...', 'info');
+      const cloudData = await downloadFromCloud();
+      if (!cloudData) {
+        showToast('No se encontraron datos en tu casillero en la nube', 'info');
+        return;
+      }
+      if (confirm('¿Restaurar los datos de la nube en este dispositivo? Se actualizará tu agenda escolar.')) {
+        await importBackup(JSON.stringify(cloudData));
+        await loadAllData();
+        renderAllViews();
+        showToast('✅ Agenda restaurada desde la nube con éxito', 'success');
+      }
+    } catch (err) {
+      showToast('Error al descargar: ' + err.message, 'error');
+    }
+  };
+
+  btnUpload?.addEventListener('click', performCloudUpload);
+  btnSyncNow?.addEventListener('click', performCloudUpload);
+  btnDownload?.addEventListener('click', performCloudDownload);
+}
+
