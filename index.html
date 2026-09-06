@@ -97,6 +97,9 @@
     <button class="nav-tab" data-tab="tab-gallery">
       <span>📸</span> Fotos Apuntes
     </button>
+    <button class="nav-tab" data-tab="tab-flashcards">
+      <span>🧠</span> Fichas <span id="badge-due-flashcards" class="tab-badge hidden">0</span>
+    </button>
     <button class="nav-tab" data-tab="tab-settings">
       <span>⚙️</span> Ajustes
     </button>
@@ -167,6 +170,11 @@
         <button class="drawer-nav-item" data-tab="tab-gallery">
           <span class="drawer-nav-icon">📸</span>
           <span class="drawer-nav-text">Fotos de Apuntes y Pizarras</span>
+        </button>
+        <button class="drawer-nav-item" data-tab="tab-flashcards">
+          <span class="drawer-nav-icon">🧠</span>
+          <span class="drawer-nav-text">Fichas de Estudio (Leitner)</span>
+          <span id="drawer-badge-due-flashcards" class="tab-badge hidden">0</span>
         </button>
       </div>
 
@@ -555,6 +563,191 @@
 
       <div id="gallery-container">
         <p class="section-subtitle">Cargando fotos guardadas...</p>
+      </div>
+    </section>
+
+    <!-- PESTAÑA: FICHAS DE ESTUDIO Y REPASO ESPACIADO (LEITNER) -->
+    <section id="tab-flashcards" class="tab-panel">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title"><span>🧠</span> Fichas de Estudio y Repaso Espaciado</h2>
+          <p class="section-subtitle">Aprende y memoriza conceptos clave con repetición espaciada (Sistema Leitner)</p>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" id="btn-flashcards-mode-study" class="btn-primary" style="width: auto;">
+            🎯 Repaso Activo
+          </button>
+          <button type="button" id="btn-flashcards-mode-manage" class="btn-secondary" style="width: auto;">
+            📋 Todas las Fichas
+          </button>
+          <button type="button" id="btn-open-new-flashcard" class="btn-secondary" style="width: auto;">
+            ➕ Nueva Ficha
+          </button>
+        </div>
+      </div>
+
+      <!-- Tarjetas de Estadísticas Leitner -->
+      <div class="flashcards-header-stats">
+        <div class="flashcard-stat-card">
+          <div id="stat-flashcards-due" class="flashcard-stat-number" style="color: #ef4444;">0</div>
+          <div class="flashcard-stat-label">Para Repasar Hoy</div>
+        </div>
+        <div class="flashcard-stat-card">
+          <div id="stat-flashcards-total" class="flashcard-stat-number" style="color: var(--primary);">0</div>
+          <div class="flashcard-stat-label">Total de Fichas</div>
+        </div>
+        <div class="flashcard-stat-card">
+          <div id="stat-flashcards-mastered" class="flashcard-stat-number" style="color: #10b981;">0</div>
+          <div class="flashcard-stat-label">Dominadas (Caja 5)</div>
+        </div>
+        <div class="flashcard-stat-card">
+          <div id="stat-flashcards-rate" class="flashcard-stat-number" style="color: #f59e0b;">0%</div>
+          <div class="flashcard-stat-label">Tasa de Dominio</div>
+        </div>
+      </div>
+
+      <!-- Barra de Filtros por Materia -->
+      <div id="flashcards-subject-chips" class="filters-bar" style="margin-bottom: 18px;">
+        <!-- Se cargan dinámicamente las asignaturas -->
+      </div>
+
+      <!-- VISTA 1: MODO REPASO ACTIVO (SESIÓN INTERACTIVA CON FLIP CARD 3D) -->
+      <div id="flashcards-study-view">
+        <!-- Indicador de progreso de la sesión -->
+        <div id="flashcard-study-header" style="max-width: 620px; margin: 0 auto 12px auto; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem;">
+          <span id="flashcard-session-progress-text" style="font-weight: 700; color: var(--text-main);">Ficha 1 de 5</span>
+          <div style="width: 140px; height: 8px; background: var(--bg-input); border-radius: var(--radius-full); overflow: hidden;">
+            <div id="flashcard-session-progress-fill" style="width: 20%; height: 100%; background: var(--primary); transition: width 0.3s ease;"></div>
+          </div>
+        </div>
+
+        <!-- Tarjeta Interactiva 3D Flip -->
+        <div class="flashcard-scene">
+          <div id="active-study-card" class="flashcard-card" title="Haz clic o pulsa Espacio para voltear">
+            <!-- Cara Frontal -->
+            <div class="flashcard-face flashcard-face-front">
+              <div class="flashcard-face-top">
+                <span id="study-card-subject" class="flashcard-subject-pill" style="background: rgba(59, 130, 246, 0.15); color: var(--primary);">
+                  🎨 Asignatura
+                </span>
+                <div id="study-card-box-indicator" class="flashcard-box-indicator" title="Nivel en el sistema Leitner">
+                  <!-- Pips 1 a 5 -->
+                </div>
+              </div>
+
+              <div class="flashcard-face-body">
+                <h3 id="study-card-front" class="flashcard-question-text">¿Pregunta o Concepto?</h3>
+                <div id="study-card-hint-box" class="flashcard-hint-box hidden">
+                  💡 <span id="study-card-hint-text">Pista...</span>
+                </div>
+              </div>
+
+              <div class="flashcard-face-bottom">
+                <button type="button" id="btn-toggle-study-hint" class="btn-action-small" style="font-size: 0.75rem;">
+                  💡 Ver Pista
+                </button>
+                <span>👆 Toca para ver la respuesta</span>
+              </div>
+            </div>
+
+            <!-- Cara Posterior -->
+            <div class="flashcard-face flashcard-face-back">
+              <div class="flashcard-face-top">
+                <span class="flashcard-subject-pill" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">
+                  ✅ Respuesta
+                </span>
+                <span id="study-card-box-name" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">
+                  Caja 1: Aprendiendo
+                </span>
+              </div>
+
+              <div class="flashcard-face-body">
+                <div id="study-card-back" class="flashcard-answer-text">Explicación o definición completa...</div>
+              </div>
+
+              <div class="flashcard-face-bottom">
+                <span style="font-weight: 600;">¿Qué tal te la sabías? Evalúate abajo 👇</span>
+                <button type="button" id="btn-flip-back" class="btn-action-small" style="font-size: 0.75rem;">
+                  🔄 Girar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones de Calificación Leitner -->
+        <div id="flashcard-rating-controls" class="flashcard-rating-bar">
+          <button type="button" id="btn-rate-hard" class="btn-rating btn-rating-hard" title="Volver a estudiar pronto (Caja 1)">
+            <span>❌ Difícil</span>
+            <span class="rating-sub">Caja 1 &bull; Mañana</span>
+          </button>
+          <button type="button" id="btn-rate-good" class="btn-rating btn-rating-good" title="Mantiene el ritmo de repaso">
+            <span>🤔 Regular</span>
+            <span id="rating-good-sub" class="rating-sub">En 3 días</span>
+          </button>
+          <button type="button" id="btn-rate-easy" class="btn-rating btn-rating-easy" title="¡Bien aprendida! Sube de nivel Leitner">
+            <span>✅ ¡Fácil!</span>
+            <span id="rating-easy-sub" class="rating-sub">Subir Caja</span>
+          </button>
+        </div>
+
+        <!-- Pantalla de Enhorabuena al terminar la sesión -->
+        <div id="flashcard-session-complete" class="card hidden" style="max-width: 580px; margin: 20px auto; text-align: center; padding: 28px;">
+          <div style="font-size: 3rem; margin-bottom: 8px;">🎉</div>
+          <h3 style="font-size: 1.4rem; color: var(--text-main); margin-bottom: 6px;">¡Sesión de Repaso Completada!</h3>
+          <p class="section-subtitle" style="margin-bottom: 18px;">
+            Has repasado todas tus fichas pendientes de hoy. Tu constancia ayuda a consolidar la memoria a largo plazo.
+          </p>
+          <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+            <button type="button" id="btn-session-restart" class="btn-primary" style="width: auto;">
+              🔄 Volver a Repasar Todo
+            </button>
+            <button type="button" id="btn-session-manage" class="btn-secondary" style="width: auto;">
+              📋 Ver Catálogo de Fichas
+            </button>
+          </div>
+        </div>
+
+        <!-- Mensaje cuando no hay fichas pendientes -->
+        <div id="flashcard-empty-due" class="card hidden" style="max-width: 580px; margin: 20px auto; text-align: center; padding: 24px;">
+          <div style="font-size: 2.8rem; margin-bottom: 8px;">✨</div>
+          <h3 style="font-size: 1.2rem; color: var(--text-main); margin-bottom: 6px;">¡Todo al día en esta materia!</h3>
+          <p class="section-subtitle" style="margin-bottom: 16px;">
+            No tienes fichas programadas para hoy. Puedes repasar todas sin límites o crear nuevas fichas para los próximos exámenes.
+          </p>
+          <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+            <button type="button" id="btn-study-all-anyway" class="btn-primary" style="width: auto;">
+              📖 Repasar Todas las Fichas
+            </button>
+            <button type="button" id="btn-empty-add-card" class="btn-secondary" style="width: auto;">
+              ➕ Crear Ficha
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- VISTA 2: GESTOR Y BIBLIOTECA DE FICHAS -->
+      <div id="flashcards-manage-view" class="hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted);">Filtrar por nivel:</span>
+            <select id="flashcard-filter-box" class="form-select" style="width: auto; padding: 4px 10px; font-size: 0.82rem;">
+              <option value="all">Todas las cajas (1 a 5)</option>
+              <option value="1">Caja 1: Aprendiendo (1 día)</option>
+              <option value="2">Caja 2: Familiar (3 días)</option>
+              <option value="3">Caja 3: En progreso (7 días)</option>
+              <option value="4">Caja 4: Avanzado (14 días)</option>
+              <option value="5">Caja 5: Dominada (30 días)</option>
+            </select>
+          </div>
+          <button type="button" id="btn-quick-new-card-manage" class="btn-primary" style="width: auto; padding: 6px 14px; font-size: 0.85rem;">
+            ➕ Añadir Ficha
+          </button>
+        </div>
+
+        <div id="flashcards-manage-grid" class="flashcards-grid">
+          <!-- Tarjetas renderizadas dinámicamente -->
+        </div>
       </div>
     </section>
 
@@ -1432,14 +1625,17 @@
 
       <!-- Botones de acción -->
       <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-        <button type="button" id="btn-ocr-copy" class="btn-secondary" style="flex: 1; min-width: 140px;">
+        <button type="button" id="btn-ocr-copy" class="btn-secondary" style="flex: 1; min-width: 130px;">
           📋 Copiar Texto
         </button>
-        <button type="button" id="btn-ocr-to-task" class="btn-primary" style="flex: 1; min-width: 140px;">
+        <button type="button" id="btn-ocr-to-task" class="btn-primary" style="flex: 1; min-width: 130px;">
           ➕ Añadir a Deberes
         </button>
-        <button type="button" id="btn-ocr-to-exam" class="btn-secondary" style="flex: 1; min-width: 140px;">
-          ➕ Añadir a Examen
+        <button type="button" id="btn-ocr-to-exam" class="btn-secondary" style="flex: 1; min-width: 130px;">
+          ➕ A Examen
+        </button>
+        <button type="button" id="btn-ocr-to-flashcard" class="btn-secondary" style="flex: 1; min-width: 130px;" title="Crear Ficha de Estudio con este texto">
+          🧠 Crear Ficha
         </button>
       </div>
     </div>
@@ -1671,6 +1867,59 @@
           </button>
           <button type="button" id="btn-sync-cloud-download" class="btn-secondary" style="flex: 1;">
             ⬇️ Bajar de Firestore
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 15. MODAL: NUEVA / EDITAR FICHA DE ESTUDIO -->
+  <div id="flashcard-modal" class="modal-overlay hidden">
+    <div class="modal-content" style="max-width: 580px;">
+      <div class="modal-header">
+        <h3 id="flashcard-modal-title" class="modal-title">Nueva Ficha de Estudio</h3>
+        <button class="btn-close" data-close="flashcard-modal">&times;</button>
+      </div>
+
+      <form id="flashcard-form">
+        <input type="hidden" id="flashcard-id" />
+
+        <div class="form-group">
+          <label class="form-label">Asignatura *</label>
+          <select id="flashcard-subject-select" class="form-select" required></select>
+        </div>
+
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <label class="form-label" style="margin-bottom: 0;">Anverso: Pregunta / Concepto / Término *</label>
+            <button type="button" class="btn-voice-dictate btn-voice-dictate-sm" data-voice-target="flashcard-front-input" title="Dictar pregunta por voz 🎙️">
+              <span>🎙️ Dictar</span>
+            </button>
+          </div>
+          <textarea id="flashcard-front-input" class="form-textarea" rows="3" placeholder="Ej: ¿Qué es el contrapposto en la escultura clásica?" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <label class="form-label" style="margin-bottom: 0;">Reverso: Respuesta / Explicación / Definición *</label>
+            <button type="button" class="btn-voice-dictate btn-voice-dictate-sm" data-voice-target="flashcard-back-input" title="Dictar respuesta por voz 🎙️">
+              <span>🎙️ Dictar</span>
+            </button>
+          </div>
+          <textarea id="flashcard-back-input" class="form-textarea" rows="4" placeholder="Ej: Disposición armónica de las partes del cuerpo humano en la que el peso descansa en una pierna mientras la otra permanece relajada..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Pista Opcional (Para ayudarte a recordar)</label>
+          <input type="text" id="flashcard-hint-input" class="form-input" placeholder="Ej: Doríforo de Policleto" />
+        </div>
+
+        <div style="display: flex; gap: 8px; justify-content: flex-end;">
+          <button type="button" class="btn-secondary" data-close="flashcard-modal" style="width: auto;">
+            Cancelar
+          </button>
+          <button type="submit" class="btn-primary" style="width: auto; min-width: 140px;">
+            💾 Guardar Ficha
           </button>
         </div>
       </form>

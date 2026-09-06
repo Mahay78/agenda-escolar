@@ -4,7 +4,7 @@
  */
 
 const DB_NAME = 'AgendaEscolarDB';
-const DB_VERSION = 3;
+const DB_VERSION = 4;
 
 let dbInstance = null;
 
@@ -91,6 +91,14 @@ export function initDB() {
         const trashStore = db.createObjectStore('trash', { keyPath: 'id' });
         trashStore.createIndex('originalStore', 'originalStore', { unique: false });
         trashStore.createIndex('deletedAt', 'deletedAt', { unique: false });
+      }
+
+      // 10. Fichas de estudio / Flashcards (Método Leitner)
+      if (!db.objectStoreNames.contains('flashcards')) {
+        const flashcardStore = db.createObjectStore('flashcards', { keyPath: 'id' });
+        flashcardStore.createIndex('subjectId', 'subjectId', { unique: false });
+        flashcardStore.createIndex('nextReviewDate', 'nextReviewDate', { unique: false });
+        flashcardStore.createIndex('box', 'box', { unique: false });
       }
     };
   });
@@ -381,7 +389,7 @@ export function compressImage(source, maxWidth = 1280, maxHeight = 1280, quality
 // Exportar copia de seguridad completa a JSON
 export async function exportBackup() {
   const data = {
-    version: 3,
+    version: 4,
     exportDate: new Date().toISOString(),
     subjects: await getAll('subjects'),
     schedule: await getAll('schedule'),
@@ -390,6 +398,7 @@ export async function exportBackup() {
     grades: await getAll('grades'),
     projects: await getAll('projects'),
     materials: await getAll('materials'),
+    flashcards: await getAll('flashcards'),
     trash: await getAll('trash'),
     settings: await getAll('settings')
   };
@@ -412,6 +421,7 @@ export async function importBackup(jsonString) {
     await clearStore('grades');
     await clearStore('projects');
     await clearStore('materials');
+    await clearStore('flashcards');
     await clearStore('trash');
     await clearStore('settings');
 
@@ -423,6 +433,7 @@ export async function importBackup(jsonString) {
     for (const g of data.grades || []) await saveItem('grades', g);
     for (const p of data.projects || []) await saveItem('projects', p);
     for (const m of data.materials || []) await saveItem('materials', m);
+    for (const fc of data.flashcards || []) await saveItem('flashcards', fc);
     for (const tr of data.trash || []) await saveItem('trash', tr);
     for (const st of data.settings || []) await saveItem('settings', st);
 

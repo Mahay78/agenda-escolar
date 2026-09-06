@@ -68,6 +68,13 @@ export const ACHIEVEMENTS = [
     desc: 'Registra tus calificaciones y calcula tus medias',
     icon: '📊',
     condition: (s) => s.gradesCount >= 3
+  },
+  {
+    id: 'flashcards_reviewed',
+    title: 'Memoria Prodigiosa',
+    desc: 'Repasa fichas de estudio con el método de repetición espaciada',
+    icon: '🧠',
+    condition: (s) => (s.flashcardsReviewedCount || 0) >= 5
   }
 ];
 
@@ -79,6 +86,7 @@ const DEFAULT_STATS = {
   pomodoroSessionsCount: 0,
   backpackPackedCount: 0,
   gradesCount: 0,
+  flashcardsReviewedCount: 0,
   unlockedAchievements: []
 };
 
@@ -125,6 +133,7 @@ export async function recordStudyActivity(actionType) {
   if (actionType === 'pomodoro_completed') stats.pomodoroSessionsCount++;
   if (actionType === 'backpack_packed') stats.backpackPackedCount++;
   if (actionType === 'grade_added') stats.gradesCount++;
+  if (actionType === 'flashcards_reviewed') stats.flashcardsReviewedCount = (stats.flashcardsReviewedCount || 0) + 1;
 
   // 2. Comprobar racha diaria
   if (!stats.lastActiveDate) {

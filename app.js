@@ -70,6 +70,15 @@ import {
   downloadBackupFromGoogleDrive
 } from './google-drive-sync.js';
 import {
+  createFlashcard,
+  getDueFlashcards,
+  calculateFlashcardStats,
+  processCardReview,
+  seedSampleFlashcardsIfNeeded,
+  LEITNER_INTERVALS,
+  BOX_NAMES
+} from './flashcards.js';
+import {
   startRecording,
   stopRecording,
   cancelRecording,
@@ -113,6 +122,13 @@ const AppState = {
   grades: [],
   projects: [],
   materials: [],
+  flashcards: [],
+  flashcardsSubjectFilter: 'all',
+  flashcardsBoxFilter: 'all',
+  flashcardsMode: 'study',
+  studySessionCards: [],
+  currentStudyCardIndex: 0,
+  isStudyCardFlipped: false,
   timeSlots: [],
   studentInfo: {},
   tempTaskPhotos: [],
@@ -178,6 +194,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initIcsExportModule();
     initGoogleDriveModule();
     initFirebaseSyncModule();
+    initFlashcardsModule();
 
     // 4. Renderizar vistas
     renderAllViews();
@@ -200,6 +217,10 @@ async function loadAllData() {
   AppState.grades = await getAll('grades');
   AppState.projects = await getAll('projects');
   AppState.materials = await getAll('materials');
+  AppState.flashcards = await getAll('flashcards');
+  if (AppState.flashcards.length === 0) {
+    AppState.flashcards = await seedSampleFlashcardsIfNeeded(AppState.subjects);
+  }
   AppState.trash = await getTrashItems();
   AppState.timeSlots = await getSetting('timeSlots', []);
   AppState.studentInfo = await getSetting('studentInfo', {
@@ -452,6 +473,7 @@ function switchTab(tabId) {
   else if (tabId === 'tab-exams') renderExamsView();
   else if (tabId === 'tab-grades') renderGradesView();
   else if (tabId === 'tab-gallery') renderGalleryView();
+  else if (tabId === 'tab-flashcards') renderFlashcardsView();
   else if (tabId === 'tab-settings') renderSettingsView();
 }
 
@@ -775,6 +797,7 @@ function renderAllViews() {
   renderExamsView();
   renderGradesView();
   renderGalleryView();
+  renderFlashcardsView();
   renderSettingsView();
   updateBadges();
 }
@@ -835,6 +858,28 @@ function updateBadges() {
       drawerBadgeExams.classList.remove('hidden');
     } else {
       drawerBadgeExams.classList.add('hidden');
+    }
+  }
+
+  // Fichas de estudio pendientes para hoy
+  const dueCards = getDueFlashcards(AppState.flashcards || [], todayStr, 'all').length;
+  const badgeCards = document.getElementById('badge-due-flashcards');
+  const drawerBadgeCards = document.getElementById('drawer-badge-due-flashcards');
+
+  if (badgeCards) {
+    if (dueCards > 0) {
+      badgeCards.textContent = dueCards;
+      badgeCards.classList.remove('hidden');
+    } else {
+      badgeCards.classList.add('hidden');
+    }
+  }
+  if (drawerBadgeCards) {
+    if (dueCards > 0) {
+      drawerBadgeCards.textContent = dueCards;
+      drawerBadgeCards.classList.remove('hidden');
+    } else {
+      drawerBadgeCards.classList.add('hidden');
     }
   }
 }
@@ -4388,4 +4433,533 @@ function initFirebaseSyncModule() {
   btnSyncNow?.addEventListener('click', performCloudUpload);
   btnDownload?.addEventListener('click', performCloudDownload);
 }
+
+// ==========================================================================
+// 9. MÓDULO: FICHAS DE ESTUDIO Y REPASO ESPACIADO (LEITNER)
+// ==========================================================================
+
+function renderFlashcardsView() {
+  const cards = AppState.flashcards || [];
+  const todayStr = getTodayDateString();
+
+  // 1. Estadísticas globales
+  const stats = calculateFlashcardStats(cards, todayStr);
+  const elDue = document.getElementById('stat-flashcards-due');
+  const elTotal = document.getElementById('stat-flashcards-total');
+  const elMastered = document.getElementById('stat-flashcards-mastered');
+  const elRate = document.getElementById('stat-flashcards-rate');
+
+  if (elDue) elDue.textContent = stats.dueToday;
+  if (elTotal) elTotal.textContent = stats.total;
+  if (elMastered) elMastered.textContent = stats.mastered;
+  if (elRate) elRate.textContent = `${stats.masteryRate}%`;
+
+  // 2. Filtros por Materia
+  renderFlashcardSubjectChips();
+
+  // 3. Renderizar según el modo seleccionado (Estudio vs Gestión)
+  const studyView = document.getElementById('flashcards-study-view');
+  const manageView = document.getElementById('flashcards-manage-view');
+  const btnStudy = document.getElementById('btn-flashcards-mode-study');
+  const btnManage = document.getElementById('btn-flashcards-mode-manage');
+
+  if (AppState.flashcardsMode === 'study') {
+    studyView?.classList.remove('hidden');
+    manageView?.classList.add('hidden');
+    if (btnStudy) {
+      btnStudy.className = 'btn-primary';
+    }
+    if (btnManage) {
+      btnManage.className = 'btn-secondary';
+    }
+    renderStudySession();
+  } else {
+    studyView?.classList.add('hidden');
+    manageView?.classList.remove('hidden');
+    if (btnStudy) {
+      btnStudy.className = 'btn-secondary';
+    }
+    if (btnManage) {
+      btnManage.className = 'btn-primary';
+    }
+    renderManageGrid();
+  }
+}
+
+function renderFlashcardSubjectChips() {
+  const container = document.getElementById('flashcards-subject-chips');
+  if (!container) return;
+
+  const subjects = AppState.subjects || [];
+  let html = `
+    <button type="button" class="filter-chip ${AppState.flashcardsSubjectFilter === 'all' ? 'active' : ''}" data-fc-subject="all">
+      📚 Todas las Materias
+    </button>
+  `;
+
+  subjects.forEach((sub) => {
+    const isActive = AppState.flashcardsSubjectFilter === sub.id;
+    html += `
+      <button type="button" class="filter-chip ${isActive ? 'active' : ''}" data-fc-subject="${sub.id}">
+        <span>${sub.icon || '📖'}</span> ${escapeHTML(sub.name)}
+      </button>
+    `;
+  });
+
+  container.innerHTML = html;
+
+  container.querySelectorAll('[data-fc-subject]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const subId = btn.getAttribute('data-fc-subject');
+      AppState.flashcardsSubjectFilter = subId;
+      AppState.studySessionCards = [];
+      AppState.currentStudyCardIndex = 0;
+      renderFlashcardsView();
+    });
+  });
+}
+
+function renderStudySession() {
+  const todayStr = getTodayDateString();
+
+  // Cargar lote si está vacío
+  if (!AppState.studySessionCards || AppState.studySessionCards.length === 0) {
+    AppState.studySessionCards = getDueFlashcards(
+      AppState.flashcards || [],
+      todayStr,
+      AppState.flashcardsSubjectFilter
+    );
+    AppState.currentStudyCardIndex = 0;
+  }
+
+  const studyHeader = document.getElementById('flashcard-study-header');
+  const scene = document.querySelector('.flashcard-scene');
+  const ratingBar = document.getElementById('flashcard-rating-controls');
+  const completeCard = document.getElementById('flashcard-session-complete');
+  const emptyDueCard = document.getElementById('flashcard-empty-due');
+
+  // Caso 1: No hay fichas pendientes para hoy
+  if (AppState.studySessionCards.length === 0) {
+    studyHeader?.classList.add('hidden');
+    scene?.classList.add('hidden');
+    ratingBar?.classList.add('hidden');
+    completeCard?.classList.add('hidden');
+    emptyDueCard?.classList.remove('hidden');
+    return;
+  }
+
+  // Caso 2: Se completó la sesión actual
+  if (AppState.currentStudyCardIndex >= AppState.studySessionCards.length) {
+    studyHeader?.classList.add('hidden');
+    scene?.classList.add('hidden');
+    ratingBar?.classList.add('hidden');
+    emptyDueCard?.classList.add('hidden');
+    completeCard?.classList.remove('hidden');
+    return;
+  }
+
+  // Caso 3: Ficha activa para estudiar
+  studyHeader?.classList.remove('hidden');
+  scene?.classList.remove('hidden');
+  ratingBar?.classList.remove('hidden');
+  emptyDueCard?.classList.add('hidden');
+  completeCard?.classList.add('hidden');
+
+  const card = AppState.studySessionCards[AppState.currentStudyCardIndex];
+  const sub = AppState.subjects.find((s) => s.id === card.subjectId);
+
+  // Barra de progreso
+  const progressText = document.getElementById('flashcard-session-progress-text');
+  const progressFill = document.getElementById('flashcard-session-progress-fill');
+  const currentNum = AppState.currentStudyCardIndex + 1;
+  const totalNum = AppState.studySessionCards.length;
+  if (progressText) progressText.textContent = `Ficha ${currentNum} de ${totalNum}`;
+  if (progressFill) progressFill.style.width = `${Math.round((currentNum / totalNum) * 100)}%`;
+
+  // Anverso (Pregunta)
+  const subPill = document.getElementById('study-card-subject');
+  const boxPips = document.getElementById('study-card-box-pips');
+  const qFront = document.getElementById('study-card-front');
+  const hintBox = document.getElementById('study-card-hint-box');
+  const hintText = document.getElementById('study-card-hint-text');
+  const btnHint = document.getElementById('btn-toggle-study-hint');
+
+  if (subPill) {
+    subPill.innerHTML = `<span>${sub?.icon || '📖'}</span> ${escapeHTML(sub?.name || 'Materia')}`;
+    subPill.style.background = sub?.color ? `${sub.color}22` : 'rgba(59, 130, 246, 0.15)';
+    subPill.style.color = sub?.color || 'var(--primary)';
+  }
+
+  // Pips Leitner (Cajas 1 a 5)
+  if (boxPips) {
+    const boxNum = card.box || 1;
+    let pipsHtml = '';
+    for (let i = 1; i <= 5; i++) {
+      pipsHtml += `<span class="box-pip ${i <= boxNum ? 'active' : ''}" title="Nivel ${i} de 5"></span>`;
+    }
+    boxPips.innerHTML = pipsHtml;
+  }
+
+  if (qFront) qFront.textContent = card.front;
+
+  if (card.hint) {
+    if (btnHint) btnHint.classList.remove('hidden');
+    if (hintText) hintText.textContent = card.hint;
+    if (hintBox) hintBox.classList.add('hidden');
+  } else {
+    if (btnHint) btnHint.classList.add('hidden');
+    if (hintBox) hintBox.classList.add('hidden');
+  }
+
+  // Reverso (Respuesta)
+  const qBack = document.getElementById('study-card-back');
+  const boxName = document.getElementById('study-card-box-name');
+  if (qBack) qBack.textContent = card.back;
+  if (boxName) {
+    const b = card.box || 1;
+    boxName.textContent = `Caja ${b}: ${BOX_NAMES[b] || 'Aprendiendo'}`;
+  }
+
+  // Textos dinámicos en los botones de calificación
+  const ratingGoodSub = document.getElementById('rating-good-sub');
+  const ratingEasySub = document.getElementById('rating-easy-sub');
+  const currentBox = card.box || 1;
+
+  if (ratingGoodSub) {
+    const nextGoodBox = currentBox === 1 ? 2 : currentBox;
+    ratingGoodSub.textContent = `Caja ${nextGoodBox} &bull; En ${LEITNER_INTERVALS[nextGoodBox]}d`;
+  }
+  if (ratingEasySub) {
+    const nextEasyBox = Math.min(currentBox + 1, 5);
+    ratingEasySub.textContent = `Caja ${nextEasyBox} &bull; En ${LEITNER_INTERVALS[nextEasyBox]}d`;
+  }
+
+  // Resetear estado volteado
+  AppState.isStudyCardFlipped = false;
+  document.getElementById('active-study-card')?.classList.remove('is-flipped');
+}
+
+function renderManageGrid() {
+  const container = document.getElementById('flashcards-manage-grid');
+  if (!container) return;
+
+  const cards = AppState.flashcards || [];
+  const filtered = cards.filter((c) => {
+    const matchSub = AppState.flashcardsSubjectFilter === 'all' || c.subjectId === AppState.flashcardsSubjectFilter;
+    const matchBox = AppState.flashcardsBoxFilter === 'all' || (c.box || 1) === Number(AppState.flashcardsBoxFilter);
+    return matchSub && matchBox;
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 30px; background: var(--bg-card); border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+        <div style="font-size: 2.2rem; margin-bottom: 8px;">📭</div>
+        <h4 style="margin: 0 0 6px 0; font-size: 1.05rem; color: var(--text-main);">No hay fichas con estos filtros</h4>
+        <p class="section-subtitle" style="margin-bottom: 12px;">Crea tu primera ficha de estudio o cambia la materia seleccionada.</p>
+        <button type="button" class="btn-primary" onclick="window.openNewFlashcardModal()" style="width: auto; margin: 0 auto;">
+          ➕ Añadir Nueva Ficha
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filtered.map((c) => {
+    const sub = AppState.subjects.find((s) => s.id === c.subjectId);
+    const boxNum = c.box || 1;
+    let pipsHtml = '';
+    for (let i = 1; i <= 5; i++) {
+      pipsHtml += `<span class="box-pip ${i <= boxNum ? 'active' : ''}"></span>`;
+    }
+    const nextDate = c.nextReviewDate ? formatDateSpanish(c.nextReviewDate) : 'Hoy';
+
+    return `
+      <div class="flashcard-item-card" id="card-${c.id}">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <span class="flashcard-subject-pill" style="background: ${sub?.color ? `${sub.color}22` : 'rgba(59,130,246,0.15)'}; color: ${sub?.color || 'var(--primary)'};">
+              ${sub?.icon || '📖'} ${escapeHTML(sub?.name || 'Materia')}
+            </span>
+            <div class="flashcard-box-indicator" title="Caja Leitner ${boxNum} de 5">
+              ${pipsHtml}
+            </div>
+          </div>
+          <div class="flashcard-item-front">${escapeHTML(c.front)}</div>
+          <div class="flashcard-item-back">${escapeHTML(c.back)}</div>
+        </div>
+        <div class="flashcard-item-footer">
+          <span>📅 Repaso: ${nextDate}</span>
+          <div style="display: flex; gap: 6px;">
+            <button type="button" class="btn-action-small" onclick="window.handleEditFlashcard('${c.id}')" title="Editar ficha">
+              ✏️
+            </button>
+            <button type="button" class="btn-action-small danger" onclick="window.handleDeleteFlashcard('${c.id}')" title="Eliminar ficha">
+              🗑️
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function initFlashcardsModule() {
+  const cardElement = document.getElementById('active-study-card');
+  const btnFlipBack = document.getElementById('btn-flip-back');
+  const btnRateHard = document.getElementById('btn-rate-hard');
+  const btnRateGood = document.getElementById('btn-rate-good');
+  const btnRateEasy = document.getElementById('btn-rate-easy');
+  const btnToggleHint = document.getElementById('btn-toggle-study-hint');
+  const hintBox = document.getElementById('study-card-hint-box');
+
+  const btnModeStudy = document.getElementById('btn-flashcards-mode-study');
+  const btnModeManage = document.getElementById('btn-flashcards-mode-manage');
+  const btnNewCard = document.getElementById('btn-open-new-flashcard');
+  const btnQuickNewCard = document.getElementById('btn-quick-new-card-manage');
+  const btnEmptyAddCard = document.getElementById('btn-empty-add-card');
+  const btnRestart = document.getElementById('btn-session-restart');
+  const btnStudyAllAnyway = document.getElementById('btn-study-all-anyway');
+  const btnSessionManage = document.getElementById('btn-session-manage');
+  const selectBoxFilter = document.getElementById('flashcard-filter-box');
+
+  const modal = document.getElementById('flashcard-modal');
+  const form = document.getElementById('flashcard-form');
+  const subSelect = document.getElementById('flashcard-subject-select');
+  const frontInput = document.getElementById('flashcard-front-input');
+  const backInput = document.getElementById('flashcard-back-input');
+  const hintInput = document.getElementById('flashcard-hint-input');
+  const idInput = document.getElementById('flashcard-id');
+  const modalTitle = document.getElementById('flashcard-modal-title');
+
+  // 1. Alternar vistas
+  btnModeStudy?.addEventListener('click', () => {
+    AppState.flashcardsMode = 'study';
+    renderFlashcardsView();
+  });
+
+  btnModeManage?.addEventListener('click', () => {
+    AppState.flashcardsMode = 'manage';
+    renderFlashcardsView();
+  });
+
+  btnSessionManage?.addEventListener('click', () => {
+    AppState.flashcardsMode = 'manage';
+    renderFlashcardsView();
+  });
+
+  selectBoxFilter?.addEventListener('change', (e) => {
+    AppState.flashcardsBoxFilter = e.target.value;
+    renderManageGrid();
+  });
+
+  // 2. Flip de la Tarjeta Interactiva
+  const toggleFlip = () => {
+    AppState.isStudyCardFlipped = !AppState.isStudyCardFlipped;
+    cardElement?.classList.toggle('is-flipped', AppState.isStudyCardFlipped);
+  };
+
+  cardElement?.addEventListener('click', (e) => {
+    // Si hizo clic en un botón interno (como Ver Pista), no hacer flip
+    if (e.target.closest('button')) return;
+    toggleFlip();
+  });
+
+  btnFlipBack?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleFlip();
+  });
+
+  btnToggleHint?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    hintBox?.classList.toggle('hidden');
+  });
+
+  // 3. Calificación de Respuestas con Leitner
+  const handleRating = async (rating) => {
+    if (!AppState.studySessionCards || AppState.studySessionCards.length === 0) return;
+    const card = AppState.studySessionCards[AppState.currentStudyCardIndex];
+    if (!card) return;
+
+    // Calcular nueva caja e intervalo
+    const updated = processCardReview(card, rating);
+
+    // Guardar en base de datos
+    await saveItem('flashcards', updated);
+
+    // Actualizar en memoria
+    const idx = (AppState.flashcards || []).findIndex((c) => c.id === card.id);
+    if (idx !== -1) {
+      AppState.flashcards[idx] = updated;
+    }
+
+    // Registrar actividad para la racha y logros
+    try {
+      const { newlyUnlocked } = await recordStudyActivity('flashcards_reviewed');
+      if (newlyUnlocked && newlyUnlocked.length > 0) {
+        for (const ach of newlyUnlocked) {
+          showToast(`🏆 ¡Logro Desbloqueado!: ${ach.title}`, 'success');
+        }
+      }
+    } catch (e) {
+      console.warn('Error registrando actividad de racha:', e);
+    }
+
+    // Feedback especial si la ficha sube a Caja 5 (Dominada)
+    if (updated.box === 5 && (card.box || 1) < 5) {
+      showToast('🌟 ¡Ficha dominada! Has alcanzado la Caja 5 (Repaso mensual)', 'success');
+    }
+
+    // Avanzar a la siguiente ficha
+    AppState.currentStudyCardIndex++;
+    updateBadges();
+    renderStudySession();
+  };
+
+  btnRateHard?.addEventListener('click', () => handleRating('hard'));
+  btnRateGood?.addEventListener('click', () => handleRating('good'));
+  btnRateEasy?.addEventListener('click', () => handleRating('easy'));
+
+  // 4. Reiniciar sesión / Repasar todo
+  const startAllCardsSession = () => {
+    const all = (AppState.flashcards || []).filter(
+      (c) => AppState.flashcardsSubjectFilter === 'all' || c.subjectId === AppState.flashcardsSubjectFilter
+    );
+    if (all.length === 0) {
+      showToast('No hay fichas creadas en esta materia para repasar', 'info');
+      return;
+    }
+    AppState.studySessionCards = [...all];
+    AppState.currentStudyCardIndex = 0;
+    renderStudySession();
+    showToast(`🎯 Repasando todas las ${all.length} fichas`, 'info');
+  };
+
+  btnRestart?.addEventListener('click', startAllCardsSession);
+  btnStudyAllAnyway?.addEventListener('click', startAllCardsSession);
+
+  // 5. Modal Nueva / Editar Ficha
+  const openModal = (card = null) => {
+    populateSubjectSelect(subSelect);
+    if (card) {
+      if (modalTitle) modalTitle.textContent = 'Editar Ficha de Estudio';
+      if (idInput) idInput.value = card.id;
+      if (subSelect) subSelect.value = card.subjectId;
+      if (frontInput) frontInput.value = card.front;
+      if (backInput) backInput.value = card.back;
+      if (hintInput) hintInput.value = card.hint || '';
+    } else {
+      if (modalTitle) modalTitle.textContent = 'Nueva Ficha de Estudio';
+      if (idInput) idInput.value = '';
+      if (subSelect && AppState.flashcardsSubjectFilter !== 'all') {
+        subSelect.value = AppState.flashcardsSubjectFilter;
+      }
+      if (frontInput) frontInput.value = '';
+      if (backInput) backInput.value = '';
+      if (hintInput) hintInput.value = '';
+    }
+    modal?.classList.remove('hidden');
+    frontInput?.focus();
+  };
+
+  window.openNewFlashcardModal = () => openModal();
+  btnNewCard?.addEventListener('click', () => openModal());
+  btnQuickNewCard?.addEventListener('click', () => openModal());
+  btnEmptyAddCard?.addEventListener('click', () => openModal());
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = idInput?.value;
+    const subjectId = subSelect?.value;
+    const front = frontInput?.value.trim();
+    const back = backInput?.value.trim();
+    const hint = hintInput?.value.trim();
+
+    if (!subjectId || !front || !back) {
+      showToast('Por favor completa los campos obligatorios', 'error');
+      return;
+    }
+
+    if (id) {
+      // Editar existente
+      const existing = (AppState.flashcards || []).find((c) => c.id === id);
+      if (existing) {
+        existing.subjectId = subjectId;
+        existing.front = front;
+        existing.back = back;
+        existing.hint = hint;
+        await saveItem('flashcards', existing);
+        showToast('✅ Ficha de estudio actualizada', 'success');
+      }
+    } else {
+      // Crear nueva
+      const newCard = createFlashcard({ subjectId, front, back, hint });
+      await saveItem('flashcards', newCard);
+      showToast('🧠 Ficha de estudio guardada', 'success');
+    }
+
+    AppState.flashcards = await getAll('flashcards');
+    AppState.studySessionCards = [];
+    AppState.currentStudyCardIndex = 0;
+    renderFlashcardsView();
+    updateBadges();
+    modal?.classList.add('hidden');
+  });
+
+  window.handleEditFlashcard = (id) => {
+    const card = (AppState.flashcards || []).find((c) => c.id === id);
+    if (card) openModal(card);
+  };
+
+  window.handleDeleteFlashcard = async (id) => {
+    if (confirm('¿Eliminar esta ficha de estudio?')) {
+      await deleteItem('flashcards', id);
+      AppState.flashcards = await getAll('flashcards');
+      AppState.studySessionCards = [];
+      AppState.currentStudyCardIndex = 0;
+      renderFlashcardsView();
+      updateBadges();
+      showToast('🗑️ Ficha eliminada');
+    }
+  };
+
+  // 6. Botón en Visor OCR: Crear Ficha a partir del texto extraído
+  const btnOcrToFlashcard = document.getElementById('btn-ocr-to-flashcard');
+  btnOcrToFlashcard?.addEventListener('click', () => {
+    const ocrText = document.getElementById('ocr-extracted-text')?.value.trim() || '';
+    const ocrModal = document.getElementById('ocr-result-modal');
+    ocrModal?.classList.add('hidden');
+
+    openModal();
+    if (backInput) {
+      backInput.value = ocrText;
+    }
+    if (frontInput) {
+      frontInput.placeholder = 'Escribe el concepto o pregunta sobre el texto extraído...';
+      frontInput.focus();
+    }
+    showToast('📝 Texto OCR añadido al reverso de la ficha', 'info');
+  });
+
+  // 7. Atajos de Teclado Ergonómicos (Espacio para flip, 1/2/3 para calificar)
+  document.addEventListener('keydown', (e) => {
+    const isFlashcardsTab = AppState.activeTab === 'tab-flashcards';
+    const isStudy = AppState.flashcardsMode === 'study';
+    const isTyping = ['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName);
+    const noModalOpen = document.querySelectorAll('.modal-overlay:not(.hidden)').length === 0;
+
+    if (!isFlashcardsTab || !isStudy || isTyping || !noModalOpen) return;
+
+    if (e.code === 'Space') {
+      e.preventDefault();
+      toggleFlip();
+    } else if (e.key === '1') {
+      handleRating('hard');
+    } else if (e.key === '2') {
+      handleRating('good');
+    } else if (e.key === '3') {
+      handleRating('easy');
+    }
+  });
+}
+
 
