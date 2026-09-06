@@ -382,8 +382,24 @@ input, textarea, select, button {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  transition: var(--transition);
+  transition: transform 0.22s cubic-bezier(0.2, 1, 0.3, 1), background-color 0.2s ease, opacity 0.2s ease;
   position: relative;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.task-item.swiping {
+  transition: none !important;
+}
+
+.task-item.swipe-complete-hint {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-left-color: var(--success) !important;
+}
+
+.task-item.swipe-delete-hint {
+  background: rgba(239, 68, 68, 0.15) !important;
+  border-left-color: var(--danger) !important;
 }
 
 .task-item.completed {
@@ -888,6 +904,163 @@ input, textarea, select, button {
 
 .btn-secondary:hover {
   background: var(--bg-card-hover);
+}
+
+/* Tirador / Handle para Bottom Sheets en móvil (oculto en desktop) */
+.sheet-handle-bar {
+  display: none;
+}
+
+/* Fila de Atajos Rápidos de Fecha */
+.quick-date-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+.quick-date-row::-webkit-scrollbar {
+  display: none;
+}
+.btn-quick-date {
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  border-radius: var(--radius-full);
+  padding: 4px 10px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.btn-quick-date:hover, .btn-quick-date.active {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* Botón Guardar siempre visible (Sticky) en modales */
+.modal-sticky-save {
+  position: sticky;
+  bottom: 0;
+  background: var(--bg-card);
+  padding: 12px 0 2px 0;
+  margin-top: 14px;
+  z-index: 15;
+  border-top: 1px solid transparent;
+}
+
+/* ==========================================================================
+   TARJETA EN ESTE INSTANTE / AHORA MISMO (INICIO)
+   ========================================================================== */
+.current-live-card {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(139, 92, 246, 0.08));
+  border: 1.5px solid rgba(59, 130, 246, 0.35);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.25);
+  transition: var(--transition);
+}
+.current-live-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.2);
+}
+.current-live-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.current-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(59, 130, 246, 0.18);
+  color: var(--primary);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+}
+.live-dot.pulse {
+  animation: livePulse 1.8s infinite;
+}
+@keyframes livePulse {
+  0% { transform: scale(0.95); opacity: 0.8; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1.15); opacity: 1; box-shadow: 0 0 0 7px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); opacity: 0.8; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+.current-live-timer {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-main);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
+}
+.current-live-body {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.current-live-icon {
+  font-size: 2.2rem;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+}
+.current-live-info {
+  flex: 1;
+  min-width: 0;
+}
+.current-live-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0 0 3px 0;
+  line-height: 1.3;
+}
+.current-live-sub {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.35;
+}
+.current-live-footer {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 /* ==========================================================================
@@ -1563,7 +1736,7 @@ input, textarea, select, button {
    ========================================================================== */
 @media (max-width: 640px) {
   .app-header {
-    padding: 10px 14px;
+    padding: max(10px, env(safe-area-inset-top, 10px)) 14px 10px 14px;
     gap: 8px;
   }
   
@@ -1587,6 +1760,14 @@ input, textarea, select, button {
   .brand-info p {
     display: none;
   }
+
+  /* Cabecera limpia y despejada en móvil (los demás accesos están en el menú lateral) */
+  #btn-open-share,
+  #connection-status,
+  #btn-toggle-theme,
+  #btn-install-pwa {
+    display: none !important;
+  }
   
   /* En móvil, mostrar barra inferior ergonómica con 4 accesos directos + botón Menú */
   .app-nav {
@@ -1599,8 +1780,10 @@ input, textarea, select, button {
     border-bottom: none;
     background: var(--bg-card);
     justify-content: space-around;
-    padding: 4px 0;
+    padding: 6px 0 max(8px, env(safe-area-inset-bottom, 8px));
     z-index: 45;
+    min-height: 58px;
+    box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.28);
   }
   
   .app-nav .nav-tab:not([data-tab="tab-today"]):not([data-tab="tab-tasks"]):not([data-tab="tab-schedule"]):not([data-tab="tab-backpack"]):not(.nav-tab-mobile-more) {
@@ -1620,6 +1803,8 @@ input, textarea, select, button {
     border-top: 3px solid transparent;
     flex: 1;
     text-align: center;
+    min-height: 48px;
+    justify-content: center;
   }
   
   .nav-tab.active {
@@ -1627,12 +1812,77 @@ input, textarea, select, button {
   }
   
   .main-container {
-    padding-bottom: 90px;
+    padding-bottom: 95px;
   }
   
   .fab-container {
-    bottom: 74px;
+    bottom: calc(72px + env(safe-area-inset-bottom, 0px));
     right: 16px;
+  }
+
+  /* ========================================================================
+     MODALES EN FORMATO BOTTOM SHEET (MÓVIL ERGONÓMICO)
+     ======================================================================== */
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+    backdrop-filter: blur(8px);
+  }
+
+  .modal-content {
+    max-width: 100% !important;
+    width: 100% !important;
+    max-height: 88vh !important;
+    border-radius: 24px 24px 0 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom: none !important;
+    padding: 14px 18px calc(24px + env(safe-area-inset-bottom, 12px)) !important;
+    animation: sheetSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    position: relative;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.45);
+  }
+
+  @keyframes sheetSlideUp {
+    from {
+      transform: translateY(100%);
+      opacity: 0.8;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .sheet-handle-bar {
+    display: block;
+    width: 44px;
+    height: 5px;
+    background: var(--border-color);
+    border-radius: var(--radius-full);
+    margin: 0 auto 14px auto;
+    cursor: grab;
+  }
+
+  /* Evitar auto-zoom molesto en Safari iOS */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+
+  /* Áreas táctiles cómodas de 44px para dedos */
+  button, .btn-primary, .btn-secondary, .form-input, .form-select, .filter-chip {
+    min-height: 44px;
+  }
+
+  /* Botón Guardar siempre visible (Sticky) al fondo del modal */
+  .modal-sticky-save {
+    position: sticky;
+    bottom: 0;
+    z-index: 25;
+    background: var(--bg-card);
+    padding: 12px 0 4px 0;
+    margin-top: 14px;
+    box-shadow: 0 -10px 18px var(--bg-card);
   }
 }
 

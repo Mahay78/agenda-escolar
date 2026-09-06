@@ -240,6 +240,28 @@
         <div id="today-date-badge" class="hero-date-badge">Hoy</div>
       </div>
 
+      <!-- Widget Móvil y Desktop: En Este Instante / Ahora Mismo -->
+      <div id="today-current-live-card" class="current-live-card">
+        <div class="current-live-top">
+          <div class="current-live-badge">
+            <span class="live-dot pulse"></span>
+            <span id="current-live-status-label">EN ESTE INSTANTE</span>
+          </div>
+          <span id="current-live-timer" class="current-live-timer">Calculando...</span>
+        </div>
+        <div class="current-live-body">
+          <div id="current-live-icon" class="current-live-icon">🏫</div>
+          <div class="current-live-info">
+            <h3 id="current-live-title" class="current-live-title">Cargando horario escolar...</h3>
+            <p id="current-live-sub" class="current-live-sub">Consultando tus clases de hoy</p>
+          </div>
+        </div>
+        <div id="current-live-footer" class="current-live-footer">
+          <span id="current-live-next">Siguiente: Calculando...</span>
+          <span id="current-live-location"></span>
+        </div>
+      </div>
+
       <div class="dashboard-grid">
         <!-- Clases de hoy -->
         <div class="card">
@@ -957,6 +979,7 @@
   <!-- 1. MODAL: TAREA / DEBER -->
   <div id="task-modal" class="modal-overlay hidden">
     <div class="modal-content">
+      <div class="sheet-handle-bar"></div>
       <div class="modal-header">
         <h3 id="task-modal-title" class="modal-title">Nueva Tarea / Deber</h3>
         <button class="btn-close" data-close="task-modal">&times;</button>
@@ -979,6 +1002,12 @@
           </div>
           <div class="form-group">
             <label class="form-label">Fecha de Entrega *</label>
+            <div class="quick-date-row">
+              <button type="button" class="btn-quick-date" data-date-target="task-due-date" data-days="0">Hoy</button>
+              <button type="button" class="btn-quick-date active" data-date-target="task-due-date" data-days="1">Mañana</button>
+              <button type="button" class="btn-quick-date" data-date-target="task-due-date" data-days="2">Pasado</button>
+              <button type="button" class="btn-quick-date" data-date-target="task-due-date" data-days="7">+1 sem</button>
+            </div>
             <input type="date" id="task-due-date" class="form-input" required />
           </div>
         </div>
@@ -1030,7 +1059,9 @@
           </div>
         </div>
 
-        <button type="submit" class="btn-primary">💾 Guardar Tarea</button>
+        <div class="modal-sticky-save">
+          <button type="submit" class="btn-primary">💾 Guardar Tarea</button>
+        </div>
       </form>
     </div>
   </div>
@@ -1038,6 +1069,7 @@
   <!-- 2. MODAL: EXAMEN -->
   <div id="exam-modal" class="modal-overlay hidden">
     <div class="modal-content">
+      <div class="sheet-handle-bar"></div>
       <div class="modal-header">
         <h3 id="exam-modal-title" class="modal-title">Nuevo Examen</h3>
         <button class="btn-close" data-close="exam-modal">&times;</button>
@@ -1060,6 +1092,12 @@
           </div>
           <div class="form-group">
             <label class="form-label">Fecha del Examen *</label>
+            <div class="quick-date-row">
+              <button type="button" class="btn-quick-date" data-date-target="exam-date-input" data-days="1">Mañana</button>
+              <button type="button" class="btn-quick-date" data-date-target="exam-date-input" data-days="3">En 3 d</button>
+              <button type="button" class="btn-quick-date" data-date-target="exam-date-input" data-days="7">En 1 sem</button>
+              <button type="button" class="btn-quick-date" data-date-target="exam-date-input" data-days="14">En 2 sem</button>
+            </div>
             <input type="date" id="exam-date-input" class="form-input" required />
           </div>
         </div>
@@ -1099,7 +1137,9 @@
           </div>
         </div>
 
-        <button type="submit" class="btn-primary">💾 Guardar Examen</button>
+        <div class="modal-sticky-save">
+          <button type="submit" class="btn-primary">💾 Guardar Examen</button>
+        </div>
       </form>
     </div>
   </div>
@@ -1107,6 +1147,7 @@
   <!-- 3. MODAL: NOTA / CALIFICACIÓN -->
   <div id="grade-modal" class="modal-overlay hidden">
     <div class="modal-content">
+      <div class="sheet-handle-bar"></div>
       <div class="modal-header">
         <h3 id="grade-modal-title" class="modal-title">Añadir Calificación</h3>
         <button class="btn-close" data-close="grade-modal">&times;</button>

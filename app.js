@@ -478,15 +478,182 @@ function switchTab(tabId) {
 }
 
 // ==========================================================================
+// ERGONOMÍA MÓVIL: GESTOS SWIPE, BOTTOM SHEETS Y ATAJOS DE FECHA
+// ==========================================================================
+
+/**
+ * Configura los botones de selección rápida de fecha (Hoy, Mañana, +1 sem)
+ */
+function setupQuickDateButtons() {
+  document.querySelectorAll('.btn-quick-date').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      triggerHaptic('light');
+      const targetId = btn.getAttribute('data-date-target');
+      const daysOffset = parseInt(btn.getAttribute('data-days') || '0', 10);
+      const d = new Date();
+      d.setDate(d.getDate() + daysOffset);
+      const input = document.getElementById(targetId);
+      if (input) {
+        input.value = getLocalDateString(d);
+        input.dispatchEvent(new Event('change'));
+      }
+      if (btn.parentElement) {
+        btn.parentElement.querySelectorAll('.btn-quick-date').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+      }
+    });
+  });
+}
+
+/**
+ * Gestos de deslizamiento (Swipe) táctil en tarjetas de tareas:
+ * - Deslizar a la derecha (> 60px): Marcar completada / pendiente
+ * - Deslizar a la izquierda (< -60px): Mover a papelera o eliminar
+ */
+function setupTaskSwipeGestures() {
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let currentItem = null;
+  let isSwiping = false;
+
+  document.addEventListener('touchstart', (e) => {
+    const item = e.target.closest('.task-item');
+    if (!item) return;
+    if (e.target.closest('button, input, select, audio, a')) return;
+
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    currentItem = item;
+    isSwiping = false;
+  }, { passive: true });
+
+  document.addEventListener('touchmove', (e) => {
+    if (!currentItem) return;
+    const currentX = e.touches[0].clientX;
+    const currentY = e.touches[0].clientY;
+    const diffX = currentX - touchStartX;
+    const diffY = currentY - touchStartY;
+
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 12) {
+      isSwiping = true;
+      currentItem.classList.add('swiping');
+      const clampedX = Math.max(-110, Math.min(110, diffX));
+      currentItem.style.transform = `translateX(${clampedX}px)`;
+
+      if (diffX > 45) {
+        currentItem.classList.add('swipe-complete-hint');
+        currentItem.classList.remove('swipe-delete-hint');
+      } else if (diffX < -45) {
+        currentItem.classList.add('swipe-delete-hint');
+        currentItem.classList.remove('swipe-complete-hint');
+      } else {
+        currentItem.classList.remove('swipe-complete-hint', 'swipe-delete-hint');
+      }
+    }
+  }, { passive: true });
+
+  document.addEventListener('touchend', (e) => {
+    if (!currentItem) return;
+    const item = currentItem;
+    currentItem = null;
+
+    if (!isSwiping) return;
+    item.classList.remove('swiping');
+
+    const endX = e.changedTouches[0].clientX;
+    const diffX = endX - touchStartX;
+
+    item.classList.remove('swipe-complete-hint', 'swipe-delete-hint');
+    item.style.transform = '';
+
+    if (diffX > 60) {
+      const checkbox = item.querySelector('.task-checkbox');
+      if (checkbox) {
+        triggerHaptic('success');
+        checkbox.click();
+      }
+    } else if (diffX < -60) {
+      const deleteBtn = item.querySelector('.btn-action-small.danger');
+      if (deleteBtn) {
+        triggerHaptic('medium');
+        deleteBtn.click();
+      }
+    }
+  }, { passive: true });
+}
+
+/**
+ * Deslizar hacia abajo (Pull-to-Dismiss) para cerrar Bottom Sheets en móvil
+ */
+function setupBottomSheetDismiss() {
+  let startY = 0;
+  let activeModal = null;
+  let isDraggingModal = false;
+
+  document.addEventListener('touchstart', (e) => {
+    if (window.innerWidth > 640) return;
+    const handle = e.target.closest('.sheet-handle-bar, .modal-header');
+    if (!handle) return;
+    const modalContent = handle.closest('.modal-content');
+    if (!modalContent) return;
+
+    activeModal = modalContent.closest('.modal-overlay');
+    startY = e.touches[0].clientY;
+    isDraggingModal = true;
+  }, { passive: true });
+
+  document.addEventListener('touchmove', (e) => {
+    if (!isDraggingModal || !activeModal) return;
+    const currentY = e.touches[0].clientY;
+    const diffY = currentY - startY;
+    if (diffY > 0) {
+      const content = activeModal.querySelector('.modal-content');
+      if (content) {
+        content.style.transform = `translateY(${diffY}px)`;
+      }
+    }
+  }, { passive: true });
+
+  document.addEventListener('touchend', (e) => {
+    if (!isDraggingModal || !activeModal) return;
+    const endY = e.changedTouches[0].clientY;
+    const diffY = endY - startY;
+    const content = activeModal.querySelector('.modal-content');
+    if (content) content.style.transform = '';
+
+    if (diffY > 75) {
+      triggerHaptic('light');
+      activeModal.classList.add('hidden');
+    }
+    isDraggingModal = false;
+    activeModal = null;
+  }, { passive: true });
+}
+
+// ==========================================================================
 // EVENT LISTENERS & MODALES
 // ==========================================================================
 function initEventListeners() {
+  // Inicializar ergonomía móvil
+  setupQuickDateButtons();
+  setupTaskSwipeGestures();
+  setupBottomSheetDismiss();
+
+  // Actualizar tarjeta de clase actual periódicamente (cada 30 seg)
+  setInterval(() => {
+    if (AppState.activeTab === 'tab-today') {
+      updateCurrentLiveCard();
+    }
+  }, 30000);
+
   // Botón flotante FAB
   const fabMain = document.getElementById('fab-main-btn');
   const fabMenu = document.getElementById('fab-menu');
 
   if (fabMain && fabMenu) {
     fabMain.addEventListener('click', () => {
+      triggerHaptic('light');
       fabMain.classList.toggle('open');
       fabMenu.classList.toggle('show');
     });
@@ -887,6 +1054,155 @@ function updateBadges() {
 // ----------------------------------------------------
 // 1. VISTA: HOY (DASHBOARD)
 // ----------------------------------------------------
+
+/**
+ * Actualiza la tarjeta "En Este Instante / Ahora Mismo" en la pantalla de Inicio
+ */
+function updateCurrentLiveCard(now = new Date(), dayOfWeek = now.getDay()) {
+  const card = document.getElementById('today-current-live-card');
+  if (!card) return;
+
+  const titleEl = document.getElementById('current-live-title');
+  const subEl = document.getElementById('current-live-sub');
+  const timerEl = document.getElementById('current-live-timer');
+  const iconEl = document.getElementById('current-live-icon');
+  const nextEl = document.getElementById('current-live-next');
+  const locationEl = document.getElementById('current-live-location');
+  const statusLabelEl = document.getElementById('current-live-status-label');
+
+  // Si es fin de semana (Sábado o Domingo)
+  if (dayOfWeek === 0 || dayOfWeek === 6) {
+    if (statusLabelEl) statusLabelEl.textContent = 'FIN DE SEMANA';
+    if (iconEl) iconEl.textContent = '🌴';
+    if (titleEl) titleEl.textContent = '¡Tiempo de Descanso y Repaso!';
+    if (subEl) subEl.textContent = 'No hay clases lectivas hoy. Buen momento para repasar fichas Leitner o desconectar.';
+    if (timerEl) timerEl.textContent = 'Fin de semana';
+    if (nextEl) nextEl.textContent = 'Próxima jornada escolar: Lunes por la mañana';
+    if (locationEl) locationEl.textContent = '';
+    return;
+  }
+
+  // Día lectivo de Lunes a Viernes
+  const todaySlots = AppState.schedule.filter((s) => s.day === dayOfWeek);
+  if (!AppState.timeSlots || AppState.timeSlots.length === 0) {
+    if (statusLabelEl) statusLabelEl.textContent = 'HORARIO';
+    if (iconEl) iconEl.textContent = '📅';
+    if (titleEl) titleEl.textContent = 'Sin tramos horarios configurados';
+    if (subEl) subEl.textContent = 'Entra en Ajustes para definir tus horas de clase.';
+    if (timerEl) timerEl.textContent = '--:--';
+    if (nextEl) nextEl.textContent = '';
+    return;
+  }
+
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+  function timeToMin(tStr) {
+    if (!tStr) return 0;
+    const [h, m] = tStr.split(':').map(Number);
+    return (h || 0) * 60 + (m || 0);
+  }
+
+  const slotsWithTimes = AppState.timeSlots
+    .map((slot) => ({
+      ...slot,
+      startMin: timeToMin(slot.start),
+      endMin: timeToMin(slot.end)
+    }))
+    .sort((a, b) => a.startMin - b.startMin);
+
+  const firstSlot = slotsWithTimes[0];
+  const lastSlot = slotsWithTimes[slotsWithTimes.length - 1];
+
+  // 1. Antes de empezar las clases hoy
+  if (currentMinutes < firstSlot.startMin) {
+    const diff = firstSlot.startMin - currentMinutes;
+    const match = todaySlots.find((s) => s.slotIndex === firstSlot.index);
+    const sub = match ? AppState.subjects.find((s) => s.id === match.subjectId) : null;
+
+    if (statusLabelEl) statusLabelEl.textContent = 'ANTES DE EMPEZAR';
+    if (iconEl) iconEl.textContent = sub?.icon || '🎒';
+    if (titleEl) titleEl.textContent = `Próxima: ${sub ? sub.name : (firstSlot.isBreak ? 'Recreo' : 'Hora Libre')}`;
+    if (subEl) subEl.textContent = `Comienza a las ${firstSlot.start} ${match?.classroom ? 'en aula ' + match.classroom : ''}`;
+    if (timerEl) timerEl.textContent = diff < 60 ? `En ${diff} min` : `A las ${firstSlot.start}`;
+    if (nextEl) nextEl.textContent = `Jornada escolar de ${slotsWithTimes.length} tramos`;
+    if (locationEl) locationEl.textContent = match?.classroom || sub?.classroom || '';
+    return;
+  }
+
+  // 2. Ya terminaron las clases de hoy
+  if (currentMinutes >= lastSlot.endMin) {
+    const tomorrowStr = getTomorrowDateString();
+    const pendingTomorrow = AppState.tasks.filter((t) => t.dueDate === tomorrowStr && t.status !== 'completed').length;
+    if (statusLabelEl) statusLabelEl.textContent = 'JORNADA FINALIZADA';
+    if (iconEl) iconEl.textContent = '🎉';
+    if (titleEl) titleEl.textContent = '¡Clases terminadas por hoy!';
+    if (subEl) subEl.textContent = pendingTomorrow > 0 ? `Tienes ${pendingTomorrow} tarea(s) pendiente(s) para mañana.` : '¡Genial! No tienes tareas pendientes para mañana.';
+    if (timerEl) timerEl.textContent = 'Libre';
+    if (nextEl) nextEl.textContent = 'Próxima jornada escolar: Mañana a las ' + firstSlot.start;
+    if (locationEl) locationEl.textContent = '';
+    return;
+  }
+
+  // 3. Estamos dentro de un tramo horario activo
+  let activeSlot = null;
+  let activeIndex = -1;
+  for (let i = 0; i < slotsWithTimes.length; i++) {
+    const s = slotsWithTimes[i];
+    if (currentMinutes >= s.startMin && currentMinutes < s.endMin) {
+      activeSlot = s;
+      activeIndex = i;
+      break;
+    }
+  }
+
+  if (activeSlot) {
+    const minutesLeft = activeSlot.endMin - currentMinutes;
+    const match = todaySlots.find((s) => s.slotIndex === activeSlot.index);
+    const sub = match ? AppState.subjects.find((s) => s.id === match.subjectId) : null;
+    const nextSlot = slotsWithTimes[activeIndex + 1];
+    let nextInfo = 'Última sesión de hoy';
+    if (nextSlot) {
+      const nextMatch = todaySlots.find((s) => s.slotIndex === nextSlot.index);
+      const nextSub = nextMatch ? AppState.subjects.find((s) => s.id === nextMatch.subjectId) : null;
+      nextInfo = `Siguiente: ${nextSlot.isBreak ? '🥪 Recreo' : (nextSub ? nextSub.name : 'Hora libre')} (${nextSlot.start})`;
+    }
+
+    if (activeSlot.isBreak) {
+      if (statusLabelEl) statusLabelEl.textContent = 'RECREO / DESCANSO';
+      if (iconEl) iconEl.textContent = '🥪';
+      if (titleEl) titleEl.textContent = 'Hora del Recreo';
+      if (subEl) subEl.textContent = `Descanso hasta las ${activeSlot.end}`;
+      if (timerEl) timerEl.textContent = `Quedan ${minutesLeft} min`;
+    } else {
+      if (statusLabelEl) statusLabelEl.textContent = 'EN CLASE AHORA';
+      if (iconEl) iconEl.textContent = sub?.icon || '📖';
+      if (titleEl) titleEl.textContent = sub ? sub.name : 'Hora Libre / Estudio';
+      const prof = sub?.teacher ? `Prof. ${sub.teacher}` : '';
+      const aula = match?.classroom || sub?.classroom ? `Aula: ${match?.classroom || sub?.classroom}` : '';
+      if (subEl) subEl.textContent = [prof, aula].filter(Boolean).join(' • ') || `Hasta las ${activeSlot.end}`;
+      if (timerEl) timerEl.textContent = `Quedan ${minutesLeft} min`;
+    }
+    if (nextEl) nextEl.textContent = nextInfo;
+    if (locationEl) locationEl.textContent = match?.classroom || sub?.classroom || '';
+    return;
+  }
+
+  // 4. Entre clases (en cambio de hora)
+  const upcomingSlot = slotsWithTimes.find((s) => s.startMin > currentMinutes);
+  if (upcomingSlot) {
+    const minUntil = upcomingSlot.startMin - currentMinutes;
+    const match = todaySlots.find((s) => s.slotIndex === upcomingSlot.index);
+    const sub = match ? AppState.subjects.find((s) => s.id === match.subjectId) : null;
+    if (statusLabelEl) statusLabelEl.textContent = 'CAMBIO DE CLASE';
+    if (iconEl) iconEl.textContent = '🚶‍♂️';
+    if (titleEl) titleEl.textContent = `Toca: ${upcomingSlot.isBreak ? '🥪 Recreo' : (sub ? sub.name : 'Hora Libre')}`;
+    if (subEl) subEl.textContent = `Comienza a las ${upcomingSlot.start} (en ${minUntil} min)`;
+    if (timerEl) timerEl.textContent = `En ${minUntil} min`;
+    if (nextEl) nextEl.textContent = match?.classroom || sub?.classroom ? `Ubicación: ${match?.classroom || sub?.classroom}` : '';
+    if (locationEl) locationEl.textContent = '';
+  }
+}
+
 function renderTodayView() {
   const now = new Date();
   const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
@@ -911,6 +1227,9 @@ function renderTodayView() {
   if (greetingEl) greetingEl.textContent = greeting;
   if (dateBadgeEl) dateBadgeEl.textContent = dateFormatted;
   if (dayNameEl) dayNameEl.textContent = dayName;
+
+  // Actualizar tarjeta "En Este Instante"
+  updateCurrentLiveCard(now, dayOfWeek);
 
   // Clases de hoy
   const scheduleContainer = document.getElementById('today-schedule-list');
@@ -3568,9 +3887,30 @@ window.removeTempPhoto = function (containerId, index) {
 
 window.openImageViewer = openImageViewer;
 
+/**
+ * Emite una vibración háptica suave en dispositivos móviles compatibles
+ */
+export function triggerHaptic(type = 'light') {
+  if (typeof navigator !== 'undefined' && navigator.vibrate) {
+    try {
+      if (type === 'light') navigator.vibrate(15);
+      else if (type === 'medium') navigator.vibrate(28);
+      else if (type === 'success') navigator.vibrate([15, 60, 25]);
+      else if (type === 'error') navigator.vibrate([35, 50, 35]);
+      else if (typeof type === 'number') navigator.vibrate(type);
+    } catch (e) {
+      // Ignorar restricciones de contexto o permisos
+    }
+  }
+}
+window.triggerHaptic = triggerHaptic;
+
 export function showToast(message, type = 'info') {
   const container = document.getElementById('toast-container');
   if (!container) return;
+
+  if (type === 'success') triggerHaptic('success');
+  else if (type === 'error') triggerHaptic('error');
 
   const toast = document.createElement('div');
   toast.className = 'toast';
@@ -4754,6 +5094,7 @@ function initFlashcardsModule() {
 
   // 2. Flip de la Tarjeta Interactiva
   const toggleFlip = () => {
+    triggerHaptic('light');
     AppState.isStudyCardFlipped = !AppState.isStudyCardFlipped;
     cardElement?.classList.toggle('is-flipped', AppState.isStudyCardFlipped);
   };
@@ -4776,6 +5117,7 @@ function initFlashcardsModule() {
 
   // 3. Calificación de Respuestas con Leitner
   const handleRating = async (rating) => {
+    triggerHaptic(rating === 'easy' ? 'success' : 'medium');
     if (!AppState.studySessionCards || AppState.studySessionCards.length === 0) return;
     const card = AppState.studySessionCards[AppState.currentStudyCardIndex];
     if (!card) return;
