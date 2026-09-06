@@ -102,7 +102,9 @@ import {
   getCachedOcrText,
   setCachedOcrText,
   cleanOcrText,
-  formatAsBulletList
+  formatAsBulletList,
+  recognizeWithGemini,
+  recognizeWithDeviceAI
 } from './ocr.js';
 
 // Estado global de la aplicación
@@ -3441,6 +3443,9 @@ function initOcrModule() {
   const btnCopy = document.getElementById('btn-ocr-copy');
   const btnToTask = document.getElementById('btn-ocr-to-task');
   const btnToExam = document.getElementById('btn-ocr-to-exam');
+  const btnOcrGemini = document.getElementById('btn-ocr-gemini');
+  const btnOcrConfigGemini = document.getElementById('btn-ocr-config-gemini');
+  const geminiStatusIndicator = document.getElementById('gemini-status-indicator');
 
   let activeOcrSrc = null;
   let activeOcrMode = 'auto';
@@ -3450,7 +3455,9 @@ function initOcrModule() {
     chalkboard: '🟢 Pizarra Tiza (Invertida)',
     whiteboard: '⚪ Pizarra Blanca (Alto Contraste)',
     document: '📄 Documento / Libro',
-    raw: '📷 Foto Original'
+    raw: '📷 Foto Original',
+    device_ai: '⚡ IA Local del Móvil (ML Kit)',
+    gemini_ai: '✨ Google Gemini Flash'
   };
 
   async function processCurrentOcr(forceReload = false) {
@@ -3582,6 +3589,106 @@ function initOcrModule() {
         topicsInput.value = (topicsInput.value ? topicsInput.value + '\n\n' : '') + `[Temario extraído por OCR]:\n${text}`;
       }
     }, 100);
+  });
+
+  // --- GESTIÓN DE CLAVE Y ANÁLISIS CON GOOGLE GEMINI ---
+  async function getGeminiApiKey() {
+    let key = localStorage.getItem('gemini_api_key');
+    if (!key) {
+      try {
+        key = await getSetting('geminiApiKey');
+      } catch (e) {}
+    }
+    return key || '';
+  }
+
+  async function saveGeminiApiKey(key) {
+    if (key) {
+      localStorage.setItem('gemini_api_key', key);
+      try {
+        await setSetting('geminiApiKey', key);
+      } catch (e) {}
+    } else {
+      localStorage.removeItem('gemini_api_key');
+      try {
+        await setSetting('geminiApiKey', '');
+      } catch (e) {}
+    }
+  }
+
+  async function updateGeminiStatus() {
+    const key = await getGeminiApiKey();
+    if (geminiStatusIndicator) {
+      if (key) {
+        geminiStatusIndicator.textContent = '🟢 Clave IA lista';
+        geminiStatusIndicator.style.color = 'var(--success, #10b981)';
+      } else {
+        geminiStatusIndicator.textContent = '⚪ Clave no guardada';
+        geminiStatusIndicator.style.color = 'var(--text-muted)';
+      }
+    }
+  }
+
+  updateGeminiStatus();
+
+  // Configurar Clave de Gemini
+  btnOcrConfigGemini?.addEventListener('click', async () => {
+    const currentKey = await getGeminiApiKey();
+    const promptMsg = 'Introduce tu API Key gratuita de Google Gemini.\n\n(Puedes crearla gratis en: https://aistudio.google.com/):';
+    const newKey = window.prompt(promptMsg, currentKey || '');
+    if (newKey !== null) {
+      const trimmed = newKey.trim();
+      await saveGeminiApiKey(trimmed);
+      await updateGeminiStatus();
+      if (trimmed) {
+        showToast('🔑 Clave de Gemini guardada correctamente', 'success');
+      } else {
+        showToast('Clave de Gemini eliminada', 'info');
+      }
+    }
+  });
+
+  // Procesar con Gemini
+  btnOcrGemini?.addEventListener('click', async () => {
+    if (!activeOcrSrc) {
+      showToast('⚠️ No hay ninguna imagen seleccionada para analizar', 'warning');
+      return;
+    }
+
+    let apiKey = await getGeminiApiKey();
+    if (!apiKey) {
+      const inputKey = window.prompt(
+        'Para transcribir y estructurar los deberes con IA, introduce tu API Key gratuita de Google Gemini (consíguela en https://aistudio.google.com/):'
+      );
+      if (!inputKey || !inputKey.trim()) {
+        showToast('Se requiere la clave API de Gemini para usar la IA en la nube', 'info');
+        return;
+      }
+      apiKey = inputKey.trim();
+      await saveGeminiApiKey(apiKey);
+      await updateGeminiStatus();
+    }
+
+    ocrTextArea.value = '';
+    if (ocrStatusText) ocrStatusText.textContent = '✨ Analizando imagen con Google Gemini Flash...';
+    if (ocrPercentageText) ocrPercentageText.textContent = 'IA...';
+    if (ocrProgressFill) ocrProgressFill.style.width = '60%';
+    if (ocrEffectiveBadge) ocrEffectiveBadge.textContent = 'Modo: ✨ Google Gemini Flash';
+
+    try {
+      const geminiResult = await recognizeWithGemini(activeOcrSrc, apiKey);
+      ocrTextArea.value = geminiResult.text;
+      if (ocrStatusText) ocrStatusText.textContent = '¡Completado con Google Gemini!';
+      if (ocrPercentageText) ocrPercentageText.textContent = '100%';
+      if (ocrProgressFill) ocrProgressFill.style.width = '100%';
+      showToast('✨ Apuntes procesados y deberes detectados con Gemini', 'success');
+      renderGalleryView();
+    } catch (err) {
+      console.error('Error con Gemini:', err);
+      if (ocrStatusText) ocrStatusText.textContent = 'Error en Gemini';
+      ocrTextArea.value = `Error con la IA de Gemini: ${err.message}\n\nPuedes revisar tu clave o usar el OCR local offline.`;
+      showToast(`⚠️ Error con Gemini: ${err.message}`, 'error');
+    }
   });
 }
 

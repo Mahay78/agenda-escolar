@@ -285,6 +285,26 @@ export async function recognizeImageText(imageSource, options = {}) {
   // 1. Pre-procesar la imagen con Canvas según el modo elegido
   const { canvas: processedCanvas, effectiveMode, dataUrl: previewDataUrl } = await preprocessImage(imageSource, mode);
 
+  // Intentar primero con la IA local del teléfono (Oppo Reno 12 F / Android ML Kit)
+  if (mode === 'auto' || mode === 'raw') {
+    try {
+      const targetInput = processedCanvas || imageSource;
+      const deviceResult = await recognizeWithDeviceAI(targetInput);
+      if (deviceResult && deviceResult.text.length > 5) {
+        if (onProgress) onProgress({ status: '¡Texto extraído con la IA de tu Oppo!', progress: 1 });
+        deviceResult.previewDataUrl = previewDataUrl;
+        deviceResult.effectiveMode = 'device_ai';
+        if (cacheKey) {
+          ocrCache.set(cacheKey, deviceResult);
+          ocrCache.set(imageSource, deviceResult);
+        }
+        return deviceResult;
+      }
+    } catch (devErr) {
+      console.warn('IA local del teléfono no disponible, recurriendo a Tesseract.js:', devErr);
+    }
+  }
+
   if (onProgress) onProgress({ status: 'Inicializando motor OCR...', progress: 0.12 });
 
   const Tesseract = await loadTesseractScript();
@@ -374,4 +394,93 @@ export function getCachedOcrText(src) {
  */
 export function setCachedOcrText(src, text) {
   ocrCache.set(src, { text, rawText: text, confidence: 100, effectiveMode: 'manual' });
+}
+
+/**
+ * 1. RECONOCIMIENTO CON LA IA NATIVA DEL TELÉFONO (Oppo Reno 12 F / Android ML Kit)
+ */
+export async function recognizeWithDeviceAI(imageSource) {
+  if (typeof window === 'undefined' || !('TextDetector' in window)) {
+    return null; // El navegador no soporta TextDetector nativo
+  }
+
+  try {
+    const detector = new window.TextDetector();
+    let imgElement;
+
+    if (imageSource instanceof HTMLCanvasElement || imageSource instanceof HTMLImageElement) {
+      imgElement = imageSource;
+    } else {
+      imgElement = new Image();
+      imgElement.src = typeof imageSource === 'string' ? imageSource : URL.createObjectURL(imageSource);
+      await new Promise((res, rej) => {
+        imgElement.onload = res;
+        imgElement.onerror = rej;
+      });
+    }
+
+    const detectedBlocks = await detector.detect(imgElement);
+    if (!detectedBlocks || detectedBlocks.length === 0) return null;
+
+    // Ordenar los bloques de texto verticalmente (de arriba a abajo)
+    detectedBlocks.sort((a, b) => (a.boundingBox?.top || 0) - (b.boundingBox?.top || 0));
+    const rawText = detectedBlocks.map((b) => b.rawValue).filter(Boolean).join('\n');
+
+    return {
+      text: cleanOcrText(rawText),
+      rawText: rawText,
+      confidence: 95,
+      effectiveMode: 'device_ai', // IA local del Oppo Reno 12 F / Android
+      previewDataUrl: ''
+    };
+  } catch (err) {
+    console.warn('Fallo al usar TextDetector del dispositivo:', err);
+    return null;
+  }
+}
+
+/**
+ * 2. RECONOCIMIENTO Y ESTRUCTURACIÓN CON GOOGLE GEMINI
+ */
+export async function recognizeWithGemini(base64Image, apiKey) {
+  if (!apiKey) throw new Error('Debes introducir tu API Key gratuita de Google Gemini.');
+
+  // Detectar MIME type y limpiar encabezado data:image/...;base64,
+  const mimeMatch = base64Image.match(/^data:(image\/[a-zA-Z0-9.+_-]+);base64,/);
+  const mimeType = mimeMatch ? mimeMatch[1] : 'image/jpeg';
+  const base64Data = base64Image.replace(/^data:image\/[a-zA-Z0-9.+_-]+;base64,/, '');
+
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
+  const prompt = `Actúa como asistente escolar para un estudiante de instituto. Analiza esta foto de una pizarra o apuntes:
+1. Transcribe todo el texto con máxima fidelidad ortográfica.
+2. Identifica si hay deberes, tareas o fechas de exámenes.
+3. Devuelve primero un resumen claro de los ejercicios o tareas a realizar en formato lista.`;
+
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{
+        parts: [
+          { text: prompt },
+          { inline_data: { mime_type: mimeType, data: base64Data } }
+        ]
+      }]
+    })
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error?.message || `Error al conectar con Gemini (${response.status})`);
+  }
+
+  const data = await response.json();
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+
+  return {
+    text: text.trim(),
+    confidence: 99,
+    effectiveMode: 'gemini_ai'
+  };
 }

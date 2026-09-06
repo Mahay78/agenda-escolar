@@ -1632,6 +1632,17 @@
         </div>
       </div>
 
+      <!-- Controles de IA (Google Gemini) -->
+      <div style="display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; align-items: center;">
+        <button type="button" id="btn-ocr-gemini" class="btn-primary" style="width: auto; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border: none; box-shadow: 0 2px 8px rgba(139, 92, 246, 0.25);">
+          <span>✨</span> Transcribir con IA (Gemini)
+        </button>
+        <button type="button" id="btn-ocr-config-gemini" class="btn-secondary" style="width: auto;" title="Configurar API Key de Gemini">
+          ⚙️ Clave IA
+        </button>
+        <span id="gemini-status-indicator" style="font-size: 0.75rem; color: var(--text-muted);"></span>
+      </div>
+
       <!-- Barra de herramientas de texto e idioma -->
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
         <div style="display: flex; align-items: center; gap: 6px;">
