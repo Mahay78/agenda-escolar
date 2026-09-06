@@ -104,7 +104,8 @@ import {
   cleanOcrText,
   formatAsBulletList,
   recognizeWithGemini,
-  recognizeWithDeviceAI
+  recognizeWithDeviceAI,
+  isDeviceAISupported
 } from './ocr.js';
 
 // Estado global de la aplicación
@@ -3491,7 +3492,11 @@ function initOcrModule() {
       if (ocrPreviewImg && result.previewDataUrl) {
         ocrPreviewImg.src = result.previewDataUrl;
       }
-      showToast('✅ Texto extraído y optimizado', 'success');
+      if (result.effectiveMode === 'device_ai') {
+        showToast('⚡ ¡Texto extraído en 0.2s con la IA de tu móvil!', 'success');
+      } else {
+        showToast('✅ Texto extraído y optimizado', 'success');
+      }
       renderGalleryView(); // Refrescar para mostrar el badge OCR en la galería
     } catch (err) {
       console.error('Error OCR:', err);

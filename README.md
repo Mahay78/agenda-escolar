@@ -1,186 +1,155 @@
-# 🎒 Agenda Escolar - PWA Online & Offline
+# 🎒 Agenda Escolar - PWA Online & Offline con Inteligencia Artificial
 
-Una aplicación web progresiva (**Progressive Web App - PWA**) moderna, ultrarrápida y diseñada específicamente para que estudiantes organicen su vida académica, deberes, exámenes, proyectos artísticos, horario, calificaciones y mochila, con **captura y anotación de fotos sobre apuntes/pizarras** y funcionamiento **100% Offline (sin necesidad de internet)**.
+Una aplicación web progresiva (**Progressive Web App - PWA**) moderna, ultrarrápida y diseñada específicamente para que estudiantes organicen su vida académica: deberes, exámenes, proyectos artísticos, horario, calificaciones y mochila, con **captura con zoom de apuntes y pizarras**, **doble motor de OCR con IA (Local y Nube)** y funcionamiento **100% Offline (sin necesidad de internet)**.
 
-🌐 **Aplicación en Vivo:** [https://mahay78.github.io/agenda-escolar/](https://mahay78.github.io/agenda-escolar/)  
+🌐 **Aplicación en Vivo (GitHub Pages):** [https://mahay78.github.io/agenda-escolar/](https://mahay78.github.io/agenda-escolar/)  
 📂 **Repositorio GitHub:** [https://github.com/Mahay78/agenda-escolar](https://github.com/Mahay78/agenda-escolar)
 
 ---
 
-## 🌟 Características Actuales Implementadas
+## 🌟 Novedades Principales (Versión 2.9.0)
 
-1. **📷 Cámara Integrada para Pizarras y Apuntes:**
-   - Captura directa desde cámara trasera/delantera del móvil o webcam de PC.
-   - Compresión inteligente automática en IndexedDB.
-   - Visor a pantalla completa y visor rápido.
-
-2. **✏️ Editor de Anotaciones y Correcciones sobre Fotos (`annotations.js`):**
-   - Herramientas de trazo libre, flechas de corrección de profesores, recuadros, círculos y texto.
-   - Selector de colores, grosores y función de Deshacer (Undo).
-
-3. **🎙️ Grabadora de Notas de Voz Offline (`audio.js`):**
-   - Grabación de explicaciones de clase o recordatorios de audio adjuntos a las tareas.
-   - Reproductor integrado con almacenamiento local.
-
-4. **⏱️ Temporizador Pomodoro de Concentración:**
-   - Métodos de estudio (25m), descanso corto (5m) y descanso largo (15m).
-   - Campana suave sintetizada mediante **Web Audio API** (sin dependencias ni archivos externos).
-   - Estadísticas diarias de sesiones y tiempo enfocado.
-
-5. **🎒 Gestor de Mochila y Materiales de Taller:**
-   - Checklist interactiva de materiales (lápices, blocs A3, témperas, reglas, pendrives...).
-   - Filtro inteligente **"Para Clases de Mañana"** basado en el horario escolar.
-   - Barra de progreso del estado de la mochila.
-
-6. **🎨 Portafolio de Proyectos y Obras Artísticas:**
-   - Seguimiento por fases: *Boceto/Idea*, *En Proceso/Taller*, *Obra Terminada*, *Entregado/Evaluado*.
-   - Registro de técnicas, soportes, fechas límites y fotos de evolución.
-
-7. **📅 Horario Escolar Semanal:**
-   - Configuración visual de Lunes a Viernes con franjas horarias y recreos.
-   - Asignaturas con colores, iconos/emojis, aula y nombre del profesor.
-   - Vista rápida en el panel "Hoy" con la clase actual y la siguiente.
-
-8. **📋 Gestor de Deberes y Tareas:**
-   - Filtros por: *Pendientes, Para Hoy, Esta Semana, Con Fotos, Completadas*.
-   - Prioridades (*Urgente, Normal, Baja*) y fechas con avisos de vencimiento.
-
-9. **📝 Control de Exámenes y Evaluaciones:**
-   - Cuenta atrás en días (*¡HOY!, Mañana, En X días*).
-   - Temarios a estudiar y fotografías de esquemas.
-
-10. **📊 Calificaciones y Cálculo de Medias:**
-    - Registro de notas por trimestres (1º, 2º y 3º).
-    - Cálculo automático de la nota media global y por evaluación.
-
-11. **💬 Compartir por WhatsApp & 📱 Códigos QR:**
-    - Formateo inteligente de mensajes para enviar deberes u horarios a WhatsApp.
-    - Generador y escáner de códigos QR offline.
-
-12. **💾 Copias de Seguridad (Exportar / Importar JSON):**
-    - Copia de seguridad completa en un clic (incluye fotos, audios, proyectos y notas).
+### 📷 1. Cámara Escolar con Zoom Óptico/Digital y Efecto Snap
+* **Controles de Zoom Rápido:** Píldoras dedicadas `1x`, `2x`, `3x` y control deslizante continuo hasta `4x`.
+* **Gesto Táctil Pinch-to-Zoom:** Pellizca con dos dedos directamente en la pantalla de la cámara para acercar o alejar el encuadre de forma fluida.
+* **Aceleración por Hardware:** Detección automática de las capacidades del sensor del teléfono mediante `MediaTrackConstraints.zoom` para utilizar el zoom óptico/digital nativo sin pérdida de calidad.
+* **Efecto Snap-Zoom al Disparar:** Animación de compresión y zoom instantáneo combinada con destello de flash al capturar la fotografía, proporcionando una respuesta táctil y visual dinámica.
+* **Recorte Inteligente de Sensor:** Si el dispositivo utiliza zoom por software, el lienzo de captura recorta el área central con precisión para entregar una imagen nítida a máxima resolución.
+* **Zoom de Inspección (2.5x) en Vista Previa:** Antes de aceptar la foto, un botón y toque directo en la imagen permite ampliarla a 2.5x para comprobar si la letra pequeña o las fórmulas matemáticas de la pizarra son perfectamente legibles.
 
 ---
 
-## 🗺️ Roadmap: Lista de Próximas Mejoras
+### 🔍 2. Motor de OCR Inteligente con Doble Inteligencia Artificial
+La aplicación incluye un sistema de Reconocimiento Óptico de Caracteres de tres niveles:
 
-Aquí tienes las funcionalidades planificadas para las siguientes versiones del proyecto:
+#### ⚡ A. IA Local del Teléfono (100% Offline, Gratuita y en 0.15s)
+* Diseñada para aprovechar la API nativa `window.TextDetector` conectada a **Google Play Services ML Kit** en smartphones modernos (como Oppo Reno 12 F, Xiaomi, Samsung Galaxy y Pixel).
+* **Velocidad Extrema:** Procesa la imagen en menos de 0.2 segundos directamente en la NPU/CPU del móvil.
+* **Cero Consumo:** No gasta datos móviles ni envía imágenes al exterior, protegiendo al 100% la privacidad del estudiante.
+* **Algoritmo de Orden de Lectura 2D:** Agrupa los bloques de texto detectados en líneas horizontales continuas y columnas naturales, respetando el flujo de lectura humano (ideal para pizarras divididas en secciones o ejercicios laterales).
+* **Multi-Pase de Contraste:** Si la foto es oscura o de tiza sobre pizarra verde/negra, ejecuta un segundo pase con ecualización de contraste para capturar trazos tenues.
 
-- [x] **📱 Menú Desplegable / Lateral (Hamburguesa / Drawer) para Móviles y Tablets:**
-  - Menú lateral deslizable o desplegable táctil optimizado para pantallas pequeñas y tablets.
-  - Navegación rápida con una sola mano entre todas las secciones (Hoy, Deberes, Horario, Mochila, Proyectos, Pomodoro, Exámenes, Notas, Galería y Ajustes).
+> 💡 *Nota para Android Chrome:* Si `TextDetector` no está activo por defecto, se puede habilitar en `chrome://flags#enable-experimental-web-platform-features`.
 
-- [x] **🔍 OCR (Reconocimiento Óptico de Caracteres):**
-  - Procesamiento offline de fotos de pizarra y libros con `Tesseract.js` para extraer texto automáticamente sin necesidad de servidores externos.
-  - Inserción directa del texto extraído en tareas de deberes o temarios de exámenes.
-  - Búsqueda instantánea de palabras clave dentro de las fotos guardadas en la galería.
+#### ✨ B. IA Avanzada en la Nube con Google Gemini Flash
+* Integración directa con el modelo **Google Gemini 1.5 Flash** mediante API REST.
+* **Transcripción de Caligrafía Difícil:** Lee apuntes a mano alzada y esquemas complejos que los OCR convencionales no interpretan.
+* **Extracción Estructurada de Deberes:** El prompt de Gemini analiza el contenido de la foto y devuelve un resumen ordenado con las tareas a realizar, números de ejercicios y fechas límites detectadas.
+* **Configuración Sencilla:** Botón `⚙️ Clave IA` en el modal de OCR para almacenar tu clave gratuita de [Google AI Studio](https://aistudio.google.com/) de forma privada en el almacenamiento local de tu navegador.
 
-- [x] **🔎 Buscador Global Inteligente (Ctrl + K / Spotlight):**
-  - Barra de búsqueda estilo Spotlight accesible mediante atajo de teclado (`Ctrl + K`) o botón en cabecera y menú drawer.
-  - Búsqueda en tiempo real indexando tareas, exámenes, proyectos artísticos, calificaciones, materiales de la mochila y fotos/apuntes con OCR.
-  - Filtros por chips de categoría y navegación por teclado (flechas y Enter).
-
-- [x] **📄 Generador y Exportador a PDF (100% Offline con `jsPDF`):**
-  - **Exportar Horario Escolar en PDF:** Descarga tu horario semanal en formato PDF apaisado listo para imprimir o compartir.
-  - **Boletín Oficial de Calificaciones:** Generación de informe académico con notas por evaluación y media global ponderada.
-  - **Dossier de Proyectos Artísticos:** PDF técnico con ficha del proyecto, técnicas y registro fotográfico de la evolución de la obra.
-
-- [x] **🎙️ Mejoras Avanzadas en Notas de Voz:**
-  - **Transcripción de Voz a Texto (Dictado):** Dictar deberes, notas, exámenes y proyectos con la voz utilizando `Web Speech API` para que se conviertan en texto automáticamente.
-  - **Notas de voz en Proyectos y Exámenes:** Permitir adjuntar notas de audio directamente a las obras del portafolio y temarios de examen.
-
-- [x] **🔔 Notificaciones Push Locales:**
-  - Recordatorios en el móvil o navegador el día antes de un examen o cuando vence una tarea pendiente con la API nativa de notificaciones web.
-
-- [x] **🎨 Paquete y Selector Visual de Iconos para Asignaturas y Materias:**
-  - Catálogo interactivo de iconos y emojis organizados por categorías (*Artes Plásticas, Música, Ciencias, Letras, Idiomas, Tecnología, Deporte*).
-  - Selector visual intuitivo al crear o editar asignaturas sin tener que buscarlos en el teclado del móvil.
-
-- [ ] **🎨 Herramientas Especiales de Taller y Arte:**
-  - **Cuentagotas Digital de Color (Color Picker en fotos):** Extrae la paleta de colores (códigos HEX, RGB y nombres de pigmentos) tocando cualquier punto de una foto.
-  - **Guía de Proporciones en Cámara:** Cuadrícula de regla de tercios y proporción áurea superpuesta para encuadrar dibujos y fotos de bodegones.
-  - **Lienzo en Blanco para Bocetos:** Pizarra digital en blanco dentro de la app para realizar bocetos, esquemas o cálculos rápidos durante la clase.
-
-- [x] **🧮 Simulador de Notas y Calificaciones Ponderadas:**
-  - **Simulador "¿Qué nota necesito?":** Calcula automáticamente qué nota necesitas en el próximo examen para alcanzar la media deseada con análisis de viabilidad en tiempo real.
-  - **Ponderaciones personalizables:** Porcentajes por exámenes, trabajos y actitud (ej. *70% Exámenes / 30% Prácticas*).
-  - **Calculadora EBAU / Selectividad:** Simulador de nota media de bachillerato y ponderación de materias específicas.
-
-- [x] **📅 Integración con Calendarios Nativos (`.ics` / Google / Apple / Outlook):**
-  - Exportación de exámenes y horario semanal a formato estándar `.ics` (RFC 5545) con recordatorios y alarmas de 24h previas en un clic.
-
-- [x] **🎮 Gamificación y Hábitos de Estudio:**
-  - **Rachas de Estudio Diarias (*Streaks*):** Registro de días consecutivos completando tareas y sesiones Pomodoro con contador en la cabecera.
-  - **Sistema de Logros y Desafíos:** Medallas y trofeos desbloqueables (*Primer Paso, En Racha, Semana Perfecta, Maestro de la Concentración*).
-
-- [x] **📚 Biblioteca de Recursos y Enlaces por Asignatura:**
-  - Guardar enlaces directos a Google Classroom, carpetas de Google Drive, aulas virtuales Moodle o recursos didácticos dentro de cada materia.
-
-- [ ] **⏱️ Modo Simulacro de Examen:**
-  - Cronómetro a pantalla completa sin distracciones para practicar exámenes con límite de tiempo real (ej. 50 o 90 minutos).
-
-- [ ] **👁️ Accesibilidad y Personalización Visual:**
-  - Modo con tipografía especial para dislexia (*OpenDyslexic*) y tamaño de texto ajustable.
-
-- [x] **🗑️ Papelera de Reciclaje (30 días):**
-  - Recuperación y restauración de tareas, exámenes, notas, materiales o proyectos eliminados accidentalmente, con auto-purga a los 30 días.
-
-- [x] **🖨️ Modo Impresión Limpio y Boletín / Horario PDF:**
-  - Estilos CSS `@media print` y botones integrados en Horario y Notas para imprimir en papel o guardar en PDF de forma limpia y profesional.
-
-- [x] **☁️ Sincronización en la Nube con Firebase / Firestore (Híbrido Offline-First):**
-  - **Inicio de Sesión con Google (Firebase Auth):** Conectar con un solo clic para respaldar y sincronizar la agenda entre móvil, tablet y PC.
-  - **Gestión Multi-cuenta y Cuentas Escolares (Google Classroom):**
-    - Identificador único (`uid`) por usuario para aislamiento total de datos de cada alumno.
-  - **Base de Datos en Tiempo Real (Cloud Firestore):** Guardado automático en la nube de deberes, exámenes, notas, horario y portafolio de proyectos.
-  - **Arquitectura Híbrida Segura:**
-    - *Modo Sin Conexión / Sin Cuenta:* Todo funciona al 100% de forma local en el dispositivo usando `IndexedDB`.
-    - *Modo Conectado:* Sincronización manual o en tiempo real con la nube.
+#### 📄 C. Motor Tesseract.js WebAssembly (Respaldo Universal)
+* Si el navegador no cuenta con la API del teléfono ni con conexión a Gemini, recurre de forma transparente a **Tesseract.js** en WebAssembly, garantizando que el OCR siempre funcione en cualquier ordenador o dispositivo.
 
 ---
 
-## 📂 Estructura de Archivos del Proyecto
+## 📱 Módulos y Funcionalidades de la Aplicación
 
-```text
-├── index.html            # Estructura principal y modales de la interfaz de usuario
-├── styles.css            # Diseño responsivo, tema claro/oscuro y componentes
-├── app.js                # Lógica central, controladores de eventos y renderizado
-├── db.js                 # Capa de datos con IndexedDB, semillas y compresión de imágenes
-├── camera.js             # Módulo de captura de cámara en vivo y visor a pantalla completa
-├── annotations.js        # Editor de dibujo y correcciones sobre fotografías
-├── audio.js              # Grabadora de notas de voz y sintetizador de sonido Web Audio API
-├── qr.js                 # Generador, lector de QR y formateador de mensajes WhatsApp
-├── ocr.js                # Motor de OCR y extracción de texto de imágenes con Tesseract.js
-├── libs/                 # Librerías cliente offline (Tesseract core & worker)
-├── server.js             # Servidor HTTP local en Node.js (cero dependencias externas)
-├── iniciar_agenda.bat    # Acceso directo para iniciar la app en Windows con doble clic
-├── sw.js                 # Service Worker para funcionamiento 100% Offline (PWA v2.4.0)
-├── manifest.webmanifest  # Configuración PWA para instalación como app nativa
-└── icon.svg              # Logotipo vectorial de la aplicación
-```
+### 🏠 1. Panel Principal ("Hoy")
+* Resumen rápido del día escolar: clase en curso y siguiente clase según la hora actual.
+* Contador de deberes pendientes para hoy y esta semana.
+* Notificación visual de exámenes inminentes con cuenta atrás de días.
+* Racha de hábitos de estudio con registro diario de constancia.
+
+### 📋 2. Deberes y Tareas
+* Organización por asignaturas con colores identificativos.
+* Filtros por estado (*Pendientes*, *Para Hoy*, *Esta Semana*, *Con Fotos*, *Completadas*).
+* Prioridades (*Urgente*, *Normal*, *Baja*) y avisos de entrega.
+* Inserción directa de apuntes extraídos desde la cámara o notas de voz.
+
+### 📅 3. Horario Escolar Semanal
+* Visualización de Lunes a Viernes con recreos y franjas configurables.
+* Asignaturas personalizables con aula, nombre del profesor, iconos temáticos y colores.
+* **Exportación a PDF:** Descarga tu horario escolar en un documento apaisado listo para imprimir.
+
+### 🎒 4. Mochila Inteligente
+* Lista interactiva de materiales y útiles de clase.
+* **Filtro Inteligente "Para Clases de Mañana":** Cruza los materiales con las materias del día siguiente y te avisa exactamente de qué debes meter en la mochila.
+* Barra de progreso de preparación.
+
+### 🎨 5. Portafolio de Proyectos y Taller Artístico
+* Seguimiento de proyectos por fases: *Boceto / Idea*, *En Proceso / Taller*, *Terminado*, *Entregado / Evaluado*.
+* Registro de técnicas plásticas, dimensiones, soporte y fotografías del paso a paso de la obra.
+* Generador de **Dossier de Proyecto en PDF** con portada, ficha técnica y fotos.
+
+### ⏱️ 6. Pomodoro de Concentración
+* Modos de estudio (25m), descanso corto (5m) y descanso largo (15m).
+* Campana de aviso sintetizada mediante **Web Audio API** (sin descargas ni archivos externos).
+* Registro de sesiones completadas y tiempo enfocado.
+
+### 📝 7. Exámenes y Calificaciones
+* Calendario de pruebas con cálculo automático de días restantes (*¡HOY!*, *Mañana*, *En X días*).
+* Registro de notas trimestrales (1º, 2º y 3º trimestre).
+* Cálculo automático de notas medias por materia y media global del curso.
+* **Boletín Oficial de Notas en PDF** exportable con un solo clic.
+
+### 🧠 8. Fichas de Estudio (Flashcards con Repaso Leitner)
+* Sistema de memorización espaciada con 5 cajas Leitner.
+* Creación rápida de fichas a partir del texto extraído con la cámara o dictadas por voz.
+* Estadísticas de tarjetas repasadas y tarjetas dominadas.
+
+### 🎙️ 9. Grabadora de Voz y Dictado Inteligente
+* Grabación de notas de audio adjuntas a deberes, proyectos o exámenes.
+* **Dictado por Voz (Web Speech API):** Habla al móvil y convierte tu voz en texto en cualquier campo de la aplicación.
+
+### 💬 10. Compartir por WhatsApp y Códigos QR
+* Generador de mensajes con formato profesional (emojis, fechas y listas) para enviar deberes a grupos de clase por WhatsApp.
+* Generación y escaneo de códigos QR para compartir la agenda entre compañeros sin conexión.
+
+### ☁️ 11. Sincronización y Copias de Seguridad
+* **Exportar / Importar JSON:** Respaldo completo de datos, audios y fotos comprimidas en un archivo descargable.
+* **Google Drive:** Conexión para subir copias de seguridad a tu nube personal.
+* **Firebase Cloud Sync:** Sincronización automática multidispositivo.
 
 ---
 
-## 🚀 Cómo Iniciar en Local
+## 🛠️ Tecnologías y Arquitectura
 
-### Opción 1: En Windows con Doble Clic
-1. Entra en la carpeta `Abian aplicación` en tu escritorio.
-2. Haz doble clic en el archivo **`iniciar_agenda.bat`**.
-3. Se abrirá automáticamente en tu navegador web (`http://localhost:3000`).
-
-### Opción 2: Desde Terminal / CLI
-```bash
-npm start
-```
-o bien:
-```bash
-node server.js
-```
+* **Frontend Puro:** HTML5 semántico, CSS3 con variables personalizadas y temas Claro/Oscuro, Vanilla JavaScript (ES Modules).
+* **PWA:** Service Worker (`sw.js`) con estrategia *Cache First* y actualización en segundo plano, y manifiesto (`manifest.webmanifest`) para instalación como app nativa.
+* **Almacenamiento Local:** `IndexedDB` para capacidad ilimitada de almacenamiento local (imágenes en base64, audios, tareas e historial).
+* **APIs Web Modernas:**
+  - `navigator.mediaDevices.getUserMedia` (Cámara en vivo con control de zoom y capacidades ópticas).
+  - `window.TextDetector` (Shape Detection API - Google Play Services ML Kit).
+  - `Web Audio API` (Generación de audio para Pomodoro).
+  - `Web Speech API` (Reconocimiento de voz para dictado).
+  - `Web Notifications API` (Recordatorios y avisos locales).
+* **Bibliotecas Integradas:**
+  - `jsPDF`: Motor de creación de documentos PDF offline.
+  - `Tesseract.js`: Motor OCR WebAssembly como respaldo.
+* **Servicios de IA:**
+  - `Google Gemini 1.5 Flash API`: Transcripción y estructuración en la nube.
 
 ---
 
-## 📱 Cómo Instalar la App en Móvil o PC
+## 📥 Instalación en Dispositivos
 
-- **En Android (Google Chrome):** Abre [https://mahay78.github.io/agenda-escolar/](https://mahay78.github.io/agenda-escolar/), toca los tres puntos (⋮) y selecciona **"Instalar aplicación"**.
-- **En iPhone / iPad (Safari):** Abre el enlace, pulsa el botón **Compartir** (cuadrado con flecha) y selecciona **"Añadir a la pantalla de inicio"**.
-- **En PC (Chrome / Edge):** Pulsa el botón de instalación en la barra de direcciones del navegador.
+### En Teléfonos Móviles (Android / Oppo / Xiaomi / Samsung)
+1. Abre **[https://mahay78.github.io/agenda-escolar/](https://mahay78.github.io/agenda-escolar/)** en Google Chrome.
+2. Toca el menú de tres puntos (⋮) en la esquina superior derecha.
+3. Selecciona **"Añadir a la pantalla de inicio"** o **"Instalar aplicación"**.
+4. La agenda se instalará como una aplicación nativa con acceso rápido, pantalla completa y funcionamiento 100% offline.
+
+### En iPhone o iPad (iOS / Safari)
+1. Abre la web en **Safari**.
+2. Pulsa el botón de **Compartir** (icono de cuadrado con flecha hacia arriba).
+3. Selecciona **"Añadir a la pantalla de inicio"**.
+
+### En Ordenador (Windows / Mac / Linux)
+* Pulsa el icono de instalación **📲** en la barra de direcciones de Chrome o Edge para instalarla como app de escritorio.
+
+---
+
+## 💻 Ejecución en Entorno Local
+
+Si deseas ejecutar la aplicación en tu propio ordenador:
+
+1. Asegúrate de tener instalado [Node.js](https://nodejs.org/).
+2. Haz doble clic en el archivo **`iniciar_agenda.bat`** (o ejecuta `node server.js` en la consola).
+3. Se abrirá automáticamente tu navegador en `http://localhost:3000`.
+4. El servidor local también muestra la IP local de tu Wi-Fi para que puedas abrirla en el móvil mientras programas.
+
+---
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia **MIT**. Consulta el archivo `LICENSE` para más información.

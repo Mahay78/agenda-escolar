@@ -20,8 +20,17 @@ const previewControls = document.getElementById('preview-controls');
 const cameraPreviewImg = document.getElementById('camera-preview-img');
 const cameraFileInput = document.getElementById('camera-file-input');
 const switchCameraBtn = document.getElementById('btn-switch-camera');
+const cameraZoomBar = document.getElementById('camera-zoom-bar');
+const cameraZoomSlider = document.getElementById('camera-zoom-slider');
+const cameraZoomText = document.getElementById('camera-zoom-text');
+const btnZoomPreview = document.getElementById('btn-zoom-preview');
 
 let tempCapturedPhoto = null;
+let currentZoom = 1;
+let isHardwareZoom = false;
+let isPreviewZoomed = false;
+let initialPinchDistance = null;
+let initialPinchZoom = 1;
 
 /**
  * Inicializa los eventos de la cámara
@@ -38,6 +47,9 @@ export function initCameraModule() {
   if (retakeBtn) retakeBtn.addEventListener('click', retakePhoto);
   if (acceptBtn) acceptBtn.addEventListener('click', acceptPhoto);
   if (switchCameraBtn) switchCameraBtn.addEventListener('click', switchCamera);
+
+  // Inicializar controles de Zoom (Píldoras 1x/2x/3x, slider y pinch-to-zoom táctil)
+  initZoomControls();
 
   if (uploadGalleryBtn && cameraFileInput) {
     uploadGalleryBtn.addEventListener('click', () => {
@@ -112,6 +124,7 @@ async function startCameraStream() {
     stream = await navigator.mediaDevices.getUserMedia(constraints);
     cameraVideo.srcObject = stream;
     await cameraVideo.play();
+    await applyZoom(currentZoom);
   } catch (err) {
     // Si falla con 'environment' (ej. en PC que solo tiene webcam frontal)
     if (currentFacingMode === 'environment') {
@@ -122,6 +135,7 @@ async function startCameraStream() {
       });
       cameraVideo.srcObject = stream;
       await cameraVideo.play();
+      await applyZoom(currentZoom);
     } else {
       throw err;
     }
@@ -154,14 +168,134 @@ async function switchCamera() {
 }
 
 /**
- * Toma la captura del cuadro actual del video
+ * Inicializa los controles de Zoom
+ */
+function initZoomControls() {
+  // Botones de presets (1x, 2x, 3x)
+  const zoomBtns = document.querySelectorAll('.zoom-pill-btn');
+  zoomBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const z = parseFloat(btn.getAttribute('data-zoom') || '1');
+      applyZoom(z);
+    });
+  });
+
+  // Slider de Zoom continuo
+  if (cameraZoomSlider) {
+    cameraZoomSlider.addEventListener('input', (e) => {
+      applyZoom(parseFloat(e.target.value));
+    });
+  }
+
+  // Gesto táctil Pinch-to-Zoom en el video
+  if (cameraVideo) {
+    cameraVideo.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 2) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        initialPinchDistance = Math.hypot(dx, dy);
+        initialPinchZoom = currentZoom;
+      }
+    }, { passive: true });
+
+    cameraVideo.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 2 && initialPinchDistance) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const dist = Math.hypot(dx, dy);
+        const factor = dist / initialPinchDistance;
+        const targetZoom = Math.min(Math.max(initialPinchZoom * factor, 1), 4);
+        applyZoom(targetZoom);
+      }
+    }, { passive: true });
+
+    cameraVideo.addEventListener('touchend', () => {
+      initialPinchDistance = null;
+    }, { passive: true });
+  }
+
+  // Zoom de inspección en vista previa de la foto
+  if (btnZoomPreview) {
+    btnZoomPreview.addEventListener('click', togglePreviewZoom);
+  }
+  if (cameraPreviewImg) {
+    cameraPreviewImg.addEventListener('click', togglePreviewZoom);
+  }
+}
+
+/**
+ * Alterna el zoom de inspección (2.5x) en la vista previa
+ */
+function togglePreviewZoom() {
+  isPreviewZoomed = !isPreviewZoomed;
+  if (cameraPreviewImg) {
+    cameraPreviewImg.classList.toggle('inspect-zoom', isPreviewZoomed);
+  }
+  if (btnZoomPreview) {
+    btnZoomPreview.textContent = isPreviewZoomed ? '🔍 Normal (1x)' : '🔍 Zoom 2.5x';
+    btnZoomPreview.classList.toggle('btn-primary', isPreviewZoomed);
+    btnZoomPreview.classList.toggle('btn-secondary', !isPreviewZoomed);
+  }
+}
+
+/**
+ * Aplica el nivel de zoom a la cámara (Hardware o Software/Canvas)
+ */
+async function applyZoom(level) {
+  currentZoom = Math.min(Math.max(level, 1), 4);
+  currentZoom = Math.round(currentZoom * 10) / 10;
+
+  if (cameraZoomText) cameraZoomText.textContent = `${currentZoom.toFixed(1)}x`;
+  if (cameraZoomSlider) cameraZoomSlider.value = String(currentZoom);
+
+  const zoomBtns = document.querySelectorAll('.zoom-pill-btn');
+  zoomBtns.forEach((btn) => {
+    const zVal = parseFloat(btn.getAttribute('data-zoom') || '1');
+    btn.classList.toggle('active', Math.abs(zVal - currentZoom) < 0.2);
+  });
+
+  // 1. Intentar aplicar zoom óptico/digital por hardware si el navegador lo soporta
+  let hwSuccess = false;
+  if (stream) {
+    const [track] = stream.getVideoTracks();
+    if (track && typeof track.getCapabilities === 'function') {
+      const caps = track.getCapabilities();
+      if (caps && 'zoom' in caps) {
+        try {
+          const hwZoom = Math.min(Math.max(currentZoom, caps.zoom.min || 1), caps.zoom.max || 4);
+          await track.applyConstraints({ advanced: [{ zoom: hwZoom }] });
+          hwSuccess = true;
+          isHardwareZoom = true;
+        } catch (e) {
+          hwSuccess = false;
+        }
+      }
+    }
+  }
+
+  // 2. Zoom digital CSS suave para previsualización inmediata
+  if (cameraVideo) {
+    cameraVideo.style.setProperty('--current-zoom', currentZoom);
+    if (!hwSuccess) {
+      cameraVideo.style.transform = `scale(${currentZoom})`;
+      isHardwareZoom = false;
+    } else {
+      cameraVideo.style.transform = 'scale(1)';
+    }
+  }
+}
+
+/**
+ * Toma la captura del cuadro actual del video con animación de zoom y recorte
  */
 async function captureSnapshot() {
   if (!cameraVideo.videoWidth) return;
 
-  // Efecto flash
+  // Efecto Flash + Efecto Zoom Dinámico al disparar la foto
   cameraFlash.classList.add('flash-active');
+  cameraVideo.classList.add('snap-anim');
   setTimeout(() => cameraFlash.classList.remove('flash-active'), 250);
+  setTimeout(() => cameraVideo.classList.remove('snap-anim'), 300);
 
   // Dibujar en canvas
   cameraCanvas.width = cameraVideo.videoWidth;
@@ -174,7 +308,16 @@ async function captureSnapshot() {
     ctx.scale(-1, 1);
   }
 
-  ctx.drawImage(cameraVideo, 0, 0, cameraCanvas.width, cameraCanvas.height);
+  // Si se aplicó zoom digital por software, recortar centrado manteniendo la resolución
+  if (currentZoom > 1 && !isHardwareZoom) {
+    const cropW = cameraVideo.videoWidth / currentZoom;
+    const cropH = cameraVideo.videoHeight / currentZoom;
+    const cropX = (cameraVideo.videoWidth - cropW) / 2;
+    const cropY = (cameraVideo.videoHeight - cropH) / 2;
+    ctx.drawImage(cameraVideo, cropX, cropY, cropW, cropH, 0, 0, cameraCanvas.width, cameraCanvas.height);
+  } else {
+    ctx.drawImage(cameraVideo, 0, 0, cameraCanvas.width, cameraCanvas.height);
+  }
 
   const rawDataUrl = cameraCanvas.toDataURL('image/jpeg', 0.9);
 
@@ -188,10 +331,17 @@ async function captureSnapshot() {
  */
 function showPreview(dataUrl) {
   tempCapturedPhoto = dataUrl;
+  isPreviewZoomed = false;
   cameraPreviewImg.src = dataUrl;
-  cameraPreviewImg.classList.remove('hidden');
+  cameraPreviewImg.classList.remove('hidden', 'inspect-zoom');
+  if (btnZoomPreview) {
+    btnZoomPreview.textContent = '🔍 Zoom 2.5x';
+    btnZoomPreview.classList.remove('btn-primary');
+    btnZoomPreview.classList.add('btn-secondary');
+  }
   cameraVideo.classList.add('hidden');
   cameraControls.classList.add('hidden');
+  if (cameraZoomBar) cameraZoomBar.classList.add('hidden');
   previewControls.classList.remove('hidden');
 
   // Pausar video de fondo
@@ -203,15 +353,19 @@ function showPreview(dataUrl) {
  */
 function resetToLiveView() {
   tempCapturedPhoto = null;
+  isPreviewZoomed = false;
   cameraPreviewImg.src = '';
+  cameraPreviewImg.classList.remove('inspect-zoom');
   cameraPreviewImg.classList.add('hidden');
   cameraVideo.classList.remove('hidden');
   cameraControls.classList.remove('hidden');
+  if (cameraZoomBar) cameraZoomBar.classList.remove('hidden');
   previewControls.classList.add('hidden');
   if (cameraFileInput) cameraFileInput.value = '';
 
   if (cameraVideo && stream) {
     cameraVideo.play().catch(() => {});
+    applyZoom(currentZoom);
   }
 }
 

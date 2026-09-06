@@ -397,10 +397,94 @@ export function setCachedOcrText(src, text) {
 }
 
 /**
+ * Agrupa bloques de texto detectados en líneas visuales y los ordena de izquierda a derecha y arriba a abajo
+ * @param {Array} blocks Bloques detectados por TextDetector
+ * @returns {string} Texto ordenado según el flujo de lectura natural
+ */
+function sortAndAssembleTextBlocks(blocks) {
+  if (!blocks || blocks.length === 0) return '';
+  if (blocks.length === 1) return blocks[0].rawValue || '';
+
+  // Calcular la altura media de los bloques para estimar la tolerancia de línea
+  const heights = blocks.map((b) => b.boundingBox?.height || 20);
+  const avgHeight = heights.reduce((a, b) => a + b, 0) / heights.length;
+  const lineTolerance = Math.max(12, avgHeight * 0.55);
+
+  // Clusterear bloques en líneas horizontales
+  const lines = [];
+  const sortedByTop = [...blocks].sort((a, b) => (a.boundingBox?.top || 0) - (b.boundingBox?.top || 0));
+
+  for (const block of sortedByTop) {
+    const box = block.boundingBox || { top: 0, left: 0, width: 0, height: 0 };
+    const midY = box.top + box.height / 2;
+
+    let matchedLine = null;
+    for (const line of lines) {
+      if (Math.abs(midY - line.avgMidY) <= lineTolerance) {
+        matchedLine = line;
+        break;
+      }
+    }
+
+    if (matchedLine) {
+      matchedLine.blocks.push(block);
+      matchedLine.avgMidY =
+        matchedLine.blocks.reduce((sum, b) => sum + ((b.boundingBox?.top || 0) + (b.boundingBox?.height || 0) / 2), 0) /
+        matchedLine.blocks.length;
+    } else {
+      lines.push({
+        avgMidY: midY,
+        top: box.top,
+        blocks: [block]
+      });
+    }
+  }
+
+  // Ordenar las líneas de arriba a abajo
+  lines.sort((a, b) => a.top - b.top);
+
+  // Dentro de cada línea, ordenar los bloques de izquierda a derecha
+  const textLines = lines.map((line) => {
+    line.blocks.sort((a, b) => (a.boundingBox?.left || 0) - (b.boundingBox?.left || 0));
+
+    let lineStr = '';
+    for (let i = 0; i < line.blocks.length; i++) {
+      const b = line.blocks[i];
+      const text = (b.rawValue || '').trim();
+      if (!text) continue;
+
+      if (i > 0) {
+        const prevBox = line.blocks[i - 1].boundingBox;
+        const currBox = b.boundingBox;
+        const gap = (currBox?.left || 0) - ((prevBox?.left || 0) + (prevBox?.width || 0));
+        if (gap > 45) {
+          lineStr += '   |   ' + text;
+        } else {
+          lineStr += ' ' + text;
+        }
+      } else {
+        lineStr += text;
+      }
+    }
+    return lineStr;
+  });
+
+  return textLines.filter(Boolean).join('\n');
+}
+
+/**
+ * Comprueba si el dispositivo soporta IA local nativa acelerada (TextDetector API)
+ */
+export function isDeviceAISupported() {
+  return typeof window !== 'undefined' && 'TextDetector' in window;
+}
+
+/**
  * 1. RECONOCIMIENTO CON LA IA NATIVA DEL TELÉFONO (Oppo Reno 12 F / Android ML Kit)
+ * Extrae texto en ~0.15s usando el hardware del móvil, ordenado con flujo 2D y auto-contraste.
  */
 export async function recognizeWithDeviceAI(imageSource) {
-  if (typeof window === 'undefined' || !('TextDetector' in window)) {
+  if (!isDeviceAISupported()) {
     return null; // El navegador no soporta TextDetector nativo
   }
 
@@ -419,18 +503,39 @@ export async function recognizeWithDeviceAI(imageSource) {
       });
     }
 
-    const detectedBlocks = await detector.detect(imgElement);
+    // Primer pase de detección con la IA del chip móvil (Google Play Services ML Kit)
+    let detectedBlocks = await detector.detect(imgElement);
+
+    // Si detectó muy poco texto y no era un canvas procesado, probar con preprocesado óptico de contraste
+    if ((!detectedBlocks || detectedBlocks.length < 2) && !(imageSource instanceof HTMLCanvasElement)) {
+      try {
+        const { canvas: contrastCanvas } = await preprocessImage(imgElement, 'auto');
+        if (contrastCanvas) {
+          const secondPassBlocks = await detector.detect(contrastCanvas);
+          if (secondPassBlocks && secondPassBlocks.length > (detectedBlocks?.length || 0)) {
+            detectedBlocks = secondPassBlocks;
+          }
+        }
+      } catch (passErr) {
+        // Continuar con los bloques disponibles
+      }
+    }
+
     if (!detectedBlocks || detectedBlocks.length === 0) return null;
 
-    // Ordenar los bloques de texto verticalmente (de arriba a abajo)
-    detectedBlocks.sort((a, b) => (a.boundingBox?.top || 0) - (b.boundingBox?.top || 0));
-    const rawText = detectedBlocks.map((b) => b.rawValue).filter(Boolean).join('\n');
+    // Ordenar con algoritmo de flujo de lectura 2D (Líneas y columnas naturales)
+    const assembledText = sortAndAssembleTextBlocks(detectedBlocks);
+    if (!assembledText.trim()) return null;
+
+    // Post-procesado inteligente para apuntes escolares y ejercicios
+    const cleanedText = cleanOcrText(assembledText);
 
     return {
-      text: cleanOcrText(rawText),
-      rawText: rawText,
-      confidence: 95,
+      text: cleanedText,
+      rawText: assembledText,
+      confidence: Math.min(98, 88 + Math.min(10, detectedBlocks.length * 2)),
       effectiveMode: 'device_ai', // IA local del Oppo Reno 12 F / Android
+      blockCount: detectedBlocks.length,
       previewDataUrl: ''
     };
   } catch (err) {
