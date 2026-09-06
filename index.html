@@ -1211,11 +1211,28 @@
 
   <!-- 13. MODAL: RESULTADO DE OCR (TEXTO EXTRAÍDO DE FOTO) -->
   <div id="ocr-result-modal" class="modal-overlay hidden">
-    <div class="modal-content" style="max-width: 600px;">
+    <div class="modal-content" style="max-width: 640px;">
       <div class="modal-header">
-        <h3 class="modal-title">🔍 Texto Extraído de la Fotografía</h3>
+        <h3 class="modal-title">🔍 Reconocimiento de Texto (OCR Inteligente)</h3>
         <button class="btn-close" data-close="ocr-result-modal">&times;</button>
       </div>
+
+      <!-- Filtro y tipo de imagen -->
+      <div style="margin-bottom: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Optimización según superficie:</span>
+          <span id="ocr-effective-badge" style="font-size: 0.72rem; color: var(--primary); font-weight: 600;"></span>
+        </div>
+        <div class="search-quick-tags" id="ocr-mode-chips" style="border: none; padding: 2px 0;">
+          <button type="button" class="search-tag active" data-ocr-mode="auto" title="Detecta automáticamente si la foto es de pizarra oscura o papel">🪄 Auto</button>
+          <button type="button" class="search-tag" data-ocr-mode="chalkboard" title="Invierte colores para tiza blanca en pizarra verde o negra">🟢 Pizarra Tiza</button>
+          <button type="button" class="search-tag" data-ocr-mode="whiteboard" title="Elimina sombras y resalta rotulador azul, negro o rojo">⚪ Pizarra Blanca</button>
+          <button type="button" class="search-tag" data-ocr-mode="document" title="Alto contraste B/N para libros, apuntes y fotocopias">📄 Libro / Apunte</button>
+          <button type="button" class="search-tag" data-ocr-mode="raw" title="Foto original sin pre-procesamiento">📷 Original</button>
+        </div>
+      </div>
+
+      <!-- Barra de progreso -->
       <div id="ocr-status-container" class="ocr-status-container" style="margin-bottom: 12px;">
         <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 4px;">
           <span id="ocr-status-text" style="color: var(--primary); font-weight: 600;">Iniciando análisis...</span>
@@ -1225,18 +1242,48 @@
           <div id="ocr-progress-fill" style="width: 0%; height: 100%; background: var(--primary); transition: width 0.2s ease;"></div>
         </div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Texto Reconocido (puedes editarlo o completarlo):</label>
+
+      <!-- Barra de herramientas de texto e idioma -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <label for="ocr-lang-select" style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin: 0;">Idioma:</label>
+          <select id="ocr-lang-select" class="form-select" style="padding: 2px 8px; font-size: 0.78rem; width: auto; height: 28px;">
+            <option value="spa">🇪🇸 Español</option>
+            <option value="spa+eng">🇪🇸+🇬🇧 Español + Inglés</option>
+          </select>
+        </div>
+        <div style="display: flex; gap: 6px;">
+          <button type="button" id="btn-ocr-clean" class="btn-secondary" style="padding: 4px 10px; font-size: 0.76rem;" title="Unir párrafos y corregir guiones de salto de línea">
+            🧹 Limpiar Formato
+          </button>
+          <button type="button" id="btn-ocr-bullets" class="btn-secondary" style="padding: 4px 10px; font-size: 0.76rem;" title="Formatear como lista de deberes con viñetas">
+            📋 Formato Lista
+          </button>
+        </div>
+      </div>
+
+      <!-- Área de texto del resultado -->
+      <div class="form-group" style="margin-bottom: 12px;">
         <textarea id="ocr-extracted-text" class="form-textarea" rows="8" placeholder="Extrayendo texto de la imagen..."></textarea>
       </div>
+
+      <!-- Vista previa del filtro (acordeón opcional) -->
+      <details id="ocr-preview-details" style="margin-bottom: 14px; font-size: 0.8rem; color: var(--text-muted);">
+        <summary style="cursor: pointer; font-weight: 600; user-select: none;">🖼️ Ver imagen procesada con filtro óptico</summary>
+        <div style="text-align: center; margin-top: 8px; background: var(--bg-input); padding: 8px; border-radius: var(--radius-sm); max-height: 180px; overflow: hidden;">
+          <img id="ocr-preview-img" src="" alt="Filtro óptico" style="max-width: 100%; max-height: 160px; object-fit: contain; border-radius: 4px;" />
+        </div>
+      </details>
+
+      <!-- Botones de acción -->
       <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-        <button type="button" id="btn-ocr-copy" class="btn-secondary" style="flex: 1;">
+        <button type="button" id="btn-ocr-copy" class="btn-secondary" style="flex: 1; min-width: 140px;">
           📋 Copiar Texto
         </button>
-        <button type="button" id="btn-ocr-to-task" class="btn-primary" style="flex: 1;">
+        <button type="button" id="btn-ocr-to-task" class="btn-primary" style="flex: 1; min-width: 140px;">
           ➕ Añadir a Deberes
         </button>
-        <button type="button" id="btn-ocr-to-exam" class="btn-secondary" style="flex: 1;">
+        <button type="button" id="btn-ocr-to-exam" class="btn-secondary" style="flex: 1; min-width: 140px;">
           ➕ Añadir a Examen
         </button>
       </div>

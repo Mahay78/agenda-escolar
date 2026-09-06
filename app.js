@@ -42,7 +42,9 @@ import {
   recognizeImageText,
   loadTesseractScript,
   getCachedOcrText,
-  setCachedOcrText
+  setCachedOcrText,
+  cleanOcrText,
+  formatAsBulletList
 } from './ocr.js';
 
 // Estado global de la aplicación
@@ -2968,25 +2970,43 @@ function initOcrModule() {
   const ocrStatusText = document.getElementById('ocr-status-text');
   const ocrPercentageText = document.getElementById('ocr-percentage-text');
   const ocrProgressFill = document.getElementById('ocr-progress-fill');
+  const ocrEffectiveBadge = document.getElementById('ocr-effective-badge');
+  const ocrModeChips = document.querySelectorAll('#ocr-mode-chips .search-tag');
+  const ocrLangSelect = document.getElementById('ocr-lang-select');
+  const ocrPreviewImg = document.getElementById('ocr-preview-img');
+  const btnClean = document.getElementById('btn-ocr-clean');
+  const btnBullets = document.getElementById('btn-ocr-bullets');
   const btnCopy = document.getElementById('btn-ocr-copy');
   const btnToTask = document.getElementById('btn-ocr-to-task');
   const btnToExam = document.getElementById('btn-ocr-to-exam');
 
-  btnViewerOcr?.addEventListener('click', async () => {
-    const imgEl = document.getElementById('image-viewer-img');
-    const src = imgEl?.src;
-    if (!src) return;
+  let activeOcrSrc = null;
+  let activeOcrMode = 'auto';
 
-    if (!ocrModal || !ocrTextArea) return;
-    ocrModal.classList.remove('hidden');
+  const modeDescriptions = {
+    auto: '🪄 Detección Inteligente',
+    chalkboard: '🟢 Pizarra Tiza (Invertida)',
+    whiteboard: '⚪ Pizarra Blanca (Alto Contraste)',
+    document: '📄 Documento / Libro',
+    raw: '📷 Foto Original'
+  };
+
+  async function processCurrentOcr(forceReload = false) {
+    if (!activeOcrSrc || !ocrModal || !ocrTextArea) return;
+
     ocrTextArea.value = '';
-    if (ocrStatusText) ocrStatusText.textContent = 'Iniciando motor OCR...';
+    if (ocrStatusText) ocrStatusText.textContent = 'Aplicando filtros ópticos...';
     if (ocrPercentageText) ocrPercentageText.textContent = '0%';
     if (ocrProgressFill) ocrProgressFill.style.width = '0%';
+    if (ocrEffectiveBadge) ocrEffectiveBadge.textContent = '';
+
+    const lang = ocrLangSelect?.value || 'spa';
 
     try {
-      const result = await recognizeImageText(src, {
-        lang: 'spa',
+      const result = await recognizeImageText(activeOcrSrc, {
+        mode: activeOcrMode,
+        lang: lang,
+        forceReload: forceReload,
         onProgress: (p) => {
           if (ocrStatusText) ocrStatusText.textContent = p.status;
           const pct = Math.round((p.progress || 0) * 100);
@@ -2996,7 +3016,13 @@ function initOcrModule() {
       });
 
       ocrTextArea.value = result.text || '(No se detectó texto legible en la imagen)';
-      showToast('✅ Texto extraído con éxito', 'success');
+      if (ocrEffectiveBadge && result.effectiveMode) {
+        ocrEffectiveBadge.textContent = `Modo: ${modeDescriptions[result.effectiveMode] || result.effectiveMode}`;
+      }
+      if (ocrPreviewImg && result.previewDataUrl) {
+        ocrPreviewImg.src = result.previewDataUrl;
+      }
+      showToast('✅ Texto extraído y optimizado', 'success');
       renderGalleryView(); // Refrescar para mostrar el badge OCR en la galería
     } catch (err) {
       console.error('Error OCR:', err);
@@ -3004,8 +3030,55 @@ function initOcrModule() {
       ocrTextArea.value = `Hubo un inconveniente al procesar la imagen: ${err.message}`;
       showToast('⚠️ No se pudo extraer el texto de la imagen', 'error');
     }
+  }
+
+  btnViewerOcr?.addEventListener('click', () => {
+    const imgEl = document.getElementById('image-viewer-img');
+    const src = imgEl?.src;
+    if (!src) return;
+
+    activeOcrSrc = src;
+    activeOcrMode = 'auto';
+
+    // Resetear chips
+    ocrModeChips.forEach((btn) => {
+      btn.classList.toggle('active', btn.getAttribute('data-ocr-mode') === 'auto');
+    });
+
+    ocrModal.classList.remove('hidden');
+    processCurrentOcr(false);
   });
 
+  // Selector de modo / superficie
+  ocrModeChips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      ocrModeChips.forEach((c) => c.classList.remove('active'));
+      chip.classList.add('active');
+      activeOcrMode = chip.getAttribute('data-ocr-mode') || 'auto';
+      processCurrentOcr(true);
+    });
+  });
+
+  // Selector de idioma
+  ocrLangSelect?.addEventListener('change', () => {
+    processCurrentOcr(true);
+  });
+
+  // Botón Limpiar Formato
+  btnClean?.addEventListener('click', () => {
+    if (!ocrTextArea?.value) return;
+    ocrTextArea.value = cleanOcrText(ocrTextArea.value);
+    showToast('🧹 Formato y párrafos limpiados', 'info');
+  });
+
+  // Botón Formato Lista / Deberes
+  btnBullets?.addEventListener('click', () => {
+    if (!ocrTextArea?.value) return;
+    ocrTextArea.value = formatAsBulletList(ocrTextArea.value);
+    showToast('📋 Convertido a lista de ejercicios', 'info');
+  });
+
+  // Botón Copiar
   btnCopy?.addEventListener('click', async () => {
     const text = ocrTextArea?.value;
     if (!text) return;
@@ -3017,6 +3090,7 @@ function initOcrModule() {
     }
   });
 
+  // Añadir a Deberes
   btnToTask?.addEventListener('click', () => {
     const text = ocrTextArea?.value;
     if (!text) return;
@@ -3032,6 +3106,7 @@ function initOcrModule() {
     }, 100);
   });
 
+  // Añadir a Examen
   btnToExam?.addEventListener('click', () => {
     const text = ocrTextArea?.value;
     if (!text) return;
