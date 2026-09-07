@@ -7,7 +7,19 @@ Una aplicación web progresiva (**Progressive Web App - PWA**) moderna, ultrarr�
 
 ---
 
-## 🌟 Novedades Principales (Versión 3.1.0)
+## 🌟 Novedades Principales (Versión 3.5.x)
+
+* 📱 **Arquitectura Ergonómica de 4 Pestañas + Botón Rápido (+):**
+  * `☀️ Mi Día`: Dashboard diario con horario en vivo, tareas urgentes y alertas.
+  * `📅 Agenda`: Subpestañas fluidas para *Deberes*, *Exámenes*, *Horario semanal*, *Mochila* y *Proyectos*.
+  * `➕ Botón Central (+)`: Acceso instantáneo para crear tareas, exámenes, fichas, escanear apuntes o invocar al Copiloto IA.
+  * `🧠 Estudio`: *Cuaderno LM* integrado con pantalla completa, mazo *Flashcards*, temporizador *Pomodoro* y *Galería de apuntes*.
+  * `📊 Progreso`: Calificaciones con simulador de medias, logros, rachas y configuración de Google Drive / Clave IA.
+* 🖥️ **Diseño Nativo para Escritorio (PC / Mac) y Tablets:** Barra lateral fija colapsable (Sidebar estilo Notion/Slack), buscador Spotlight (`Ctrl + K`), cuadrícula de tarjetas y vistas independientes.
+* 📱 **Ajuste Móvil 100% Hermético:** Eliminación de desbordamiento horizontal (`overflow-x`), respeto a áreas seguras (`viewport-fit=cover`) y 5 botones perfectamente calibrados para el pulgar.
+* 🗺️ **Hoja de Ruta Oficial de Mejoras:** Consulta el catálogo completo de opciones planificadas en 👉 [**ROADMAP.md**](./ROADMAP.md).
+
+---
 
 ### 📚 1. Cuaderno LM - Entorno de Estudio Dedicado Estilo NotebookLM (`notebook.html`)
 * **URL dedicada:** [https://mahay78.github.io/agenda-escolar/notebook.html](https://mahay78.github.io/agenda-escolar/notebook.html)
@@ -186,6 +198,68 @@ Si deseas ejecutar la aplicación en tu propio ordenador:
 
 ---
 
+## 🗺️ Hoja de Ruta de Mejoras y Futuras Funcionalidades (Roadmap)
+
+Puedes consultar el catálogo interactivo en el archivo dedicado 👉 [**ROADMAP.md**](./ROADMAP.md). A continuación tienes un resumen de las mejoras planificadas:
+
+### 🧠 1. Inteligencia Artificial y Gemini Flash
+- [ ] 💡 **Generador de Exámenes Simulados:** Preguntas tipo test interactivas con temporizador y corrección automática basada en tus apuntes.
+- [ ] 💡 **Preguntas de Desarrollo con Calificación:** Preguntas de examen con nota estimada del 1 al 10 y consejos de mejora.
+- [ ] 💡 **Detección de Deberes por Foto de Pizarra:** Extraer automáticamente tareas y ejercicios de una foto de la pizarra.
+- [ ] 💡 **Escaneo Mágico de Horarios en Papel:** Rellenar la semana completa con asignaturas y aulas a partir de la foto del horario.
+- [ ] 💡 **Podcast de Estudio a Dos Voces:** Dos locutores debatiendo tus apuntes de forma entretenida.
+- [ ] 💡 **Modo Tutor Socrático:** La IA te guía paso a paso con preguntas para que aprendas a resolver el problema por ti mismo.
+- [ ] 💡 **Corrector de Redacciones:** Revisión de ortografía, vocabulario y coherencia en español e inglés.
+- [ ] 💡 **Mapas Conceptuales y Diagramas Mermaid:** Esquemas visuales automáticos para temas densos.
+
+### 📅 2. Organización y Tiempo
+- [ ] 💡 **Recordatorio Vespertino de Mochila:** Aviso diario con el material necesario según las clases de mañana.
+- [ ] 💡 **Horarios Rotativos (Semanas A / B):** Soporte para institutos con semanas alternas.
+- [ ] 💡 **Subtareas y Checklists:** Desglose de tareas y proyectos en entregas parciales.
+- [ ] 💡 **Plantillas de Tareas Recurrentes:** Tareas periódicas automáticas todas las semanas.
+- [ ] 💡 **Sincronización con Google Calendar:** Exportación `.ics` para ver las fechas en el calendario nativo del teléfono.
+
+### 💡 3. Técnicas de Estudio y Repaso Activo
+- [ ] 💡 **Spaced Repetition (SuperMemo SM-2):** Algoritmo científico de curva del olvido para flashcards.
+- [ ] 💡 **Modo Escritura para Fichas:** Teclear la respuesta para afianzar ortografía y vocabulario.
+- [ ] 💡 **Modo Zen / Enfoque con Sonidos de Fondo:** Pomodoro con sonido de lluvia, biblioteca o cafetería.
+- [ ] 💡 **Estadísticas de Estudio por Asignatura:** Gráficos del tiempo invertido en cada materia.
+- [ ] 💡 **Técnica Feynman Guiada:** Explica el tema con tus palabras y la IA detecta lo que falta.
+
+### 📷 4. Captura Visual y OCR
+- [ ] 💡 **Enderezado y Corrección de Perspectiva:** Corrige fotos de pizarras tomadas desde un lateral.
+- [ ] 💡 **Filtro de Alto Contraste:** Limpia reflejos y optimiza tiza y rotulador para máxima legibilidad.
+- [ ] 💡 **Exportación de Apuntes a PDF Único:** Combina varias fotos en un único documento para imprimir.
+
+### 📊 5. Calificaciones y Selectividad
+- [ ] 💡 **Notas Ponderadas:** Configurar porcentajes (70% exámenes, 20% tareas, 10% actitud).
+- [ ] 💡 **Calculadora "¿Qué necesito en el final?":** Nota mínima exacta para aprobar o subir nota.
+- [ ] 💡 **Simulador EVAU / EBAU:** Cálculo sobre 14 puntos según ponderaciones 0.2 y 0.1.
+
+### 🎮 6. Gamificación y Hábitos
+- [ ] 💡 **Niveles de Estudiante y XP:** Experiencia y rangos (*Novato*, *Estratega*, *Erudito*, *Máster*).
+- [ ] 💡 **Mapa de Calor de Constancia:** Visualización de días activos estilo GitHub.
+- [ ] 💡 **Retos Semanales:** Desafíos para fomentar el hábito diario.
+- [ ] 💡 **Congelador de Racha:** Salva tu racha si estuviste enfermo.
+
+### 👥 7. Colaboración
+- [ ] 💡 **Compartir Mazos por QR / Enlace:** Pásale tus fichas de repaso a un compañero en 1 segundo.
+- [ ] 💡 **Sala Pomodoro Compartida:** Ver compañeros estudiando simultáneamente para motivarse.
+- [ ] 💡 **Tablón de Avisos de Clase:** Fechas pactadas de exámenes y cambios de aula.
+
+### 🎨 8. Personalización y Accesibilidad
+- [ ] 💡 **Temas OLED, Pastel y Bosque:** Personalización estética del tema visual.
+- [ ] 💡 **Tipografía para Dislexia (OpenDyslexic):** Modo de lectura accesible.
+- [ ] 💡 **Atajos en el Icono (App Shortcuts):** Acceso rápido manteniendo pulsado el icono del móvil.
+
+### 🔒 9. Seguridad y Nube
+- [ ] 💡 **Bloqueo con Huella / Face ID / PIN:** Seguridad biométrica en el dispositivo.
+- [ ] 💡 **Sincronización en Segundo Plano (Background Sync):** Sube datos automáticamente con WiFi.
+- [ ] 💡 **Papelera con Restauración a 30 Días:** Recupera elementos borrados por error.
+
+---
+
 ## 📄 Licencia
 
 Este proyecto está bajo la Licencia **MIT**. Consulta el archivo `LICENSE` para más información.
+
