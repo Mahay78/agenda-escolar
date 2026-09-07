@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>📚 Cuaderno LM - Estudio Inteligente Basado en tus Fuentes</title>
+  <meta name="description" content="Entorno de estudio inteligente estilo NotebookLM. Sube tus apuntes y pizarras para generar guías de estudio, podcasts educativos, exámenes de prueba y resolver dudas basadas en tus fuentes." />
+  <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg-app: #0f172a;
+      --bg-surface: #1e293b;
+      --bg-surface-elevated: #243248;
+      --bg-input: #0f172a;
+      --border-color: #334155;
+      --border-focus: #3b82f6;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --accent-purple: #8b5cf6;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-faint: #64748b;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.35);
+      --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.5);
+      --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background-color: var(--bg-app);
+      color: var(--text-main);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* BARRA SUPERIOR */
+    .nlm-header {
+      height: 60px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      flex-shrink: 0;
+      z-index: 20;
+    }
+
+    .nlm-header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .btn-back-agenda {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .btn-back-agenda:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+
+    .nlm-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nlm-logo-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
+    }
+
+    .nlm-title-group h1 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nlm-tag-pro {
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: var(--radius-full);
+      background: rgba(139, 92, 246, 0.2);
+      color: #c4b5fd;
+      border: 1px solid rgba(139, 92, 246, 0.4);
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .nlm-header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-header-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      background: var(--bg-surface-elevated);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-header-action:hover {
+      background: var(--border-color);
+    }
+
+    .btn-key-setup {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.25));
+      border-color: rgba(139, 92, 246, 0.4);
+      color: #c4b5fd;
+    }
+
+    .btn-key-setup:hover {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      color: #fff;
+    }
+
+    /* TABS MÓVILES (SOLO PANTALLAS PEQUEÑAS) */
+    .mobile-tab-nav {
+      display: none;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      padding: 6px 12px;
+      gap: 8px;
+    }
+
+    .mobile-tab-btn {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: var(--radius-md);
+      background: transparent;
+      color: var(--text-muted);
+      border: none;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .mobile-tab-btn.active {
+      background: var(--bg-surface-elevated);
+      color: #fff;
+      border: 1px solid var(--border-color);
+    }
+
+    /* CONTENEDOR PRINCIPAL: 3 COLUMNAS */
+    .nlm-container {
+      display: grid;
+      grid-template-columns: 280px 1fr 380px;
+      height: calc(100vh - 60px);
+      overflow: hidden;
+    }
+
+    /* 1. COLUMNA IZQUIERDA: FUENTES */
+    .col-sources {
+      background: var(--bg-surface);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .panel-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge-count {
+      font-size: 0.72rem;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background: var(--bg-surface-elevated);
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .btn-add-source {
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-add-source:hover {
+      background: var(--primary-hover);
+    }
+
+    .sources-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .source-card {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .source-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .source-card.selected {
+      border-color: var(--primary);
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    .source-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .source-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .source-info {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .source-title {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .source-meta {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .source-preview {
+      font-size: 0.76rem;
+      color: var(--text-faint);
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .btn-delete-source {
+      background: transparent;
+      border: none;
+      color: var(--text-faint);
+      font-size: 0.85rem;
+      cursor: pointer;
+      padding: 2px;
+      border-radius: 4px;
+      transition: color 0.2s;
+    }
+
+    .btn-delete-source:hover {
+      color: var(--accent-rose);
+    }
+
+    .empty-sources {
+      text-align: center;
+      padding: 36px 16px;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    /* 2. COLUMNA CENTRAL: CENTRO DE ESTUDIO (STUDIO) */
+    .col-studio {
+      background: var(--bg-app);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-right: 1px solid var(--border-color);
+    }
+
+    .studio-header {
+      padding: 14px 20px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    /* Barra de Herramientas de Estudio (Studio Actions) */
+    .studio-toolbar {
+      display: flex;
+      gap: 8px;
+      padding: 12px 20px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      overflow-x: auto;
+      scrollbar-width: none;
+      flex-shrink: 0;
+    }
+
+    .studio-toolbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .btn-tool {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: var(--radius-full);
+      background: var(--bg-surface-elevated);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .btn-tool:hover {
+      background: rgba(59, 130, 246, 0.15);
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .btn-tool-podcast {
+      background: linear-gradient(135deg, rgba(244, 63, 94, 0.15), rgba(139, 92, 246, 0.2));
+      border-color: rgba(244, 63, 94, 0.4);
+      color: #fda4af;
+    }
+
+    .btn-tool-podcast:hover {
+      background: linear-gradient(135deg, #f43f5e, #8b5cf6);
+      color: #fff;
+    }
+
+    /* Contenido del Studio */
+    .studio-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* REPRODUCTOR DE PODCAST DE ESTUDIO */
+    .audio-overview-card {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
+      border: 1px solid rgba(139, 92, 246, 0.35);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 4px 20px rgba(139, 92, 246, 0.15);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .audio-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .audio-title-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .audio-icon-pulse {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f43f5e, #8b5cf6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      color: #fff;
+    }
+
+    .audio-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-audio-play {
+      padding: 8px 18px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, #f43f5e, #8b5cf6);
+      color: #fff;
+      border: none;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.2s;
+    }
+
+    .btn-audio-play:hover {
+      transform: scale(1.04);
+    }
+
+    .audio-speed-select {
+      background: var(--bg-input);
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-full);
+      padding: 4px 10px;
+      font-size: 0.76rem;
+      font-weight: 600;
+    }
+
+    /* DOCUMENTO GENERADO (GUÍA, FAQs, FICHAS) */
+    .generated-artifact-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      line-height: 1.6;
+      box-shadow: var(--shadow-sm);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .artifact-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .artifact-header h3 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .artifact-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .artifact-body h1, .artifact-body h2, .artifact-body h3 {
+      margin: 16px 0 8px 0;
+      color: #fff;
+    }
+
+    .artifact-body p {
+      margin-bottom: 12px;
+      color: var(--text-main);
+    }
+
+    .artifact-body ul, .artifact-body ol {
+      margin: 8px 0 14px 22px;
+    }
+
+    .artifact-body li {
+      margin-bottom: 6px;
+    }
+
+    .artifact-body blockquote {
+      border-left: 3px solid var(--primary);
+      padding-left: 14px;
+      margin: 14px 0;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* 3. COLUMNA DERECHA: CHAT CON TUS FUENTES */
+    .col-chat {
+      background: var(--bg-surface);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .chat-bubble {
+      max-width: 90%;
+      line-height: 1.45;
+      font-size: 0.88rem;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .chat-bubble-user {
+      align-self: flex-end;
+      background: var(--primary);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 16px 16px 4px 16px;
+    }
+
+    .chat-bubble-bot {
+      align-self: flex-start;
+      background: var(--bg-surface-elevated);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 12px 16px;
+      border-radius: 16px 16px 16px 4px;
+    }
+
+    .chat-citation {
+      display: inline-block;
+      padding: 2px 6px;
+      background: rgba(59, 130, 246, 0.2);
+      color: #93c5fd;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      margin: 0 2px;
+      cursor: pointer;
+    }
+
+    .chat-citation:hover {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .chat-input-container {
+      padding: 14px 16px;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-color);
+    }
+
+    .chat-form {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: var(--radius-full);
+      background: var(--bg-input);
+      color: #fff;
+      border: 1px solid var(--border-color);
+      outline: none;
+      font-family: inherit;
+      font-size: 0.88rem;
+    }
+
+    .chat-input:focus {
+      border-color: var(--primary);
+    }
+
+    .btn-chat-send {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+
+    .btn-chat-send:hover {
+      transform: scale(1.06);
+    }
+
+    /* MODAL GENERAL */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 16px;
+    }
+
+    .modal-overlay.hidden {
+      display: none;
+    }
+
+    .modal-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 600px;
+      padding: 24px;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .btn-close-modal {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.3rem;
+      cursor: pointer;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-input, .form-textarea {
+      background: var(--bg-input);
+      color: #fff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .form-input:focus, .form-textarea:focus {
+      border-color: var(--primary);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 140px;
+    }
+
+    /* RESPONSIVE MÓVIL */
+    @media (max-width: 900px) {
+      .mobile-tab-nav {
+        display: flex;
+      }
+
+      .nlm-container {
+        grid-template-columns: 1fr;
+        height: calc(100vh - 105px);
+      }
+
+      .col-sources, .col-studio, .col-chat {
+        display: none;
+      }
+
+      .col-sources.active-mobile-view,
+      .col-studio.active-mobile-view,
+      .col-chat.active-mobile-view {
+        display: flex;
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BARRA SUPERIOR -->
+  <header class="nlm-header">
+    <div class="nlm-header-left">
+      <a href="./index.html" class="btn-back-agenda" title="Regresar a la Agenda Escolar">
+        ← Volver a la Agenda
+      </a>
+      <div class="nlm-brand">
+        <div class="nlm-logo-badge">📚</div>
+        <div class="nlm-title-group">
+          <h1>Cuaderno LM <span class="nlm-tag-pro">Estudio</span></h1>
+        </div>
+      </div>
+    </div>
+
+    <div class="nlm-header-right">
+      <button type="button" id="btn-config-key" class="btn-header-action btn-key-setup" title="Configurar clave de Gemini">
+        ⚙️ Clave IA
+      </button>
+      <button type="button" id="btn-new-notebook" class="btn-header-action" title="Nuevo cuaderno de estudio">
+        ➕ Nuevo Cuaderno
+      </button>
+    </div>
+  </header>
+
+  <!-- NAVEGACIÓN EN PESTAÑAS PARA MÓVILES -->
+  <nav class="mobile-tab-nav">
+    <button type="button" class="mobile-tab-btn active" data-mobile-view="col-sources">
+      📁 Fuentes (<span id="mobile-sources-count">0</span>)
+    </button>
+    <button type="button" class="mobile-tab-btn" data-mobile-view="col-studio">
+      📖 Estudio Activo
+    </button>
+    <button type="button" class="mobile-tab-btn" data-mobile-view="col-chat">
+      💬 Preguntar a las Fuentes
+    </button>
+  </nav>
+
+  <!-- CONTENEDOR PRINCIPAL: 3 COLUMNAS -->
+  <main class="nlm-container">
+
+    <!-- COLUMNA 1: FUENTES DE ESTUDIO -->
+    <section class="col-sources active-mobile-view" id="col-sources">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span>📁 Fuentes Activas</span>
+          <span id="sources-count-badge" class="badge-count">0</span>
+        </div>
+        <button type="button" id="btn-open-add-source" class="btn-add-source">
+          ➕ Añadir Fuente
+        </button>
+      </div>
+
+      <div class="sources-list" id="sources-list-container">
+        <!-- Tarjetas de fuentes añadidas -->
+      </div>
+    </section>
+
+    <!-- COLUMNA 2: CENTRO DE ESTUDIO (STUDIO & HERRAMIENTAS) -->
+    <section class="col-studio" id="col-studio">
+      <div class="studio-header">
+        <div class="panel-title">
+          <span>📖 Centro de Estudio y Generación</span>
+        </div>
+        <span id="studio-status" style="font-size: 0.78rem; color: var(--text-muted);">
+          Selecciona una herramienta para estudiar tus fuentes
+        </span>
+      </div>
+
+      <!-- Barra de herramientas tipo NotebookLM -->
+      <div class="studio-toolbar">
+        <button type="button" class="btn-tool btn-tool-podcast" id="btn-tool-podcast" title="Generar un debate de audio explicativo">
+          🎙️ Audio Resumen / Podcast
+        </button>
+        <button type="button" class="btn-tool" id="btn-tool-guide" title="Crear guía estructurada con ideas y definiciones clave">
+          📖 Guía de Estudio
+        </button>
+        <button type="button" class="btn-tool" id="btn-tool-quiz" title="Generar preguntas tipo examen y test">
+          ❓ Preguntas de Examen
+        </button>
+        <button type="button" class="btn-tool" id="btn-tool-flashcards" title="Generar fichas para el sistema Leitner">
+          🎴 Fichas de Estudio
+        </button>
+        <button type="button" class="btn-tool" id="btn-tool-summary" title="Resumen ejecutivo rápido">
+          ⚡ Resumen
+        </button>
+      </div>
+
+      <!-- Contenedor del contenido generado -->
+      <div class="studio-content" id="studio-content">
+        <!-- Tarjeta de bienvenida cuando no hay artefactos -->
+        <div class="generated-artifact-card" id="studio-welcome-card">
+          <div class="artifact-header">
+            <h3>✨ Bienvenido a tu Cuaderno de Estudio LM</h3>
+          </div>
+          <div class="artifact-body">
+            <p>Este espacio transforma tus apuntes desordenados, fotos de la pizarra y textos del libro en <strong>herramientas de memorización y aprendizaje activo</strong>:</p>
+            <ul>
+              <li><strong>Paso 1:</strong> Añade una o más fuentes en el panel izquierdo (pega apuntes de clase, resúmenes o fotografías).</li>
+              <li><strong>Paso 2:</strong> Pulsa en <strong>🎙️ Audio Resumen</strong> para escuchar un podcast explicativo de tus fuentes, o en <strong>📖 Guía de Estudio</strong> para resumirlo todo.</li>
+              <li><strong>Paso 3:</strong> Pregúntale dudas en el chat derecho; la IA solo responderá basándose estrictamente en lo que dicen tus documentos.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Reproductor de Audio / Podcast (Oculto al inicio) -->
+        <div class="audio-overview-card hidden" id="audio-overview-container">
+          <div class="audio-header">
+            <div class="audio-title-group">
+              <div class="audio-icon-pulse">🎙️</div>
+              <div>
+                <h4 style="font-size: 0.95rem; font-weight: 800; color: #fff;">Podcast de Estudio Escolar</h4>
+                <p style="font-size: 0.74rem; color: var(--text-muted);">Explicación guiada en voz alta de tus fuentes</p>
+              </div>
+            </div>
+            <div class="audio-controls">
+              <select id="audio-speed-select" class="audio-speed-select">
+                <option value="1">1.0x</option>
+                <option value="1.2">1.2x</option>
+                <option value="1.4">1.4x</option>
+              </select>
+              <button type="button" id="btn-audio-play-pause" class="btn-audio-play">
+                ▶️ Reproducir
+              </button>
+            </div>
+          </div>
+          <p id="audio-transcript-snippet" style="font-size: 0.8rem; color: var(--text-muted); font-style: italic; line-height: 1.4;"></p>
+        </div>
+
+        <!-- Contenedor dinámico para la Guía / Examen / Fichas generadas -->
+        <div id="artifact-dynamic-container"></div>
+      </div>
+    </section>
+
+    <!-- COLUMNA 3: CHAT BASADO EN TUS FUENTES -->
+    <section class="col-chat" id="col-chat">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span>💬 Preguntar a las Fuentes</span>
+        </div>
+        <button type="button" id="btn-clear-chat" class="btn-header-action" style="padding: 4px 8px; font-size: 0.72rem;" title="Limpiar conversación">
+          🗑️
+        </button>
+      </div>
+
+      <div class="chat-messages" id="chat-messages">
+        <div class="chat-bubble chat-bubble-bot">
+          👋 ¡Hola! Hazme cualquier pregunta sobre tus fuentes cargadas. Te responderé basándome exactamente en lo que dicen tus apuntes y citando la fuente.
+        </div>
+      </div>
+
+      <div class="chat-input-container">
+        <form id="chat-form" class="chat-form">
+          <input type="text" id="chat-input" class="chat-input" placeholder="Pregunta sobre tus fuentes..." autocomplete="off" />
+          <button type="submit" id="btn-chat-send" class="btn-chat-send" title="Enviar pregunta">
+            ➤
+          </button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: AÑADIR FUENTE -->
+  <div id="modal-add-source" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">➕ Añadir Fuente de Estudio</h3>
+        <button type="button" class="btn-close-modal" id="btn-close-source-modal">&times;</button>
+      </div>
+
+      <form id="form-add-source">
+        <div class="form-group">
+          <label class="form-label">Título de la Fuente *</label>
+          <input type="text" id="source-title-input" class="form-input" placeholder="Ej: Pizarra de Historia Tema 3, Apuntes de Biología Celular..." required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Tipo de Contenido</label>
+          <select id="source-type-select" class="form-input">
+            <option value="text">📝 Texto / Apuntes Escritos</option>
+            <option value="image">📸 Imagen / Pizarra / Foto</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="group-source-text">
+          <label class="form-label">Texto o Contenido de la Lección *</label>
+          <textarea id="source-content-input" class="form-textarea" placeholder="Pega aquí el contenido de tus apuntes, resumen del libro, fotocopia o lección del profesor..."></textarea>
+        </div>
+
+        <div class="form-group hidden" id="group-source-file">
+          <label class="form-label">Subir Fotografía o Pizarra</label>
+          <input type="file" id="source-file-input" accept="image/*" class="form-input" />
+        </div>
+
+        <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px;">
+          <button type="button" id="btn-cancel-add-source" class="btn-header-action">
+            Cancelar
+          </button>
+          <button type="submit" class="btn-add-source" style="padding: 8px 18px; font-size: 0.85rem;">
+            💾 Guardar Fuente
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- SCRIPT PRINCIPAL DEL CUADERNO LM -->
+  <script type="module" src="./notebook.js"></script>
+</body>
+</html>

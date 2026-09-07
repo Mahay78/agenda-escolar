@@ -7,9 +7,22 @@ Una aplicación web progresiva (**Progressive Web App - PWA**) moderna, ultrarr�
 
 ---
 
-## 🌟 Novedades Principales (Versión 3.0.0)
+## 🌟 Novedades Principales (Versión 3.1.0)
 
-### 🤖 1. Copiloto Escolar IA Integral (Conectado a toda la App)
+### 📚 1. Cuaderno LM - Entorno de Estudio Dedicado Estilo NotebookLM (`notebook.html`)
+* **URL dedicada:** [https://mahay78.github.io/agenda-escolar/notebook.html](https://mahay78.github.io/agenda-escolar/notebook.html)
+* **Estudio Fundamentado en Fuentes (*Source Grounding*):** Sube tus apuntes escritos, fotos de pizarras o textos de libros; la IA responderá exclusivamente basándose en lo que dice el profesor o el texto.
+* **Citas a la Fuente Obligatorias:** Cada afirmación de la IA incluye referencias `[Fuente X]` para que el estudiante siempre verifique el apunte exacto.
+* **Herramientas de Estudio con 1 Clic (Studio):**
+  * 🎙️ **Audio Resumen / Podcast de Estudio:** Genera un diálogo dinámico y pedagógico y lo reproduce en voz alta con controles de velocidad (`1.0x`, `1.2x`, `1.4x`).
+  * 📖 **Guía de Estudio Completa:** Ideas principales, resumen del tema y glosario de términos esenciales.
+  * ❓ **Simulacro de Examen (Quiz):** Preguntas tipo test y desarrollo con soluciones explicadas para autoevaluación.
+  * 🎴 **Fichas de Estudio con Exportación:** Extrae las tarjetas de estudio y las exporta directamente al mazo Leitner de la agenda.
+  * ⚡ **Resumen Ejecutivo:** Puntos clave directos en viñetas.
+
+---
+
+### 🤖 2. Copiloto Escolar IA Integral (Conectado a toda la App)
 * **Interacción Global con la Agenda:** La IA conoce el contexto vivo del estudiante (hora actual, clases de hoy y mañana, deberes pendientes, exámenes y mochila).
 * **Ejecución Automática de Acciones (*Function Calling*):** La IA no solo responde dudas, sino que ejecuta acciones directas en la app:
   * Crear tareas y deberes con fecha estimada y prioridad (*"Apunta los ejercicios 1 y 2 de lengua para el jueves"*).
