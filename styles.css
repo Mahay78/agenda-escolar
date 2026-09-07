@@ -3162,5 +3162,162 @@ input, textarea, select, button {
   font-style: italic;
 }
 
+/* ==========================================================================
+   MODAL DE CLAVE IA (GOOGLE GEMINI) Y AVISOS DE COPILOTO
+   ========================================================================== */
+.ai-key-modal-content {
+  max-width: 520px;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.ai-key-guide-card {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(139, 92, 246, 0.12));
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.btn-get-gemini-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  color: #ffffff !important;
+  font-weight: 700;
+  font-size: 0.86rem;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-get-gemini-key:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.35);
+}
+
+.ai-key-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.ai-key-step-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ai-key-step-num {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--bg-surface-elevated, #e2e8f0);
+  color: var(--text-main);
+  font-weight: 800;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ai-key-input-wrapper {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.ai-key-input {
+  flex: 1;
+  font-family: monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+
+.btn-paste-key {
+  padding: 0 14px;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.ai-key-test-result {
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-size: 0.82rem;
+  line-height: 1.4;
+  margin-top: 10px;
+}
+
+.ai-key-test-result.info {
+  background: rgba(59, 130, 246, 0.12);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.ai-key-test-result.success {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.ai-key-test-result.error {
+  background: rgba(244, 63, 94, 0.12);
+  color: #f43f5e;
+  border: 1px solid rgba(244, 63, 94, 0.3);
+}
+
+.ai-key-footer-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+}
+
+/* Banner de aviso dentro del chat del Copiloto */
+.copilot-key-notice {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(59, 130, 246, 0.08));
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.copilot-key-notice-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-copilot-notice-action {
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  background: #8b5cf6;
+  color: #ffffff;
+  border: none;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.btn-copilot-notice-action:hover {
+  background: #7c3aed;
+  transform: scale(1.04);
+}
+
 
 

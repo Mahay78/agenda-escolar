@@ -1003,6 +1003,62 @@
     </div>
   </div>
 
+  <!-- MODAL: CONFIGURAR CLAVE IA (GOOGLE GEMINI) -->
+  <div id="modal-config-ai" class="modal-overlay hidden">
+    <div class="modal-card" style="max-width: 540px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 1.4rem;">✨</span>
+          <div>
+            <h3 class="modal-title" style="margin: 0;">Clave IA (Google Gemini)</h3>
+            <p id="nlm-key-status" style="margin: 0; font-size: 0.76rem; color: var(--text-muted);">Comprobando...</p>
+          </div>
+        </div>
+        <button type="button" class="btn-close-modal" id="btn-close-ai-modal">&times;</button>
+      </div>
+
+      <div style="background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: var(--radius-md); padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+        <div style="font-size: 0.85rem; color: var(--text-main); line-height: 1.4;">
+          <strong>🎁 Acceso 100% Gratuito y Oficial de Google</strong><br />
+          Para crear Guías de Estudio, Quizzes, Podcasts narrativos y chatear con tus fuentes, introduce tu clave gratuita de Google Gemini.
+        </div>
+        <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 16px; background: #2563eb; color: #fff; border-radius: var(--radius-md); font-size: 0.85rem; font-weight: 700; text-decoration: none;">
+          <span>🔗</span> Obtener mi Clave Gratis en Google AI Studio ↗
+        </a>
+        <div style="font-size: 0.78rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 4px;">
+          <div>1. Inicia sesión con tu cuenta de Google (Gmail).</div>
+          <div>2. Pulsa en el botón azul <strong>"Create API key"</strong>.</div>
+          <div>3. Copia tu clave (empieza por <code>AIzaSy...</code>) y pégala aquí:</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Clave API de Gemini:</label>
+        <div style="display: flex; gap: 8px;">
+          <input type="password" id="nlm-api-key-input" class="form-input" style="flex: 1; font-family: monospace;" placeholder="AIzaSy..." autocomplete="off" />
+          <button type="button" id="btn-nlm-toggle-visibility" class="btn-header-action" title="Mostrar/Ocultar clave" style="padding: 0 12px;">👁️</button>
+          <button type="button" id="btn-nlm-paste-key" class="btn-header-action" style="padding: 0 12px;">📋 Pegar</button>
+        </div>
+      </div>
+
+      <div id="nlm-key-test-result" class="hidden" style="padding: 10px 14px; border-radius: var(--radius-md); font-size: 0.82rem; line-height: 1.4;"></div>
+
+      <div style="display: flex; gap: 8px; justify-content: space-between; margin-top: 6px;">
+        <button type="button" id="btn-nlm-test-key" class="btn-header-action">
+          🧪 Probar Conexión
+        </button>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" id="btn-nlm-delete-key" class="btn-header-action" style="color: #f43f5e; border-color: rgba(244,63,94,0.3);">
+            🗑️ Eliminar
+          </button>
+          <button type="button" id="btn-nlm-save-key" class="btn-add-source" style="padding: 8px 18px;">
+            💾 Guardar Clave
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- SCRIPT PRINCIPAL DEL CUADERNO LM -->
   <script type="module" src="./notebook.js"></script>
 </body>

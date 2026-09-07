@@ -977,6 +977,43 @@
           </span>
         </div>
       </div>
+
+      <!-- 3. Inteligencia Artificial (Google Gemini 1.5 Flash) -->
+      <div class="card" style="border-left: 4px solid #8b5cf6;">
+        <div class="section-header">
+          <div>
+            <h3 class="section-title"><span>✨</span> Inteligencia Artificial (Google Gemini 1.5 Flash)</h3>
+            <p class="section-subtitle">
+              Potencia el Copiloto Escolar, el Cuaderno LM, la lectura OCR de pizarras y la creación automática de fichas de estudio con razonamiento pedagógico profundo.
+            </p>
+          </div>
+          <span id="settings-ai-status-badge" class="badge" style="background: rgba(139, 92, 246, 0.15); color: #8b5cf6; padding: 4px 10px; border-radius: var(--radius-sm); font-size: 0.8rem;">
+            Comprobando...
+          </span>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+          <button type="button" id="btn-open-ai-key-settings" class="btn-primary" style="width: auto; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border: none;">
+            <span>⚙️</span> Configurar Clave de IA
+          </button>
+          <a href="./notebook.html" class="btn-secondary" style="width: auto; text-decoration: none;">
+            <span>📚</span> Abrir Cuaderno LM
+          </a>
+          <span id="settings-ai-hint" style="font-size: 0.82rem; color: var(--text-muted);">
+            Clave 100% gratuita disponible en Google AI Studio (sin tarjeta)
+          </span>
+        </div>
+      </div>
+
+      <!-- 4. Mantenimiento y Actualización de la App -->
+      <div class="card">
+        <h3 class="section-title" style="margin-bottom: 12px;"><span>🔄</span> Mantenimiento y Actualización de la App</h3>
+        <p class="section-subtitle" style="margin-bottom: 16px;">
+          Si has notado algún problema o quieres asegurarte de que tu móvil tiene la última versión disponible (v3.2.0), pulsa este botón para limpiar la memoria caché del navegador y recargar los archivos más recientes.
+        </p>
+        <button type="button" id="btn-force-reload-app" class="btn-secondary" style="width: auto;">
+          <span>🔄</span> Forzar Actualización y Limpiar Caché
+        </button>
+      </div>
     </section>
 
   </main>
@@ -2078,6 +2115,20 @@
 
       <!-- Área de Conversación -->
       <div id="copilot-messages" class="copilot-messages">
+        <!-- Aviso de Clave IA no configurada (visible solo si no hay clave guardada) -->
+        <div id="copilot-key-notice" class="copilot-key-notice hidden">
+          <div class="copilot-key-notice-left">
+            <span style="font-size: 1.25rem;">✨</span>
+            <div>
+              <div style="font-weight: 700; font-size: 0.84rem; color: #8b5cf6;">Activa Google Gemini Gratis</div>
+              <div style="font-size: 0.74rem; color: var(--text-muted);">Para resolver ejercicios paso a paso y analizar fotos</div>
+            </div>
+          </div>
+          <button type="button" id="btn-copilot-activate-banner" class="btn-copilot-notice-action">
+            Activar ➔
+          </button>
+        </div>
+
         <!-- Mensaje de bienvenida -->
         <div class="copilot-msg copilot-msg-bot">
           <p>👋 <strong>¡Hola! Soy tu Copiloto Escolar.</strong></p>
@@ -2191,6 +2242,78 @@
             💾 Guardar en mi Mazo
           </button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 18. MODAL: CONFIGURACIÓN DE CLAVE IA (GOOGLE GEMINI) -->
+  <div id="ai-key-modal" class="modal-overlay hidden">
+    <div class="modal-content ai-key-modal-content">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 1.5rem;">✨</span>
+          <div>
+            <h3 class="modal-title" style="margin: 0;">Clave IA (Google Gemini)</h3>
+            <p id="ai-key-current-status" class="section-subtitle" style="margin: 0; font-size: 0.78rem;">Comprobando estado...</p>
+          </div>
+        </div>
+        <button class="btn-close" data-close="ai-key-modal">&times;</button>
+      </div>
+
+      <!-- Tarjeta explicativa con enlace directo a Google AI Studio -->
+      <div class="ai-key-guide-card">
+        <div style="display: flex; align-items: flex-start; gap: 10px;">
+          <span style="font-size: 1.4rem; flex-shrink: 0;">🎁</span>
+          <div style="font-size: 0.86rem; color: var(--text-main); line-height: 1.45;">
+            <strong>¡Acceso 100% Gratuito y Oficial de Google!</strong><br />
+            Google permite usar <strong>Gemini 1.5 Flash</strong> sin coste alguno y sin introducir tarjeta bancaria. Solo necesitas tu cuenta de Google.
+          </div>
+        </div>
+
+        <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" class="btn-get-gemini-key">
+          <span>🔗</span> Obtener mi Clave Gratis en Google AI Studio ↗
+        </a>
+
+        <div class="ai-key-steps">
+          <div class="ai-key-step-item">
+            <span class="ai-key-step-num">1</span>
+            <span>Toca el botón azul de arriba y accede con tu cuenta de Google.</span>
+          </div>
+          <div class="ai-key-step-item">
+            <span class="ai-key-step-num">2</span>
+            <span>Pulsa en el botón azul <strong>"Create API key"</strong> (Crear clave).</span>
+          </div>
+          <div class="ai-key-step-item">
+            <span class="ai-key-step-num">3</span>
+            <span>Copia la clave generada (empieza por <code>AIzaSy...</code>) y pégala aquí abajo:</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulario para introducir la clave -->
+      <div class="form-group" style="margin-top: 14px;">
+        <label class="form-label" for="ai-api-key-input">Tu Clave API de Gemini:</label>
+        <div class="ai-key-input-wrapper">
+          <input type="password" id="ai-api-key-input" class="form-input ai-key-input" placeholder="AIzaSy..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+          <button type="button" id="btn-toggle-key-visibility" class="btn-icon" title="Mostrar/Ocultar clave" style="font-size: 1rem;">👁️</button>
+          <button type="button" id="btn-paste-ai-key" class="btn-secondary btn-paste-key" title="Pegar del portapapeles">📋 Pegar</button>
+        </div>
+      </div>
+
+      <!-- Resultado del test de conexión -->
+      <div id="ai-key-test-result" class="ai-key-test-result hidden"></div>
+
+      <!-- Botones de acción del modal -->
+      <div class="ai-key-footer-buttons">
+        <button type="button" id="btn-test-ai-key" class="btn-secondary" style="flex: 1;">
+          🧪 Probar Conexión
+        </button>
+        <button type="button" id="btn-save-ai-key" class="btn-primary" style="flex: 1.2; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border: none;">
+          💾 Guardar Clave
+        </button>
+        <button type="button" id="btn-delete-ai-key" class="btn-secondary" style="color: var(--accent-rose); border-color: rgba(244,63,94,0.3);" title="Eliminar clave guardada">
+          🗑️
+        </button>
       </div>
     </div>
   </div>

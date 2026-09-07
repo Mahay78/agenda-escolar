@@ -197,11 +197,9 @@ async function callGroundedGemini(systemInstruction, userPrompt) {
   }
 
   if (!apiKey) {
-    // Si no hay clave, fallback a generador local
+    // Si no hay clave, fallback a generador local inteligente
     return generateLocalFallback(userPrompt, context);
   }
-
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
   const fullPrompt = `${systemInstruction}
 
@@ -211,38 +209,93 @@ ${context}
 SOLICITUD DEL ESTUDIANTE:
 ${userPrompt}`;
 
-  const response = await fetch(endpoint, {
+  const payload = {
+    contents: [{ parts: [{ text: fullPrompt }] }]
+  };
+
+  let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: fullPrompt }] }]
-    })
+    body: JSON.stringify(payload)
   });
+
+  if (!response.ok && (response.status === 404 || response.status >= 500)) {
+    response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  }
 
   if (!response.ok) {
     const errData = await response.json().catch(() => ({}));
-    throw new Error(errData.error?.message || `Error con Gemini (${response.status})`);
+    const rawMsg = errData.error?.message || `Error HTTP ${response.status}`;
+    if (response.status === 400 || rawMsg.toLowerCase().includes('api key not valid')) {
+      throw new Error('Tu clave de Google Gemini no es válida. Abre el botón ⚙️ Clave IA para configurarla o crear una nueva gratis en Google AI Studio.');
+    }
+    if (response.status === 429) {
+      throw new Error('Límite de cuota gratuita alcanzado temporalmente. Espera un momento antes de volver a solicitarlo.');
+    }
+    throw new Error(rawMsg);
   }
 
   const data = await response.json();
   return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
 }
 
-// Fallback local en caso de estar offline o sin clave
+// Fallback local enriquecido en caso de estar offline o sin clave
 function generateLocalFallback(promptType, context) {
-  return `### 📖 Síntesis Extraída de tus Fuentes (Modo Offline)
+  const lines = context.split('\n').map(l => l.trim()).filter(Boolean);
+  const keyPoints = lines
+    .filter(l => l.startsWith('-') || l.startsWith('•') || l.includes(':'))
+    .slice(0, 10)
+    .map(l => `• ${l.replace(/^[\-\•\d\.]\s*/, '')}`);
 
-> **Nota:** Para generar análisis pedagógicos avanzados y podcast narrativo con Gemini Flash, añade tu clave gratuita en el botón **⚙️ Clave IA**.
+  const isQuiz = /examen|quiz|prueba|test/i.test(promptType);
+  const isFlashcards = /ficha|flashcard/i.test(promptType);
+  const isPodcast = /podcast|audio|dialogo|diálogo/i.test(promptType);
+
+  if (isQuiz) {
+    return `### ❓ Preguntas de Autoevaluación (Modo Local)
+
+> 💡 **Nota:** Para generar cuestionarios dinámicos con corrección de respuestas automáticas mediante IA, conecta tu clave gratuita en el botón **⚙️ Clave IA**.
+
+#### Preguntas extraídas de tus apuntes:
+1. **¿Cuáles son los conceptos fundamentales abordados en las fuentes seleccionadas?**
+   *Respuesta:* Revisa los puntos clave indicados en tus fuentes.
+2. **Explica con tus propias palabras el proceso o tema principal:**
+   *Pista:* Identifica las definiciones y fechas destacadas.
+3. **¿Cómo se relacionan entre sí las ideas expuestas en el texto?**
+
+#### Puntos para repasar:
+${keyPoints.slice(0, 5).join('\n') || '• Revisa los títulos y definiciones de tus fuentes.'}`;
+  }
+
+  if (isFlashcards) {
+    return `### 🎴 Fichas de Repaso Extraídas (Modo Local)
+
+> 💡 **Nota:** Con la IA de Google Gemini activa, se generan tarjetas con pistas mnemotécnicas profundas. Conéctala en **⚙️ Clave IA**.
+
+${keyPoints.slice(0, 6).map((kp, i) => `**Ficha ${i + 1}:**\n- **Pregunta:** ¿Qué define o explica: "${kp.substring(2, 60)}..."?\n- **Respuesta:** ${kp.substring(2)}\n- **Pista:** [Fuente seleccionada]`).join('\n\n')}`;
+  }
+
+  if (isPodcast) {
+    return `Mario: ¡Hola! Bienvenidos a este repaso rápido de nuestros apuntes.
+Lucía: ¡Exacto! Vamos a revisar juntos los puntos principales que hemos anotado.
+Mario: Primero, el tema central trata sobre los conceptos clave de nuestras fuentes seleccionadas.
+Lucía: Sí, y no podemos olvidar repasar las definiciones más importantes antes del examen.
+Mario: ¡Mucho ánimo a todos con el estudio!`;
+  }
+
+  return `### 📖 Síntesis Extraída de tus Fuentes (Modo Básico)
+
+> 💡 **Consejo:** Para análisis pedagógicos profundos y tutoría con Google Gemini, añade tu clave gratuita en el botón **⚙️ Clave IA**.
 
 #### Puntos Clave Detectados:
-${context.split('\n')
-  .filter(l => l.trim().startsWith('-') || l.trim().startsWith('•') || l.includes(':'))
-  .slice(0, 10)
-  .map(l => `• ${l.trim().replace(/^[\-\•]\s*/, '')}`)
-  .join('\n')}
+${keyPoints.length > 0 ? keyPoints.join('\n') : '• Selecciona fuentes con texto en el panel izquierdo para extraer conceptos.'}
 
-#### Resumen General:
-El contenido abarca las fuentes seleccionadas en tu cuaderno. Puedes estudiarlo, repasarlo y memorizar los términos clave arriba indicados.`;
+#### Resumen de Estudio:
+El material abarca los temas seleccionados en tu cuaderno. Te recomendamos repasar cada punto clave antes del examen y autoevaluarte con el botón de Preguntas de Examen.`;
 }
 
 // ==========================================================================
@@ -656,18 +709,143 @@ document.addEventListener('DOMContentLoaded', () => {
     modalAdd.classList.add('hidden');
   });
 
-  // Configuración de clave IA
-  document.getElementById('btn-config-key')?.addEventListener('click', () => {
-    const curr = getApiKey();
-    const key = prompt('Introduce tu API Key gratuita de Google Gemini (de https://aistudio.google.com/):', curr || '');
-    if (key !== null) {
-      if (key.trim()) {
-        localStorage.setItem(GEMINI_STORAGE_KEY, key.trim());
-        alert('🔑 Clave de Gemini guardada.');
+  // ========================================================================
+  // Configuración de clave IA (Modal interactivo con prueba de conexión)
+  // ========================================================================
+  const modalAi = document.getElementById('modal-config-ai');
+  const btnConfigKey = document.getElementById('btn-config-key');
+  const btnCloseAiModal = document.getElementById('btn-close-ai-modal');
+  const inputAiKey = document.getElementById('nlm-api-key-input');
+  const statusAiKey = document.getElementById('nlm-key-status');
+  const testResultAiKey = document.getElementById('nlm-key-test-result');
+  const btnTestAiKey = document.getElementById('btn-nlm-test-key');
+  const btnSaveAiKey = document.getElementById('btn-nlm-save-key');
+  const btnDeleteAiKey = document.getElementById('btn-nlm-delete-key');
+  const btnToggleVis = document.getElementById('btn-nlm-toggle-visibility');
+  const btnPasteAiKey = document.getElementById('btn-nlm-paste-key');
+
+  function updateNlmKeyStatus() {
+    const current = getApiKey();
+    if (statusAiKey) {
+      if (current) {
+        statusAiKey.textContent = '🟢 Clave activa guardada';
+        statusAiKey.style.color = '#10b981';
       } else {
-        localStorage.removeItem(GEMINI_STORAGE_KEY);
-        alert('Clave eliminada.');
+        statusAiKey.textContent = '⚪ Clave no configurada (Modo básico)';
+        statusAiKey.style.color = 'var(--text-muted)';
       }
+    }
+  }
+
+  updateNlmKeyStatus();
+
+  btnConfigKey?.addEventListener('click', () => {
+    const current = getApiKey();
+    if (inputAiKey) inputAiKey.value = current;
+    if (testResultAiKey) {
+      testResultAiKey.className = 'hidden';
+      testResultAiKey.innerHTML = '';
+    }
+    updateNlmKeyStatus();
+    modalAi?.classList.remove('hidden');
+  });
+
+  btnCloseAiModal?.addEventListener('click', () => {
+    modalAi?.classList.add('hidden');
+  });
+
+  modalAi?.addEventListener('click', (e) => {
+    if (e.target === modalAi) modalAi.classList.add('hidden');
+  });
+
+  btnToggleVis?.addEventListener('click', () => {
+    if (!inputAiKey) return;
+    inputAiKey.type = inputAiKey.type === 'password' ? 'text' : 'password';
+    btnToggleVis.textContent = inputAiKey.type === 'password' ? '👁️' : '🙈';
+  });
+
+  btnPasteAiKey?.addEventListener('click', async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text && inputAiKey) {
+        inputAiKey.value = text.trim();
+      }
+    } catch (e) {
+      alert('Por favor mantén presionado el campo de texto y pulsa "Pegar".');
+    }
+  });
+
+  btnTestAiKey?.addEventListener('click', async () => {
+    const candidate = (inputAiKey?.value || '').trim();
+    if (!candidate) {
+      if (testResultAiKey) {
+        testResultAiKey.className = '';
+        testResultAiKey.style.background = 'rgba(244,63,94,0.12)';
+        testResultAiKey.style.color = '#f43f5e';
+        testResultAiKey.style.border = '1px solid rgba(244,63,94,0.3)';
+        testResultAiKey.textContent = '⚠️ Por favor pega tu clave antes de probar.';
+      }
+      return;
+    }
+
+    if (testResultAiKey) {
+      testResultAiKey.className = '';
+      testResultAiKey.style.background = 'rgba(59,130,246,0.12)';
+      testResultAiKey.style.color = '#3b82f6';
+      testResultAiKey.style.border = '1px solid rgba(59,130,246,0.3)';
+      testResultAiKey.textContent = '⏳ Verificando clave con Google Gemini...';
+    }
+
+    try {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${candidate}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: [{ parts: [{ text: 'OK' }] }] })
+      });
+
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => ({}));
+        throw new Error(errJson.error?.message || `HTTP ${res.status}`);
+      }
+
+      if (testResultAiKey) {
+        testResultAiKey.style.background = 'rgba(16,185,129,0.12)';
+        testResultAiKey.style.color = '#10b981';
+        testResultAiKey.style.border = '1px solid rgba(16,185,129,0.3)';
+        testResultAiKey.textContent = '✅ ¡Conexión exitosa! Tu clave de Gemini funciona perfectamente.';
+      }
+    } catch (err) {
+      if (testResultAiKey) {
+        testResultAiKey.style.background = 'rgba(244,63,94,0.12)';
+        testResultAiKey.style.color = '#f43f5e';
+        testResultAiKey.style.border = '1px solid rgba(244,63,94,0.3)';
+        testResultAiKey.textContent = `❌ Error: ${err.message}`;
+      }
+    }
+  });
+
+  btnSaveAiKey?.addEventListener('click', () => {
+    const key = (inputAiKey?.value || '').trim();
+    if (key) {
+      localStorage.setItem(GEMINI_STORAGE_KEY, key);
+      updateNlmKeyStatus();
+      modalAi?.classList.add('hidden');
+      alert('🔑 ¡Clave de Google Gemini guardada y lista para usar!');
+    } else {
+      localStorage.removeItem(GEMINI_STORAGE_KEY);
+      updateNlmKeyStatus();
+      modalAi?.classList.add('hidden');
+      alert('Clave eliminada.');
+    }
+  });
+
+  btnDeleteAiKey?.addEventListener('click', () => {
+    if (confirm('¿Deseas eliminar la clave de IA guardada?')) {
+      localStorage.removeItem(GEMINI_STORAGE_KEY);
+      if (inputAiKey) inputAiKey.value = '';
+      updateNlmKeyStatus();
+      if (testResultAiKey) testResultAiKey.className = 'hidden';
+      alert('Clave eliminada.');
     }
   });
 

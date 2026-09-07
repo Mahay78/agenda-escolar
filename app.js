@@ -113,6 +113,7 @@ import {
   generateFlashcardsWithAI,
   getAIApiKey,
   saveAIApiKey,
+  testGeminiApiKey,
   speakText,
   stopSpeaking,
   isSpeaking,
@@ -257,7 +258,7 @@ async function loadAllData() {
 }
 
 /**
- * Registra el Service Worker para funcionamiento Offline
+ * Registra el Service Worker para funcionamiento Offline y gestiona actualizaciones automáticas
  */
 function initServiceWorker() {
   if ('serviceWorker' in navigator) {
@@ -266,10 +267,28 @@ function initServiceWorker() {
         .register('./sw.js')
         .then((reg) => {
           console.log('[PWA] Service Worker registrado con éxito en scope:', reg.scope);
+          // Detectar nuevas versiones
+          reg.addEventListener('updatefound', () => {
+            const newWorker = reg.installing;
+            newWorker?.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                showToast('🚀 Nueva versión disponible. Actualizando aplicación...', 'info');
+              }
+            });
+          });
         })
         .catch((err) => {
           console.warn('[PWA] Error al registrar Service Worker:', err);
         });
+
+      // Recarga limpia automática cuando el nuevo Service Worker toma el control
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
+        }
+      });
     });
   }
 }
@@ -3681,19 +3700,9 @@ function initOcrModule() {
   updateGeminiStatus();
 
   // Configurar Clave de Gemini
-  btnOcrConfigGemini?.addEventListener('click', async () => {
-    const currentKey = await getGeminiApiKey();
-    const promptMsg = 'Introduce tu API Key gratuita de Google Gemini.\n\n(Puedes crearla gratis en: https://aistudio.google.com/):';
-    const newKey = window.prompt(promptMsg, currentKey || '');
-    if (newKey !== null) {
-      const trimmed = newKey.trim();
-      await saveGeminiApiKey(trimmed);
-      await updateGeminiStatus();
-      if (trimmed) {
-        showToast('🔑 Clave de Gemini guardada correctamente', 'success');
-      } else {
-        showToast('Clave de Gemini eliminada', 'info');
-      }
+  btnOcrConfigGemini?.addEventListener('click', () => {
+    if (window.openAiKeyModal) {
+      window.openAiKeyModal();
     }
   });
 
@@ -3706,16 +3715,11 @@ function initOcrModule() {
 
     let apiKey = await getGeminiApiKey();
     if (!apiKey) {
-      const inputKey = window.prompt(
-        'Para transcribir y estructurar los deberes con IA, introduce tu API Key gratuita de Google Gemini (consíguela en https://aistudio.google.com/):'
-      );
-      if (!inputKey || !inputKey.trim()) {
-        showToast('Se requiere la clave API de Gemini para usar la IA en la nube', 'info');
-        return;
+      if (window.openAiKeyModal) {
+        window.openAiKeyModal();
+        showToast('Activa tu clave gratuita de Gemini para transcribir y estructurar apuntes con IA', 'info');
       }
-      apiKey = inputKey.trim();
-      await saveGeminiApiKey(apiKey);
-      await updateGeminiStatus();
+      return;
     }
 
     ocrTextArea.value = '';
@@ -5520,23 +5524,214 @@ function initAIAssistantModule() {
   let isSending = false;
   let isVoiceDictating = false;
 
-  // Actualizar subtítulo según si hay clave IA
-  async function updateStatusBadge() {
+  // ========================================================================
+  // Actualización de estado de la IA en toda la Agenda
+  // ========================================================================
+  async function updateAllAiStatusBadges() {
     const key = await getAIApiKey();
+    const hasKey = Boolean(key);
+
+    // 1. Subtítulo del Copiloto
     if (copilotStatusSubtext) {
-      if (key) {
+      if (hasKey) {
         copilotStatusSubtext.textContent = '✨ Gemini Flash listo • Conectado a tu agenda';
       } else {
-        copilotStatusSubtext.textContent = '⚡ Modo Local Offline • Pulsa ⚙️ para clave IA';
+        copilotStatusSubtext.textContent = '⚡ Modo Básico (Agenda + Wikipedia) • Pulsa ⚙️ para Gemini';
+      }
+    }
+
+    // 2. Banner de aviso dentro del chat
+    const copilotKeyNotice = document.getElementById('copilot-key-notice');
+    if (copilotKeyNotice) {
+      if (hasKey) {
+        copilotKeyNotice.classList.add('hidden');
+      } else {
+        copilotKeyNotice.classList.remove('hidden');
+      }
+    }
+
+    // 3. Indicador en OCR
+    const geminiStatusIndicator = document.getElementById('gemini-status-indicator');
+    if (geminiStatusIndicator) {
+      if (hasKey) {
+        geminiStatusIndicator.textContent = '🟢 Clave IA lista';
+        geminiStatusIndicator.style.color = 'var(--success, #10b981)';
+      } else {
+        geminiStatusIndicator.textContent = '⚪ Clave no guardada';
+        geminiStatusIndicator.style.color = 'var(--text-muted)';
+      }
+    }
+
+    // 4. Indicador en la pestaña Ajustes
+    const settingsAiBadge = document.getElementById('settings-ai-status-badge');
+    if (settingsAiBadge) {
+      if (hasKey) {
+        settingsAiBadge.textContent = '🟢 Activa y conectada';
+        settingsAiBadge.style.background = 'rgba(16, 185, 129, 0.15)';
+        settingsAiBadge.style.color = '#10b981';
+      } else {
+        settingsAiBadge.textContent = '⚪ Sin configurar (Modo básico)';
+        settingsAiBadge.style.background = 'rgba(139, 92, 246, 0.12)';
+        settingsAiBadge.style.color = '#8b5cf6';
+      }
+    }
+
+    // 5. Estado en el propio modal de Clave IA
+    const modalKeyStatus = document.getElementById('ai-key-current-status');
+    if (modalKeyStatus) {
+      if (hasKey) {
+        modalKeyStatus.textContent = '🟢 Clave activa guardada en este dispositivo';
+        modalKeyStatus.style.color = '#10b981';
+      } else {
+        modalKeyStatus.textContent = '⚪ Sin clave (Modo básico de agenda y Wikipedia activo)';
+        modalKeyStatus.style.color = 'var(--text-muted)';
       }
     }
   }
-  updateStatusBadge();
+  updateAllAiStatusBadges();
+
+  // ========================================================================
+  // Controlador del Modal de Configuración de Clave IA (Google Gemini)
+  // ========================================================================
+  function initAiKeyModalController() {
+    const modal = document.getElementById('ai-key-modal');
+    const inputKey = document.getElementById('ai-api-key-input');
+    const btnToggleVis = document.getElementById('btn-toggle-key-visibility');
+    const btnPaste = document.getElementById('btn-paste-ai-key');
+    const btnTest = document.getElementById('btn-test-ai-key');
+    const btnSave = document.getElementById('btn-save-ai-key');
+    const btnDelete = document.getElementById('btn-delete-ai-key');
+    const testResult = document.getElementById('ai-key-test-result');
+    const btnOpenSettings = document.getElementById('btn-open-ai-key-settings');
+    const btnActivateBanner = document.getElementById('btn-copilot-activate-banner');
+    const btnForceReload = document.getElementById('btn-force-reload-app');
+
+    async function openAiKeyModal() {
+      const current = await getAIApiKey();
+      if (inputKey) inputKey.value = current;
+      if (testResult) {
+        testResult.className = 'ai-key-test-result hidden';
+        testResult.innerHTML = '';
+      }
+      await updateAllAiStatusBadges();
+      modal?.classList.remove('hidden');
+    }
+
+    window.openAiKeyModal = openAiKeyModal;
+
+    // Listeners para abrir el modal desde cualquier punto de la app
+    btnConfigKey?.addEventListener('click', openAiKeyModal);
+    btnOpenSettings?.addEventListener('click', openAiKeyModal);
+    btnActivateBanner?.addEventListener('click', openAiKeyModal);
+
+    // Cerrar modal al pulsar en el overlay de fondo
+    modal?.addEventListener('click', (e) => {
+      if (e.target === modal) modal.classList.add('hidden');
+    });
+
+    // Alternar visibilidad de la contraseña
+    btnToggleVis?.addEventListener('click', () => {
+      if (!inputKey) return;
+      inputKey.type = inputKey.type === 'password' ? 'text' : 'password';
+      btnToggleVis.textContent = inputKey.type === 'password' ? '👁️' : '🙈';
+    });
+
+    // Pegar desde portapapeles
+    btnPaste?.addEventListener('click', async () => {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text && inputKey) {
+          inputKey.value = text.trim();
+          showToast('Clave pegada del portapapeles', 'info');
+        }
+      } catch (e) {
+        showToast('Mantén presionado el campo y selecciona Pegar', 'info');
+      }
+    });
+
+    // Probar conexión en tiempo real
+    btnTest?.addEventListener('click', async () => {
+      const candidate = (inputKey?.value || '').trim();
+      if (!candidate) {
+        if (testResult) {
+          testResult.className = 'ai-key-test-result error';
+          testResult.textContent = '⚠️ Por favor escribe o pega tu clave antes de probar.';
+        }
+        return;
+      }
+
+      if (testResult) {
+        testResult.className = 'ai-key-test-result info';
+        testResult.textContent = '⏳ Comprobando conexión con los servidores de Google Gemini...';
+      }
+
+      const res = await testGeminiApiKey(candidate);
+      if (testResult) {
+        if (res.ok) {
+          testResult.className = 'ai-key-test-result success';
+          testResult.textContent = `✅ ${res.message}`;
+        } else {
+          testResult.className = 'ai-key-test-result error';
+          testResult.textContent = `❌ ${res.error}`;
+        }
+      }
+    });
+
+    // Guardar clave
+    btnSave?.addEventListener('click', async () => {
+      const key = (inputKey?.value || '').trim();
+      await saveAIApiKey(key);
+      await updateAllAiStatusBadges();
+      modal?.classList.add('hidden');
+      if (key) {
+        showToast('🔑 ¡Clave de Google Gemini guardada y activa!', 'success');
+      } else {
+        showToast('Clave eliminada. Modo básico activo.', 'info');
+      }
+    });
+
+    // Eliminar clave
+    btnDelete?.addEventListener('click', async () => {
+      if (confirm('¿Deseas eliminar la clave guardada de Google Gemini?')) {
+        await saveAIApiKey('');
+        if (inputKey) inputKey.value = '';
+        if (testResult) testResult.className = 'ai-key-test-result hidden';
+        await updateAllAiStatusBadges();
+        showToast('Clave de Gemini eliminada', 'info');
+      }
+    });
+
+    // Forzar actualización y limpiar caché en móviles y navegadores
+    btnForceReload?.addEventListener('click', async () => {
+      if (confirm('¿Deseas limpiar la memoria caché de la aplicación y recargar los últimos archivos?')) {
+        showToast('🔄 Limpiando caché y actualizando...', 'info');
+        try {
+          if ('caches' in window) {
+            const cacheNames = await caches.keys();
+            await Promise.all(cacheNames.map((name) => caches.delete(name)));
+          }
+          if ('serviceWorker' in navigator) {
+            const regs = await navigator.serviceWorker.getRegistrations();
+            for (let reg of regs) {
+              await reg.unregister();
+            }
+          }
+        } catch (e) {
+          console.warn('Error al limpiar caché:', e);
+        }
+        setTimeout(() => {
+          window.location.reload(true);
+        }, 350);
+      }
+    });
+  }
+
+  initAiKeyModalController();
 
   // Abrir Copiloto
   function openCopilotModal(initialPrompt = null, attachedImage = null) {
     copilotModal?.classList.remove('hidden');
-    updateStatusBadge();
+    updateAllAiStatusBadges();
     if (attachedImage) {
       setAttachedImage(attachedImage);
     }
@@ -5581,18 +5776,6 @@ function initAIAssistantModule() {
     btnSpeechToggle.title = isSpeechEnabled ? 'Voz activada (pulsa para silenciar)' : 'Voz silenciada (pulsa para activar)';
     showToast(isSpeechEnabled ? '🔊 Lectura de voz activada' : '🔇 Voz silenciada', 'info');
     if (!isSpeechEnabled) stopSpeaking();
-  });
-
-  // Configurar Clave IA
-  btnConfigKey?.addEventListener('click', async () => {
-    const currentKey = await getAIApiKey();
-    const promptMsg = 'Introduce tu API Key gratuita de Google Gemini para activar el razonamiento escolar profundo y búsqueda:\n\n(Consíguela gratis en: https://aistudio.google.com/):';
-    const newKey = window.prompt(promptMsg, currentKey || '');
-    if (newKey !== null) {
-      const saved = await saveAIApiKey(newKey);
-      await updateStatusBadge();
-      showToast(saved ? '🔑 Clave IA guardada' : 'Clave IA eliminada', 'info');
-    }
   });
 
   // Limpiar Chat

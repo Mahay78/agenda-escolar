@@ -80,6 +80,45 @@ export async function saveAIApiKey(key) {
 }
 
 /**
+ * Prueba en tiempo real si una API Key de Google Gemini es válida y tiene cuota activa
+ * @param {string} key
+ * @returns {Promise<{ ok: boolean, message?: string, error?: string }>}
+ */
+export async function testGeminiApiKey(key) {
+  const cleanKey = (key || '').trim();
+  if (!cleanKey) {
+    return { ok: false, error: 'Por favor introduce una clave antes de probar.' };
+  }
+
+  try {
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${cleanKey}`;
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: 'Responde únicamente con la palabra OK.' }] }]
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      const msg = err.error?.message || `Error HTTP ${res.status}`;
+      if (res.status === 400 || msg.toLowerCase().includes('api key not valid') || msg.toLowerCase().includes('invalid')) {
+        return { ok: false, error: 'Clave no válida. Asegúrate de copiarla completa desde Google AI Studio (empieza por AIzaSy...).' };
+      }
+      if (res.status === 429) {
+        return { ok: false, error: 'Límite de peticiones alcanzado. Espera un momento y vuelve a probar.' };
+      }
+      return { ok: false, error: msg };
+    }
+
+    return { ok: true, message: '¡Conexión verificada! Google Gemini 1.5 Flash está activo y listo para funcionar.' };
+  } catch (netErr) {
+    return { ok: false, error: 'No se pudo conectar con los servidores de Google. Comprueba tu conexión a internet.' };
+  }
+}
+
+/**
  * Comprueba si la IA nativa del navegador/teléfono está disponible (Chrome Prompt API / Gemini Nano)
  */
 export function isDevicePromptAIAvailable() {
@@ -498,14 +537,13 @@ export async function askAIAssistant({ userMessage, imageBase64 = null, history 
     } catch (e) {}
   }
 
-  // 1. Si no hay API Key de Gemini: Modo Offline Inteligente con despachador local
+  // 1. Si no hay API Key de Gemini: Modo Offline Inteligente con despachador local y Wikipedia
   if (!apiKey) {
     return handleOfflineLocalAssistant(userMessage, webSearchResult);
   }
 
-  // 2. Conexión con Gemini 1.5 Flash
+  // 2. Conexión con Gemini (1.5 Flash con respaldo 2.0 Flash)
   try {
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
     const systemInstruction = buildSystemPrompt();
 
     // Inyectar búsqueda web en el contexto si existe
@@ -535,8 +573,8 @@ export async function askAIAssistant({ userMessage, imageBase64 = null, history 
       const mimeType = mimeMatch ? mimeMatch[1] : 'image/jpeg';
       const cleanBase64 = imageBase64.replace(/^data:image\/[a-zA-Z0-9.+_-]+;base64,/, '');
       currentParts.push({
-        inline_data: {
-          mime_type: mimeType,
+        inlineData: {
+          mimeType: mimeType,
           data: cleanBase64
         }
       });
@@ -554,15 +592,30 @@ export async function askAIAssistant({ userMessage, imageBase64 = null, history 
       }
     };
 
-    const response = await fetch(endpoint, {
+    let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
 
+    if (!response.ok && (response.status === 404 || response.status >= 500)) {
+      response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    }
+
     if (!response.ok) {
       const errJson = await response.json().catch(() => ({}));
-      throw new Error(errJson.error?.message || `Error HTTP ${response.status}`);
+      const rawMsg = errJson.error?.message || `Error HTTP ${response.status}`;
+      if (response.status === 400 || rawMsg.toLowerCase().includes('api key not valid') || rawMsg.toLowerCase().includes('invalid')) {
+        throw new Error('Tu clave de Google Gemini no es válida o está incompleta. Pulsa en ⚙️ para revisarla o crear una nueva gratis en Google AI Studio.');
+      }
+      if (response.status === 429) {
+        throw new Error('Se ha superado temporalmente la cuota gratuita de Gemini. Espera unos momentos y vuelve a preguntar.');
+      }
+      throw new Error(rawMsg);
     }
 
     const resData = await response.json();
@@ -579,7 +632,7 @@ export async function askAIAssistant({ userMessage, imageBase64 = null, history 
   } catch (apiErr) {
     console.warn('Error al llamar a Gemini Flash, recurriendo a asistente local:', apiErr);
     const offlineRes = await handleOfflineLocalAssistant(userMessage, webSearchResult);
-    offlineRes.replyText = `⚠️ *(Sin conexión a Gemini: ${apiErr.message})*\n\n` + offlineRes.replyText;
+    offlineRes.replyText = `⚠️ **Aviso de IA:** ${apiErr.message}\n\n---\n\n` + offlineRes.replyText;
     return offlineRes;
   }
 }
@@ -847,27 +900,65 @@ async function handleOfflineLocalAssistant(userMessage, webSearchResult = null) 
     };
   }
 
-  // 6. Si hubo búsqueda en Wikipedia
+  // 6. Si hubo búsqueda en Wikipedia explícita o la encontramos ahora
   if (webSearchResult) {
     return {
-      replyText: `📚 **Información encontrada sobre "${webSearchResult.title}":**\n\n${webSearchResult.extract}\n\n🔗 [Ver artículo completo en Wikipedia](${webSearchResult.url})`,
+      replyText: `📚 **Información encontrada sobre "${webSearchResult.title}":**\n\n${webSearchResult.extract}\n\n🔗 [Ver artículo completo en Wikipedia](${webSearchResult.url})\n\n💡 *Respuesta enciclopédica obtenida de Wikipedia. Para explicaciones pedagógicas detalladas, resolución de problemas y lectura de fotos con IA, conecta Google Gemini gratis en ⚙️.*`,
       actionsExecuted: [],
       webSearch: webSearchResult
     };
   }
 
-  // Respuesta general de ayuda
-  return {
-    replyText: `🤖 **¡Hola! Soy tu Copiloto Escolar.**
+  // 7. Búsqueda enciclopédica automática de dudas escolares en Wikipedia
+  const cleanSubject = userMessage
+    .replace(/^(?:hola|buenas|hey|oye|por favor|dime|sabes|puedes|explícame|explica|cuéntame|qué es|que es|quién fue|quien fue|quién era|quien era|cuál es|cual es|cómo funciona|como funciona|definición de|definicion de|concepto de|resumen de|información de|informacion de|busca|investiga)\s+/i, '')
+    .replace(/[¿?\.\!¡]/g, '')
+    .trim();
+
+  if (cleanSubject.length >= 3 && !/^(gracias|adiós|adios|hasta luego|ok|vale|nada)$/i.test(cleanSubject)) {
+    try {
+      const autoSearch = await searchAcademicWeb(cleanSubject);
+      if (autoSearch && autoSearch.extract) {
+        return {
+          replyText: `📚 **${autoSearch.title}**\n\n${autoSearch.extract}\n\n🔗 [Leer artículo completo en Wikipedia](${autoSearch.url})\n\n💡 *Respuesta obtenida de Wikipedia en español. Para que la IA razone ejercicios difíciles, redacte respuestas completas o analice tus apuntes en foto, puedes activar tu clave gratuita de Google Gemini en el botón ⚙️.*`,
+          actionsExecuted: [],
+          webSearch: autoSearch
+        };
+      }
+    } catch (e) {}
+  }
+
+  // 8. Saludos y bienvenida
+  if (/^(hola|buenas|buenos días|buenas tardes|buenas noches|hey|saludos|que tal|qué tal)/i.test(lower)) {
+    const studentName = state?.student?.name ? ` **${state.student.name}**` : '';
+    return {
+      replyText: `👋 **¡Hola${studentName}! Soy tu Copiloto Escolar.**
 Estoy listo para ayudarte con todo:
+• 📅 Pregúntame por tu **horario escolar** de hoy o mañana.
+• 📋 Consulta tus **deberes y tareas** pendientes.
+• 🎒 Verifica los libros de tu **mochila**.
+• 📝 Revisa la fecha de tus **próximos exámenes**.
+• ⏱️ Pídeme iniciar un temporizador **Pomodoro**.
+• 📚 Hazme preguntas de estudio (ej: *"¿Qué es la fotosíntesis?"*, *"¿Quién fue Pitágoras?"*).
+
+💡 *Para activar el cerebro completo de IA (razonamiento profundo, resolución de problemas paso a paso y análisis de fotos), pulsa en el botón **⚙️ Clave IA** arriba a la derecha.*`,
+      actionsExecuted: [],
+      webSearch: null
+    };
+  }
+
+  // 9. Respuesta general de ayuda y orientación
+  return {
+    replyText: `🤖 **Copiloto Escolar (Modo Básico):**
+No encontré una consulta específica en tu mensaje. Aquí tienes algunos ejemplos de lo que puedo hacer ahora mismo:
 - 📅 *"¿Qué clases tengo hoy?"*
 - 📋 *"¿Qué deberes tengo pendientes?"*
 - 🎒 *"¿Qué me falta en la mochila?"*
 - 📝 *"¿Cuándo es mi próximo examen?"*
 - ⏱️ *"Iniciar pomodoro de 25 minutos"*
-- 🧠 *"Créame 3 fichas de Historia"*
+- 📚 *"Explícame la revolución francesa"*
 
-💡 *Nota:* Para activar razonamiento con IA ilimitada, tutoría de dudas y creación de fichas complejas, puedes añadir tu clave gratuita de Google Gemini en el botón **⚙️ Clave IA**.`,
+💡 *¿Quieres que resuelva dudas complejas o analice fotos de tus apuntes con IA? Pulsa en **⚙️ Clave IA** y conecta tu clave gratuita de Google Gemini en 30 segundos.*`,
     actionsExecuted: [],
     webSearch: null
   };
