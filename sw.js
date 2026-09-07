@@ -3,13 +3,14 @@
  * Permite que la Agenda Escolar funcione sin conexión a internet en móvil, tablet y PC.
  */
 
-const CACHE_NAME = 'agenda-escolar-v2.9.0';
+const CACHE_NAME = 'agenda-escolar-v3.0.0';
 
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './styles.css',
   './app.js',
+  './ai-assistant.js',
   './db.js',
   './camera.js',
   './annotations.js',

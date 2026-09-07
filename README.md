@@ -7,7 +7,30 @@ Una aplicación web progresiva (**Progressive Web App - PWA**) moderna, ultrarr�
 
 ---
 
-## 🌟 Novedades Principales (Versión 2.9.0)
+## 🌟 Novedades Principales (Versión 3.0.0)
+
+### 🤖 1. Copiloto Escolar IA Integral (Conectado a toda la App)
+* **Interacción Global con la Agenda:** La IA conoce el contexto vivo del estudiante (hora actual, clases de hoy y mañana, deberes pendientes, exámenes y mochila).
+* **Ejecución Automática de Acciones (*Function Calling*):** La IA no solo responde dudas, sino que ejecuta acciones directas en la app:
+  * Crear tareas y deberes con fecha estimada y prioridad (*"Apunta los ejercicios 1 y 2 de lengua para el jueves"*).
+  * Agendar exámenes con materias y temario (*"Ponme examen de física el 20 de octubre"*).
+  * Preparar y verificar la mochila según el horario del día siguiente (*"¿Qué libros me faltan para mañana?"*).
+  * Iniciar temporizadores Pomodoro de estudio (*"Inicia 25 minutos de estudio de historia"*).
+* **Voz Bidireccional:** Dictado por voz mediante reconocimiento de micrófono y lectura de respuestas en voz alta con síntesis de voz natural en español.
+* **Búsqueda e Investigación Web (Wikipedia API):** Consulta enciclopédica académica integrada para buscar definiciones, biografías y datos contrastados al instante.
+* **Botón Flotante y Accesos Rápidos:** Accesible desde cualquier lugar mediante un botón flotante, atajo en la cabecera, drawer lateral o menú rápido (+).
+
+---
+
+### 🎴 2. Generador de Fichas de Estudio (Flashcards) con IA
+* **De Apuntes a Tarjetas en 1 Clic:** Transforma resúmenes, libros o explicaciones de clase en fichas de preguntas y respuestas listas para repasar con el sistema de repetición espaciada de Leitner.
+* **Integración Directa con OCR y Cámara:** Tras fotografiar la pizarra o libro, el botón `✨ Crear Fichas con IA` analiza el texto detectado y genera automáticamente el mazo de repaso.
+* **Tutor Socrático:** El botón `🤖 Explicar con Copiloto` en el visor de OCR desglosa conceptos complejos y los explica de forma didáctica.
+* **Modo Offline Local Heurístico:** Si no dispones de conexión a internet ni clave API, un extractor inteligente en JavaScript analiza patrones sintácticos de apuntes para generar fichas al instante sin consumir datos.
+
+---
+
+## 🌟 Novedades Anteriores (Versión 2.9.0)
 
 ### 📷 1. Cámara Escolar con Zoom Óptico/Digital y Efecto Snap
 * **Controles de Zoom Rápido:** Píldoras dedicadas `1x`, `2x`, `3x` y control deslizante continuo hasta `4x`.

@@ -44,6 +44,12 @@
         <kbd class="search-kbd">Ctrl K</kbd>
       </button>
 
+      <!-- Copiloto Escolar IA -->
+      <button id="btn-open-copilot" class="btn-copilot-badge" title="Copiloto Escolar IA (Asistente y Tutor)">
+        <span>🤖</span>
+        <span class="copilot-badge-text">Copiloto IA</span>
+      </button>
+
       <!-- Contador y Racha de Estudio -->
       <button id="btn-open-streak" class="btn-streak-badge" title="Racha de estudio y hábitos (Pulsa para ver logros)">
         🔥 <span id="header-streak-days">1</span> d
@@ -128,6 +134,11 @@
         <button class="drawer-nav-item" id="drawer-btn-search" style="background: rgba(59, 130, 246, 0.12); color: var(--primary); font-weight: 700;">
           <span class="drawer-nav-icon">🔍</span>
           <span class="drawer-nav-text">Buscador Global (Ctrl K)</span>
+        </button>
+        <button class="drawer-nav-item" id="drawer-btn-copilot" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(139, 92, 246, 0.18)); border: 1px solid rgba(139, 92, 246, 0.35);">
+          <span class="drawer-nav-icon">🤖</span>
+          <span class="drawer-nav-text" style="font-weight: 700; color: #8b5cf6;">Copiloto Escolar IA</span>
+          <span class="tab-badge" style="background: #8b5cf6;">✨ Nuevo</span>
         </button>
         <button class="drawer-nav-item active" data-tab="tab-today">
           <span class="drawer-nav-icon">🏠</span>
@@ -602,6 +613,9 @@
           <button type="button" id="btn-flashcards-mode-manage" class="btn-secondary" style="width: auto;">
             📋 Todas las Fichas
           </button>
+          <button type="button" id="btn-open-flashcards-ai" class="btn-primary" style="width: auto; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border: none; box-shadow: 0 2px 8px rgba(139, 92, 246, 0.25);" title="Generar fichas automáticas con IA a partir de un tema o apuntes">
+            ✨ Generar con IA
+          </button>
           <button type="button" id="btn-open-new-flashcard" class="btn-secondary" style="width: auto;">
             ➕ Nueva Ficha
           </button>
@@ -960,6 +974,9 @@
   <div class="fab-container">
     <button id="fab-main-btn" class="fab-main" title="Añadir rápido">➕</button>
     <div id="fab-menu" class="fab-menu">
+      <button id="fab-ai-copilot" class="fab-option" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.22)); border-color: rgba(139, 92, 246, 0.4); color: #8b5cf6; font-weight: 700;">
+        <span>🤖</span> Copiloto Escolar IA
+      </button>
       <button id="fab-new-task" class="fab-option">
         <span>📋</span> Nueva Tarea / Deber
       </button>
@@ -971,6 +988,12 @@
       </button>
     </div>
   </div>
+
+  <!-- BOTÓN FLOTANTE DIRECTO DEL COPILOTO IA -->
+  <button id="btn-ai-copilot-floating" class="btn-ai-copilot-floating" title="Abrir Copiloto Escolar IA">
+    <span class="copilot-floating-icon">🤖</span>
+    <span class="copilot-floating-pulse" title="IA Lista"></span>
+  </button>
 
   <!-- ========================================================================
        MODALES
@@ -1685,19 +1708,29 @@
         </div>
       </details>
 
-      <!-- Botones de acción -->
+      <!-- Botones de acción inteligente con IA -->
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;">
+        <button type="button" id="btn-ocr-ai-flashcards" class="btn-primary" style="flex: 1; min-width: 150px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border: none; box-shadow: 0 2px 8px rgba(139, 92, 246, 0.25);" title="Generar tarjetas de estudio automáticas a partir de esta pizarra o apunte">
+          ✨ Crear Fichas con IA
+        </button>
+        <button type="button" id="btn-ocr-ai-explain" class="btn-secondary" style="flex: 1; min-width: 150px; border-color: rgba(139, 92, 246, 0.4); color: #8b5cf6;" title="Abre el Copiloto IA para que te explique estos apuntes de forma sencilla">
+          🤖 Explicar con Copiloto
+        </button>
+      </div>
+
+      <!-- Botones de acción estándar -->
       <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-        <button type="button" id="btn-ocr-copy" class="btn-secondary" style="flex: 1; min-width: 130px;">
+        <button type="button" id="btn-ocr-copy" class="btn-secondary" style="flex: 1; min-width: 110px;">
           📋 Copiar Texto
         </button>
-        <button type="button" id="btn-ocr-to-task" class="btn-primary" style="flex: 1; min-width: 130px;">
-          ➕ Añadir a Deberes
+        <button type="button" id="btn-ocr-to-task" class="btn-secondary" style="flex: 1; min-width: 110px;">
+          ➕ A Deberes
         </button>
-        <button type="button" id="btn-ocr-to-exam" class="btn-secondary" style="flex: 1; min-width: 130px;">
+        <button type="button" id="btn-ocr-to-exam" class="btn-secondary" style="flex: 1; min-width: 110px;">
           ➕ A Examen
         </button>
-        <button type="button" id="btn-ocr-to-flashcard" class="btn-secondary" style="flex: 1; min-width: 130px;" title="Crear Ficha de Estudio con este texto">
-          🧠 Crear Ficha
+        <button type="button" id="btn-ocr-to-flashcard" class="btn-secondary" style="flex: 1; min-width: 110px;" title="Copiar texto al reverso de una ficha manualmente">
+          🧠 Ficha Manual
         </button>
       </div>
     </div>
@@ -1984,6 +2017,170 @@
           </button>
         </div>
       </form>
+  <!-- 16. MODAL: COPILOTO ESCOLAR IA (CHAT, VOZ, ACCIONES Y BÚSQUEDA) -->
+  <div id="ai-copilot-modal" class="modal-overlay hidden">
+    <div class="modal-content copilot-modal-content">
+      <!-- Encabezado del Copiloto -->
+      <div class="copilot-header">
+        <div class="copilot-header-brand">
+          <div class="copilot-avatar">🤖</div>
+          <div class="copilot-title-group">
+            <h3>Copiloto Escolar IA</h3>
+            <p id="copilot-status-subtext">Tu tutor y asistente escolar inteligente</p>
+          </div>
+        </div>
+        <div class="copilot-header-actions">
+          <button type="button" id="btn-copilot-speech-toggle" class="btn-icon" title="Activar/Desactivar lectura en voz alta" style="font-size: 1rem;">
+            🔊
+          </button>
+          <button type="button" id="btn-copilot-config-key" class="btn-icon" title="Configurar Clave IA de Gemini">
+            ⚙️
+          </button>
+          <button type="button" id="btn-copilot-clear" class="btn-icon" title="Limpiar conversación">
+            🗑️
+          </button>
+          <button class="btn-close" data-close="ai-copilot-modal">&times;</button>
+        </div>
+      </div>
+
+      <!-- Barra de Sugerencias Rápidas -->
+      <div class="copilot-quick-pills">
+        <button type="button" class="copilot-pill" data-copilot-prompt="¿Qué clases y tareas tengo que hacer hoy?">
+          📅 ¿Qué tengo hoy?
+        </button>
+        <button type="button" class="copilot-pill" data-copilot-prompt="¿Qué libros y materiales tengo que meter en la mochila para mañana según mi horario?">
+          🎒 Mochila de mañana
+        </button>
+        <button type="button" class="copilot-pill" data-copilot-prompt="Créame 4 fichas de estudio con preguntas y respuestas para repasar">
+          🎴 Crear fichas
+        </button>
+        <button type="button" class="copilot-pill" data-copilot-prompt="Inicia un temporizador Pomodoro de 25 minutos de concentración">
+          ⏱️ Pomodoro 25m
+        </button>
+        <button type="button" class="copilot-pill" data-copilot-prompt="¿Cuándo son mis próximos exámenes y qué tengo que estudiar?">
+          📝 Próximos exámenes
+        </button>
+        <button type="button" class="copilot-pill" data-copilot-prompt="¿Cómo voy de notas y qué medias llevo?">
+          📊 Mis notas
+        </button>
+      </div>
+
+      <!-- Área de Conversación -->
+      <div id="copilot-messages" class="copilot-messages">
+        <!-- Mensaje de bienvenida -->
+        <div class="copilot-msg copilot-msg-bot">
+          <p>👋 <strong>¡Hola! Soy tu Copiloto Escolar.</strong></p>
+          <p>Estoy conectado a tu horario, deberes, mochila, exámenes y notas. Puedes hablarme o escribirme para:</p>
+          <ul>
+            <li>Organizar tu día, horario o preparar la mochila.</li>
+            <li>Añadir deberes, tareas y exámenes con fechas.</li>
+            <li>Explicarte cualquier lección difícil paso a paso.</li>
+            <li>Generar fichas de estudio a partir de tus apuntes o temas.</li>
+            <li>Buscar información en Wikipedia y en internet.</li>
+          </ul>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 6px;">
+            🎙️ Pulsa el micrófono para dictarme o escribe abajo lo que necesites.
+          </p>
+        </div>
+      </div>
+
+      <!-- Barra Inferior de Entrada -->
+      <div class="copilot-input-container">
+        <!-- Vista previa de adjunto (apunte/foto) -->
+        <div id="copilot-attachment-preview" class="copilot-attachment-preview hidden">
+          <img id="copilot-attachment-img" src="" class="copilot-attachment-img" alt="Adjunto" />
+          <span id="copilot-attachment-label" style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Apuntes adjuntos</span>
+          <button type="button" id="btn-copilot-remove-attachment" class="btn-icon" style="width: 24px; height: 24px; padding: 0;">✕</button>
+        </div>
+
+        <form id="copilot-form" class="copilot-form">
+          <button type="button" id="btn-copilot-voice" class="btn-copilot-round btn-copilot-voice" title="Hablar por voz (Micrófono) 🎙️">
+            🎙️
+          </button>
+          <button type="button" id="btn-copilot-attach" class="btn-copilot-round btn-copilot-voice" title="Adjuntar foto de apuntes 📸">
+            📸
+          </button>
+          <input type="file" id="copilot-file-input" accept="image/*" class="hidden" />
+
+          <textarea id="copilot-input-text" class="copilot-textarea" rows="1" placeholder="Pregúntame algo, pide una tarea o investiga..."></textarea>
+          
+          <button type="submit" id="btn-copilot-send" class="btn-copilot-round btn-copilot-send" title="Enviar mensaje">
+            ➤
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 17. MODAL: GENERADOR DE FICHAS DE ESTUDIO CON IA -->
+  <div id="flashcard-ai-modal" class="modal-overlay hidden">
+    <div class="modal-content" style="max-width: 620px;">
+      <div class="modal-header">
+        <h3 class="modal-title">✨ Generar Fichas de Estudio con IA</h3>
+        <button class="btn-close" data-close="flashcard-ai-modal">&times;</button>
+      </div>
+
+      <form id="flashcard-ai-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Asignatura *</label>
+            <select id="flashcard-ai-subject-select" class="form-select" required></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cantidad de Fichas</label>
+            <select id="flashcard-ai-count-select" class="form-select">
+              <option value="3">3 Fichas clave</option>
+              <option value="5" selected>5 Fichas (Recomendado)</option>
+              <option value="8">8 Fichas completas</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Tema o Título del Temario (Opcional)</label>
+          <input type="text" id="flashcard-ai-topic-input" class="form-input" placeholder="Ej: La Ilustración, El Teorema de Pitágoras, Órganos celulares..." />
+        </div>
+
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <label class="form-label" style="margin-bottom: 0;">Apuntes, Pizarra o Texto de Estudio *</label>
+            <button type="button" class="btn-voice-dictate btn-voice-dictate-sm" data-voice-target="flashcard-ai-text-input" title="Dictar apuntes por voz 🎙️">
+              <span>🎙️ Dictar</span>
+            </button>
+          </div>
+          <textarea id="flashcard-ai-text-input" class="form-textarea" rows="6" placeholder="Pega aquí los apuntes de clase, el resumen del libro o el texto de la pizarra..." required></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px;">
+          <span id="flashcard-ai-status" style="font-size: 0.82rem; color: var(--text-muted);">
+            Motor: Gemini Flash / IA Local
+          </span>
+          <button type="submit" id="btn-flashcard-ai-generate" class="btn-primary" style="width: auto; min-width: 170px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border: none;">
+            ✨ Generar Fichas
+          </button>
+        </div>
+      </form>
+
+      <!-- Resultados Generados -->
+      <div id="flashcard-ai-results-container" class="hidden" style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <h4 style="font-size: 0.92rem; font-weight: 700; margin: 0; color: var(--text-main);">
+            Tarjetas Generadas (<span id="flashcard-ai-count-generated">0</span>)
+          </h4>
+          <span style="font-size: 0.76rem; color: var(--text-muted);">Revisa las preguntas antes de guardarlas</span>
+        </div>
+
+        <div id="flashcard-ai-results-grid" class="flashcards-ai-results-grid"></div>
+
+        <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px;">
+          <button type="button" class="btn-secondary" data-close="flashcard-ai-modal" style="width: auto;">
+            Descartar
+          </button>
+          <button type="button" id="btn-flashcard-ai-save-all" class="btn-primary" style="width: auto; min-width: 170px;">
+            💾 Guardar en mi Mazo
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 

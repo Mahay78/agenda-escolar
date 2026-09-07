@@ -107,6 +107,19 @@ import {
   recognizeWithDeviceAI,
   isDeviceAISupported
 } from './ocr.js';
+import {
+  registerAppCallbacks,
+  askAIAssistant,
+  generateFlashcardsWithAI,
+  getAIApiKey,
+  saveAIApiKey,
+  speakText,
+  stopSpeaking,
+  isSpeaking,
+  appendToChatHistory,
+  clearChatHistory,
+  getChatHistory
+} from './ai-assistant.js';
 
 // Estado global de la aplicación
 const AppState = {
@@ -198,6 +211,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initGoogleDriveModule();
     initFirebaseSyncModule();
     initFlashcardsModule();
+    initAIAssistantModule();
 
     // 4. Renderizar vistas
     renderAllViews();
@@ -3564,6 +3578,36 @@ function initOcrModule() {
     }
   });
 
+  // Crear Fichas con IA a partir del texto OCR
+  const btnOcrAiFlashcards = document.getElementById('btn-ocr-ai-flashcards');
+  btnOcrAiFlashcards?.addEventListener('click', () => {
+    const text = ocrTextArea?.value;
+    if (!text || text.startsWith('Extrayendo texto') || text.startsWith('(No se detectó')) {
+      showToast('⚠️ Espera a que termine el OCR o introduce texto válido', 'warning');
+      return;
+    }
+    ocrModal?.classList.add('hidden');
+    document.getElementById('image-viewer-modal')?.classList.add('hidden');
+    if (window.openFlashcardsAiModal) {
+      window.openFlashcardsAiModal(text);
+    }
+  });
+
+  // Explicar con Copiloto IA a partir del texto OCR
+  const btnOcrAiExplain = document.getElementById('btn-ocr-ai-explain');
+  btnOcrAiExplain?.addEventListener('click', () => {
+    const text = ocrTextArea?.value;
+    if (!text || text.startsWith('Extrayendo texto') || text.startsWith('(No se detectó')) {
+      showToast('⚠️ Espera a que termine el OCR o introduce texto válido', 'warning');
+      return;
+    }
+    ocrModal?.classList.add('hidden');
+    document.getElementById('image-viewer-modal')?.classList.add('hidden');
+    if (window.openCopilotModal) {
+      window.openCopilotModal(`Explícame de forma clara y didáctica estos apuntes de clase que acabo de fotografiar:\n\n${text}`);
+    }
+  });
+
   // Añadir a Deberes
   btnToTask?.addEventListener('click', () => {
     const text = ocrTextArea?.value;
@@ -5415,5 +5459,531 @@ function initFlashcardsModule() {
     }
   });
 }
+
+// ==========================================================================
+// MÓDULO DE COPILOTO ESCOLAR IA (CHAT, ACCIONES, BÚSQUEDA Y FLASHCARDS)
+// ==========================================================================
+function initAIAssistantModule() {
+  // 1. Registrar callbacks para que la IA interactúe con el resto de la aplicación
+  registerAppCallbacks({
+    getAppState: () => AppState,
+    onTaskCreated: (task) => {
+      renderTasksView();
+      updateBadges();
+      triggerHaptic('success');
+    },
+    onExamCreated: (exam) => {
+      renderExamsView();
+      updateBadges();
+      triggerHaptic('success');
+    },
+    onFlashcardsCreated: (cards) => {
+      renderFlashcardsView();
+      updateBadges();
+      triggerHaptic('success');
+    },
+    onPomodoroStarted: (minutes, mode) => {
+      switchTab('tab-pomodoro');
+      setPomodoroMode(mode, minutes);
+      startPomodoro();
+      triggerHaptic('success');
+    },
+    onTabNavigate: (tabId) => {
+      switchTab(tabId);
+    },
+    onToast: (msg, type) => showToast(msg, type)
+  });
+
+  // 2. Elementos del DOM del Copiloto
+  const copilotModal = document.getElementById('ai-copilot-modal');
+  const btnOpenCopilotHeader = document.getElementById('btn-open-copilot');
+  const drawerBtnCopilot = document.getElementById('drawer-btn-copilot');
+  const fabAiCopilot = document.getElementById('fab-ai-copilot');
+  const btnAiCopilotFloating = document.getElementById('btn-ai-copilot-floating');
+  const copilotMessages = document.getElementById('copilot-messages');
+  const copilotForm = document.getElementById('copilot-form');
+  const copilotInputText = document.getElementById('copilot-input-text');
+  const btnCopilotVoice = document.getElementById('btn-copilot-voice');
+  const btnCopilotAttach = document.getElementById('btn-copilot-attach');
+  const copilotFileInput = document.getElementById('copilot-file-input');
+  const btnSpeechToggle = document.getElementById('btn-copilot-speech-toggle');
+  const btnConfigKey = document.getElementById('btn-copilot-config-key');
+  const btnClearChat = document.getElementById('btn-copilot-clear');
+  const attachmentPreview = document.getElementById('copilot-attachment-preview');
+  const attachmentImg = document.getElementById('copilot-attachment-img');
+  const btnRemoveAttachment = document.getElementById('btn-copilot-remove-attachment');
+  const copilotStatusSubtext = document.getElementById('copilot-status-subtext');
+
+  // Estado del Asistente
+  let isSpeechEnabled = false; // Por defecto apagado para no asustar al usuario, activable con 1 toque
+  let activeAttachedBase64 = null;
+  let isSending = false;
+  let isVoiceDictating = false;
+
+  // Actualizar subtítulo según si hay clave IA
+  async function updateStatusBadge() {
+    const key = await getAIApiKey();
+    if (copilotStatusSubtext) {
+      if (key) {
+        copilotStatusSubtext.textContent = '✨ Gemini Flash listo • Conectado a tu agenda';
+      } else {
+        copilotStatusSubtext.textContent = '⚡ Modo Local Offline • Pulsa ⚙️ para clave IA';
+      }
+    }
+  }
+  updateStatusBadge();
+
+  // Abrir Copiloto
+  function openCopilotModal(initialPrompt = null, attachedImage = null) {
+    copilotModal?.classList.remove('hidden');
+    updateStatusBadge();
+    if (attachedImage) {
+      setAttachedImage(attachedImage);
+    }
+    if (initialPrompt) {
+      if (copilotInputText) copilotInputText.value = initialPrompt;
+      sendMessage();
+    } else {
+      setTimeout(() => copilotInputText?.focus(), 150);
+    }
+  }
+
+  window.openCopilotModal = openCopilotModal;
+
+  btnOpenCopilotHeader?.addEventListener('click', () => openCopilotModal());
+  drawerBtnCopilot?.addEventListener('click', () => {
+    document.getElementById('app-drawer')?.classList.remove('open');
+    document.getElementById('drawer-overlay')?.classList.remove('show');
+    openCopilotModal();
+  });
+  fabAiCopilot?.addEventListener('click', () => {
+    document.getElementById('fab-menu')?.classList.remove('show');
+    document.getElementById('fab-main-btn')?.classList.remove('open');
+    openCopilotModal();
+  });
+  btnAiCopilotFloating?.addEventListener('click', () => openCopilotModal());
+
+  // Sugerencias rápidas (pills)
+  document.querySelectorAll('.copilot-pill').forEach((pill) => {
+    pill.addEventListener('click', () => {
+      const prompt = pill.getAttribute('data-copilot-prompt');
+      if (prompt && copilotInputText) {
+        copilotInputText.value = prompt;
+        sendMessage();
+      }
+    });
+  });
+
+  // Alternar Lectura en Voz Alta
+  btnSpeechToggle?.addEventListener('click', () => {
+    isSpeechEnabled = !isSpeechEnabled;
+    btnSpeechToggle.textContent = isSpeechEnabled ? '🔊' : '🔇';
+    btnSpeechToggle.title = isSpeechEnabled ? 'Voz activada (pulsa para silenciar)' : 'Voz silenciada (pulsa para activar)';
+    showToast(isSpeechEnabled ? '🔊 Lectura de voz activada' : '🔇 Voz silenciada', 'info');
+    if (!isSpeechEnabled) stopSpeaking();
+  });
+
+  // Configurar Clave IA
+  btnConfigKey?.addEventListener('click', async () => {
+    const currentKey = await getAIApiKey();
+    const promptMsg = 'Introduce tu API Key gratuita de Google Gemini para activar el razonamiento escolar profundo y búsqueda:\n\n(Consíguela gratis en: https://aistudio.google.com/):';
+    const newKey = window.prompt(promptMsg, currentKey || '');
+    if (newKey !== null) {
+      const saved = await saveAIApiKey(newKey);
+      await updateStatusBadge();
+      showToast(saved ? '🔑 Clave IA guardada' : 'Clave IA eliminada', 'info');
+    }
+  });
+
+  // Limpiar Chat
+  btnClearChat?.addEventListener('click', () => {
+    clearChatHistory();
+    if (copilotMessages) {
+      copilotMessages.innerHTML = `
+        <div class="copilot-msg copilot-msg-bot">
+          <p>🧹 <em>Conversación reiniciada.</em> ¿Qué necesitas consultar o preparar ahora?</p>
+        </div>
+      `;
+    }
+    stopSpeaking();
+    showToast('Conversación reiniciada');
+  });
+
+  // Adjuntar Foto / Apuntes
+  function setAttachedImage(dataUrl) {
+    activeAttachedBase64 = dataUrl;
+    if (attachmentPreview && attachmentImg) {
+      attachmentImg.src = dataUrl;
+      attachmentPreview.classList.remove('hidden');
+    }
+  }
+
+  btnCopilotAttach?.addEventListener('click', () => copilotFileInput?.click());
+  copilotFileInput?.addEventListener('change', (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (ev) => setAttachedImage(ev.target.result);
+      reader.readAsDataURL(file);
+    }
+  });
+
+  btnRemoveAttachment?.addEventListener('click', () => {
+    activeAttachedBase64 = null;
+    if (attachmentPreview) attachmentPreview.classList.add('hidden');
+    if (copilotFileInput) copilotFileInput.value = '';
+  });
+
+  // Dictado por Voz
+  btnCopilotVoice?.addEventListener('click', () => {
+    if (!isSpeechRecognitionSupported()) {
+      showToast('Tu navegador no soporta reconocimiento de voz por micrófono', 'warning');
+      return;
+    }
+
+    if (isVoiceDictating) {
+      stopSpeechDictation();
+      isVoiceDictating = false;
+      btnCopilotVoice.classList.remove('listening');
+    } else {
+      isVoiceDictating = true;
+      btnCopilotVoice.classList.add('listening');
+      startSpeechDictation(copilotInputText, 'es-ES', (status) => {
+        if (status === 'stopped' || status === 'error') {
+          isVoiceDictating = false;
+          btnCopilotVoice.classList.remove('listening');
+        }
+      });
+    }
+  });
+
+  // Formateador seguro de Markdown para los mensajes
+  function renderMarkdownSafe(text) {
+    if (!text) return '';
+    let html = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+
+    // Negrita
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    // Cursiva
+    html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    // Código inline
+    html = html.replace(/`([^`]+)`/g, '<code style="background:var(--bg-input);padding:2px 5px;border-radius:4px;">$1</code>');
+    // Enlaces markdown [texto](url)
+    html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" style="color:var(--primary);text-decoration:underline;">$1 ↗</a>');
+
+    // Listas con viñetas
+    const lines = html.split('\n');
+    let inList = false;
+    let result = '';
+
+    for (let line of lines) {
+      const bulletMatch = line.match(/^(\s*)[•\-\*]\s+(.*)/);
+      if (bulletMatch) {
+        if (!inList) {
+          result += '<ul>';
+          inList = true;
+        }
+        result += `<li>${bulletMatch[2]}</li>`;
+      } else {
+        if (inList) {
+          result += '</ul>';
+          inList = false;
+        }
+        if (line.trim().length > 0) {
+          result += `<p>${line}</p>`;
+        }
+      }
+    }
+
+    if (inList) result += '</ul>';
+    return result || `<p>${html}</p>`;
+  }
+
+  // Renderizar Mensaje en el Chat
+  function appendMessage(role, text, actions = [], webSearch = null) {
+    if (!copilotMessages) return;
+
+    const msgEl = document.createElement('div');
+    msgEl.className = `copilot-msg copilot-msg-${role}`;
+
+    if (role === 'user') {
+      msgEl.innerHTML = `<div>${renderMarkdownSafe(text)}</div>`;
+    } else {
+      let bodyHtml = renderMarkdownSafe(text);
+
+      // Renderizar tarjetas de acciones ejecutadas por la IA
+      if (Array.isArray(actions) && actions.length > 0) {
+        actions.forEach((act) => {
+          let btnLabel = 'Ver';
+          let targetTab = '';
+          if (act.type === 'task_created') {
+            btnLabel = 'Ver Deberes';
+            targetTab = 'tab-tasks';
+          } else if (act.type === 'exam_created') {
+            btnLabel = 'Ver Exámenes';
+            targetTab = 'tab-exams';
+          } else if (act.type === 'flashcards_created') {
+            btnLabel = 'Ver Fichas';
+            targetTab = 'tab-flashcards';
+          } else if (act.type === 'pomodoro_started') {
+            btnLabel = 'Ver Pomodoro';
+            targetTab = 'tab-pomodoro';
+          }
+
+          bodyHtml += `
+            <div class="copilot-action-card">
+              <span class="copilot-action-card-text">${act.message || 'Acción completada'}</span>
+              ${targetTab ? `<button type="button" class="copilot-action-btn-go" data-nav-target="${targetTab}">${btnLabel} ➔</button>` : ''}
+            </div>
+          `;
+        });
+      }
+
+      // Renderizar tarjeta de búsqueda en Wikipedia
+      if (webSearch) {
+        bodyHtml += `
+          <div class="copilot-web-card">
+            ${webSearch.thumbnail ? `<img src="${webSearch.thumbnail}" alt="${webSearch.title}" class="copilot-web-thumb" />` : ''}
+            <div class="copilot-web-body">
+              <div class="copilot-web-title">📚 ${webSearch.title}</div>
+              <div class="copilot-web-desc">${webSearch.extract.substring(0, 180)}...</div>
+              <a href="${webSearch.url}" target="_blank" rel="noopener noreferrer" class="copilot-web-link">Leer artículo completo en Wikipedia ↗</a>
+            </div>
+          </div>
+        `;
+      }
+
+      // Botón para escuchar en voz alta
+      bodyHtml += `
+        <div class="copilot-msg-footer">
+          <button type="button" class="btn-speak-msg" title="Escuchar este mensaje en voz alta">🔊 Escuchar</button>
+        </div>
+      `;
+
+      msgEl.innerHTML = bodyHtml;
+
+      // Event listener para el botón de audio
+      const speakBtn = msgEl.querySelector('.btn-speak-msg');
+      speakBtn?.addEventListener('click', () => {
+        speakText(text);
+      });
+
+      // Event listeners para botones de navegación a pestañas
+      msgEl.querySelectorAll('.copilot-action-btn-go').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const target = btn.getAttribute('data-nav-target');
+          if (target) {
+            copilotModal?.classList.add('hidden');
+            switchTab(target);
+          }
+        });
+      });
+    }
+
+    copilotMessages.appendChild(msgEl);
+    copilotMessages.scrollTop = copilotMessages.scrollHeight;
+
+    appendToChatHistory(role, text);
+  }
+
+  // Enviar Mensaje
+  async function sendMessage() {
+    if (isSending) return;
+    const text = (copilotInputText?.value || '').trim();
+    const image = activeAttachedBase64;
+
+    if (!text && !image) return;
+
+    if (isVoiceDictating) {
+      stopSpeechDictation();
+      isVoiceDictating = false;
+      btnCopilotVoice?.classList.remove('listening');
+    }
+
+    // 1. Mostrar mensaje del usuario
+    appendMessage('user', text || '(Foto de apuntes adjunta)');
+    if (copilotInputText) copilotInputText.value = '';
+
+    // Limpiar adjunto tras enviar
+    if (attachmentPreview) attachmentPreview.classList.add('hidden');
+    if (copilotFileInput) copilotFileInput.value = '';
+    activeAttachedBase64 = null;
+
+    // 2. Mostrar indicador de pensando
+    const thinkingEl = document.createElement('div');
+    thinkingEl.className = 'copilot-msg copilot-msg-bot';
+    thinkingEl.id = 'copilot-thinking-bubble';
+    thinkingEl.innerHTML = `<span>✨ Pensando y revisando tu agenda...</span>`;
+    copilotMessages?.appendChild(thinkingEl);
+    copilotMessages.scrollTop = copilotMessages.scrollHeight;
+
+    isSending = true;
+
+    try {
+      const response = await askAIAssistant({
+        userMessage: text,
+        imageBase64: image,
+        history: getChatHistory()
+      });
+
+      thinkingEl.remove();
+
+      // 3. Renderizar respuesta del bot
+      appendMessage('model', response.replyText, response.actionsExecuted, response.webSearch);
+
+      // 4. Si la voz está activada, leer la respuesta
+      if (isSpeechEnabled) {
+        speakText(response.replyText);
+      }
+    } catch (err) {
+      thinkingEl.remove();
+      appendMessage('model', `⚠️ Lo siento, ocurrió un error: ${err.message}`);
+    } finally {
+      isSending = false;
+    }
+  }
+
+  copilotForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    sendMessage();
+  });
+
+  // Enter para enviar, Shift+Enter para salto de línea
+  copilotInputText?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+  // ------------------------------------------------------------------------
+  // 3. MODAL DEL GENERADOR DE FICHAS CON IA
+  // ------------------------------------------------------------------------
+  const flashcardAiModal = document.getElementById('flashcard-ai-modal');
+  const btnOpenFlashcardsAi = document.getElementById('btn-open-flashcards-ai');
+  const flashcardAiForm = document.getElementById('flashcard-ai-form');
+  const flashcardAiSubSelect = document.getElementById('flashcard-ai-subject-select');
+  const flashcardAiCountSelect = document.getElementById('flashcard-ai-count-select');
+  const flashcardAiTopicInput = document.getElementById('flashcard-ai-topic-input');
+  const flashcardAiTextInput = document.getElementById('flashcard-ai-text-input');
+  const flashcardAiStatus = document.getElementById('flashcard-ai-status');
+  const flashcardAiResultsContainer = document.getElementById('flashcard-ai-results-container');
+  const flashcardAiResultsGrid = document.getElementById('flashcard-ai-results-grid');
+  const flashcardAiCountGenerated = document.getElementById('flashcard-ai-count-generated');
+  const btnFlashcardAiSaveAll = document.getElementById('btn-flashcard-ai-save-all');
+
+  let generatedCardsBuffer = [];
+
+  function openFlashcardsAiModal(initialText = '') {
+    populateSubjectSelect(flashcardAiSubSelect);
+    if (flashcardAiSubSelect && AppState.flashcardsSubjectFilter !== 'all') {
+      flashcardAiSubSelect.value = AppState.flashcardsSubjectFilter;
+    }
+    if (flashcardAiTextInput) {
+      flashcardAiTextInput.value = initialText || '';
+    }
+    if (flashcardAiTopicInput) {
+      flashcardAiTopicInput.value = '';
+    }
+    if (flashcardAiResultsContainer) {
+      flashcardAiResultsContainer.classList.add('hidden');
+    }
+    if (flashcardAiStatus) {
+      flashcardAiStatus.textContent = 'Motor: Gemini Flash / IA Local';
+    }
+    generatedCardsBuffer = [];
+    flashcardAiModal?.classList.remove('hidden');
+  }
+
+  window.openFlashcardsAiModal = openFlashcardsAiModal;
+  btnOpenFlashcardsAi?.addEventListener('click', () => openFlashcardsAiModal());
+
+  flashcardAiForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = flashcardAiTextInput?.value.trim();
+    const subjectId = flashcardAiSubSelect?.value;
+    const count = parseInt(flashcardAiCountSelect?.value || '5', 10);
+    const topic = flashcardAiTopicInput?.value.trim();
+
+    if (!text) {
+      showToast('Por favor escribe o pega el texto para generar las fichas', 'warning');
+      return;
+    }
+
+    if (flashcardAiStatus) {
+      flashcardAiStatus.textContent = '✨ Generando fichas pedagógicas con IA...';
+    }
+
+    const btnSubmit = document.getElementById('btn-flashcard-ai-generate');
+    if (btnSubmit) {
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = '⏳ Analizando...';
+    }
+
+    try {
+      const cards = await generateFlashcardsWithAI({ text, subjectId, count, topic });
+      generatedCardsBuffer = cards;
+
+      if (cards.length === 0) {
+        showToast('No se pudieron extraer fichas con el texto dado', 'warning');
+        if (flashcardAiStatus) flashcardAiStatus.textContent = 'Intenta con más texto o detalles.';
+        return;
+      }
+
+      // Renderizar previsualización
+      if (flashcardAiResultsGrid) {
+        flashcardAiResultsGrid.innerHTML = cards.map((c, i) => `
+          <div class="flashcards-ai-item-preview">
+            <div class="front-text">❓ ${c.front}</div>
+            <div class="back-text">💡 ${c.back}</div>
+            ${c.hint ? `<div class="hint-text">🔑 Pista: ${c.hint}</div>` : ''}
+          </div>
+        `).join('');
+      }
+
+      if (flashcardAiCountGenerated) {
+        flashcardAiCountGenerated.textContent = String(cards.length);
+      }
+
+      flashcardAiResultsContainer?.classList.remove('hidden');
+      if (flashcardAiStatus) {
+        flashcardAiStatus.textContent = `✅ ¡${cards.length} fichas creadas con éxito!`;
+      }
+      showToast(`✨ ${cards.length} fichas generadas. ¡Revisa y guarda!`, 'success');
+    } catch (err) {
+      console.error('Error generando flashcards:', err);
+      showToast(`Error al generar fichas: ${err.message}`, 'error');
+      if (flashcardAiStatus) flashcardAiStatus.textContent = 'Ocurrió un error al procesar.';
+    } finally {
+      if (btnSubmit) {
+        btnSubmit.disabled = false;
+        btnSubmit.textContent = '✨ Generar Fichas';
+      }
+    }
+  });
+
+  // Guardar todas las fichas en la base de datos
+  btnFlashcardAiSaveAll?.addEventListener('click', async () => {
+    if (generatedCardsBuffer.length === 0) return;
+
+    for (const item of generatedCardsBuffer) {
+      const card = createFlashcard(item);
+      await saveItem('flashcards', card);
+      if (AppState.flashcards) {
+        AppState.flashcards.push(card);
+      }
+    }
+
+    renderFlashcardsView();
+    updateBadges();
+    flashcardAiModal?.classList.add('hidden');
+    showToast(`🎉 ¡${generatedCardsBuffer.length} fichas guardadas en tu mazo!`, 'success');
+    triggerHaptic('success');
+  });
+}
+
 
 
