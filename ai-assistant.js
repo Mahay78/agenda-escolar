@@ -51,7 +51,7 @@ export function registerAppCallbacks(callbacks) {
  * Obtiene la API Key de Google Gemini guardada
  */
 export async function getAIApiKey() {
-  let key = localStorage.getItem(GEMINI_STORAGE_KEY);
+  let key = typeof localStorage !== 'undefined' ? localStorage.getItem(GEMINI_STORAGE_KEY) : null;
   if (!key) {
     try {
       key = await getSetting('geminiApiKey');
@@ -66,12 +66,12 @@ export async function getAIApiKey() {
 export async function saveAIApiKey(key) {
   const cleanKey = (key || '').trim();
   if (cleanKey) {
-    localStorage.setItem(GEMINI_STORAGE_KEY, cleanKey);
+    if (typeof localStorage !== 'undefined') localStorage.setItem(GEMINI_STORAGE_KEY, cleanKey);
     try {
       await setSetting('geminiApiKey', cleanKey);
     } catch (e) {}
   } else {
-    localStorage.removeItem(GEMINI_STORAGE_KEY);
+    if (typeof localStorage !== 'undefined') localStorage.removeItem(GEMINI_STORAGE_KEY);
     try {
       await setSetting('geminiApiKey', '');
     } catch (e) {}
@@ -90,32 +90,44 @@ export async function testGeminiApiKey(key) {
     return { ok: false, error: 'Por favor introduce una clave antes de probar.' };
   }
 
-  try {
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${cleanKey}`;
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: 'Responde únicamente con la palabra OK.' }] }]
-      })
-    });
+  const candidateModels = ['gemini-2.5-flash', 'gemini-flash-latest', 'gemini-1.5-flash', 'gemini-2.0-flash'];
 
-    if (!res.ok) {
+  for (const model of candidateModels) {
+    try {
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${cleanKey}`;
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: 'Responde únicamente con la palabra OK.' }] }]
+        })
+      });
+
+      if (res.ok) {
+        return { ok: true, message: `¡Conexión verificada con éxito! Modelo activo: ${model}.` };
+      }
+
       const err = await res.json().catch(() => ({}));
       const msg = err.error?.message || `Error HTTP ${res.status}`;
+
       if (res.status === 400 || msg.toLowerCase().includes('api key not valid') || msg.toLowerCase().includes('invalid')) {
-        return { ok: false, error: 'Clave no válida. Asegúrate de copiarla completa desde Google AI Studio (empieza por AIzaSy...).' };
+        return { ok: false, error: 'Clave no válida. Asegúrate de copiarla completa desde Google AI Studio.' };
       }
       if (res.status === 429) {
         return { ok: false, error: 'Límite de peticiones alcanzado. Espera un momento y vuelve a probar.' };
       }
-      return { ok: false, error: msg };
-    }
+      // Si fue 404 de modelo, probar el siguiente modelo en la lista
+      if (res.status === 404) {
+        continue;
+      }
 
-    return { ok: true, message: '¡Conexión verificada! Google Gemini 1.5 Flash está activo y listo para funcionar.' };
-  } catch (netErr) {
-    return { ok: false, error: 'No se pudo conectar con los servidores de Google. Comprueba tu conexión a internet.' };
+      return { ok: false, error: msg };
+    } catch (netErr) {
+      // Continuar al siguiente si error de red temporal o salir
+    }
   }
+
+  return { ok: false, error: 'No se pudo conectar con los servidores de Google. Comprueba tu conexión a internet.' };
 }
 
 /**
@@ -305,7 +317,6 @@ export async function generateFlashcardsWithAI({ text, subjectId = 'all', count 
   // Si hay API Key de Gemini, usar la IA avanzada
   if (apiKey) {
     try {
-      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
       const prompt = `Actúa como un profesor y tutor de estudio experto.
 Genera exactamente entre 3 y ${Math.max(3, count)} Fichas de Estudio (Flashcards) para memorizar y repasar con el sistema de repetición espaciada de Leitner.
 Asignatura: "${targetSubName}".
@@ -332,27 +343,34 @@ RESPONDE ÚNICAMENTE CON UN OBJETO JSON VÁLIDO CON ESTA ESTRUCTURA EXACTA (SIN 
   ]
 }`;
 
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { responseMimeType: 'application/json' }
-        })
-      });
+      const candidateModels = ['gemini-2.5-flash', 'gemini-flash-latest', 'gemini-1.5-flash', 'gemini-2.0-flash'];
+      for (const model of candidateModels) {
+        try {
+          const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+          const res = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { responseMimeType: 'application/json' }
+            })
+          });
 
-      if (res.ok) {
-        const data = await res.json();
-        const jsonText = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
-        const parsed = JSON.parse(jsonText);
-        if (Array.isArray(parsed.flashcards) && parsed.flashcards.length > 0) {
-          return parsed.flashcards.map(c => ({
-            subjectId: targetSubId,
-            front: c.front || '',
-            back: c.back || '',
-            hint: c.hint || ''
-          }));
-        }
+          if (res.ok) {
+            const data = await res.json();
+            const jsonText = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+            const parsed = JSON.parse(jsonText);
+            if (Array.isArray(parsed.flashcards) && parsed.flashcards.length > 0) {
+              return parsed.flashcards.map(c => ({
+                subjectId: targetSubId,
+                front: c.front || '',
+                back: c.back || '',
+                hint: c.hint || ''
+              }));
+            }
+          }
+          if (res.status === 404) continue;
+        } catch (mErr) {}
       }
     } catch (err) {
       console.warn('Fallo con Gemini al crear flashcards, usando extractor local:', err);
@@ -592,18 +610,20 @@ export async function askAIAssistant({ userMessage, imageBase64 = null, history 
       }
     };
 
-    let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
+    const candidateModels = ['gemini-2.5-flash', 'gemini-flash-latest', 'gemini-1.5-flash', 'gemini-2.0-flash'];
+    let response = null;
 
-    if (!response.ok && (response.status === 404 || response.status >= 500)) {
-      response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
+    for (const model of candidateModels) {
+      try {
+        response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (response.ok) break;
+        if (response.status === 404) continue;
+        break;
+      } catch (mErr) {}
     }
 
     if (!response.ok) {

@@ -3661,27 +3661,11 @@ function initOcrModule() {
 
   // --- GESTIÓN DE CLAVE Y ANÁLISIS CON GOOGLE GEMINI ---
   async function getGeminiApiKey() {
-    let key = localStorage.getItem('gemini_api_key');
-    if (!key) {
-      try {
-        key = await getSetting('geminiApiKey');
-      } catch (e) {}
-    }
-    return key || '';
+    return await getAIApiKey();
   }
 
   async function saveGeminiApiKey(key) {
-    if (key) {
-      localStorage.setItem('gemini_api_key', key);
-      try {
-        await setSetting('geminiApiKey', key);
-      } catch (e) {}
-    } else {
-      localStorage.removeItem('gemini_api_key');
-      try {
-        await setSetting('geminiApiKey', '');
-      } catch (e) {}
-    }
+    return await saveAIApiKey(key);
   }
 
   async function updateGeminiStatus() {

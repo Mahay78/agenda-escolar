@@ -548,36 +548,47 @@ export async function recognizeWithDeviceAI(imageSource) {
  * 2. RECONOCIMIENTO Y ESTRUCTURACIÓN CON GOOGLE GEMINI
  */
 export async function recognizeWithGemini(base64Image, apiKey) {
-  if (!apiKey) throw new Error('Debes introducir tu API Key gratuita de Google Gemini.');
+  const activeKey = (apiKey || '').trim();
+  if (!activeKey) throw new Error('Debes introducir tu API Key gratuita de Google Gemini.');
 
   // Detectar MIME type y limpiar encabezado data:image/...;base64,
   const mimeMatch = base64Image.match(/^data:(image\/[a-zA-Z0-9.+_-]+);base64,/);
   const mimeType = mimeMatch ? mimeMatch[1] : 'image/jpeg';
   const base64Data = base64Image.replace(/^data:image\/[a-zA-Z0-9.+_-]+;base64,/, '');
 
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-
   const prompt = `Actúa como asistente escolar para un estudiante de instituto. Analiza esta foto de una pizarra o apuntes:
 1. Transcribe todo el texto con máxima fidelidad ortográfica.
 2. Identifica si hay deberes, tareas o fechas de exámenes.
 3. Devuelve primero un resumen claro de los ejercicios o tareas a realizar en formato lista.`;
 
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{
-        parts: [
-          { text: prompt },
-          { inline_data: { mime_type: mimeType, data: base64Data } }
-        ]
-      }]
-    })
-  });
+  const payload = {
+    contents: [{
+      parts: [
+        { text: prompt },
+        { inlineData: { mimeType: mimeType, data: base64Data } }
+      ]
+    }]
+  };
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.error?.message || `Error al conectar con Gemini (${response.status})`);
+  const candidateModels = ['gemini-2.5-flash', 'gemini-flash-latest', 'gemini-1.5-flash', 'gemini-2.0-flash'];
+  let response = null;
+
+  for (const model of candidateModels) {
+    try {
+      response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${activeKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (response.ok) break;
+      if (response.status === 404) continue;
+      break;
+    } catch (mErr) {}
+  }
+
+  if (!response || !response.ok) {
+    const errorData = await response?.json().catch(() => ({})) || {};
+    throw new Error(errorData.error?.message || `Error al conectar con Gemini (${response?.status || 'red'})`);
   }
 
   const data = await response.json();

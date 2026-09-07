@@ -213,27 +213,29 @@ ${userPrompt}`;
     contents: [{ parts: [{ text: fullPrompt }] }]
   };
 
-  let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
+  const candidateModels = ['gemini-2.5-flash', 'gemini-flash-latest', 'gemini-1.5-flash', 'gemini-2.0-flash'];
+  let response = null;
 
-  if (!response.ok && (response.status === 404 || response.status >= 500)) {
-    response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
+  for (const model of candidateModels) {
+    try {
+      response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (response.ok) break;
+      if (response.status === 404) continue;
+      break;
+    } catch (mErr) {}
   }
 
-  if (!response.ok) {
-    const errData = await response.json().catch(() => ({}));
-    const rawMsg = errData.error?.message || `Error HTTP ${response.status}`;
-    if (response.status === 400 || rawMsg.toLowerCase().includes('api key not valid')) {
+  if (!response || !response.ok) {
+    const errData = await response?.json().catch(() => ({})) || {};
+    const rawMsg = errData.error?.message || `Error HTTP ${response?.status || 'red'}`;
+    if (response?.status === 400 || rawMsg.toLowerCase().includes('api key not valid')) {
       throw new Error('Tu clave de Google Gemini no es válida. Abre el botón ⚙️ Clave IA para configurarla o crear una nueva gratis en Google AI Studio.');
     }
-    if (response.status === 429) {
+    if (response?.status === 429) {
       throw new Error('Límite de cuota gratuita alcanzado temporalmente. Espera un momento antes de volver a solicitarlo.');
     }
     throw new Error(rawMsg);
@@ -796,31 +798,48 @@ document.addEventListener('DOMContentLoaded', () => {
       testResultAiKey.textContent = '⏳ Verificando clave con Google Gemini...';
     }
 
-    try {
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${candidate}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ parts: [{ text: 'OK' }] }] })
-      });
+    const candidateModels = ['gemini-2.5-flash', 'gemini-flash-latest', 'gemini-1.5-flash', 'gemini-2.0-flash'];
+    let verified = false;
 
-      if (!res.ok) {
+    for (const model of candidateModels) {
+      try {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${candidate}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contents: [{ parts: [{ text: 'OK' }] }] })
+        });
+
+        if (res.ok) {
+          verified = true;
+          if (testResultAiKey) {
+            testResultAiKey.style.background = 'rgba(16,185,129,0.12)';
+            testResultAiKey.style.color = '#10b981';
+            testResultAiKey.style.border = '1px solid rgba(16,185,129,0.3)';
+            testResultAiKey.textContent = `✅ ¡Conexión exitosa! Google Gemini (${model}) está activo.`;
+          }
+          break;
+        }
+
+        if (res.status === 404) continue;
+
         const errJson = await res.json().catch(() => ({}));
         throw new Error(errJson.error?.message || `HTTP ${res.status}`);
+      } catch (err) {
+        if (testResultAiKey) {
+          testResultAiKey.style.background = 'rgba(244,63,94,0.12)';
+          testResultAiKey.style.color = '#f43f5e';
+          testResultAiKey.style.border = '1px solid rgba(244,63,94,0.3)';
+          testResultAiKey.textContent = `❌ Error: ${err.message}`;
+        }
+        return;
       }
+    }
 
-      if (testResultAiKey) {
-        testResultAiKey.style.background = 'rgba(16,185,129,0.12)';
-        testResultAiKey.style.color = '#10b981';
-        testResultAiKey.style.border = '1px solid rgba(16,185,129,0.3)';
-        testResultAiKey.textContent = '✅ ¡Conexión exitosa! Tu clave de Gemini funciona perfectamente.';
-      }
-    } catch (err) {
-      if (testResultAiKey) {
-        testResultAiKey.style.background = 'rgba(244,63,94,0.12)';
-        testResultAiKey.style.color = '#f43f5e';
-        testResultAiKey.style.border = '1px solid rgba(244,63,94,0.3)';
-        testResultAiKey.textContent = `❌ Error: ${err.message}`;
-      }
+    if (!verified && testResultAiKey && !testResultAiKey.textContent.startsWith('❌')) {
+      testResultAiKey.style.background = 'rgba(244,63,94,0.12)';
+      testResultAiKey.style.color = '#f43f5e';
+      testResultAiKey.style.border = '1px solid rgba(244,63,94,0.3)';
+      testResultAiKey.textContent = '❌ No se pudo conectar con ningún modelo de Gemini. Comprueba tu clave.';
     }
   });
 
