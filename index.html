@@ -56,6 +56,11 @@
         <span class="copilot-badge-text">Cuaderno LM</span>
       </a>
 
+      <!-- Configurar Clave IA (Google Gemini) -->
+      <button id="btn-header-ai-key" class="btn-icon btn-trigger-ai-key" title="Configurar Clave IA (Google Gemini)" style="background: rgba(139, 92, 246, 0.15); color: #a78bfa; border-color: rgba(139, 92, 246, 0.35);">
+        <span>⚙️</span>
+      </button>
+
       <!-- Contador y Racha de Estudio -->
       <button id="btn-open-streak" class="btn-streak-badge" title="Racha de estudio y hábitos (Pulsa para ver logros)">
         🔥 <span id="header-streak-days">1</span> d
@@ -151,6 +156,11 @@
           <span class="drawer-nav-text" style="font-weight: 700; color: #fda4af;">Cuaderno LM (Estudio)</span>
           <span class="tab-badge" style="background: #f43f5e;">✨ Pro</span>
         </a>
+        <button class="drawer-nav-item btn-trigger-ai-key" id="drawer-btn-ai-key" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(59, 130, 246, 0.15)); border: 1px solid rgba(16, 185, 129, 0.35);">
+          <span class="drawer-nav-icon">🔑</span>
+          <span class="drawer-nav-text" style="font-weight: 700; color: #10b981;">Configurar Clave IA</span>
+          <span id="drawer-ai-badge" class="tab-badge" style="background: #10b981;">Gemini</span>
+        </button>
         <button class="drawer-nav-item active" data-tab="tab-today">
           <span class="drawer-nav-icon">🏠</span>
           <span class="drawer-nav-text">Hoy (Panel Principal)</span>
@@ -227,6 +237,10 @@
 
       <div class="drawer-group-label">SISTEMA</div>
       <div class="drawer-nav-list">
+        <button class="drawer-nav-item btn-trigger-ai-key" id="drawer-btn-ai-key-sys">
+          <span class="drawer-nav-icon">🔑</span>
+          <span class="drawer-nav-text">Clave IA (Google Gemini)</span>
+        </button>
         <button class="drawer-nav-item" data-tab="tab-settings">
           <span class="drawer-nav-icon">⚙️</span>
           <span class="drawer-nav-text">Ajustes y Copia de Seguridad</span>
@@ -260,6 +274,20 @@
           <p id="today-summary">Cargando horario y tareas de hoy...</p>
         </div>
         <div id="today-date-badge" class="hero-date-badge">Hoy</div>
+      </div>
+
+      <!-- Banner informativo / atajo rápido de Clave IA (visible si no hay clave guardada) -->
+      <div id="today-ai-key-banner" class="today-ai-promo-card hidden">
+        <div class="today-ai-promo-content">
+          <span class="today-ai-promo-icon">✨</span>
+          <div class="today-ai-promo-text">
+            <strong>Potencia tu Agenda con Google Gemini Gratis</strong>
+            <span>Resuelve dudas escolares, genera fichas de estudio y corrige tareas paso a paso.</span>
+          </div>
+        </div>
+        <button type="button" class="btn-primary btn-trigger-ai-key" style="width: auto; padding: 7px 16px; font-size: 0.82rem; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border: none; white-space: nowrap;">
+          🔑 Configurar Clave
+        </button>
       </div>
 
       <!-- Widget Móvil y Desktop: En Este Instante / Ahora Mismo -->
@@ -2065,6 +2093,9 @@
           </button>
         </div>
       </form>
+    </div>
+  </div>
+
   <!-- 16. MODAL: COPILOTO ESCOLAR IA (CHAT, VOZ, ACCIONES Y BÚSQUEDA) -->
   <div id="ai-copilot-modal" class="modal-overlay hidden">
     <div class="modal-content copilot-modal-content">
@@ -2249,6 +2280,7 @@
   <!-- 18. MODAL: CONFIGURACIÓN DE CLAVE IA (GOOGLE GEMINI) -->
   <div id="ai-key-modal" class="modal-overlay hidden">
     <div class="modal-content ai-key-modal-content">
+      <div class="sheet-handle-bar"></div>
       <div class="modal-header">
         <div style="display: flex; align-items: center; gap: 10px;">
           <span style="font-size: 1.5rem;">✨</span>
@@ -2257,7 +2289,7 @@
             <p id="ai-key-current-status" class="section-subtitle" style="margin: 0; font-size: 0.78rem;">Comprobando estado...</p>
           </div>
         </div>
-        <button class="btn-close" data-close="ai-key-modal">&times;</button>
+        <button type="button" class="btn-close" id="btn-close-ai-key-modal" data-close="ai-key-modal">&times;</button>
       </div>
 
       <!-- Tarjeta explicativa con enlace directo a Google AI Studio -->
@@ -2266,7 +2298,7 @@
           <span style="font-size: 1.4rem; flex-shrink: 0;">🎁</span>
           <div style="font-size: 0.86rem; color: var(--text-main); line-height: 1.45;">
             <strong>¡Acceso 100% Gratuito y Oficial de Google!</strong><br />
-            Google permite usar <strong>Gemini 1.5 Flash</strong> sin coste alguno y sin introducir tarjeta bancaria. Solo necesitas tu cuenta de Google.
+            Google permite usar <strong>Gemini 2.5 Flash</strong> sin coste alguno y sin introducir tarjeta bancaria. Solo necesitas tu cuenta de Google.
           </div>
         </div>
 
@@ -2313,6 +2345,12 @@
         </button>
         <button type="button" id="btn-delete-ai-key" class="btn-secondary" style="color: var(--accent-rose); border-color: rgba(244,63,94,0.3);" title="Eliminar clave guardada">
           🗑️
+        </button>
+      </div>
+
+      <div style="display: flex; justify-content: center; margin-top: 12px;">
+        <button type="button" class="btn-secondary" data-close="ai-key-modal" style="border: none; background: transparent; color: var(--text-muted); font-size: 0.85rem; padding: 6px 14px; cursor: pointer;">
+          ✕ Cerrar ventana
         </button>
       </div>
     </div>

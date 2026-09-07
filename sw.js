@@ -3,7 +3,7 @@
  * Permite que la Agenda Escolar funcione sin conexión a internet en móvil, tablet y PC.
  */
 
-const CACHE_NAME = 'agenda-escolar-v3.2.1';
+const CACHE_NAME = 'agenda-escolar-v3.2.2';
 
 const ASSETS_TO_CACHE = [
   './',
@@ -59,10 +59,26 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Estrategia de Fetch: Cache Primero, con actualización en segundo plano
+// Estrategia de Fetch: Network-First para navegación (HTML siempre fresco), Cache-First para estáticos
 self.addEventListener('fetch', (event) => {
   // Solo manejar peticiones GET
   if (event.request.method !== 'GET') return;
+
+  // Navegación (HTML de páginas): buscar primero en la red para que las actualizaciones se vean al instante
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const copy = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+          }
+          return networkResponse;
+        })
+        .catch(() => caches.match(event.request).then((res) => res || caches.match('./index.html')))
+    );
+    return;
+  }
 
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {

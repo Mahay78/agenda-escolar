@@ -773,7 +773,7 @@ input, textarea, select, button {
   bottom: 0;
   background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(6px);
-  z-index: 100;
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3162,12 +3162,73 @@ input, textarea, select, button {
   font-style: italic;
 }
 
+/* Stacking de Modales para evitar solapamientos con Copiloto y Drawer */
+#ai-copilot-modal {
+  z-index: 1050;
+}
+
+#ai-key-modal {
+  z-index: 1200 !important;
+}
+
 /* ==========================================================================
    MODAL DE CLAVE IA (GOOGLE GEMINI) Y AVISOS DE COPILOTO
    ========================================================================== */
 .ai-key-modal-content {
   max-width: 520px;
   border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+/* Promo card en inicio (Hoy) */
+.today-ai-promo-card {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.15));
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: var(--radius-lg);
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.today-ai-promo-card.hidden {
+  display: none !important;
+}
+
+.today-ai-promo-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 220px;
+}
+
+.today-ai-promo-icon {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+
+.today-ai-promo-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.today-ai-promo-text strong {
+  font-size: 0.9rem;
+  color: var(--primary, #3b82f6);
+}
+
+.dark .today-ai-promo-text strong {
+  color: #c4b5fd;
+}
+
+.today-ai-promo-text span {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.35;
 }
 
 .ai-key-guide-card {

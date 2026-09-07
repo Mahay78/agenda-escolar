@@ -5571,6 +5571,28 @@ function initAIAssistantModule() {
         modalKeyStatus.style.color = 'var(--text-muted)';
       }
     }
+
+    // 6. Banner informativo en la pestaña Hoy
+    const todayAiBanner = document.getElementById('today-ai-key-banner');
+    if (todayAiBanner) {
+      if (hasKey) {
+        todayAiBanner.classList.add('hidden');
+      } else {
+        todayAiBanner.classList.remove('hidden');
+      }
+    }
+
+    // 7. Badge de estado en el Menú Lateral (Drawer)
+    const drawerAiBadge = document.getElementById('drawer-ai-badge');
+    if (drawerAiBadge) {
+      if (hasKey) {
+        drawerAiBadge.textContent = '🟢 Activa';
+        drawerAiBadge.style.background = '#10b981';
+      } else {
+        drawerAiBadge.textContent = '⚡ Básico';
+        drawerAiBadge.style.background = '#8b5cf6';
+      }
+    }
   }
   updateAllAiStatusBadges();
 
@@ -5586,31 +5608,51 @@ function initAIAssistantModule() {
     const btnSave = document.getElementById('btn-save-ai-key');
     const btnDelete = document.getElementById('btn-delete-ai-key');
     const testResult = document.getElementById('ai-key-test-result');
-    const btnOpenSettings = document.getElementById('btn-open-ai-key-settings');
-    const btnActivateBanner = document.getElementById('btn-copilot-activate-banner');
     const btnForceReload = document.getElementById('btn-force-reload-app');
 
+    function closeAiKeyModal() {
+      modal?.classList.add('hidden');
+    }
+
     async function openAiKeyModal() {
+      console.log('[AI] Abriendo modal de configuración de clave IA Gemini');
+      window.closeDrawer?.();
       const current = await getAIApiKey();
-      if (inputKey) inputKey.value = current;
+      if (inputKey) inputKey.value = current || '';
       if (testResult) {
         testResult.className = 'ai-key-test-result hidden';
         testResult.innerHTML = '';
       }
       await updateAllAiStatusBadges();
-      modal?.classList.remove('hidden');
+      if (modal) {
+        modal.classList.remove('hidden');
+      }
+      setTimeout(() => inputKey?.focus(), 120);
     }
 
     window.openAiKeyModal = openAiKeyModal;
+    window.closeAiKeyModal = closeAiKeyModal;
 
-    // Listeners para abrir el modal desde cualquier punto de la app
-    btnConfigKey?.addEventListener('click', openAiKeyModal);
-    btnOpenSettings?.addEventListener('click', openAiKeyModal);
-    btnActivateBanner?.addEventListener('click', openAiKeyModal);
+    // Delegación global para abrir el modal desde cualquier botón
+    document.addEventListener('click', (e) => {
+      const trigger = e.target.closest(
+        '.btn-trigger-ai-key, [data-open-ai-key], #btn-open-ai-key-settings, #drawer-btn-ai-key, #drawer-btn-ai-key-sys, #btn-header-ai-key, #btn-copilot-config-key, #btn-copilot-activate-banner'
+      );
+      if (trigger) {
+        e.preventDefault();
+        openAiKeyModal();
+      }
+    });
+
+    // Delegación para cerrar el modal
+    document.getElementById('btn-close-ai-key-modal')?.addEventListener('click', closeAiKeyModal);
+    modal?.querySelectorAll('[data-close="ai-key-modal"]').forEach((btn) => {
+      btn.addEventListener('click', closeAiKeyModal);
+    });
 
     // Cerrar modal al pulsar en el overlay de fondo
     modal?.addEventListener('click', (e) => {
-      if (e.target === modal) modal.classList.add('hidden');
+      if (e.target === modal) closeAiKeyModal();
     });
 
     // Alternar visibilidad de la contraseña
@@ -5666,7 +5708,7 @@ function initAIAssistantModule() {
       const key = (inputKey?.value || '').trim();
       await saveAIApiKey(key);
       await updateAllAiStatusBadges();
-      modal?.classList.add('hidden');
+      closeAiKeyModal();
       if (key) {
         showToast('🔑 ¡Clave de Google Gemini guardada y activa!', 'success');
       } else {
