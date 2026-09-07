@@ -97,6 +97,27 @@ Bienvenido a la hoja de ruta oficial del proyecto **Agenda Escolar**. En este do
 
 ---
 
+## 🖥️ 10. Experiencia Optimizada para PC y Tablet (Pantalla Grande, Teclado y Lápiz)
+
+- [ ] 💡 **38. Atajos de Teclado Globales (Power-User Shortcuts):** Teclas rápidas (`N` nueva tarea, `E` nuevo examen, `Espacio` pausar Pomodoro, `1-4` cambiar de pestaña, `Esc` cerrar paneles).
+- [ ] 💡 **39. Arrastrar y Soltar Tareas (Drag & Drop):** Mover tareas entre días o estados (*Pendientes ➔ En Proceso ➔ Completadas*) estilo Kanban interactivo.
+- [ ] 💡 **40. Menú Contextual con Clic Derecho:** Clic derecho sobre cualquier elemento para opciones rápidas (*Marcar urgente*, *Preguntar a la IA*, *Duplicar*, *Eliminar*).
+- [ ] 💡 **41. Selección Múltiple y Acciones en Lote (`Shift`/`Ctrl` + Clic):** Marcar, mover o eliminar múltiples tareas o fichas simultáneamente.
+- [ ] 💡 **42. Arrastrar Archivos desde el Escritorio (Desktop Drag & Drop):** Arrastrar PDFs o fotos directamente desde el explorador de Windows o Mac hacia la app.
+- [ ] 💡 **43. Vista de Doble Panel (Split View sin modales emergentes):** Lista a la izquierda y visor/edición de detalles a la derecha aprovechando la pantalla ancha.
+- [ ] 💡 **44. Vista de Calendario Mensual Completo:** Cuadrícula de mes completo estilo Google Calendar para ver todas las entregas y exámenes.
+- [ ] 💡 **45. Horario Semanal en Matriz Completa:** Visualización simultánea de todas las clases de lunes a viernes en una tabla espaciosa.
+- [ ] 💡 **46. Temporizador Pomodoro Flotante (Picture-in-Picture):** Minimizar el reloj de estudio en una pequeña ventana flotante mientras usas Word, PowerPoint o el navegador.
+- [ ] 💡 **47. Modo Multi-Monitor:** Ventana independiente para el *Cuaderno LM* o el *Copiloto IA* en una segunda pantalla.
+- [ ] 💡 **48. Apuntes a Mano Alzada con Lápiz (Apple Pencil / S-Pen):** Escritura de fórmulas, diagramas y subrayado de apuntes con detección de presión del lápiz en tablets.
+- [ ] 💡 **49. Rechazo de Palma (Palm Rejection):** Apoyo natural de la mano sobre la pantalla de la tablet sin trazos involuntarios.
+- [ ] 💡 **50. Compatibilidad con Pantalla Dividida de la Tablet (iPadOS / Android Split View):** Usar la agenda en una mitad y el PDF del libro escolar en la otra.
+- [ ] 💡 **51. Visor de PDFs de Doble Página (Modo Libro):** Lectura horizontal a dos páginas en monitores y tablets grandes.
+- [ ] 💡 **52. Cuaderno LM a 3 Columnas Simultáneas:** Documento a la izquierda, notas en el centro y chat de Gemini a la derecha en tiempo real.
+- [ ] 💡 **53. Modo Zen Pantalla Completa (Tecla F11):** Ocultar distracciones para sesiones intensivas de estudio con reloj grande y sonidos relajantes.
+
+---
+
 ### 📬 ¿Cómo proponer una nueva idea o votar por una existente?
 Si quieres proponer una nueva funcionalidad o priorizar alguna de estas opciones:
 1. Abre un **[Issue en GitHub](https://github.com/Mahay78/agenda-escolar/issues)** usando la plantilla de sugerencia.
