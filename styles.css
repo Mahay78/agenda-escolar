@@ -3561,5 +3561,229 @@ input, textarea, select, button {
   background: var(--bg-main);
 }
 
+/* ==========================================================================
+   DISEÑO NATIVO PARA ESCRITORIO (PC / MAC / TABLET LANDSCAPE >= 1024px)
+   ========================================================================== */
+@media (min-width: 1024px) {
+  body {
+    display: grid !important;
+    grid-template-columns: 270px 1fr !important;
+    grid-template-rows: 64px 1fr !important;
+    grid-template-areas:
+      "sidebar header"
+      "sidebar main" !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
+    transition: grid-template-columns 0.25s cubic-bezier(0.2, 0, 0, 1) !important;
+  }
+
+  /* Estado cuando el usuario colapsa la barra lateral en PC */
+  body.desktop-sidebar-collapsed {
+    grid-template-columns: 0px 1fr !important;
+  }
+
+  body.desktop-sidebar-collapsed .app-drawer {
+    display: none !important;
+  }
+
+  /* CABECERA DESKTOP */
+  .app-header {
+    grid-area: header;
+    position: static !important;
+    height: 64px;
+    padding: 0 28px;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 30;
+  }
+
+  /* Botón hamburguesa sirve para colapsar/expandir barra lateral en PC */
+  .btn-hamburger {
+    display: flex !important;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    width: 38px;
+    height: 38px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+
+  .btn-hamburger:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--primary);
+  }
+
+  /* Buscador estilo Spotlight / VSCode / Notion */
+  .btn-global-search {
+    min-width: 280px;
+    max-width: 400px;
+    justify-content: space-between;
+    padding: 7px 16px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-full);
+  }
+
+  /* BARRA LATERAL FIJA PERMANENTE (SIDEBAR) */
+  .app-drawer {
+    grid-area: sidebar;
+    position: static !important;
+    transform: none !important;
+    width: 270px !important;
+    max-width: 270px !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    border-right: 1px solid var(--border-color);
+    border-top: none;
+    border-bottom: none;
+    border-left: none;
+    box-shadow: none !important;
+    z-index: 40 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: var(--bg-card);
+    overflow: hidden;
+  }
+
+  .drawer-overlay {
+    display: none !important;
+  }
+
+  .btn-drawer-close {
+    display: none !important;
+  }
+
+  /* OCULTAR BARRA DE NAVEGACIÓN INFERIOR MÓVIL EN ESCRITORIO */
+  .app-nav {
+    display: none !important;
+  }
+
+  /* CONTENEDOR PRINCIPAL CON SCROLL INDEPENDIENTE */
+  .main-container {
+    grid-area: main;
+    overflow-y: auto;
+    height: 100%;
+    max-width: 100% !important;
+    padding: 24px 36px 80px;
+    margin: 0;
+  }
+
+  /* CUADRÍCULA DE "MI DÍA" A 3 COLUMNAS */
+  .dashboard-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 20px !important;
+    align-items: start;
+  }
+
+  /* HERO BANNER AMPLIO Y ELEGANTE */
+  .hero-banner {
+    padding: 24px 32px;
+    border-radius: var(--radius-lg);
+  }
+
+  /* CUADRÍCULA PARA LISTA DE TAREAS Y EXÁMENES EN PC */
+  #tasks-container,
+  #exams-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 14px;
+  }
+
+  /* ACCIÓN RÁPIDA MODAL EN 2 COLUMNAS */
+  .quick-action-modal-content {
+    max-width: 580px;
+  }
+
+  .quick-action-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  /* VISOR DE CUADERNO LM CON MÁXIMO ESPACIO */
+  .notebook-iframe {
+    height: calc(100vh - 210px);
+    min-height: 600px;
+  }
+
+  /* BOTÓN FLOTANTE (+) */
+  .fab-container {
+    bottom: 28px;
+    right: 32px;
+  }
+
+  /* MODALES CENTRADOS ESTILO ESCRITORIO */
+  .modal-overlay {
+    align-items: center !important;
+    padding: 24px !important;
+  }
+
+  .modal-content {
+    max-height: 88vh;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+  }
+}
+
+/* ==========================================================================
+   DISEÑO PARA TABLETS (768px - 1023px)
+   ========================================================================== */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .main-container {
+    padding: 20px 24px 100px;
+    max-width: 920px;
+    margin: 0 auto;
+  }
+
+  .dashboard-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 16px !important;
+  }
+
+  #tasks-container,
+  #exams-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+    gap: 12px;
+  }
+
+  .quick-action-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .modal-overlay {
+    align-items: center !important;
+    padding: 20px !important;
+  }
+
+  .modal-content {
+    border-radius: var(--radius-lg);
+  }
+
+  /* Barra de navegación flotante tipo isla en tablet */
+  .app-nav {
+    max-width: 640px;
+    margin: 0 auto;
+    border-radius: var(--radius-full);
+    bottom: 16px;
+    left: 20px;
+    right: 20px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--border-color);
+  }
+}
+
 
 

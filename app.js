@@ -494,7 +494,13 @@ function initDrawerNavigation() {
     }
   };
 
-  btnOpen?.addEventListener('click', window.openDrawer);
+  btnOpen?.addEventListener('click', () => {
+    if (window.innerWidth >= 1024) {
+      document.body.classList.toggle('desktop-sidebar-collapsed');
+    } else {
+      window.openDrawer();
+    }
+  });
   btnClose?.addEventListener('click', window.closeDrawer);
   overlay?.addEventListener('click', window.closeDrawer);
   btnMobileMore?.addEventListener('click', window.toggleDrawer);
