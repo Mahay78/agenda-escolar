@@ -371,6 +371,27 @@ function initTheme() {
   }
 }
 
+const TAB_HIERARCHY = {
+  'tab-today': { parent: 'tab-today', subtab: null },
+  'tab-agenda': { parent: 'tab-agenda', subtab: 'tab-tasks' },
+  'tab-tasks': { parent: 'tab-agenda', subtab: 'tab-tasks' },
+  'tab-exams': { parent: 'tab-agenda', subtab: 'tab-exams' },
+  'tab-schedule': { parent: 'tab-agenda', subtab: 'tab-schedule' },
+  'tab-backpack': { parent: 'tab-agenda', subtab: 'tab-backpack' },
+  'tab-projects': { parent: 'tab-agenda', subtab: 'tab-projects' },
+
+  'tab-study': { parent: 'tab-study', subtab: 'tab-flashcards' },
+  'tab-flashcards': { parent: 'tab-study', subtab: 'tab-flashcards' },
+  'tab-notebook-embed': { parent: 'tab-study', subtab: 'tab-notebook-embed' },
+  'tab-pomodoro': { parent: 'tab-study', subtab: 'tab-pomodoro' },
+  'tab-gallery': { parent: 'tab-study', subtab: 'tab-gallery' },
+
+  'tab-progress': { parent: 'tab-progress', subtab: 'tab-grades' },
+  'tab-grades': { parent: 'tab-progress', subtab: 'tab-grades' },
+  'tab-achievements-view': { parent: 'tab-progress', subtab: 'tab-achievements-view' },
+  'tab-settings': { parent: 'tab-progress', subtab: 'tab-settings' }
+};
+
 /**
  * Navegación por pestañas y Menú Lateral (Drawer)
  */
@@ -380,9 +401,62 @@ function initNavigation() {
     tab.addEventListener('click', () => {
       const targetId = tab.getAttribute('data-tab');
       if (targetId) {
+        triggerHaptic('light');
         switchTab(targetId);
       }
     });
+  });
+
+  // Botón Central de Acción Rápida (+)
+  const btnCenterAction = document.getElementById('btn-nav-center-action');
+  const quickActionModal = document.getElementById('quick-action-modal');
+  btnCenterAction?.addEventListener('click', () => {
+    triggerHaptic('medium');
+    quickActionModal?.classList.remove('hidden');
+  });
+
+  // Delegación de acciones rápidas dentro del modal
+  document.getElementById('quick-action-new-task')?.addEventListener('click', () => {
+    quickActionModal?.classList.add('hidden');
+    openTaskModal();
+  });
+  document.getElementById('quick-action-new-exam')?.addEventListener('click', () => {
+    quickActionModal?.classList.add('hidden');
+    openExamModal();
+  });
+  document.getElementById('quick-action-camera')?.addEventListener('click', () => {
+    quickActionModal?.classList.add('hidden');
+    openQuickCamera();
+  });
+  document.getElementById('quick-action-copilot')?.addEventListener('click', () => {
+    quickActionModal?.classList.add('hidden');
+    if (window.openCopilotModal) {
+      window.openCopilotModal();
+    } else {
+      document.getElementById('ai-copilot-modal')?.classList.remove('hidden');
+    }
+  });
+  document.getElementById('quick-action-flashcard')?.addEventListener('click', () => {
+    quickActionModal?.classList.add('hidden');
+    switchTab('tab-flashcards');
+    document.getElementById('btn-open-new-flashcard')?.click();
+  });
+
+  // Botón en la sub-pestaña de Logros dentro de Progreso
+  document.getElementById('btn-progress-open-achievements-modal')?.addEventListener('click', () => {
+    document.getElementById('btn-open-streak')?.click();
+  });
+
+  // Delegación de clic para botones segmentados de sub-pestañas
+  document.addEventListener('click', (e) => {
+    const segBtn = e.target.closest('.segmented-tab-btn');
+    if (segBtn) {
+      const subtab = segBtn.getAttribute('data-subtab');
+      if (subtab) {
+        triggerHaptic('light');
+        switchTab(subtab);
+      }
+    }
   });
 
   // Inicializar navegación del cajón lateral (Drawer)
@@ -473,44 +547,60 @@ function initDrawerNavigation() {
   }, { passive: true });
 }
 
-function switchTab(tabId) {
+function switchTab(tabId, specificSubtab = null) {
   if (!tabId) return;
-  AppState.activeTab = tabId;
 
-  // Sincronizar barra superior
+  const mapping = TAB_HIERARCHY[tabId] || { parent: tabId, subtab: specificSubtab };
+  const parentId = mapping.parent;
+  const subtabId = specificSubtab || mapping.subtab;
+
+  AppState.activeTab = tabId;
+  AppState.activeParentTab = parentId;
+  if (subtabId) AppState.activeSubtab = subtabId;
+
+  // Sincronizar barra superior e inferior (.app-nav)
   document.querySelectorAll('.nav-tab').forEach((t) => {
-    t.classList.toggle('active', t.getAttribute('data-tab') === tabId);
+    const dataTab = t.getAttribute('data-tab');
+    t.classList.toggle('active', dataTab === parentId || dataTab === tabId);
   });
 
   // Sincronizar menú lateral (Drawer)
   document.querySelectorAll('.drawer-nav-item').forEach((item) => {
-    item.classList.toggle('active', item.getAttribute('data-tab') === tabId);
+    const dataTab = item.getAttribute('data-tab');
+    item.classList.toggle('active', dataTab === parentId || dataTab === tabId || dataTab === subtabId);
   });
 
-  // En móvil, si la sección activa es secundaria, resaltar botón "Menú"
-  const mobileMoreBtn = document.getElementById('btn-mobile-more');
-  if (mobileMoreBtn) {
-    const mainTabs = ['tab-today', 'tab-tasks', 'tab-schedule', 'tab-backpack'];
-    mobileMoreBtn.classList.toggle('active', !mainTabs.includes(tabId));
+  // Paneles de contenido principales (.tab-panel)
+  document.querySelectorAll('.tab-panel').forEach((p) => {
+    p.classList.toggle('active', p.id === parentId);
+  });
+
+  // Activar subpanel y botón segmentado si corresponde
+  if (subtabId) {
+    const parentContainer = document.getElementById(parentId);
+    if (parentContainer) {
+      parentContainer.querySelectorAll('.segmented-tab-btn').forEach((b) => {
+        b.classList.toggle('active', b.getAttribute('data-subtab') === subtabId);
+      });
+      parentContainer.querySelectorAll('.subtab-panel').forEach((sp) => {
+        sp.classList.toggle('active', sp.id === subtabId);
+      });
+    }
   }
 
-  // Paneles de contenido
-  document.querySelectorAll('.tab-panel').forEach((p) => {
-    p.classList.toggle('active', p.id === tabId);
-  });
-
   // Re-renderizar la vista activa para asegurar datos frescos
-  if (tabId === 'tab-today') renderTodayView();
-  else if (tabId === 'tab-tasks') renderTasksView();
-  else if (tabId === 'tab-schedule') renderScheduleView();
-  else if (tabId === 'tab-backpack') renderBackpackView();
-  else if (tabId === 'tab-projects') renderProjectsView();
-  else if (tabId === 'tab-pomodoro') renderPomodoroView();
-  else if (tabId === 'tab-exams') renderExamsView();
-  else if (tabId === 'tab-grades') renderGradesView();
-  else if (tabId === 'tab-gallery') renderGalleryView();
-  else if (tabId === 'tab-flashcards') renderFlashcardsView();
-  else if (tabId === 'tab-settings') renderSettingsView();
+  const targetToRender = subtabId || parentId;
+  if (parentId === 'tab-today' || targetToRender === 'tab-today') renderTodayView();
+  else if (targetToRender === 'tab-tasks') renderTasksView();
+  else if (targetToRender === 'tab-schedule') renderScheduleView();
+  else if (targetToRender === 'tab-backpack') renderBackpackView();
+  else if (targetToRender === 'tab-projects') renderProjectsView();
+  else if (targetToRender === 'tab-pomodoro') renderPomodoroView();
+  else if (targetToRender === 'tab-exams') renderExamsView();
+  else if (targetToRender === 'tab-grades') renderGradesView();
+  else if (targetToRender === 'tab-gallery') renderGalleryView();
+  else if (targetToRender === 'tab-flashcards') renderFlashcardsView();
+  else if (targetToRender === 'tab-settings') renderSettingsView();
 }
 
 // ==========================================================================
@@ -1083,6 +1173,37 @@ function updateBadges() {
       drawerBadgeCards.classList.remove('hidden');
     } else {
       drawerBadgeCards.classList.add('hidden');
+    }
+  }
+
+  // Sincronizar contadores en botones segmentados (sub-pestañas)
+  const subBadgeTasks = document.getElementById('badge-agenda-tasks-sub');
+  if (subBadgeTasks) {
+    if (pendingTasks > 0) {
+      subBadgeTasks.textContent = pendingTasks;
+      subBadgeTasks.classList.remove('hidden');
+    } else {
+      subBadgeTasks.classList.add('hidden');
+    }
+  }
+
+  const subBadgeExams = document.getElementById('badge-agenda-exams-sub');
+  if (subBadgeExams) {
+    if (upcomingExams > 0) {
+      subBadgeExams.textContent = upcomingExams;
+      subBadgeExams.classList.remove('hidden');
+    } else {
+      subBadgeExams.classList.add('hidden');
+    }
+  }
+
+  const subBadgeCards = document.getElementById('badge-study-flashcards-sub');
+  if (subBadgeCards) {
+    if (dueCards > 0) {
+      subBadgeCards.textContent = dueCards;
+      subBadgeCards.classList.remove('hidden');
+    } else {
+      subBadgeCards.classList.add('hidden');
     }
   }
 }

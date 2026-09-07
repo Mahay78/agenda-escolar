@@ -85,43 +85,32 @@
     </div>
   </header>
 
-  <!-- BARRA DE NAVEGACIÓN -->
+  <!-- BARRA DE NAVEGACIÓN PRINCIPAL (4 PESTAÑAS ERGONÓMICAS + BOTÓN CENTRAL ACCIÓN & IA) -->
   <nav class="app-nav">
-    <button class="nav-tab active" data-tab="tab-today">
-      <span>🏠</span> Hoy
+    <button class="nav-tab active" data-tab="tab-today" id="nav-btn-today">
+      <span>🏠</span>
+      <span class="nav-tab-label">Mi Día</span>
     </button>
-    <button class="nav-tab" data-tab="tab-tasks">
-      <span>📋</span> Deberes <span id="badge-pending-tasks" class="tab-badge hidden">0</span>
+    <button class="nav-tab" data-tab="tab-agenda" id="nav-btn-agenda">
+      <span>📅</span>
+      <span class="nav-tab-label">Agenda</span>
+      <span id="badge-pending-tasks" class="tab-badge hidden">0</span>
     </button>
-    <button class="nav-tab" data-tab="tab-schedule">
-      <span>📅</span> Horario
+    <button type="button" class="nav-tab nav-tab-center-action" id="btn-nav-center-action" title="Acción Rápida & IA">
+      <span class="nav-center-plus">➕</span>
     </button>
-    <button class="nav-tab" data-tab="tab-backpack">
-      <span>🎒</span> Mochila
+    <button class="nav-tab" data-tab="tab-study" id="nav-btn-study">
+      <span>🧠</span>
+      <span class="nav-tab-label">Estudio</span>
+      <span id="badge-due-flashcards" class="tab-badge hidden">0</span>
     </button>
-    <button class="nav-tab" data-tab="tab-projects">
-      <span>🎨</span> Proyectos
-    </button>
-    <button class="nav-tab" data-tab="tab-pomodoro">
-      <span>⏱️</span> Pomodoro
-    </button>
-    <button class="nav-tab" data-tab="tab-exams">
-      <span>📝</span> Exámenes <span id="badge-upcoming-exams" class="tab-badge hidden">0</span>
-    </button>
-    <button class="nav-tab" data-tab="tab-grades">
-      <span>📊</span> Notas
-    </button>
-    <button class="nav-tab" data-tab="tab-gallery">
-      <span>📸</span> Fotos Apuntes
-    </button>
-    <button class="nav-tab" data-tab="tab-flashcards">
-      <span>🧠</span> Fichas <span id="badge-due-flashcards" class="tab-badge hidden">0</span>
-    </button>
-    <button class="nav-tab" data-tab="tab-settings">
-      <span>⚙️</span> Ajustes
+    <button class="nav-tab" data-tab="tab-progress" id="nav-btn-progress">
+      <span>📊</span>
+      <span class="nav-tab-label">Progreso</span>
     </button>
     <button id="btn-mobile-more" class="nav-tab nav-tab-mobile-more" title="Abrir Menú Completo">
-      <span>☰</span> Menú
+      <span>☰</span>
+      <span class="nav-tab-label">Menú</span>
     </button>
   </nav>
 
@@ -140,78 +129,53 @@
     </div>
 
     <div class="drawer-body">
-      <div class="drawer-group-label">ACADÉMICO</div>
+      <div class="drawer-group-label">PRINCIPAL</div>
       <div class="drawer-nav-list">
-        <button class="drawer-nav-item" id="drawer-btn-search" style="background: rgba(59, 130, 246, 0.12); color: var(--primary); font-weight: 700;">
-          <span class="drawer-nav-icon">🔍</span>
-          <span class="drawer-nav-text">Buscador Global (Ctrl K)</span>
+        <button class="drawer-nav-item active" data-tab="tab-today">
+          <span class="drawer-nav-icon">🏠</span>
+          <span class="drawer-nav-text">Mi Día (Panel Principal)</span>
         </button>
+        <button class="drawer-nav-item" data-tab="tab-agenda">
+          <span class="drawer-nav-icon">📅</span>
+          <span class="drawer-nav-text">Agenda Escolar (Deberes & Exámenes)</span>
+          <span id="drawer-badge-pending-tasks" class="tab-badge hidden">0</span>
+        </button>
+        <button class="drawer-nav-item" data-tab="tab-study">
+          <span class="drawer-nav-icon">🧠</span>
+          <span class="drawer-nav-text">Zona de Estudio (Fichas & Cuaderno LM)</span>
+          <span id="drawer-badge-due-flashcards" class="tab-badge hidden">0</span>
+        </button>
+        <button class="drawer-nav-item" data-tab="tab-progress">
+          <span class="drawer-nav-icon">📊</span>
+          <span class="drawer-nav-text">Mi Progreso (Notas & Logros)</span>
+        </button>
+      </div>
+
+      <div class="drawer-group-label">INTELIGENCIA ARTIFICIAL</div>
+      <div class="drawer-nav-list">
         <button class="drawer-nav-item" id="drawer-btn-copilot" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(139, 92, 246, 0.18)); border: 1px solid rgba(139, 92, 246, 0.35);">
           <span class="drawer-nav-icon">🤖</span>
           <span class="drawer-nav-text" style="font-weight: 700; color: #8b5cf6;">Copiloto Escolar IA</span>
-          <span class="tab-badge" style="background: #8b5cf6;">✨ Nuevo</span>
+          <span class="tab-badge" style="background: #8b5cf6;">✨ Tutor</span>
         </button>
-        <a href="./notebook.html" class="drawer-nav-item" style="background: linear-gradient(135deg, rgba(244, 63, 94, 0.12), rgba(139, 92, 246, 0.18)); border: 1px solid rgba(244, 63, 94, 0.35); text-decoration: none;">
-          <span class="drawer-nav-icon">📚</span>
-          <span class="drawer-nav-text" style="font-weight: 700; color: #fda4af;">Cuaderno LM (Estudio)</span>
-          <span class="tab-badge" style="background: #f43f5e;">✨ Pro</span>
-        </a>
         <button class="drawer-nav-item btn-trigger-ai-key" id="drawer-btn-ai-key" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(59, 130, 246, 0.15)); border: 1px solid rgba(16, 185, 129, 0.35);">
           <span class="drawer-nav-icon">🔑</span>
           <span class="drawer-nav-text" style="font-weight: 700; color: #10b981;">Configurar Clave IA</span>
           <span id="drawer-ai-badge" class="tab-badge" style="background: #10b981;">Gemini</span>
         </button>
-        <button class="drawer-nav-item active" data-tab="tab-today">
-          <span class="drawer-nav-icon">🏠</span>
-          <span class="drawer-nav-text">Hoy (Panel Principal)</span>
-        </button>
-        <button class="drawer-nav-item" data-tab="tab-tasks">
-          <span class="drawer-nav-icon">📋</span>
-          <span class="drawer-nav-text">Deberes y Tareas</span>
-          <span id="drawer-badge-pending-tasks" class="tab-badge hidden">0</span>
-        </button>
-        <button class="drawer-nav-item" data-tab="tab-schedule">
-          <span class="drawer-nav-icon">📅</span>
-          <span class="drawer-nav-text">Horario Semanal</span>
-        </button>
-        <button class="drawer-nav-item" data-tab="tab-exams">
-          <span class="drawer-nav-icon">📝</span>
-          <span class="drawer-nav-text">Exámenes y Evaluaciones</span>
-          <span id="drawer-badge-upcoming-exams" class="tab-badge hidden">0</span>
-        </button>
-        <button class="drawer-nav-item" data-tab="tab-grades">
-          <span class="drawer-nav-icon">📊</span>
-          <span class="drawer-nav-text">Notas y Calificaciones</span>
-        </button>
+        <a href="./notebook.html" class="drawer-nav-item" style="background: linear-gradient(135deg, rgba(244, 63, 94, 0.12), rgba(139, 92, 246, 0.18)); border: 1px solid rgba(244, 63, 94, 0.35); text-decoration: none;">
+          <span class="drawer-nav-icon">📚</span>
+          <span class="drawer-nav-text" style="font-weight: 700; color: #fda4af;">Cuaderno LM (Pantalla completa)</span>
+          <span class="tab-badge" style="background: #f43f5e;">✨ Pro</span>
+        </a>
       </div>
 
-      <div class="drawer-group-label">TALLER & ESTUDIO</div>
+      <div class="drawer-group-label">HERRAMIENTAS & SISTEMA</div>
       <div class="drawer-nav-list">
-        <button class="drawer-nav-item" data-tab="tab-backpack">
-          <span class="drawer-nav-icon">🎒</span>
-          <span class="drawer-nav-text">Mochila y Materiales</span>
+        <button class="drawer-nav-item" id="drawer-btn-search">
+          <span class="drawer-nav-icon">🔍</span>
+          <span class="drawer-nav-text">Buscador Global (Ctrl K)</span>
         </button>
-        <button class="drawer-nav-item" data-tab="tab-projects">
-          <span class="drawer-nav-icon">🎨</span>
-          <span class="drawer-nav-text">Portafolio de Proyectos</span>
-        </button>
-        <button class="drawer-nav-item" data-tab="tab-pomodoro">
-          <span class="drawer-nav-icon">⏱️</span>
-          <span class="drawer-nav-text">Pomodoro de Concentración</span>
-        </button>
-        <button class="drawer-nav-item" data-tab="tab-gallery">
-          <span class="drawer-nav-icon">📸</span>
-          <span class="drawer-nav-text">Fotos de Apuntes y Pizarras</span>
-        </button>
-        <button class="drawer-nav-item" data-tab="tab-flashcards">
-          <span class="drawer-nav-icon">🧠</span>
-          <span class="drawer-nav-text">Fichas de Estudio (Leitner)</span>
-          <span id="drawer-badge-due-flashcards" class="tab-badge hidden">0</span>
-        </button>
-      </div>
-
-      <div class="drawer-group-label">HERRAMIENTAS & LOGROS</div>
-      <div class="drawer-nav-list">
         <button class="drawer-nav-item" id="drawer-btn-streak">
           <span class="drawer-nav-icon">🏆</span>
           <span class="drawer-nav-text">Logros y Racha (<span id="drawer-streak-text">1 día</span>)</span>
@@ -233,17 +197,9 @@
           <span class="drawer-nav-icon">🔥</span>
           <span class="drawer-nav-text">Firebase (Base de Datos)</span>
         </button>
-      </div>
-
-      <div class="drawer-group-label">SISTEMA</div>
-      <div class="drawer-nav-list">
-        <button class="drawer-nav-item btn-trigger-ai-key" id="drawer-btn-ai-key-sys">
-          <span class="drawer-nav-icon">🔑</span>
-          <span class="drawer-nav-text">Clave IA (Google Gemini)</span>
-        </button>
         <button class="drawer-nav-item" data-tab="tab-settings">
           <span class="drawer-nav-icon">⚙️</span>
-          <span class="drawer-nav-text">Ajustes y Copia de Seguridad</span>
+          <span class="drawer-nav-text">Ajustes y Copias</span>
         </button>
       </div>
     </div>
@@ -348,7 +304,31 @@
     </section>
 
     <!-- 2. PESTAÑA: DEBERES Y TAREAS -->
-    <section id="tab-tasks" class="tab-panel">
+    
+    <!-- 2. PESTAÑA PRINCIPAL: AGENDA ESCOLAR (DEBERES, EXÁMENES, HORARIO, MOCHILA, PROYECTOS) -->
+    <section id="tab-agenda" class="tab-panel">
+      <!-- Barra Segmentada de Agenda -->
+      <div class="segmented-tabs-bar" data-parent="tab-agenda">
+        <button type="button" class="segmented-tab-btn active" data-subtab="tab-tasks">
+          <span>📋</span> Deberes <span id="badge-agenda-tasks-sub" class="tab-badge hidden">0</span>
+        </button>
+        <button type="button" class="segmented-tab-btn" data-subtab="tab-exams">
+          <span>📝</span> Exámenes <span id="badge-agenda-exams-sub" class="tab-badge hidden">0</span>
+        </button>
+        <button type="button" class="segmented-tab-btn" data-subtab="tab-schedule">
+          <span>🕒</span> Horario Semanal
+        </button>
+        <button type="button" class="segmented-tab-btn" data-subtab="tab-backpack">
+          <span>🎒</span> Mochila
+        </button>
+        <button type="button" class="segmented-tab-btn" data-subtab="tab-projects">
+          <span>🎨</span> Proyectos
+        </button>
+      </div>
+
+      <!-- Subpanel 1: Deberes y Tareas -->
+      <div id="tab-tasks" class="subtab-panel active">
+
       <div class="section-header">
         <div>
           <h2 class="section-title"><span>📋</span> Tareas y Deberes</h2>
@@ -373,10 +353,36 @@
       <div id="tasks-container">
         <p class="section-subtitle">Cargando tareas...</p>
       </div>
-    </section>
+    
+      </div>
 
-    <!-- 3. PESTAÑA: HORARIO ESCOLAR -->
-    <section id="tab-schedule" class="tab-panel">
+      <!-- Subpanel 2: Exámenes -->
+      <div id="tab-exams" class="subtab-panel">
+
+      <div class="section-header">
+        <div>
+          <h2 class="section-title"><span>📝</span> Exámenes y Evaluaciones</h2>
+          <p class="section-subtitle">Planifica tus exámenes y adjunta fotos del temario</p>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button id="btn-export-exams-ics" class="btn-secondary" style="width: auto; display: inline-flex; align-items: center; gap: 6px;" title="Exportar todos los exámenes a Google/Apple/Outlook Calendar">
+            <span>📅</span> Exportar a Calendario (.ics)
+          </button>
+          <button id="btn-open-new-exam" class="btn-primary" style="width: auto;">
+            ➕ Nuevo Examen
+          </button>
+        </div>
+      </div>
+
+      <div id="exams-container">
+        <p class="section-subtitle">Cargando exámenes...</p>
+      </div>
+    
+      </div>
+
+      <!-- Subpanel 3: Horario Escolar -->
+      <div id="tab-schedule" class="subtab-panel">
+
       <div class="section-header">
         <div>
           <h2 class="section-title"><span>📅</span> Horario Escolar</h2>
@@ -408,10 +414,12 @@
       <div id="schedule-timeline-container" class="schedule-timeline">
         <!-- Renderizado dinámicamente -->
       </div>
-    </section>
+    
+      </div>
 
-    <!-- PESTAÑA: MOCHILA Y MATERIALES DE TALLER -->
-    <section id="tab-backpack" class="tab-panel">
+      <!-- Subpanel 4: Mochila y Materiales -->
+      <div id="tab-backpack" class="subtab-panel">
+
       <div class="section-header">
         <div>
           <h2 class="section-title"><span>🎒</span> Mochila y Materiales de Taller</h2>
@@ -445,10 +453,12 @@
       <div id="materials-container">
         <!-- Lista de materiales -->
       </div>
-    </section>
+    
+      </div>
 
-    <!-- PESTAÑA: PORTAFOLIO DE PROYECTOS Y OBRAS -->
-    <section id="tab-projects" class="tab-panel">
+      <!-- Subpanel 5: Portafolio de Proyectos -->
+      <div id="tab-projects" class="subtab-panel">
+
       <div class="section-header">
         <div>
           <h2 class="section-title"><span>🎨</span> Portafolio de Proyectos y Obras</h2>
@@ -471,175 +481,32 @@
       <div id="projects-container">
         <!-- Lista de proyectos -->
       </div>
-    </section>
-
-    <!-- PESTAÑA: TEMPORIZADOR POMODORO DE ESTUDIO -->
-    <section id="tab-pomodoro" class="tab-panel">
-      <div class="section-header">
-        <div>
-          <h2 class="section-title"><span>⏱️</span> Temporizador Pomodoro de Concentración</h2>
-          <p class="section-subtitle">Técnica 25 min de foco + 5 min de descanso con campana sonora offline</p>
-        </div>
-      </div>
-
-      <div class="card" style="max-width: 500px; margin: 0 auto; text-align: center; padding: 30px 20px;">
-        <div class="filters-bar" style="justify-content: center; margin-bottom: 20px;">
-          <button id="pomo-mode-work" class="filter-chip active" data-pomo-time="25">📚 Estudio (25m)</button>
-          <button id="pomo-mode-short" class="filter-chip" data-pomo-time="5">☕ Descanso (5m)</button>
-          <button id="pomo-mode-long" class="filter-chip" data-pomo-time="15">🌴 Descanso Largo (15m)</button>
-        </div>
-
-        <div id="pomodoro-display" style="font-size: 4rem; font-weight: 800; font-variant-numeric: tabular-nums; margin: 10px 0; color: var(--text-main); letter-spacing: 2px;">25:00</div>
-        <div id="pomodoro-status-text" class="section-subtitle" style="margin-bottom: 24px; font-weight: 600;">Modo Concentración 🎯</div>
-
-        <div style="display: flex; gap: 12px; justify-content: center; margin-bottom: 24px;">
-          <button id="btn-pomo-start" class="btn-primary" style="font-size: 1.05rem; padding: 12px 28px; width: auto;">▶️ Iniciar</button>
-          <button id="btn-pomo-pause" class="btn-secondary hidden" style="font-size: 1.05rem; padding: 12px 28px; width: auto;">⏸️ Pausar</button>
-          <button id="btn-pomo-reset" class="btn-secondary" style="font-size: 1.05rem; padding: 12px 20px; width: auto;">🔄 Reiniciar</button>
-        </div>
-
-        <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-around;">
-          <div>
-            <div id="pomo-count-today" style="font-size: 1.4rem; font-weight: 800; color: var(--primary);">0</div>
-            <div class="grade-metric-label">Pomodoros Hoy</div>
-          </div>
-          <div>
-            <div id="pomo-focus-time" style="font-size: 1.4rem; font-weight: 800; color: var(--success);">0 min</div>
-            <div class="grade-metric-label">Tiempo Enfocado</div>
-          </div>
-        </div>
+    
       </div>
     </section>
 
-    <!-- 4. PESTAÑA: EXÁMENES -->
-    <section id="tab-exams" class="tab-panel">
-      <div class="section-header">
-        <div>
-          <h2 class="section-title"><span>📝</span> Exámenes y Evaluaciones</h2>
-          <p class="section-subtitle">Planifica tus exámenes y adjunta fotos del temario</p>
-        </div>
-        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-          <button id="btn-export-exams-ics" class="btn-secondary" style="width: auto; display: inline-flex; align-items: center; gap: 6px;" title="Exportar todos los exámenes a Google/Apple/Outlook Calendar">
-            <span>📅</span> Exportar a Calendario (.ics)
-          </button>
-          <button id="btn-open-new-exam" class="btn-primary" style="width: auto;">
-            ➕ Nuevo Examen
-          </button>
-        </div>
-      </div>
 
-      <div id="exams-container">
-        <p class="section-subtitle">Cargando exámenes...</p>
-      </div>
-    </section>
-
-    <!-- 5. PESTAÑA: NOTAS Y CALIFICACIONES -->
-    <section id="tab-grades" class="tab-panel">
-      <div class="section-header">
-        <div>
-          <h2 class="section-title"><span>📊</span> Control de Calificaciones</h2>
-          <p class="section-subtitle">Registra tus notas por trimestre y calcula tus medias</p>
-        </div>
-        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-          <button id="btn-toggle-grade-simulator" class="btn-secondary" style="width: auto; display: inline-flex; align-items: center; gap: 6px;" title="Calcular qué nota necesitas">
-            <span>🧮</span> Simulador
-          </button>
-          <button id="btn-export-grades-pdf" class="btn-primary" style="width: auto; display: inline-flex; align-items: center; gap: 6px;" title="Descargar Boletín Oficial en PDF">
-            <span>📄</span> Descargar PDF
-          </button>
-          <button id="btn-print-grades" class="btn-secondary" style="width: auto; display: inline-flex; align-items: center; gap: 6px;" title="Imprimir o guardar boletín">
-            <span>🖨️</span> Imprimir
-          </button>
-          <button id="btn-open-new-grade" class="btn-primary" style="width: auto;">
-            ➕ Añadir Nota
-          </button>
-        </div>
-      </div>
-
-      <!-- Simulador interactivo: ¿Qué nota necesito? -->
-      <div id="grade-simulator-card" class="card hidden" style="margin-bottom: 20px; border-left: 4px solid var(--primary);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-          <h3 style="font-size: 1.05rem; margin: 0; display: flex; align-items: center; gap: 8px;">
-            <span>🧮</span> Simulador "¿Qué nota necesito?"
-          </h3>
-          <button type="button" id="btn-close-grade-simulator" class="btn-action-small" style="font-size: 0.8rem;">✕ Cerrar</button>
-        </div>
-        <p class="section-subtitle" style="margin-bottom: 12px;">
-          Calcula la nota mínima necesaria en tu próximo examen o entrega para lograr tu calificación objetivo.
-        </p>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Nota Media Actual (0 - 10)</label>
-            <input type="number" id="sim-current-grade" class="form-input" min="0" max="10" step="0.1" placeholder="Ej: 6.2" />
-          </div>
-          <div class="form-group">
-            <label class="form-label">Media Deseada / Objetivo (0 - 10)</label>
-            <input type="number" id="sim-target-grade" class="form-input" min="0" max="10" step="0.1" placeholder="Ej: 7.0 (Notable)" />
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Peso del Próximo Examen (%)</label>
-            <input type="number" id="sim-exam-weight" class="form-input" min="1" max="100" value="40" placeholder="Ej: 40%" />
-          </div>
-          <div class="form-group" style="display: flex; align-items: flex-end;">
-            <button type="button" id="btn-calc-simulator" class="btn-primary" style="width: 100%;">
-              ⚡ Calcular Nota Necesaria
-            </button>
-          </div>
-        </div>
-        <div id="sim-result-box" class="hidden" style="margin-top: 12px; padding: 12px; border-radius: var(--radius-sm); font-size: 0.95rem;"></div>
-      </div>
-
-      <!-- Resumen de media -->
-      <div class="grades-summary-card">
-        <div>
-          <div id="stat-overall-average" class="grade-metric-num">--</div>
-          <div class="grade-metric-label">Nota Media Global</div>
-        </div>
-        <div>
-          <div id="stat-total-grades" class="grade-metric-num">0</div>
-          <div class="grade-metric-label">Notas Registradas</div>
-        </div>
-      </div>
-
-      <!-- Selector de Trimestre -->
-      <div class="filters-bar">
-        <button class="filter-chip active" data-term-filter="all">Todos los Trimestres</button>
-        <button class="filter-chip" data-term-filter="1">1º Trimestre</button>
-        <button class="filter-chip" data-term-filter="2">2º Trimestre</button>
-        <button class="filter-chip" data-term-filter="3">3º Trimestre</button>
-      </div>
-
-      <div id="grades-list-container">
-        <p class="section-subtitle">No hay notas registradas todavía.</p>
-      </div>
-    </section>
-
-    <!-- 6. PESTAÑA: GALERÍA DE FOTOS / APUNTES -->
-    <section id="tab-gallery" class="tab-panel">
-      <div class="section-header">
-        <div>
-          <h2 class="section-title"><span>📸</span> Fotos de Pizarras y Apuntes</h2>
-          <p class="section-subtitle">Acceso visual a todas las fotos sacadas en clase</p>
-        </div>
-        <button id="btn-quick-photo-capture" class="btn-primary" style="width: auto;">
-          📷 Sacar Foto Rápida
+    <!-- 3. PESTAÑA PRINCIPAL: ZONA DE ESTUDIO (FICHAS, CUADERNO LM, POMODORO, FOTOS) -->
+    <section id="tab-study" class="tab-panel">
+      <!-- Barra Segmentada de Estudio -->
+      <div class="segmented-tabs-bar" data-parent="tab-study">
+        <button type="button" class="segmented-tab-btn active" data-subtab="tab-flashcards">
+          <span>🧠</span> Fichas Leitner <span id="badge-study-flashcards-sub" class="tab-badge hidden">0</span>
+        </button>
+        <button type="button" class="segmented-tab-btn" data-subtab="tab-notebook-embed">
+          <span>📚</span> Cuaderno LM Studio
+        </button>
+        <button type="button" class="segmented-tab-btn" data-subtab="tab-pomodoro">
+          <span>⏱️</span> Pomodoro
+        </button>
+        <button type="button" class="segmented-tab-btn" data-subtab="tab-gallery">
+          <span>📸</span> Fotos Apuntes
         </button>
       </div>
 
-      <!-- Filtro y búsqueda en la galería de fotos -->
-      <div style="margin-bottom: 16px;">
-        <input type="text" id="gallery-search-input" class="form-input" placeholder="🔍 Buscar en fotos por título, materia o contenido OCR..." />
-      </div>
+      <!-- Subpanel 1: Fichas de Repaso Leitner -->
+      <div id="tab-flashcards" class="subtab-panel active">
 
-      <div id="gallery-container">
-        <p class="section-subtitle">Cargando fotos guardadas...</p>
-      </div>
-    </section>
-
-    <!-- PESTAÑA: FICHAS DE ESTUDIO Y REPASO ESPACIADO (LEITNER) -->
-    <section id="tab-flashcards" class="tab-panel">
       <div class="section-header">
         <div>
           <h2 class="section-title"><span>🧠</span> Fichas de Estudio y Repaso Espaciado</h2>
@@ -824,10 +691,215 @@
           <!-- Tarjetas renderizadas dinámicamente -->
         </div>
       </div>
+    
+      </div>
+
+      <!-- Subpanel 2: Cuaderno LM Studio (Incrustado) -->
+      <div id="tab-notebook-embed" class="subtab-panel">
+        <div class="notebook-embed-container">
+          <div class="notebook-embed-header">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 1.4rem;">📚</span>
+              <div>
+                <h3 style="margin:0; font-size: 0.98rem; font-weight: 700;">Cuaderno LM (Estudio con Fuentes y Podcasts)</h3>
+                <p style="margin:0; font-size: 0.76rem; color: var(--text-muted);">Sube apuntes o temas, genera podcasts narrativos con audio, quizzes y guías de estudio.</p>
+              </div>
+            </div>
+            <a href="./notebook.html" target="_blank" class="btn-secondary" style="width: auto; padding: 6px 14px; font-size: 0.8rem; text-decoration: none; white-space: nowrap;">
+              <span>↗️</span> Pantalla completa
+            </a>
+          </div>
+          <iframe src="./notebook.html" class="notebook-iframe" title="Cuaderno LM"></iframe>
+        </div>
+      </div>
+
+      <!-- Subpanel 3: Pomodoro de Concentración -->
+      <div id="tab-pomodoro" class="subtab-panel">
+
+      <div class="section-header">
+        <div>
+          <h2 class="section-title"><span>⏱️</span> Temporizador Pomodoro de Concentración</h2>
+          <p class="section-subtitle">Técnica 25 min de foco + 5 min de descanso con campana sonora offline</p>
+        </div>
+      </div>
+
+      <div class="card" style="max-width: 500px; margin: 0 auto; text-align: center; padding: 30px 20px;">
+        <div class="filters-bar" style="justify-content: center; margin-bottom: 20px;">
+          <button id="pomo-mode-work" class="filter-chip active" data-pomo-time="25">📚 Estudio (25m)</button>
+          <button id="pomo-mode-short" class="filter-chip" data-pomo-time="5">☕ Descanso (5m)</button>
+          <button id="pomo-mode-long" class="filter-chip" data-pomo-time="15">🌴 Descanso Largo (15m)</button>
+        </div>
+
+        <div id="pomodoro-display" style="font-size: 4rem; font-weight: 800; font-variant-numeric: tabular-nums; margin: 10px 0; color: var(--text-main); letter-spacing: 2px;">25:00</div>
+        <div id="pomodoro-status-text" class="section-subtitle" style="margin-bottom: 24px; font-weight: 600;">Modo Concentración 🎯</div>
+
+        <div style="display: flex; gap: 12px; justify-content: center; margin-bottom: 24px;">
+          <button id="btn-pomo-start" class="btn-primary" style="font-size: 1.05rem; padding: 12px 28px; width: auto;">▶️ Iniciar</button>
+          <button id="btn-pomo-pause" class="btn-secondary hidden" style="font-size: 1.05rem; padding: 12px 28px; width: auto;">⏸️ Pausar</button>
+          <button id="btn-pomo-reset" class="btn-secondary" style="font-size: 1.05rem; padding: 12px 20px; width: auto;">🔄 Reiniciar</button>
+        </div>
+
+        <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-around;">
+          <div>
+            <div id="pomo-count-today" style="font-size: 1.4rem; font-weight: 800; color: var(--primary);">0</div>
+            <div class="grade-metric-label">Pomodoros Hoy</div>
+          </div>
+          <div>
+            <div id="pomo-focus-time" style="font-size: 1.4rem; font-weight: 800; color: var(--success);">0 min</div>
+            <div class="grade-metric-label">Tiempo Enfocado</div>
+          </div>
+        </div>
+      </div>
+    
+      </div>
+
+      <!-- Subpanel 4: Fotos de Apuntes y Pizarras -->
+      <div id="tab-gallery" class="subtab-panel">
+
+      <div class="section-header">
+        <div>
+          <h2 class="section-title"><span>📸</span> Fotos de Pizarras y Apuntes</h2>
+          <p class="section-subtitle">Acceso visual a todas las fotos sacadas en clase</p>
+        </div>
+        <button id="btn-quick-photo-capture" class="btn-primary" style="width: auto;">
+          📷 Sacar Foto Rápida
+        </button>
+      </div>
+
+      <!-- Filtro y búsqueda en la galería de fotos -->
+      <div style="margin-bottom: 16px;">
+        <input type="text" id="gallery-search-input" class="form-input" placeholder="🔍 Buscar en fotos por título, materia o contenido OCR..." />
+      </div>
+
+      <div id="gallery-container">
+        <p class="section-subtitle">Cargando fotos guardadas...</p>
+      </div>
+    
+      </div>
     </section>
 
-    <!-- 7. PESTAÑA: AJUSTES -->
-    <section id="tab-settings" class="tab-panel">
+
+    <!-- 4. PESTAÑA PRINCIPAL: MI PROGRESO & AJUSTES (NOTAS, LOGROS, AJUSTES) -->
+    <section id="tab-progress" class="tab-panel">
+      <!-- Barra Segmentada de Progreso -->
+      <div class="segmented-tabs-bar" data-parent="tab-progress">
+        <button type="button" class="segmented-tab-btn active" data-subtab="tab-grades">
+          <span>📊</span> Notas y Medias
+        </button>
+        <button type="button" class="segmented-tab-btn" data-subtab="tab-achievements-view">
+          <span>🏆</span> Logros & Racha
+        </button>
+        <button type="button" class="segmented-tab-btn" data-subtab="tab-settings">
+          <span>⚙️</span> Ajustes & Clave IA
+        </button>
+      </div>
+
+      <!-- Subpanel 1: Notas y Calificaciones -->
+      <div id="tab-grades" class="subtab-panel active">
+
+      <div class="section-header">
+        <div>
+          <h2 class="section-title"><span>📊</span> Control de Calificaciones</h2>
+          <p class="section-subtitle">Registra tus notas por trimestre y calcula tus medias</p>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button id="btn-toggle-grade-simulator" class="btn-secondary" style="width: auto; display: inline-flex; align-items: center; gap: 6px;" title="Calcular qué nota necesitas">
+            <span>🧮</span> Simulador
+          </button>
+          <button id="btn-export-grades-pdf" class="btn-primary" style="width: auto; display: inline-flex; align-items: center; gap: 6px;" title="Descargar Boletín Oficial en PDF">
+            <span>📄</span> Descargar PDF
+          </button>
+          <button id="btn-print-grades" class="btn-secondary" style="width: auto; display: inline-flex; align-items: center; gap: 6px;" title="Imprimir o guardar boletín">
+            <span>🖨️</span> Imprimir
+          </button>
+          <button id="btn-open-new-grade" class="btn-primary" style="width: auto;">
+            ➕ Añadir Nota
+          </button>
+        </div>
+      </div>
+
+      <!-- Simulador interactivo: ¿Qué nota necesito? -->
+      <div id="grade-simulator-card" class="card hidden" style="margin-bottom: 20px; border-left: 4px solid var(--primary);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <h3 style="font-size: 1.05rem; margin: 0; display: flex; align-items: center; gap: 8px;">
+            <span>🧮</span> Simulador "¿Qué nota necesito?"
+          </h3>
+          <button type="button" id="btn-close-grade-simulator" class="btn-action-small" style="font-size: 0.8rem;">✕ Cerrar</button>
+        </div>
+        <p class="section-subtitle" style="margin-bottom: 12px;">
+          Calcula la nota mínima necesaria en tu próximo examen o entrega para lograr tu calificación objetivo.
+        </p>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nota Media Actual (0 - 10)</label>
+            <input type="number" id="sim-current-grade" class="form-input" min="0" max="10" step="0.1" placeholder="Ej: 6.2" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Media Deseada / Objetivo (0 - 10)</label>
+            <input type="number" id="sim-target-grade" class="form-input" min="0" max="10" step="0.1" placeholder="Ej: 7.0 (Notable)" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Peso del Próximo Examen (%)</label>
+            <input type="number" id="sim-exam-weight" class="form-input" min="1" max="100" value="40" placeholder="Ej: 40%" />
+          </div>
+          <div class="form-group" style="display: flex; align-items: flex-end;">
+            <button type="button" id="btn-calc-simulator" class="btn-primary" style="width: 100%;">
+              ⚡ Calcular Nota Necesaria
+            </button>
+          </div>
+        </div>
+        <div id="sim-result-box" class="hidden" style="margin-top: 12px; padding: 12px; border-radius: var(--radius-sm); font-size: 0.95rem;"></div>
+      </div>
+
+      <!-- Resumen de media -->
+      <div class="grades-summary-card">
+        <div>
+          <div id="stat-overall-average" class="grade-metric-num">--</div>
+          <div class="grade-metric-label">Nota Media Global</div>
+        </div>
+        <div>
+          <div id="stat-total-grades" class="grade-metric-num">0</div>
+          <div class="grade-metric-label">Notas Registradas</div>
+        </div>
+      </div>
+
+      <!-- Selector de Trimestre -->
+      <div class="filters-bar">
+        <button class="filter-chip active" data-term-filter="all">Todos los Trimestres</button>
+        <button class="filter-chip" data-term-filter="1">1º Trimestre</button>
+        <button class="filter-chip" data-term-filter="2">2º Trimestre</button>
+        <button class="filter-chip" data-term-filter="3">3º Trimestre</button>
+      </div>
+
+      <div id="grades-list-container">
+        <p class="section-subtitle">No hay notas registradas todavía.</p>
+      </div>
+    
+      </div>
+
+      <!-- Subpanel 2: Logros y Racha de Hábitos -->
+      <div id="tab-achievements-view" class="subtab-panel">
+        <div class="card" style="margin-bottom: 16px;">
+          <div class="section-header">
+            <h3 class="section-title"><span>🔥</span> Tu Racha de Hábitos</h3>
+            <span class="badge" id="progress-streak-badge" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; padding: 4px 10px; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 700;">
+              1 día seguido
+            </span>
+          </div>
+          <p class="section-subtitle">Estudia y completa tareas todos los días para mantener encendida tu racha de hábitos y desbloquear logros.</p>
+          <div style="margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap;">
+            <button type="button" id="btn-progress-open-achievements-modal" class="btn-primary" style="width: auto;">
+              🏆 Ver Todos Mis Logros e Insignias
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subpanel 3: Ajustes y Sistema -->
+      <div id="tab-settings" class="subtab-panel">
+
       <div class="section-header">
         <div>
           <h2 class="section-title"><span>⚙️</span> Ajustes y Configuración</h2>
@@ -1042,7 +1114,11 @@
           <span>🔄</span> Forzar Actualización y Limpiar Caché
         </button>
       </div>
+    
+      </div>
     </section>
+
+    
 
   </main>
 
@@ -2351,6 +2427,72 @@
       <div style="display: flex; justify-content: center; margin-top: 12px;">
         <button type="button" class="btn-secondary" data-close="ai-key-modal" style="border: none; background: transparent; color: var(--text-muted); font-size: 0.85rem; padding: 6px 14px; cursor: pointer;">
           ✕ Cerrar ventana
+        </button>
+      </div>
+    </div>
+  </div>
+
+  
+  <!-- 19. MODAL: ACCIÓN RÁPIDA & IA (BOTÓN CENTRAL +) -->
+  <div id="quick-action-modal" class="modal-overlay hidden">
+    <div class="modal-content quick-action-modal-content">
+      <div class="sheet-handle-bar"></div>
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 1.4rem;">⚡</span>
+          <div>
+            <h3 class="modal-title" style="margin: 0;">Acción Rápida & IA</h3>
+            <p class="section-subtitle" style="margin: 0; font-size: 0.78rem;">¿Qué deseas hacer en este momento?</p>
+          </div>
+        </div>
+        <button type="button" class="btn-close" data-close="quick-action-modal">&times;</button>
+      </div>
+
+      <div class="quick-action-grid">
+        <button type="button" class="quick-action-card" id="quick-action-new-task">
+          <div class="quick-action-icon" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">📋</div>
+          <div class="quick-action-info">
+            <strong>Nuevo Deber / Tarea</strong>
+            <span>Añadir deberes con foto, fecha y asignatura</span>
+          </div>
+        </button>
+
+        <button type="button" class="quick-action-card" id="quick-action-new-exam">
+          <div class="quick-action-icon" style="background: rgba(244, 63, 94, 0.15); color: #f43f5e;">📝</div>
+          <div class="quick-action-info">
+            <strong>Añadir Examen</strong>
+            <span>Programar fecha de examen y temario</span>
+          </div>
+        </button>
+
+        <button type="button" class="quick-action-card" id="quick-action-camera">
+          <div class="quick-action-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">📸</div>
+          <div class="quick-action-info">
+            <strong>Foto a Pizarra / Apunte</strong>
+            <span>Escanear apuntes con OCR y crear ficha</span>
+          </div>
+        </button>
+
+        <button type="button" class="quick-action-card" id="quick-action-copilot" style="border: 1px solid rgba(139, 92, 246, 0.35); background: linear-gradient(135deg, rgba(59, 130, 246, 0.06), rgba(139, 92, 246, 0.12));">
+          <div class="quick-action-icon" style="background: rgba(139, 92, 246, 0.2); color: #8b5cf6;">🤖</div>
+          <div class="quick-action-info">
+            <strong style="color: #8b5cf6;">Copiloto Escolar IA</strong>
+            <span>Preguntar dudas escolares por voz o chat</span>
+          </div>
+        </button>
+
+        <button type="button" class="quick-action-card" id="quick-action-flashcard">
+          <div class="quick-action-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">🧠</div>
+          <div class="quick-action-info">
+            <strong>Nueva Ficha de Repaso</strong>
+            <span>Crear ficha Leitner para practicar</span>
+          </div>
+        </button>
+      </div>
+
+      <div style="display: flex; justify-content: center; margin-top: 14px;">
+        <button type="button" class="btn-secondary" data-close="quick-action-modal" style="border: none; background: transparent; color: var(--text-muted); font-size: 0.85rem; padding: 6px 14px; cursor: pointer;">
+          ✕ Cancelar
         </button>
       </div>
     </div>
