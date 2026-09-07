@@ -275,9 +275,18 @@ Puedes consultar el catálogo interactivo en el archivo dedicado 👉 [**ROADMAP
 - [ ] 💡 **Cuaderno LM a 3 Columnas Simultáneas:** Documento a la izquierda, notas en el centro y chat de Gemini a la derecha en tiempo real.
 - [ ] 💡 **Modo Zen Pantalla Completa (Tecla F11):** Ocultar distracciones para sesiones intensivas de estudio con reloj grande y sonidos relajantes.
 
+### 🇬🇧 11. English Coach & Tutor de Idiomas Interactivo (Speaking, Writing & Corrección)
+- [ ] 💡 **Tutor de Conversación Escolar en Inglés (English Coach):** Práctica de conversación interactiva adaptada al nivel del estudiante (A2, B1, B2, Selectividad/EOI).
+- [ ] 💡 **Recuadro de Corrección Pedagógica en Tiempo Real (Feedback Box):** Corrección inmediata de cada mensaje: frase corregida, explicación clara de la regla gramatical y sugerencia de nivel superior (+nota).
+- [ ] 💡 **Modo Speaking por Voz con Detección y Pronunciación Nativa:** El alumno habla por el micrófono para perder el miedo; la app evalúa la claridad y responde con voz nativa en inglés.
+- [ ] 💡 **Corrector de Redacciones (Writing & Essay Checker):** Análisis de redacciones escolares indicando errores ortográficos, tiempos verbales y conectores formales (*However, Furthermore, In addition*).
+- [ ] 💡 **Conversor de Errores a Fichas con 1 Toque (Flashcards):** Guardar cualquier fallo o vocabulario nuevo directamente en el mazo de repaso de inglés para no volver a fallar en el examen.
+- [ ] 💡 **Simulador de Examen Oral y Roleplay (Selectividad / Cambridge):** La IA actúa como examinador haciendo preguntas de prueba oral o guiando la descripción de imágenes.
+
 ---
 
 ## 📄 Licencia
 
 Este proyecto está bajo la Licencia **MIT**. Consulta el archivo `LICENSE` para más información.
+
 

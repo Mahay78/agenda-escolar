@@ -118,6 +118,17 @@ Bienvenido a la hoja de ruta oficial del proyecto **Agenda Escolar**. En este do
 
 ---
 
+## 🇬🇧 11. English Coach & Tutor de Idiomas Interactivo (Speaking, Writing & Corrección)
+
+- [ ] 💡 **54. Tutor de Conversación Escolar en Inglés (English Coach):** Práctica de conversación interactiva adaptada al nivel del estudiante (A2, B1, B2, Selectividad/EOI).
+- [ ] 💡 **55. Recuadro de Corrección Pedagógica en Tiempo Real (Feedback Box):** Corrección inmediata de cada mensaje: frase corregida, explicación clara de la regla gramatical y sugerencia de nivel superior (+nota).
+- [ ] 💡 **56. Modo Speaking por Voz con Detección y Pronunciación Nativa:** El alumno habla por el micrófono para perder el miedo; la app evalúa la claridad y responde con voz nativa en inglés.
+- [ ] 💡 **57. Corrector de Redacciones (Writing & Essay Checker):** Análisis de redacciones escolares indicando errores ortográficos, tiempos verbales y conectores formales (*However, Furthermore, In addition*).
+- [ ] 💡 **58. Conversor de Errores a Fichas con 1 Toque (Flashcards):** Guardar cualquier fallo o vocabulario nuevo directamente en el mazo de repaso de inglés para no volver a fallar en el examen.
+- [ ] 💡 **59. Simulador de Examen Oral y Roleplay (Selectividad / Cambridge):** La IA actúa como examinador haciendo preguntas de prueba oral o guiando la descripción de imágenes.
+
+---
+
 ### 📬 ¿Cómo proponer una nueva idea o votar por una existente?
 Si quieres proponer una nueva funcionalidad o priorizar alguna de estas opciones:
 1. Abre un **[Issue en GitHub](https://github.com/Mahay78/agenda-escolar/issues)** usando la plantilla de sugerencia.
