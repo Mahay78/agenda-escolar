@@ -129,7 +129,20 @@ Bienvenido a la hoja de ruta oficial del proyecto **Agenda Escolar**. En este do
 
 ---
 
+## 📚 12. Cuaderno LM Avanzado (Entorno de Estudio Estilo NotebookLM)
+
+- [ ] 💡 **60. Subida Directa de Archivos PDF y Word (.docx):** Arrastrar o cargar libros de texto y temas completos en PDF extrayendo el contenido al instante con motor local.
+- [ ] 💡 **61. Múltiples Cuadernos Temáticos por Asignatura:** Crear libretas independientes (Historia, Biología, Filosofía) con sus propias fuentes y chats sin mezclar temas.
+- [ ] 💡 **62. Podcast de Estudio a Dos Voces con Descarga MP3:** Dos locutores virtuales (*Lucía & Mateo*) debatiendo y explicando tus apuntes de forma amena con opción de guardar el archivo de audio.
+- [ ] 💡 **63. Citas Interactivas con Resaltado en Vivo:** Al pulsar sobre una cita `[Fuente X]` en el chat, el visor de apuntes se abre y subraya en amarillo el fragmento exacto.
+- [ ] 💡 **64. Modo "Pregúntame a Mí" (Examen Oral IA):** La IA asume el rol de profesor y te hace preguntas sobre tus apuntes, evaluando si tu respuesta está completa o qué te faltó.
+- [ ] 💡 **65. Generador de Mapas Mentales y Esquemas Visuales:** Convertir apuntes extensos en diagramas interactivos y esquemas gráficos para aprendizaje visual.
+- [ ] 💡 **66. Bloc de Notas Integrado (Scratchpad):** Botón `📌 Guardar en mis Notas` en cada respuesta del chat para redactar tu propio resumen final dentro de la app.
+
+---
+
 ### 📬 ¿Cómo proponer una nueva idea o votar por una existente?
 Si quieres proponer una nueva funcionalidad o priorizar alguna de estas opciones:
 1. Abre un **[Issue en GitHub](https://github.com/Mahay78/agenda-escolar/issues)** usando la plantilla de sugerencia.
 2. Deja una estrella ⭐ en el repositorio para apoyar el desarrollo continuo de la aplicación.
+
