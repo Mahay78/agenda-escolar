@@ -406,7 +406,20 @@ function updateAudioPlayButton() {
 // ==========================================================================
 // RENDERIZADOR DE ARTEFACTOS Y FORMATEO
 // ==========================================================================
+function switchToMobileStudio() {
+  if (window.innerWidth <= 900) {
+    document.querySelectorAll('.mobile-tab-btn').forEach(b => {
+      b.classList.toggle('active', b.getAttribute('data-mobile-view') === 'col-studio');
+    });
+    document.querySelectorAll('.col-sources, .col-studio, .col-chat').forEach(col => {
+      col.classList.remove('active-mobile-view');
+    });
+    document.getElementById('col-studio')?.classList.add('active-mobile-view');
+  }
+}
+
 function showStudioLoading(message) {
+  switchToMobileStudio();
   const welcome = document.getElementById('studio-welcome-card');
   if (welcome) welcome.classList.add('hidden');
 
