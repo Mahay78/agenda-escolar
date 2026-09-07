@@ -63,6 +63,13 @@ body.light-theme {
   -webkit-tap-highlight-color: transparent;
 }
 
+html, body {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  position: relative;
+}
+
 body {
   font-family: var(--font-sans);
   background-color: var(--bg-main);
@@ -71,7 +78,6 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow-x: hidden;
   user-select: none;
 }
 
@@ -1808,86 +1814,215 @@ input, textarea, select, button {
 /* ==========================================================================
    ADAPTACIÓN MÓVIL (MEDIA QUERIES)
    ========================================================================== */
-@media (max-width: 640px) {
+@media (max-width: 767px) {
   .app-header {
-    padding: max(10px, env(safe-area-inset-top, 10px)) 14px 10px 14px;
-    gap: 8px;
+    padding: max(8px, env(safe-area-inset-top, 8px)) 12px 8px 12px;
+    gap: 6px;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: hidden;
   }
   
   .brand-section {
-    gap: 8px;
+    gap: 6px;
     min-width: 0;
+    flex-shrink: 1;
   }
   
   .app-logo {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
   }
   
   .brand-info h1 {
-    font-size: 0.95rem;
+    font-size: 0.92rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 130px;
   }
   
   .brand-info p {
     display: none;
   }
 
-  /* Cabecera limpia y despejada en móvil (los demás accesos están en el menú lateral) */
+  .header-actions {
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  /* Cabecera limpia y compacta en móvil: ocultar botones anchos o redundantes */
   #btn-open-share,
   #connection-status,
   #btn-toggle-theme,
-  #btn-install-pwa {
+  #btn-install-pwa,
+  .app-header a[href="./notebook.html"],
+  .btn-copilot-badge .copilot-badge-text {
     display: none !important;
   }
+
+  /* El botón de Copiloto en cabecera móvil queda en formato circular/cuadrado compacto */
+  #btn-open-copilot {
+    padding: 6px 10px;
+    min-width: 36px;
+    height: 36px;
+  }
+
+  .btn-streak-badge {
+    padding: 4px 8px;
+    font-size: 0.76rem;
+  }
   
-  /* En móvil, mostrar barra inferior ergonómica con 4 accesos directos + botón Menú */
+  /* Barra inferior móvil: 5 accesos perfectamente distribuidos (Mi Día, Agenda, +, Estudio, Progreso) */
   .app-nav {
     position: fixed;
     bottom: 0;
     top: auto;
     left: 0;
     right: 0;
+    width: 100%;
     border-top: 1px solid var(--border-color);
     border-bottom: none;
     background: var(--bg-card);
+    display: flex;
     justify-content: space-around;
-    padding: 6px 0 max(8px, env(safe-area-inset-bottom, 8px));
+    align-items: center;
+    padding: 4px 4px max(6px, env(safe-area-inset-bottom, 6px)) 4px;
     z-index: 45;
-    min-height: 58px;
+    min-height: 56px;
     box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.28);
+    box-sizing: border-box;
   }
   
   .app-nav .nav-tab {
     flex-direction: column;
     gap: 2px;
-    padding: 6px 4px;
-    font-size: 0.72rem;
+    padding: 4px 2px;
+    font-size: 0.68rem;
     border-bottom: none;
     border-top: 3px solid transparent;
     flex: 1;
     text-align: center;
-    min-height: 48px;
+    min-height: 46px;
     justify-content: center;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
   }
 
-  .nav-tab-mobile-more {
-    display: flex !important;
+  .nav-tab-label {
+    font-size: 0.68rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    width: 100%;
   }
-  
+
+  /* Ocultar botón 'Menú' duplicado en la barra para que las 4 secciones principales + (+) tengan espacio perfecto */
+  .nav-tab-mobile-more {
+    display: none !important;
+  }
+
   .nav-tab.active {
     border-top-color: var(--primary);
   }
+
+  /* Botón flotante central (+) perfectamente encajado */
+  .nav-tab-center-action {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    max-width: 44px !important;
+    margin: -14px 2px 0 2px !important;
+    flex: 0 0 44px !important;
+    border-radius: 50% !important;
+  }
+
+  .nav-center-plus {
+    font-size: 1.2rem !important;
+  }
   
   .main-container {
-    padding-bottom: 95px;
+    width: 100% !important;
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
+    padding: 12px 12px calc(80px + env(safe-area-inset-bottom, 16px)) 12px !important;
+    overflow-x: hidden !important;
+  }
+
+  /* Tarjetas y banners en móvil sin desbordamiento */
+  .hero-banner {
+    padding: 16px 14px !important;
+    border-radius: var(--radius-md) !important;
+    margin-bottom: 12px !important;
+    gap: 8px !important;
+  }
+
+  .hero-text h2 {
+    font-size: 1.2rem !important;
+  }
+
+  .hero-text p {
+    font-size: 0.82rem !important;
+  }
+
+  .hero-date-badge {
+    font-size: 0.78rem !important;
+    padding: 4px 10px !important;
+  }
+
+  .today-ai-promo-card {
+    padding: 12px 14px !important;
+    border-radius: var(--radius-md) !important;
+    gap: 10px !important;
+  }
+
+  .current-live-card {
+    padding: 12px 14px !important;
+    border-radius: var(--radius-md) !important;
+    margin-bottom: 12px !important;
+  }
+
+  .dashboard-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .card {
+    padding: 14px 12px !important;
+    border-radius: var(--radius-md) !important;
+    margin-bottom: 12px !important;
+  }
+
+  /* Barras de subpestañas segmentadas en móvil con scroll horizontal táctil suave */
+  .segmented-tabs-bar {
+    padding: 3px !important;
+    gap: 4px !important;
+    margin-bottom: 14px !important;
+    border-radius: var(--radius-full) !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .segmented-tab-btn {
+    padding: 6px 12px !important;
+    font-size: 0.78rem !important;
+    min-height: 36px !important;
+    gap: 4px !important;
+  }
+
+  .notebook-iframe {
+    height: 65vh !important;
+    min-height: 420px !important;
+    border-radius: var(--radius-md) !important;
   }
   
   .fab-container {
     bottom: calc(72px + env(safe-area-inset-bottom, 0px));
-    right: 16px;
+    right: 14px;
   }
 
   /* ========================================================================
