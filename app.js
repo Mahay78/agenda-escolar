@@ -1596,7 +1596,7 @@ function renderTodayView() {
       if (todaySlots.length === 0) {
         scheduleContainer.innerHTML = `
           <p class="section-subtitle">No has configurado clases para el ${dayName}.</p>
-          <button class="btn-action-small" onclick="document.querySelector('[data-tab=tab-schedule]').click()">📅 Configurar Horario</button>
+          <button class="btn-action-small" onclick="document.querySelector('[data-tab=tab-schedule]')?.click()">📅 Configurar Horario</button>
         `;
       } else {
         scheduleContainer.innerHTML = AppState.timeSlots
@@ -2457,7 +2457,7 @@ window.removeTaskSubtask = function(idx) {
   }
 };
 
-window.openTaskModal = function (taskId = null) {
+window.openTaskModal = function (taskId = null, defaultDate = null) {
   const modal = document.getElementById('task-modal');
   const titleEl = document.getElementById('task-modal-title');
   const idInput = document.getElementById('task-id');
@@ -2496,7 +2496,7 @@ window.openTaskModal = function (taskId = null) {
     titleEl.textContent = 'Nueva Tarea / Deber';
     idInput.value = '';
     titleInput.value = '';
-    dueInput.value = getTomorrowDateString();
+    dueInput.value = defaultDate || getTomorrowDateString();
     prioritySelect.value = 'media';
     descInput.value = '';
     AppState.tempTaskPhotos = [];
@@ -2603,7 +2603,7 @@ window.confirmDeleteTask = async function (taskId) {
 };
 
 // --- EXÁMENES ---
-window.openExamModal = function (examId = null) {
+window.openExamModal = function (examId = null, defaultDate = null) {
   const modal = document.getElementById('exam-modal');
   const titleEl = document.getElementById('exam-modal-title');
   const idInput = document.getElementById('exam-id');
@@ -2639,7 +2639,7 @@ window.openExamModal = function (examId = null) {
     titleEl.textContent = 'Nuevo Examen';
     idInput.value = '';
     titleInput.value = '';
-    dateInput.value = getTomorrowDateString();
+    dateInput.value = defaultDate || getTomorrowDateString();
     topicsInput.value = '';
     AppState.tempExamPhotos = [];
     AppState.tempExamAudio = null;
@@ -3657,7 +3657,7 @@ function initEVAUSimulator() {
       return;
     }
 
-    if (nmb < 0 || nmb > 10 || cfg < 0 || cfg > 10) {
+    if (nmb < 0 || nmb > 10 || cfg < 0 || cfg > 10 || m1Score < 0 || m1Score > 10 || m2Score < 0 || m2Score > 10) {
       showToast('⚠️ Las notas deben estar comprendidas entre 0 y 10', 'warning');
       return;
     }
@@ -5745,7 +5745,7 @@ function renderStudySession() {
 
   // Anverso (Pregunta)
   const subPill = document.getElementById('study-card-subject');
-  const boxPips = document.getElementById('study-card-box-pips');
+  const boxPips = document.getElementById('study-card-box-pips') || document.getElementById('study-card-box-indicator');
   const qFront = document.getElementById('study-card-front');
   const hintBox = document.getElementById('study-card-hint-box');
   const hintText = document.getElementById('study-card-hint-text');
@@ -7152,9 +7152,21 @@ function setupTaskDragAndDrop() {
     if (!task) return;
 
     const targetEl = e.target.closest('.task-item');
-    if (targetEl && targetEl.getAttribute('data-task-id') !== taskId) {
-      triggerHaptic('medium');
-      showToast('Tarea reordenada', 'info');
+    if (targetEl) {
+      const targetId = targetEl.getAttribute('data-task-id');
+      if (targetId && targetId !== taskId) {
+        const fromIndex = AppState.tasks.findIndex((t) => t.id === taskId);
+        const toIndex = AppState.tasks.findIndex((t) => t.id === targetId);
+        if (fromIndex !== -1 && toIndex !== -1) {
+          const [moved] = AppState.tasks.splice(fromIndex, 1);
+          AppState.tasks.splice(toIndex, 0, moved);
+          AppState.tasks.forEach((t, i) => { t.order = i; });
+          await saveItem('tasks', moved);
+          renderTasksView();
+          triggerHaptic('medium');
+          showToast('Tarea reordenada con éxito', 'info');
+        }
+      }
     }
   });
 }
@@ -7459,6 +7471,9 @@ function initPomodoroPiPModule() {
           height: 160
         });
         window._pomodoroPipWindow = pipWindow;
+        pipWindow.addEventListener('pagehide', () => {
+          window._pomodoroPipWindow = null;
+        });
         pipWindow.document.body.style.cssText =
           'margin:0; padding:16px; font-family:system-ui; background:#0f172a; color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;';
         pipWindow.document.body.innerHTML = `
@@ -7818,10 +7833,14 @@ function finishMockQuiz() {
 
   document.getElementById('btn-mock-convert-flashcards')?.addEventListener('click', async () => {
     let savedCount = 0;
+    const actualSubId = (currentMockQuiz.subjectId && currentMockQuiz.subjectId !== 'all')
+      ? currentMockQuiz.subjectId
+      : (AppState.subjects[0]?.id || 'sub_general');
+
     for (const fq of failedQuestions) {
       const correctText = fq.options[fq.correctIndex] || '';
       const newCard = createFlashcard({
-        subjectId: currentMockQuiz.subjectId || AppState.subjects[0]?.id || 'sub_general',
+        subjectId: actualSubId,
         front: fq.question,
         back: `${correctText}\n\n💡 ${fq.explanation}`,
         hint: 'Pregunta de simulacro de examen'
@@ -7830,12 +7849,24 @@ function finishMockQuiz() {
       AppState.flashcards.push(newCard);
       savedCount++;
     }
+    updateBadges();
+    renderFlashcardsView();
     showToast(`🎴 Se han creado ${savedCount} fichas de estudio a partir de tus fallos`, 'success');
     const btnConv = document.getElementById('btn-mock-convert-flashcards');
     if (btnConv) {
       btnConv.disabled = true;
       btnConv.textContent = '✅ Fichas Guardadas';
     }
+  });
+}
+
+// Limpiar temporizadores y síntesis de voz al navegar o cerrar la página
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeunload', () => {
+    if (mockQuizTimerInterval) {
+      clearInterval(mockQuizTimerInterval);
+    }
+    window.speechSynthesis?.cancel();
   });
 }
 

@@ -545,6 +545,10 @@ function renderArtifactCard(title, markdownContent, hasExportButton = false) {
       let match;
       let count = 0;
 
+      // Obtener asignaturas registradas para vincularlas a una real
+      const subjects = await getAll('subjects');
+      const defaultSubId = subjects?.[0]?.id || 'sub_general';
+
       while ((match = regex.exec(markdownContent)) !== null) {
         const front = match[1].trim();
         const back = match[2].trim();
@@ -552,7 +556,7 @@ function renderArtifactCard(title, markdownContent, hasExportButton = false) {
 
         if (front && back) {
           const card = createFlashcard({
-            subjectId: 'sub_general',
+            subjectId: defaultSubId,
             front,
             back,
             hint
@@ -967,3 +971,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeunload', () => {
+    stopAudioOverview();
+  });
+}

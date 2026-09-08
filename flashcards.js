@@ -37,9 +37,15 @@ export function getLocalTodayDateString() {
  * Añade N días a una fecha YYYY-MM-DD
  */
 export function addDaysToDateString(dateStr, days) {
-  const [y, m, d] = dateStr.split('-').map(Number);
+  if (!dateStr || typeof dateStr !== 'string') {
+    dateStr = getLocalTodayDateString();
+  }
+  const parts = dateStr.split('-').map(Number);
+  const y = parts[0] || new Date().getFullYear();
+  const m = parts[1] || (new Date().getMonth() + 1);
+  const d = parts[2] || new Date().getDate();
   const date = new Date(y, m - 1, d);
-  date.setDate(date.getDate() + days);
+  date.setDate(date.getDate() + (Number.isFinite(days) ? days : 1));
   const newY = date.getFullYear();
   const newM = String(date.getMonth() + 1).padStart(2, '0');
   const newD = String(date.getDate()).padStart(2, '0');
@@ -179,7 +185,7 @@ export function checkAnswerSimilarity(userAnswer, correctAnswer) {
 
   const distance = matrix[a.length][b.length];
   const maxLen = Math.max(a.length, b.length);
-  const similarity = Math.max(0, Math.round(((maxLen - distance) / maxLen) * 100));
+  const similarity = maxLen === 0 ? 0 : Math.max(0, Math.round(((maxLen - distance) / maxLen) * 100));
 
   if (similarity >= 75) {
     return { isCorrect: true, similarity, feedback: '¡Correcto! Solo pequeños fallos ortográficos o de puntuación.' };
@@ -200,9 +206,9 @@ export function checkAnswerSimilarity(userAnswer, correctAnswer) {
  */
 export function processCardReview(card, rating) {
   const today = getLocalTodayDateString();
-  let ef = typeof card.easeFactor === 'number' ? card.easeFactor : 2.5;
-  let reps = card.repetitions || 0;
-  let interval = card.interval || 0;
+  let ef = typeof card?.easeFactor === 'number' && !isNaN(card.easeFactor) ? card.easeFactor : 2.5;
+  let reps = Number.isFinite(card?.repetitions) ? card.repetitions : 0;
+  let interval = Number.isFinite(card?.interval) ? card.interval : 0;
   let grade = 4; // Por defecto 'good'
 
   if (rating === 'again' || rating === 'hard') {

@@ -174,8 +174,8 @@ export function buildLiveStudentContext() {
   }
 
   // 1. Perfil del alumno
-  const studentName = state.studentName || localStorage.getItem('agenda_student_name') || 'Estudiante';
-  const studentCourse = state.studentCourse || localStorage.getItem('agenda_student_course') || 'Secundaria / Bachillerato';
+  const studentName = state.studentInfo?.studentName || state.studentName || localStorage.getItem('agenda_student_name') || 'Estudiante';
+  const studentCourse = state.studentInfo?.course || state.studentCourse || localStorage.getItem('agenda_student_course') || 'Secundaria / Bachillerato';
 
   // 2. Asignaturas disponibles
   const subjectsMap = {};
@@ -204,7 +204,7 @@ export function buildLiveStudentContext() {
 
   // 4. Deberes pendientes
   const pendingTasks = (state.tasks || [])
-    .filter(t => !t.completed)
+    .filter(t => t.status !== 'completed' && !t.completed)
     .sort((a, b) => (a.dueDate || '9999').localeCompare(b.dueDate || '9999'))
     .slice(0, 10);
 
@@ -910,8 +910,13 @@ async function executeSingleAction(actionObj) {
         dueDate: data.dueDate || new Date().toISOString().split('T')[0],
         priority: data.priority || 'normal',
         description: data.description || '',
+        status: 'pending',
         completed: false,
-        createdAt: new Date().toISOString()
+        subtasks: [],
+        photos: [],
+        audioUrl: null,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       };
 
       await saveItem('tasks', task);
@@ -1016,7 +1021,7 @@ async function handleOfflineLocalAssistant(userMessage, webSearchResult = null) 
 
   // 1. ¿Qué tengo hoy? / Deberes de hoy
   if (lower.includes('qué tengo') || lower.includes('deberes') || lower.includes('tareas')) {
-    const pending = (state?.tasks || []).filter(t => !t.completed);
+    const pending = (state?.tasks || []).filter(t => t.status !== 'completed' && !t.completed);
     if (pending.length === 0) {
       return {
         replyText: `🎉 **¡Buenas noticias!** Hoy (${dateString}) no tienes ningún deber pendiente registrado. ¡Todo al día!`,

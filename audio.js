@@ -327,6 +327,7 @@ let ambientGainNode = null;
 let ambientFilterNode = null;
 let ambientLfoNode = null;
 let currentAmbientType = 'none';
+let ambientStopTimeout = null;
 
 export function getCurrentAmbientType() {
   return currentAmbientType;
@@ -339,37 +340,52 @@ export function setAmbientVolume(vol) {
   }
 }
 
-export function stopAmbientSound() {
-  if (ambientGainNode && audioCtx) {
-    try {
-      ambientGainNode.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
-      setTimeout(() => {
-        if (ambientSourceNode) {
-          try { ambientSourceNode.stop(); } catch (e) {}
-          ambientSourceNode.disconnect();
-          ambientSourceNode = null;
-        }
-        if (ambientLfoNode) {
-          try { ambientLfoNode.stop(); } catch (e) {}
-          ambientLfoNode.disconnect();
-          ambientLfoNode = null;
-        }
-        if (ambientFilterNode) {
-          ambientFilterNode.disconnect();
-          ambientFilterNode = null;
-        }
-        currentAmbientType = 'none';
-      }, 550);
-    } catch (e) {
-      currentAmbientType = 'none';
+export function stopAmbientSound(fadeDuration = 0.5) {
+  if (ambientStopTimeout) {
+    clearTimeout(ambientStopTimeout);
+    ambientStopTimeout = null;
+  }
+
+  const cleanupNodes = () => {
+    if (ambientSourceNode) {
+      try { ambientSourceNode.stop(); } catch (e) {}
+      try { ambientSourceNode.disconnect(); } catch (e) {}
+      ambientSourceNode = null;
     }
-  } else {
+    if (ambientLfoNode) {
+      try { ambientLfoNode.stop(); } catch (e) {}
+      try { ambientLfoNode.disconnect(); } catch (e) {}
+      ambientLfoNode = null;
+    }
+    if (ambientFilterNode) {
+      try { ambientFilterNode.disconnect(); } catch (e) {}
+      ambientFilterNode = null;
+    }
+    if (ambientGainNode) {
+      try { ambientGainNode.disconnect(); } catch (e) {}
+      ambientGainNode = null;
+    }
     currentAmbientType = 'none';
+  };
+
+  if (fadeDuration <= 0 || !ambientGainNode || !audioCtx) {
+    cleanupNodes();
+    return;
+  }
+
+  try {
+    ambientGainNode.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + fadeDuration);
+    ambientStopTimeout = setTimeout(() => {
+      cleanupNodes();
+      ambientStopTimeout = null;
+    }, Math.round((fadeDuration + 0.05) * 1000));
+  } catch (e) {
+    cleanupNodes();
   }
 }
 
 export function startAmbientSound(type, volume = 0.5) {
-  stopAmbientSound();
+  stopAmbientSound(0); // Detener inmediatamente cualquier sonido previo sin retrasos
   if (!type || type === 'none') return;
 
   try {
@@ -439,4 +455,12 @@ export function startAmbientSound(type, volume = 0.5) {
   } catch (err) {
     console.warn('Error al iniciar sonido de ambiente:', err);
   }
+}
+
+// Limpiar recursos de audio si se cierra o navega fuera de la pestaña
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeunload', () => {
+    stopAmbientSound(0);
+    stopSpeechDictation();
+  });
 }
