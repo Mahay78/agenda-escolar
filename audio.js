@@ -318,3 +318,125 @@ export function startSpeechDictation({ targetInput, onStatusChange, lang = 'es-E
     if (onStatusChange) onStatusChange('error', err.message);
   }
 }
+
+// ==========================================================================
+// MODO ZEN: GENERADOR DE SONIDOS DE AMBIENTE OFFLINE (ROADMAP ITEM 16)
+// ==========================================================================
+let ambientSourceNode = null;
+let ambientGainNode = null;
+let ambientFilterNode = null;
+let ambientLfoNode = null;
+let currentAmbientType = 'none';
+
+export function getCurrentAmbientType() {
+  return currentAmbientType;
+}
+
+export function setAmbientVolume(vol) {
+  if (ambientGainNode && audioCtx) {
+    const clamped = Math.max(0, Math.min(1, vol));
+    ambientGainNode.gain.setValueAtTime(clamped, audioCtx.currentTime);
+  }
+}
+
+export function stopAmbientSound() {
+  if (ambientGainNode && audioCtx) {
+    try {
+      ambientGainNode.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+      setTimeout(() => {
+        if (ambientSourceNode) {
+          try { ambientSourceNode.stop(); } catch (e) {}
+          ambientSourceNode.disconnect();
+          ambientSourceNode = null;
+        }
+        if (ambientLfoNode) {
+          try { ambientLfoNode.stop(); } catch (e) {}
+          ambientLfoNode.disconnect();
+          ambientLfoNode = null;
+        }
+        if (ambientFilterNode) {
+          ambientFilterNode.disconnect();
+          ambientFilterNode = null;
+        }
+        currentAmbientType = 'none';
+      }, 550);
+    } catch (e) {
+      currentAmbientType = 'none';
+    }
+  } else {
+    currentAmbientType = 'none';
+  }
+}
+
+export function startAmbientSound(type, volume = 0.5) {
+  stopAmbientSound();
+  if (!type || type === 'none') return;
+
+  try {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+
+    const sampleRate = ctx.sampleRate;
+    const bufferSize = sampleRate * 4;
+    const buffer = ctx.createBuffer(1, bufferSize, sampleRate);
+    const data = buffer.getChannelData(0);
+
+    // Generar Ruido Rosa suave (Algoritmo de Paul Kellet)
+    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1;
+      b0 = 0.99886 * b0 + white * 0.0555179;
+      b1 = 0.99332 * b1 + white * 0.0750759;
+      b2 = 0.96900 * b2 + white * 0.1538520;
+      b3 = 0.86650 * b3 + white * 0.3104856;
+      b4 = 0.55000 * b4 + white * 0.5329522;
+      b5 = -0.7616 * b5 - white * 0.0168980;
+      data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.11;
+      b6 = white * 0.115926;
+    }
+
+    ambientSourceNode = ctx.createBufferSource();
+    ambientSourceNode.buffer = buffer;
+    ambientSourceNode.loop = true;
+
+    ambientGainNode = ctx.createGain();
+    ambientGainNode.gain.setValueAtTime(0.001, ctx.currentTime);
+    ambientGainNode.gain.linearRampToValueAtTime(Math.max(0, Math.min(1, volume)), ctx.currentTime + 0.8);
+
+    ambientFilterNode = ctx.createBiquadFilter();
+
+    if (type === 'rain') {
+      ambientFilterNode.type = 'lowpass';
+      ambientFilterNode.frequency.setValueAtTime(1200, ctx.currentTime);
+      ambientFilterNode.Q.setValueAtTime(1.2, ctx.currentTime);
+    } else if (type === 'waves') {
+      ambientFilterNode.type = 'lowpass';
+      ambientFilterNode.frequency.setValueAtTime(600, ctx.currentTime);
+
+      ambientLfoNode = ctx.createOscillator();
+      const lfoGain = ctx.createGain();
+      ambientLfoNode.type = 'sine';
+      ambientLfoNode.frequency.setValueAtTime(0.12, ctx.currentTime);
+      lfoGain.gain.setValueAtTime(350, ctx.currentTime);
+      ambientLfoNode.connect(lfoGain);
+      lfoGain.connect(ambientFilterNode.frequency);
+      ambientLfoNode.start();
+    } else if (type === 'white_noise') {
+      ambientFilterNode.type = 'lowpass';
+      ambientFilterNode.frequency.setValueAtTime(3000, ctx.currentTime);
+    } else if (type === 'cafe') {
+      ambientFilterNode.type = 'bandpass';
+      ambientFilterNode.frequency.setValueAtTime(900, ctx.currentTime);
+      ambientFilterNode.Q.setValueAtTime(0.7, ctx.currentTime);
+    }
+
+    ambientSourceNode.connect(ambientFilterNode);
+    ambientFilterNode.connect(ambientGainNode);
+    ambientGainNode.connect(ctx.destination);
+
+    ambientSourceNode.start();
+    currentAmbientType = type;
+  } catch (err) {
+    console.warn('Error al iniciar sonido de ambiente:', err);
+  }
+}

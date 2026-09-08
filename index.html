@@ -324,6 +324,9 @@
         <button type="button" class="segmented-tab-btn" data-subtab="tab-projects">
           <span>🎨</span> Proyectos
         </button>
+        <button type="button" class="segmented-tab-btn" data-subtab="tab-calendar">
+          <span>📆</span> Calendario
+        </button>
       </div>
 
       <!-- Subpanel 1: Deberes y Tareas -->
@@ -395,6 +398,9 @@
           <button id="btn-export-schedule-ics" class="btn-secondary" style="width: auto; display: inline-flex; align-items: center; gap: 6px;" title="Exportar horario a Google/Apple/Outlook Calendar">
             <span>📅</span> Calendario (.ics)
           </button>
+          <button id="btn-toggle-schedule-matrix" class="btn-secondary" style="width: auto; display: inline-flex; align-items: center; gap: 6px;" title="Alternar entre vista de día y matriz semanal completa">
+            <span>🗂️</span> Matriz Semanal
+          </button>
           <button id="btn-print-schedule" class="btn-secondary" style="width: auto; display: inline-flex; align-items: center; gap: 6px;" title="Imprimir horario directamente">
             <span>🖨️</span> Imprimir
           </button>
@@ -402,7 +408,7 @@
       </div>
 
       <!-- Selector de día -->
-      <div class="day-selector-pills">
+      <div id="schedule-day-selector" class="day-selector-pills">
         <button class="day-pill active" data-day="1">Lunes</button>
         <button class="day-pill" data-day="2">Martes</button>
         <button class="day-pill" data-day="3">Miércoles</button>
@@ -412,6 +418,11 @@
 
       <!-- Horario del día seleccionado -->
       <div id="schedule-timeline-container" class="schedule-timeline">
+        <!-- Renderizado dinámicamente -->
+      </div>
+
+      <!-- Matriz Semanal Completa -->
+      <div id="schedule-matrix-container" class="schedule-matrix-wrapper hidden">
         <!-- Renderizado dinámicamente -->
       </div>
     
@@ -483,6 +494,44 @@
       </div>
     
       </div>
+
+      <!-- Subpanel 6: Calendario Mensual Completo -->
+      <div id="tab-calendar" class="subtab-panel">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title"><span>📆</span> Calendario Escolar Mensual</h2>
+            <p class="section-subtitle">Visualiza todas tus entregas, exámenes y eventos en cuadrícula</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="calendar-month-header">
+            <div class="calendar-month-title">
+              <span>📅</span>
+              <span id="calendar-current-month-label">Mes Año</span>
+            </div>
+            <div class="calendar-nav-buttons">
+              <button type="button" id="btn-calendar-prev" class="btn-secondary" style="width: auto; padding: 6px 12px;">◀</button>
+              <button type="button" id="btn-calendar-today" class="btn-secondary" style="width: auto; padding: 6px 14px;">Hoy</button>
+              <button type="button" id="btn-calendar-next" class="btn-secondary" style="width: auto; padding: 6px 12px;">▶</button>
+            </div>
+          </div>
+          <div id="calendar-month-grid" class="calendar-grid">
+            <!-- Días renderizados dinámicamente -->
+          </div>
+        </div>
+
+        <!-- Detalle del día seleccionado en el calendario -->
+        <div id="calendar-day-details-card" class="card" style="margin-top: 16px; display: none;">
+          <div class="section-header">
+            <h3 id="calendar-selected-day-title" class="section-title"><span>📌</span> Eventos del Día</h3>
+            <button type="button" id="btn-calendar-add-task-day" class="btn-action-small">➕ Añadir Tarea</button>
+          </div>
+          <div id="calendar-selected-day-items">
+            <!-- Tareas y exámenes del día seleccionado -->
+          </div>
+        </div>
+      </div>
     </section>
 
 
@@ -501,6 +550,9 @@
         </button>
         <button type="button" class="segmented-tab-btn" data-subtab="tab-gallery">
           <span>📸</span> Fotos Apuntes
+        </button>
+        <button type="button" class="segmented-tab-btn" data-subtab="tab-mocktest">
+          <span>📝</span> Simulacro Test
         </button>
       </div>
 
@@ -522,6 +574,13 @@
           <button type="button" id="btn-open-flashcards-ai" class="btn-primary" style="width: auto; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border: none; box-shadow: 0 2px 8px rgba(139, 92, 246, 0.25);" title="Generar fichas automáticas con IA a partir de un tema o apuntes">
             ✨ Generar con IA
           </button>
+          <button type="button" id="btn-export-flashcards" class="btn-secondary" style="width: auto;" title="Exportar mazo a archivo JSON">
+            📤 Exportar
+          </button>
+          <button type="button" id="btn-import-flashcards" class="btn-secondary" style="width: auto;" title="Importar mazo desde archivo JSON">
+            📥 Importar
+          </button>
+          <input type="file" id="input-import-flashcards-file" accept=".json" style="display: none;" />
           <button type="button" id="btn-open-new-flashcard" class="btn-secondary" style="width: auto;">
             ➕ Nueva Ficha
           </button>
@@ -555,9 +614,12 @@
 
       <!-- VISTA 1: MODO REPASO ACTIVO (SESIÓN INTERACTIVA CON FLIP CARD 3D) -->
       <div id="flashcards-study-view">
-        <!-- Indicador de progreso de la sesión -->
-        <div id="flashcard-study-header" style="max-width: 620px; margin: 0 auto 12px auto; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem;">
+        <!-- Indicador de progreso de la sesión y Modo Escritura -->
+        <div id="flashcard-study-header" style="max-width: 620px; margin: 0 auto 12px auto; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; flex-wrap: wrap; gap: 8px;">
           <span id="flashcard-session-progress-text" style="font-weight: 700; color: var(--text-main);">Ficha 1 de 5</span>
+          <button type="button" id="btn-toggle-writing-mode" class="btn-action-small" style="font-size: 0.78rem;">
+            ✍️ Modo Escritura: <span id="writing-mode-status">OFF</span>
+          </button>
           <div style="width: 140px; height: 8px; background: var(--bg-input); border-radius: var(--radius-full); overflow: hidden;">
             <div id="flashcard-session-progress-fill" style="width: 20%; height: 100%; background: var(--primary); transition: width 0.3s ease;"></div>
           </div>
@@ -572,7 +634,7 @@
                 <span id="study-card-subject" class="flashcard-subject-pill" style="background: rgba(59, 130, 246, 0.15); color: var(--primary);">
                   🎨 Asignatura
                 </span>
-                <div id="study-card-box-indicator" class="flashcard-box-indicator" title="Nivel en el sistema Leitner">
+                <div id="study-card-box-indicator" class="flashcard-box-indicator" title="Nivel en el sistema Leitner / SM-2">
                   <!-- Pips 1 a 5 -->
                 </div>
               </div>
@@ -581,6 +643,18 @@
                 <h3 id="study-card-front" class="flashcard-question-text">¿Pregunta o Concepto?</h3>
                 <div id="study-card-hint-box" class="flashcard-hint-box hidden">
                   💡 <span id="study-card-hint-text">Pista...</span>
+                </div>
+
+                <!-- Modo Escritura (Roadmap Item 15) -->
+                <div id="flashcard-writing-container" class="hidden" style="margin-top: 14px; text-align: left; width: 100%;">
+                  <label for="input-flashcard-answer" style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">
+                    ✍️ Teclea tu respuesta para entrenar la memoria:
+                  </label>
+                  <div style="display: flex; gap: 6px;">
+                    <input type="text" id="input-flashcard-answer" class="form-input" placeholder="Escribe aquí tu definición..." autocomplete="off" style="font-size: 0.85rem;" />
+                    <button type="button" id="btn-check-flashcard-answer" class="btn-primary" style="width: auto; padding: 6px 14px; font-size: 0.85rem; white-space: nowrap;">Comprobar</button>
+                  </div>
+                  <div id="flashcard-writing-feedback" class="hidden" style="font-size: 0.82rem; margin-top: 6px; padding: 8px 12px; border-radius: var(--radius-sm); font-weight: 600;"></div>
                 </div>
               </div>
 
@@ -608,7 +682,7 @@
               </div>
 
               <div class="flashcard-face-bottom">
-                <span style="font-weight: 600;">¿Qué tal te la sabías? Evalúate abajo 👇</span>
+                <span style="font-weight: 600;">¿Qué tal te la sabías? Evalúate con SM-2 👇</span>
                 <button type="button" id="btn-flip-back" class="btn-action-small" style="font-size: 0.75rem;">
                   🔄 Girar
                 </button>
@@ -617,19 +691,23 @@
           </div>
         </div>
 
-        <!-- Botones de Calificación Leitner -->
+        <!-- Botones de Calificación SM-2 (Roadmap Item 14) -->
         <div id="flashcard-rating-controls" class="flashcard-rating-bar">
-          <button type="button" id="btn-rate-hard" class="btn-rating btn-rating-hard" title="Volver a estudiar pronto (Caja 1)">
+          <button type="button" id="btn-rate-again" class="btn-rating" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.3); color: #ef4444;" title="Fallo: repasar de nuevo hoy">
+            <span>🔄 Otra vez</span>
+            <span class="rating-sub">1 día &bull; Reiniciar</span>
+          </button>
+          <button type="button" id="btn-rate-hard" class="btn-rating btn-rating-hard" title="Costó recordar">
             <span>❌ Difícil</span>
-            <span class="rating-sub">Caja 1 &bull; Mañana</span>
+            <span id="rating-hard-sub" class="rating-sub">Intervalo corto</span>
           </button>
-          <button type="button" id="btn-rate-good" class="btn-rating btn-rating-good" title="Mantiene el ritmo de repaso">
-            <span>🤔 Regular</span>
-            <span id="rating-good-sub" class="rating-sub">En 3 días</span>
+          <button type="button" id="btn-rate-good" class="btn-rating btn-rating-good" title="Mantiene el ritmo científico SM-2">
+            <span>🤔 Bueno</span>
+            <span id="rating-good-sub" class="rating-sub">En varios días</span>
           </button>
-          <button type="button" id="btn-rate-easy" class="btn-rating btn-rating-easy" title="¡Bien aprendida! Sube de nivel Leitner">
-            <span>✅ ¡Fácil!</span>
-            <span id="rating-easy-sub" class="rating-sub">Subir Caja</span>
+          <button type="button" id="btn-rate-easy" class="btn-rating btn-rating-easy" title="¡Bien aprendida! Aumenta facilidad EF">
+            <span>⚡ ¡Fácil!</span>
+            <span id="rating-easy-sub" class="rating-sub">Salto grande</span>
           </button>
         </div>
 
@@ -737,6 +815,7 @@
           <button id="btn-pomo-start" class="btn-primary" style="font-size: 1.05rem; padding: 12px 28px; width: auto;">▶️ Iniciar</button>
           <button id="btn-pomo-pause" class="btn-secondary hidden" style="font-size: 1.05rem; padding: 12px 28px; width: auto;">⏸️ Pausar</button>
           <button id="btn-pomo-reset" class="btn-secondary" style="font-size: 1.05rem; padding: 12px 20px; width: auto;">🔄 Reiniciar</button>
+          <button id="btn-pomo-pip" class="btn-secondary" style="font-size: 1.05rem; padding: 12px 20px; width: auto;" title="Abrir temporizador en ventana flotante (Picture-in-Picture)">🖼️ Flotante</button>
         </div>
 
         <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-around;">
@@ -747,6 +826,31 @@
           <div>
             <div id="pomo-focus-time" style="font-size: 1.4rem; font-weight: 800; color: var(--success);">0 min</div>
             <div class="grade-metric-label">Tiempo Enfocado</div>
+          </div>
+        </div>
+
+        <!-- Selector de Sonido de Ambiente Modo Zen (Roadmap Items 16 & 53) -->
+        <div style="margin-top: 20px; padding: 14px; background: var(--bg-input); border-radius: var(--radius-md); border: 1px solid var(--border-color); text-align: left;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 6px;">
+              <span>🌿</span> Sonidos de Concentración Zen
+            </span>
+            <button type="button" id="btn-pomodoro-zen-fullscreen" class="btn-action-small" style="font-size: 0.75rem;" title="Modo Zen Pantalla Completa (F11)">
+              ⛶ Modo Zen
+            </button>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <select id="select-ambient-sound" class="form-select" style="flex: 1; min-width: 150px; font-size: 0.82rem; padding: 6px 10px;">
+              <option value="none">🔇 Sin sonido de fondo</option>
+              <option value="rain">🌧️ Lluvia suave en ventana</option>
+              <option value="waves">🌊 Olas de mar relajantes</option>
+              <option value="cafe">☕ Cafetería / Biblioteca</option>
+              <option value="white_noise">📻 Ruido Rosa de enfoque</option>
+            </select>
+            <div style="display: flex; align-items: center; gap: 6px; flex: 1; min-width: 120px;">
+              <span style="font-size: 0.75rem; color: var(--text-muted);">🔊</span>
+              <input type="range" id="slider-ambient-volume" min="0" max="1" step="0.05" value="0.5" style="width: 100%; cursor: pointer;" title="Volumen de sonido ambiental" />
+            </div>
           </div>
         </div>
       </div>
@@ -775,6 +879,80 @@
         <p class="section-subtitle">Cargando fotos guardadas...</p>
       </div>
     
+      </div>
+
+      <!-- Subpanel 5: Simulador de Exámenes con IA (Mock Tests) -->
+      <div id="tab-mocktest" class="subtab-panel">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title"><span>📝</span> Simulador de Exámenes con IA</h2>
+            <p class="section-subtitle">Exámenes tipo test con temporizador, corrección automática y explicación de cada fallo</p>
+          </div>
+        </div>
+
+        <!-- Tarjeta de configuración del simulacro -->
+        <div class="card" id="mock-test-setup-card">
+          <h3 style="margin-bottom: 14px; font-size: 1.05rem;">⚙️ Configurar Examen de Prueba</h3>
+          <div class="form-group">
+            <label for="mock-test-subject">Asignatura:</label>
+            <select id="mock-test-subject" class="form-input"></select>
+          </div>
+          <div class="form-group">
+            <label for="mock-test-topic">Tema o conceptos específicos a evaluar:</label>
+            <input type="text" id="mock-test-topic" class="form-input" placeholder="Ej: La Célula y Mitosis, Revolución Francesa, Sintaxis..." />
+          </div>
+          <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label for="mock-test-count">Número de preguntas:</label>
+              <select id="mock-test-count" class="form-input">
+                <option value="3">3 preguntas (Rápido)</option>
+                <option value="5" selected>5 preguntas (Estándar)</option>
+                <option value="8">8 preguntas (Completo)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="mock-test-timer-select">Límite de tiempo:</label>
+              <select id="mock-test-timer-select" class="form-input">
+                <option value="0">Sin límite de tiempo</option>
+                <option value="300">5 minutos</option>
+                <option value="600" selected>10 minutos</option>
+                <option value="900">15 minutos</option>
+              </select>
+            </div>
+          </div>
+          <button type="button" id="btn-start-mock-test" class="btn-primary" style="margin-top: 10px; background: linear-gradient(135deg, #3b82f6, #8b5cf6);">
+            🚀 Iniciar Simulacro de Examen
+          </button>
+        </div>
+
+        <!-- Contenedor del Examen Activo -->
+        <div id="mock-test-active-container" class="card hidden" style="margin-top: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 8px;">
+            <div>
+              <h3 id="mock-test-running-title" style="margin: 0; font-size: 1.05rem;">Simulacro en curso</h3>
+              <span id="mock-test-progress-text" style="font-size: 0.8rem; color: var(--text-muted);">Responde a todas las preguntas</span>
+            </div>
+            <div id="mock-test-countdown-badge" style="font-size: 1.25rem; font-weight: 800; font-family: monospace; color: var(--primary);">
+              ⏱️ 10:00
+            </div>
+          </div>
+          <div id="mock-test-questions-list" class="mock-quiz-container">
+            <!-- Preguntas generadas -->
+          </div>
+          <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+            <button type="button" id="btn-finish-mock-test" class="btn-primary" style="width: auto;">
+              ✅ Finalizar y Calificar Examen
+            </button>
+            <button type="button" id="btn-cancel-mock-test" class="btn-secondary" style="width: auto;">
+              ✕ Cancelar
+            </button>
+          </div>
+        </div>
+
+        <!-- Contenedor de Resultados y Corrección -->
+        <div id="mock-test-results-container" class="card hidden" style="margin-top: 14px;">
+          <!-- Resultado final, nota sobre 10 y feedback -->
+        </div>
       </div>
     </section>
 
@@ -805,6 +983,9 @@
         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
           <button id="btn-toggle-grade-simulator" class="btn-secondary" style="width: auto; display: inline-flex; align-items: center; gap: 6px;" title="Calcular qué nota necesitas">
             <span>🧮</span> Simulador
+          </button>
+          <button id="btn-toggle-evau-simulator" class="btn-secondary" style="width: auto; display: inline-flex; align-items: center; gap: 6px; background: rgba(139, 92, 246, 0.15); color: #a78bfa; border-color: rgba(139, 92, 246, 0.35);" title="Simulador Nota de Admisión EVAU/EBAU sobre 14">
+            <span>🎓</span> Simulador EVAU 14
           </button>
           <button id="btn-export-grades-pdf" class="btn-primary" style="width: auto; display: inline-flex; align-items: center; gap: 6px;" title="Descargar Boletín Oficial en PDF">
             <span>📄</span> Descargar PDF
@@ -851,6 +1032,61 @@
           </div>
         </div>
         <div id="sim-result-box" class="hidden" style="margin-top: 12px; padding: 12px; border-radius: var(--radius-sm); font-size: 0.95rem;"></div>
+      </div>
+
+      <!-- Simulador de Nota de Admisión EVAU / EBAU (Roadmap Item 24) -->
+      <div id="evau-simulator-card" class="card hidden" style="margin-bottom: 20px; border-left: 4px solid #8b5cf6;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <h3 style="font-size: 1.05rem; margin: 0; display: flex; align-items: center; gap: 8px;">
+            <span>🎓</span> Simulador Nota de Admisión EVAU / EBAU (Sobre 14 Puntos)
+          </h3>
+          <button type="button" id="btn-close-evau-simulator" class="btn-action-small" style="font-size: 0.8rem;">✕ Cerrar</button>
+        </div>
+        <p class="section-subtitle" style="margin-bottom: 14px;">
+          Calcula tu puntuación universitaria oficial: 60% Bachillerato + 40% Fase General EVAU + Optativas ponderadas (0.2 y 0.1).
+        </p>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nota Media Bachillerato (NMB - 60%)</label>
+            <input type="number" id="evau-nmb" class="form-input" min="0" max="10" step="0.01" placeholder="Ej: 8.25" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Calificación Fase General (CFG - 40%)</label>
+            <input type="number" id="evau-cfg" class="form-input" min="0" max="10" step="0.01" placeholder="Ej: 7.60 (Mín 4.0)" />
+          </div>
+        </div>
+
+        <div class="form-row" style="margin-top: 6px;">
+          <div class="form-group">
+            <label class="form-label">Materia Optativa 1 (Nota 0 - 10)</label>
+            <div style="display: flex; gap: 6px;">
+              <input type="number" id="evau-m1-score" class="form-input" min="0" max="10" step="0.01" placeholder="Ej: 8.5" style="flex: 2;" />
+              <select id="evau-m1-weight" class="form-select" style="flex: 1;" title="Ponderación">
+                <option value="0.2">x 0.2</option>
+                <option value="0.1">x 0.1</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Materia Optativa 2 (Nota 0 - 10)</label>
+            <div style="display: flex; gap: 6px;">
+              <input type="number" id="evau-m2-score" class="form-input" min="0" max="10" step="0.01" placeholder="Ej: 9.0" style="flex: 2;" />
+              <select id="evau-m2-weight" class="form-select" style="flex: 1;" title="Ponderación">
+                <option value="0.2">x 0.2</option>
+                <option value="0.1">x 0.1</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" id="btn-calc-evau" class="btn-primary" style="margin-top: 10px; background: linear-gradient(135deg, #8b5cf6, #3b82f6); border: none;">
+          ⚡ Calcular Nota de Admisión EVAU / 14
+        </button>
+
+        <div id="evau-result-box" class="hidden" style="margin-top: 14px; padding: 14px; border-radius: var(--radius-sm); border: 1px solid rgba(139, 92, 246, 0.3); background: var(--bg-input);">
+          <!-- Resultados calculados -->
+        </div>
       </div>
 
       <!-- Resumen de media -->
@@ -904,6 +1140,54 @@
         <div>
           <h2 class="section-title"><span>⚙️</span> Ajustes y Configuración</h2>
           <p class="section-subtitle">Personaliza tus datos, asignaturas y gestiona tus copias de seguridad</p>
+        </div>
+      </div>
+
+      <!-- Apariencia, Temas y Accesibilidad (Fase 1 Roadmap) -->
+      <div class="card">
+        <div class="section-header">
+          <div>
+            <h3 class="section-title"><span>🎨</span> Apariencia y Accesibilidad</h3>
+            <p class="section-subtitle">Personaliza los temas visuales y activa la tipografía adaptada para dislexia</p>
+          </div>
+        </div>
+
+        <div class="form-row" style="margin-bottom: 16px;">
+          <div class="form-group">
+            <label class="form-label" for="setting-theme-select">Tema de Color</label>
+            <select id="setting-theme-select" class="form-select">
+              <option value="dark">🌙 Oscuro Moderno (Por defecto)</option>
+              <option value="light">☀️ Claro Luminoso</option>
+              <option value="oled">🖤 OLED Negro Puro (Ahorro de batería)</option>
+              <option value="lavender">🪻 Lavanda Suave</option>
+              <option value="forest">🌲 Bosque Esmeralda</option>
+              <option value="pastel">🎨 Pastel Cálido</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="setting-font-select">Tipografía y Lectura</label>
+            <select id="setting-font-select" class="form-select">
+              <option value="default">Estándar del Sistema</option>
+              <option value="dyslexic">📖 OpenDyslexic (Lectura para Dislexia)</option>
+              <option value="hyperlegible">👓 Atkinson Hyperlegible (Alta Legibilidad)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Atajos de teclado (Guía rápida) -->
+        <div style="background: var(--bg-input); padding: 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+          <div style="font-weight: 700; font-size: 0.88rem; margin-bottom: 8px; color: var(--text-main); display: flex; align-items: center; gap: 6px;">
+            <span>⌨️</span> Atajos de Teclado Globales (Power-User)
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; font-size: 0.8rem; color: var(--text-muted);">
+            <div><kbd class="search-kbd">N</kbd> Nueva Tarea</div>
+            <div><kbd class="search-kbd">E</kbd> Nuevo Examen</div>
+            <div><kbd class="search-kbd">Espacio</kbd> Iniciar/Pausar Pomodoro</div>
+            <div><kbd class="search-kbd">1 - 4</kbd> Cambiar de Pestaña</div>
+            <div><kbd class="search-kbd">Ctrl K</kbd> Buscador Global</div>
+            <div><kbd class="search-kbd">Esc</kbd> Cerrar Ventanas</div>
+          </div>
         </div>
       </div>
 
@@ -1204,6 +1488,21 @@
           <textarea id="task-desc-input" class="form-textarea" rows="3" placeholder="Detalles de la tarea, instrucciones del profesor..."></textarea>
         </div>
         
+        <!-- Subtareas / Lista de Control (Roadmap Item 11) -->
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <label class="form-label" style="margin-bottom: 0;">☑️ Subtareas / Checklist</label>
+            <span id="task-subtasks-count" style="font-size: 0.75rem; color: var(--text-muted);">0 pasos</span>
+          </div>
+          <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+            <input type="text" id="input-new-subtask" class="form-input" placeholder="Añadir paso o subtarea..." style="font-size: 0.85rem;" />
+            <button type="button" id="btn-add-subtask" class="btn-secondary" style="width: auto; padding: 6px 14px; font-size: 0.85rem; white-space: nowrap;">➕ Añadir</button>
+          </div>
+          <div id="task-subtasks-list" style="display: flex; flex-direction: column; gap: 6px; max-height: 140px; overflow-y: auto;">
+            <!-- Renderizado dinámico de subtareas -->
+          </div>
+        </div>
+
         <!-- Fotos adjuntas en la tarea -->
         <div class="form-group">
           <label class="form-label">Fotos de la Pizarra o Libro</label>
@@ -1346,6 +1645,20 @@
         <div class="form-group">
           <label class="form-label">Concepto / Examen / Trabajo *</label>
           <input type="text" id="grade-title-input" class="form-input" placeholder="Ej: Control de Polinomios" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Tipo de Evaluación (Ponderación)</label>
+            <select id="grade-type-select" class="form-select">
+              <option value="exam" selected>📝 Examen / Control (70%)</option>
+              <option value="work">📂 Trabajo / Práctica (20%)</option>
+              <option value="attitude">🙋 Actitud / Participación / Cuaderno (10%)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Peso Personalizado (%)</label>
+            <input type="number" id="grade-weight-input" class="form-input" min="1" max="100" placeholder="Ej: 70" />
+          </div>
         </div>
         <div class="form-row">
           <div class="form-group">
@@ -1900,8 +2213,25 @@
       <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(239, 68, 68, 0.15)); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: var(--radius-md); padding: 18px; text-align: center; margin-bottom: 16px;">
         <div style="font-size: 2.5rem; line-height: 1; margin-bottom: 6px;">🔥</div>
         <h2 id="modal-streak-days" style="margin: 0 0 4px 0; font-size: 1.8rem; color: #f59e0b;">1 Día en Racha</h2>
+        
+        <div style="display: flex; justify-content: center; gap: 8px; align-items: center; margin: 4px 0 8px 0;">
+          <span id="modal-rank-badge" class="student-rank-badge">🌱 Novato (Nivel 1)</span>
+          <span id="modal-freeze-badge" class="badge" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); font-size: 0.78rem;">🧊 1 Congelador Activo</span>
+        </div>
+
+        <!-- Barra de Progreso XP -->
+        <div class="xp-progress-wrapper" style="margin: 8px auto 14px auto; max-width: 440px;">
+          <div class="xp-progress-header">
+            <span id="modal-xp-total">0 XP Totales</span>
+            <span id="modal-xp-next" style="color: var(--text-muted);">Siguiente nivel en 100 XP</span>
+          </div>
+          <div class="xp-bar-track">
+            <div id="modal-xp-fill" class="xp-bar-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+
         <p style="margin: 0; font-size: 0.85rem; color: var(--text-muted);">
-          ¡Cada día que completas tareas o estudias con Pomodoro mantienes tu llama encendida!
+          ¡Cada día que completas tareas o estudias con Pomodoro mantienes tu llama encendida y ganas XP!
         </p>
         <div style="display: flex; justify-content: space-around; margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(245, 158, 11, 0.25);">
           <div>
@@ -1916,6 +2246,32 @@
             <div id="stat-pomo-sessions" style="font-weight: 800; font-size: 1.15rem; color: var(--success);">0</div>
             <div style="font-size: 0.75rem; color: var(--text-muted);">Sesiones Pomodoro</div>
           </div>
+        </div>
+      </div>
+
+      <!-- Mapa de Calor de Constancia (Roadmap Item 26) -->
+      <div class="heatmap-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <h4 style="margin: 0; font-size: 0.88rem; color: var(--text-main); font-weight: 700;">
+            📅 Constancia y Hábitos (Últimos 70 Días)
+          </h4>
+          <span id="heatmap-total-active" style="font-size: 0.75rem; color: var(--text-muted);">0 días activos</span>
+        </div>
+        <div class="heatmap-scroll-area">
+          <div id="heatmap-grid" class="heatmap-grid">
+            <!-- Celdas generadas dinámicamente -->
+          </div>
+        </div>
+        <div class="heatmap-footer">
+          <span>Menos activo</span>
+          <div class="heatmap-scale">
+            <div class="heatmap-scale-box" style="background: rgba(255, 255, 255, 0.08);"></div>
+            <div class="heatmap-scale-box" style="background: #166534;"></div>
+            <div class="heatmap-scale-box" style="background: #15803d;"></div>
+            <div class="heatmap-scale-box" style="background: #22c55e;"></div>
+            <div class="heatmap-scale-box" style="background: #4ade80;"></div>
+          </div>
+          <span>Más activo</span>
         </div>
       </div>
 
@@ -2215,6 +2571,15 @@
         <button type="button" class="copilot-pill" data-copilot-prompt="¿Cuándo son mis próximos exámenes y qué tengo que estudiar?">
           📝 Próximos exámenes
         </button>
+        <button type="button" class="copilot-pill" id="pill-english-coach" data-copilot-prompt="Actúa como mi English Coach interactivo. Corrígeme cada frase en inglés, enséñame gramática y ayúdame a practicar conversación adaptada a mi nivel.">
+          🇬🇧 English Coach
+        </button>
+        <button type="button" class="copilot-pill" data-copilot-prompt="Actúa como mi Tutor Socrático. No me des la respuesta directa a mis dudas: guíame paso a paso con preguntas para que yo mismo aprenda a resolverlas.">
+          🎯 Tutor Socrático
+        </button>
+        <button type="button" class="copilot-pill" data-copilot-prompt="Revisa y corrige esta redacción escolar, indicando ortografía, vocabulario formal y conectores:">
+          ✍️ Corregir Redacción
+        </button>
         <button type="button" class="copilot-pill" data-copilot-prompt="¿Cómo voy de notas y qué medias llevo?">
           📊 Mis notas
         </button>
@@ -2496,6 +2861,27 @@
         </button>
       </div>
     </div>
+  </div>
+
+  <!-- POMODORO PIP OVERLAY FLOTANTE -->
+  <div id="pomodoro-pip-overlay" class="pomodoro-pip-overlay hidden">
+    <div>
+      <div id="pomodoro-pip-mode" class="pomodoro-pip-mode">Concentración</div>
+      <div id="pomodoro-pip-timer" class="pomodoro-pip-timer">25:00</div>
+    </div>
+    <button type="button" id="pomodoro-pip-btn-play" class="btn-action-small" style="padding: 6px 10px; font-size: 1.1rem;" title="Pausar / Reanudar">⏸️</button>
+    <button type="button" id="pomodoro-pip-btn-close" class="btn-action-small" style="padding: 6px 8px; font-size: 0.85rem;" title="Cerrar ventana flotante">✕</button>
+  </div>
+
+  <!-- MENÚ CONTEXTUAL CLIC DERECHO (DESKTOP) -->
+  <div id="app-context-menu" class="app-context-menu hidden">
+    <div id="context-menu-title" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); padding: 4px 8px;">Acciones Rápidas</div>
+    <button type="button" class="context-menu-item" id="cmenu-btn-priority"><span>⚡</span> Cambiar Prioridad</button>
+    <button type="button" class="context-menu-item" id="cmenu-btn-ai"><span>🤖</span> Preguntar al Copiloto IA</button>
+    <button type="button" class="context-menu-item" id="cmenu-btn-flashcards"><span>🧠</span> Crear Fichas de Estudio</button>
+    <button type="button" class="context-menu-item" id="cmenu-btn-ics"><span>📅</span> Exportar a Calendario (.ics)</button>
+    <div class="context-menu-divider"></div>
+    <button type="button" class="context-menu-item danger" id="cmenu-btn-delete"><span>🗑️</span> Eliminar Elemento</button>
   </div>
 
   <!-- TOASTS DE NOTIFICACIÓN -->

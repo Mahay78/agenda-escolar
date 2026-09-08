@@ -506,6 +506,9 @@ function renderArtifactCard(title, markdownContent, hasExportButton = false) {
               📥 Exportar a Agenda
             </button>
           ` : ''}
+          <button type="button" class="btn-header-action" id="btn-save-to-notes" title="Guardar este resumen en tu bloc de notas">
+            📌 En mis Notas
+          </button>
           <button type="button" class="btn-header-action" id="btn-copy-artifact">
             📋 Copiar
           </button>
@@ -516,6 +519,16 @@ function renderArtifactCard(title, markdownContent, hasExportButton = false) {
       </div>
     </div>
   `;
+
+  // Guardar en Bloc de Notas
+  document.getElementById('btn-save-to-notes')?.addEventListener('click', () => {
+    const current = localStorage.getItem('notebook_scratchpad') || '';
+    const updated = (current ? current + '\n\n' : '') + `### ${title}\n` + markdownContent;
+    localStorage.setItem('notebook_scratchpad', updated);
+    const area = document.getElementById('notebook-scratchpad-input');
+    if (area) area.value = updated;
+    alert('📌 Guardado en tu Bloc de Notas personal.');
+  });
 
   // Copiar
   document.getElementById('btn-copy-artifact')?.addEventListener('click', () => {
@@ -916,6 +929,41 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('chat-messages');
     if (container) {
       container.innerHTML = '<div class="chat-bubble chat-bubble-bot">👋 Conversación reiniciada. Pregúntame lo que quieras sobre tus fuentes.</div>';
+    }
+  });
+
+  // Bloc de Notas Personal (Scratchpad)
+  const scratchpadArea = document.getElementById('notebook-scratchpad-input');
+  if (scratchpadArea) {
+    scratchpadArea.value = localStorage.getItem('notebook_scratchpad') || '';
+    scratchpadArea.addEventListener('input', () => {
+      localStorage.setItem('notebook_scratchpad', scratchpadArea.value);
+    });
+  }
+
+  document.getElementById('btn-tool-scratchpad')?.addEventListener('click', () => {
+    switchToMobileStudio();
+    document.getElementById('studio-welcome-card')?.classList.add('hidden');
+    document.getElementById('artifact-dynamic-container').innerHTML = '';
+    const scratchCard = document.getElementById('studio-scratchpad-card');
+    if (scratchCard) {
+      scratchCard.classList.remove('hidden');
+      if (scratchpadArea) scratchpadArea.value = localStorage.getItem('notebook_scratchpad') || '';
+    }
+  });
+
+  document.getElementById('btn-copy-scratchpad')?.addEventListener('click', () => {
+    if (scratchpadArea) {
+      navigator.clipboard.writeText(scratchpadArea.value).then(() => {
+        alert('📋 Bloc de notas copiado al portapapeles.');
+      });
+    }
+  });
+
+  document.getElementById('btn-clear-scratchpad')?.addEventListener('click', () => {
+    if (confirm('¿Vaciar todo el contenido de tu Bloc de Notas?')) {
+      localStorage.removeItem('notebook_scratchpad');
+      if (scratchpadArea) scratchpadArea.value = '';
     }
   });
 });

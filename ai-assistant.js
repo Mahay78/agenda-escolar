@@ -382,6 +382,185 @@ RESPONDE ÚNICAMENTE CON UN OBJETO JSON VÁLIDO CON ESTA ESTRUCTURA EXACTA (SIN 
 }
 
 /**
+ * Genera un examen simulado tipo test interactivo con preguntas, opciones, solución y explicación razonada
+ * @param {Object} options
+ * @param {string} [options.subjectId] ID de la asignatura
+ * @param {string} [options.topic] Tema del examen
+ * @param {number} [options.questionCount=5] Cantidad de preguntas
+ * @param {string} [options.customText] Texto o apuntes adicionales
+ * @returns {Promise<{ title: string, questions: Array<{ id: number, question: string, options: string[], correctIndex: number, explanation: string }> }>}
+ */
+export async function generateMockTestWithAI({ subjectId = 'all', topic = '', questionCount = 5, customText = '' }) {
+  const apiKey = await getAIApiKey();
+  const state = appActionCallbacks.getAppState ? appActionCallbacks.getAppState() : null;
+  const targetSub = state?.subjects?.find(s => s.id === subjectId);
+  const subjectName = targetSub?.name || 'General';
+  const cleanTopic = topic || 'Conceptos clave de la asignatura';
+
+  if (apiKey) {
+    try {
+      const prompt = `Actúa como un profesor exigente y pedagógico de educación secundaria y bachillerato.
+Genera un simulacro de examen tipo test de autoevaluación con exactamente ${questionCount} preguntas.
+Asignatura: "${subjectName}".
+Tema a evaluar: "${cleanTopic}".
+${customText ? `Apuntes / Fuentes de referencia:\n"""\n${customText}\n"""\n` : ''}
+
+Requisitos para CADA pregunta:
+1. "id": Número correlativo 1 a ${questionCount}.
+2. "question": Enunciado claro, riguroso y bien planteado que ponga a prueba el razonamiento del alumno.
+3. "options": Array de 4 opciones ["A) ...", "B) ...", "C) ...", "D) ..."] donde solo una sea correcta y los distractores sean verosímiles pero erróneos.
+4. "correctIndex": Número 0, 1, 2 o 3 que indica la opción correcta.
+5. "explanation": Explicación didáctica completa (2-3 oraciones) de por qué esa es la respuesta correcta y qué concepto o regla demuestra.
+
+RESPONDE ÚNICAMENTE CON UN OBJETO JSON VÁLIDO CON ESTA ESTRUCTURA EXACTA (SIN TEXTO EXTRA NI MARKDOWN EXTERIOR):
+{
+  "title": "Simulacro: ${subjectName} - ${cleanTopic}",
+  "questions": [
+    {
+      "id": 1,
+      "question": "¿Enunciado de la pregunta?",
+      "options": [
+        "A) Opción primera",
+        "B) Opción segunda",
+        "C) Opción tercera",
+        "D) Opción cuarta"
+      ],
+      "correctIndex": 0,
+      "explanation": "La opción A es la correcta porque..."
+    }
+  ]
+}`;
+
+      const candidateModels = ['gemini-2.5-flash', 'gemini-flash-latest', 'gemini-1.5-flash', 'gemini-2.0-flash'];
+      for (const model of candidateModels) {
+        try {
+          const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+          const res = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { responseMimeType: 'application/json' }
+            })
+          });
+
+          if (res.ok) {
+            const data = await res.json();
+            const jsonText = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+            const parsed = JSON.parse(jsonText);
+            if (Array.isArray(parsed.questions) && parsed.questions.length > 0) {
+              return {
+                title: parsed.title || `Examen: ${subjectName} - ${cleanTopic}`,
+                questions: parsed.questions
+              };
+            }
+          }
+          if (res.status === 404) continue;
+        } catch (mErr) {}
+      }
+    } catch (err) {
+      console.warn('Error al generar examen simulado con Gemini:', err);
+    }
+  }
+
+  // Fallback offline heurístico
+  return generateOfflineMockTest(subjectName, cleanTopic, questionCount, state, subjectId);
+}
+
+/**
+ * Generador offline de simulacros de examen a partir de fichas o banco didáctico local
+ */
+function generateOfflineMockTest(subjectName, topic, count, state, subjectId) {
+  const cards = (state?.flashcards || []).filter(c => subjectId === 'all' || c.subjectId === subjectId);
+  const questions = [];
+
+  if (cards.length >= 3) {
+    const shuffled = [...cards].sort(() => 0.5 - Math.random());
+    const selected = shuffled.slice(0, Math.min(cards.length, count));
+
+    selected.forEach((card, idx) => {
+      // Tomar distractores de otras fichas
+      const otherAnswers = shuffled
+        .filter(c => c.id !== card.id)
+        .map(c => c.back.length > 60 ? c.back.substring(0, 57) + '...' : c.back)
+        .slice(0, 3);
+
+      const correctAnswer = card.back.length > 60 ? card.back.substring(0, 57) + '...' : card.back;
+      const allOpts = [correctAnswer, ...otherAnswers];
+      while (allOpts.length < 4) {
+        allOpts.push(`Ninguna de las opciones anteriores es correcta para ${topic}`);
+      }
+      // Mezclar opciones
+      const shuffledOpts = allOpts.map((opt, i) => ({ opt, original: i === 0 })).sort(() => 0.5 - Math.random());
+      const correctIndex = shuffledOpts.findIndex(o => o.original);
+      const letters = ['A', 'B', 'C', 'D'];
+
+      questions.push({
+        id: idx + 1,
+        question: card.front.startsWith('¿') ? card.front : `¿Cuál es la definición o concepto de "${card.front}"?`,
+        options: shuffledOpts.map((o, i) => `${letters[i]}) ${o.opt}`),
+        correctIndex: correctIndex >= 0 ? correctIndex : 0,
+        explanation: `La respuesta correcta es la ${letters[correctIndex >= 0 ? correctIndex : 0]} según tus fichas de estudio: "${card.back}".`
+      });
+    });
+  }
+
+  // Si no hay fichas suficientes, crear preguntas de autoevaluación guiada
+  if (questions.length === 0) {
+    const templates = [
+      {
+        q: `En el estudio de ${subjectName} (${topic}), ¿cuál es el principio metodológico principal?`,
+        opts: [
+          `A) Análisis conceptual fundamentado y contraste de fuentes empíricas.`,
+          `B) Memorización pasiva de datos sin comprobación ni síntesis.`,
+          `C) Omisión de variables independientes en el análisis del problema.`,
+          `D) Suposición subjetiva no contrastable en el entorno académico.`
+        ],
+        c: 0,
+        exp: `El análisis fundamentado y la verificación son los pilares del aprendizaje riguroso en ${subjectName}.`
+      },
+      {
+        q: `Respecto a los temas clave de ${topic}, ¿qué factor resulta determinante para un examen?`,
+        opts: [
+          `A) Ignorar los términos técnicos específicos de la materia.`,
+          `B) La precisión en las definiciones y el dominio de la relación causa-efecto.`,
+          `C) Escribir respuestas ambiguas para no cometer incorrecciones directas.`,
+          `D) No incluir ejemplos prácticos en las respuestas desarrolladas.`
+        ],
+        c: 1,
+        exp: `En las evaluaciones de bachillerato y secundaria, la precisión técnica y la relación causa-efecto son los criterios más valorados en la rúbrica.`
+      },
+      {
+        q: `¿Cuál de las siguientes estrategias de repaso activo es más efectiva para ${topic}?`,
+        opts: [
+          `A) Releer el tema varias veces el día previo al examen sin autoevaluarse.`,
+          `B) Repetición espaciada y resolución de ejercicios prácticos tipo test.`,
+          `C) Subrayar todo el libro con el mismo color sin resumir.`,
+          `D) Estudiar sin descansos durante 5 horas consecutivas.`
+        ],
+        c: 1,
+        exp: `La evidencia neurocientífica demuestra que la repetición espaciada y los simulacros activos mejoran la retención a largo plazo en más de un 70%.`
+      }
+    ];
+
+    templates.slice(0, count).forEach((t, idx) => {
+      questions.push({
+        id: idx + 1,
+        question: t.q,
+        options: t.opts,
+        correctIndex: t.c,
+        explanation: t.exp
+      });
+    });
+  }
+
+  return {
+    title: `Simulacro Offline: ${subjectName} - ${topic}`,
+    questions
+  };
+}
+
+/**
  * Extractor Heurístico Local para crear flashcards sin conexión ni API Key (0 MB)
  */
 function extractLocalFlashcardsHeuristic(text, subjectId, maxCount = 4) {
@@ -531,6 +710,25 @@ Puedes emitir UNA de las siguientes acciones si corresponde:
 
 6. Buscar en la Web / Wikipedia:
 Si el alumno pregunta por un tema enciclopédico específico y quieres ofrecer información verificada, la app también consultará Wikipedia.
+
+7. MODO ENGLISH COACH Y TUTOR DE IDIOMAS:
+Si el estudiante habla en inglés, pide ayuda con inglés o activa el English Coach:
+- Responde de forma interactiva y natural en inglés para fomentar el speaking y la conversación fluida.
+- Corrige amablemente cualquier fallo ortográfico, preposición incorrecta o tiempo verbal.
+- Si detectas una frase mejorable o con un error, añade AL FINAL del mensaje un bloque pedagógico con este formato exacto:
+\`\`\`english_feedback
+{
+  "userSentence": "la frase que escribió el alumno",
+  "betterSentence": "la frase natural y correcta en inglés",
+  "explanation": "regla gramatical o explicación breve en español",
+  "cefrTip": "Sugerencia de nivel B2/C1 o conector formal alternativo"
+}
+\`\`\`
+
+8. MODO TUTOR SOCRÁTICO:
+Si el alumno te pide resolver un problema o duda de forma socrática o paso a paso:
+- NO des la respuesta final de golpe.
+- Guíale con una pregunta estimulante o pista metodológica para que él mismo descubra el siguiente paso del ejercicio.
 
 ¡Comienza respondiendo al alumno con la máxima ayuda!`;
 }
@@ -985,9 +1183,9 @@ No encontré una consulta específica en tu mensaje. Aquí tienes algunos ejempl
 }
 
 /**
- * Síntesis de voz en español para leer respuestas en voz alta (Text-to-Speech)
+ * Síntesis de voz para leer respuestas en voz alta (Text-to-Speech)
  */
-export function speakText(text, onEnd) {
+export function speakText(text, onEnd, lang = 'es-ES') {
   if (!('speechSynthesis' in window)) return;
   stopSpeaking();
 
@@ -1001,15 +1199,20 @@ export function speakText(text, onEnd) {
     .trim();
 
   const utterance = new SpeechSynthesisUtterance(cleanSpeech);
-  utterance.lang = 'es-ES';
-  utterance.rate = 1.05;
+  utterance.lang = lang;
+  utterance.rate = 1.02;
   utterance.pitch = 1.0;
 
-  // Buscar voz española si está disponible
+  // Buscar voz según idioma (español o inglés)
   const voices = window.speechSynthesis.getVoices();
-  const spanishVoice = voices.find(v => v.lang.startsWith('es') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Helena') || v.name.includes('Pablo')));
-  if (spanishVoice) {
-    utterance.voice = spanishVoice;
+  let selectedVoice = null;
+  if (lang.startsWith('en')) {
+    selectedVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Samantha') || v.name.includes('Daniel') || v.name.includes('George')));
+  } else {
+    selectedVoice = voices.find(v => v.lang.startsWith('es') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Helena') || v.name.includes('Pablo')));
+  }
+  if (selectedVoice) {
+    utterance.voice = selectedVoice;
   }
 
   utterance.onend = () => {

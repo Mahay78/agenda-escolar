@@ -39,7 +39,10 @@ import {
 import {
   getGamificationStats,
   recordStudyActivity,
-  ACHIEVEMENTS
+  ACHIEVEMENTS,
+  getRankInfo,
+  generateActivityHeatmap,
+  RANKS
 } from './gamification.js';
 import {
   areNotificationsSupported,
@@ -76,7 +79,8 @@ import {
   processCardReview,
   seedSampleFlashcardsIfNeeded,
   LEITNER_INTERVALS,
-  BOX_NAMES
+  BOX_NAMES,
+  checkAnswerSimilarity
 } from './flashcards.js';
 import {
   startRecording,
@@ -87,7 +91,10 @@ import {
   startSpeechDictation,
   stopSpeechDictation,
   isSpeechRecognitionSupported,
-  isDictating
+  isDictating,
+  startAmbientSound,
+  stopAmbientSound,
+  setAmbientVolume
 } from './audio.js';
 import {
   renderQRCodeToCanvas,
@@ -111,6 +118,7 @@ import {
   registerAppCallbacks,
   askAIAssistant,
   generateFlashcardsWithAI,
+  generateMockTestWithAI,
   getAIApiKey,
   saveAIApiKey,
   testGeminiApiKey,
@@ -199,6 +207,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initSubjectIconPicker();
     initVoiceDictation();
     initGradeSimulator();
+    initEVAUSimulator();
     initPrintActions();
     initGlobalSearch();
     initOcrModule();
@@ -213,6 +222,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     initFirebaseSyncModule();
     initFlashcardsModule();
     initAIAssistantModule();
+    initDesktopInteractions();
+    initCalendarModule();
+    initWeeklyMatrixModule();
+    initPomodoroPiPModule();
+    initFlashcardShareModule();
+    initMockTestModule();
 
     // 4. Renderizar vistas
     renderAllViews();
@@ -346,28 +361,111 @@ function initPWAInstallPrompt() {
   });
 }
 
+const THEMES_LIST = ['dark', 'light', 'oled', 'lavender', 'forest', 'pastel'];
+
 /**
- * Configuración del tema Oscuro / Claro
+ * Aplica un tema visual específico (Roadmap Item 32)
+ */
+window.applyTheme = async function (themeName, notify = true) {
+  THEMES_LIST.forEach(t => {
+    document.body.classList.remove(`theme-${t}`);
+  });
+  document.body.classList.remove('light-theme');
+
+  if (themeName === 'light') {
+    document.body.classList.add('light-theme');
+  } else if (themeName && themeName !== 'dark') {
+    document.body.classList.add(`theme-${themeName}`);
+  }
+
+  if (!AppState.studentInfo) AppState.studentInfo = {};
+  AppState.studentInfo.theme = themeName;
+  await setSetting('studentInfo', AppState.studentInfo);
+
+  const themeSelect = document.getElementById('setting-theme-select');
+  if (themeSelect && themeSelect.value !== themeName) {
+    themeSelect.value = themeName;
+  }
+
+  if (notify) {
+    const themeLabels = {
+      dark: 'Tema Oscuro Moderno 🌙',
+      light: 'Tema Claro Luminoso ☀️',
+      oled: 'Tema OLED Negro Puro 🖤',
+      lavender: 'Tema Lavanda Suave 🪻',
+      forest: 'Tema Bosque Esmeralda 🌲',
+      pastel: 'Tema Pastel Cálido 🎨'
+    };
+    showToast(themeLabels[themeName] || 'Tema de color actualizado');
+  }
+};
+
+/**
+ * Conmuta entre los temas principales al pulsar el botón del encabezado
  */
 window.toggleTheme = async function () {
-  document.body.classList.toggle('light-theme');
-  const isLight = document.body.classList.contains('light-theme');
+  const current = AppState.studentInfo?.theme || 'dark';
+  const cycle = ['dark', 'light', 'oled', 'lavender', 'forest', 'pastel'];
+  const nextIdx = (cycle.indexOf(current) + 1) % cycle.length;
+  await window.applyTheme(cycle[nextIdx], true);
+};
+
+/**
+ * Aplica una tipografía accesible (Roadmap Item 33)
+ */
+window.applyFont = async function (fontName, notify = true) {
+  document.body.classList.remove('font-dyslexic', 'font-hyperlegible');
+  if (fontName === 'dyslexic') {
+    document.body.classList.add('font-dyslexic');
+  } else if (fontName === 'hyperlegible') {
+    document.body.classList.add('font-hyperlegible');
+  }
+
   if (!AppState.studentInfo) AppState.studentInfo = {};
-  AppState.studentInfo.theme = isLight ? 'light' : 'dark';
+  AppState.studentInfo.fontAccessibility = fontName;
   await setSetting('studentInfo', AppState.studentInfo);
-  showToast(isLight ? 'Tema Claro activado ☀️' : 'Tema Oscuro activado 🌙');
+
+  const fontSelect = document.getElementById('setting-font-select');
+  if (fontSelect && fontSelect.value !== fontName) {
+    fontSelect.value = fontName;
+  }
+
+  if (notify) {
+    const fontLabels = {
+      default: 'Tipografía Estándar del Sistema',
+      dyslexic: 'Tipografía para Dislexia activada 📖',
+      hyperlegible: 'Tipografía Atkinson Hyperlegible activada 👓'
+    };
+    showToast(fontLabels[fontName] || 'Fuente actualizada');
+  }
 };
 
 function initTheme() {
   const toggleBtn = document.getElementById('btn-toggle-theme');
   const currentTheme = AppState.studentInfo?.theme || 'dark';
+  const currentFont = AppState.studentInfo?.fontAccessibility || 'default';
 
-  if (currentTheme === 'light') {
-    document.body.classList.add('light-theme');
-  }
+  window.applyTheme(currentTheme, false);
+  window.applyFont(currentFont, false);
 
   if (toggleBtn) {
     toggleBtn.addEventListener('click', window.toggleTheme);
+  }
+
+  const themeSelect = document.getElementById('setting-theme-select');
+  if (themeSelect) {
+    themeSelect.value = currentTheme;
+    themeSelect.addEventListener('change', (e) => {
+      window.applyTheme(e.target.value, true);
+    });
+  }
+
+  const fontSelect = document.getElementById('setting-font-select');
+  if (fontSelect) {
+    fontSelect.value = currentFont;
+    fontSelect.addEventListener('change', (e) => {
+      window.applyFont(e.target.value, true);
+    });
   }
 }
 
@@ -379,12 +477,14 @@ const TAB_HIERARCHY = {
   'tab-schedule': { parent: 'tab-agenda', subtab: 'tab-schedule' },
   'tab-backpack': { parent: 'tab-agenda', subtab: 'tab-backpack' },
   'tab-projects': { parent: 'tab-agenda', subtab: 'tab-projects' },
+  'tab-calendar': { parent: 'tab-agenda', subtab: 'tab-calendar' },
 
   'tab-study': { parent: 'tab-study', subtab: 'tab-flashcards' },
   'tab-flashcards': { parent: 'tab-study', subtab: 'tab-flashcards' },
   'tab-notebook-embed': { parent: 'tab-study', subtab: 'tab-notebook-embed' },
   'tab-pomodoro': { parent: 'tab-study', subtab: 'tab-pomodoro' },
   'tab-gallery': { parent: 'tab-study', subtab: 'tab-gallery' },
+  'tab-mocktest': { parent: 'tab-study', subtab: 'tab-mocktest' },
 
   'tab-progress': { parent: 'tab-progress', subtab: 'tab-grades' },
   'tab-grades': { parent: 'tab-progress', subtab: 'tab-grades' },
@@ -606,6 +706,8 @@ function switchTab(tabId, specificSubtab = null) {
   else if (targetToRender === 'tab-grades') renderGradesView();
   else if (targetToRender === 'tab-gallery') renderGalleryView();
   else if (targetToRender === 'tab-flashcards') renderFlashcardsView();
+  else if (targetToRender === 'tab-calendar') renderCalendarView();
+  else if (targetToRender === 'tab-mocktest') renderMockTestView();
   else if (targetToRender === 'tab-settings') renderSettingsView();
 }
 
@@ -826,12 +928,80 @@ function initEventListeners() {
     });
   });
 
-  // Cerrar modales abiertos con la tecla Escape
+  // Atajos de teclado globales (Power-User Shortcuts - Roadmap Item 38)
   document.addEventListener('keydown', (e) => {
+    // Escape siempre cierra cualquier modal o menú lateral
     if (e.key === 'Escape') {
       document.querySelectorAll('.modal-overlay:not(.hidden)').forEach((modal) => {
         modal.classList.add('hidden');
       });
+      document.getElementById('quick-action-modal')?.classList.add('hidden');
+      if (window.closeDrawer) window.closeDrawer();
+      return;
+    }
+
+    // Si el foco está en un campo de texto o elemento interactivo, no activar atajos de una sola tecla
+    const activeEl = document.activeElement;
+    const isEditing = activeEl && (
+      activeEl.tagName === 'INPUT' ||
+      activeEl.tagName === 'TEXTAREA' ||
+      activeEl.tagName === 'SELECT' ||
+      activeEl.isContentEditable
+    );
+    if (isEditing) return;
+
+    // Si hay algún modal abierto en pantalla, no disparar atajos de fondo
+    const hasOpenModal = document.querySelector('.modal-overlay:not(.hidden)');
+    if (hasOpenModal) return;
+
+    // N -> Nueva Tarea
+    if (e.key === 'n' || e.key === 'N') {
+      e.preventDefault();
+      openTaskModal();
+      showToast('Atajo [N]: Nueva Tarea 📝');
+    }
+    // E -> Nuevo Examen
+    else if (e.key === 'e' || e.key === 'E') {
+      e.preventDefault();
+      openExamModal();
+      showToast('Atajo [E]: Nuevo Examen 📝');
+    }
+    // Espacio -> Iniciar / Pausar Pomodoro
+    else if (e.code === 'Space') {
+      e.preventDefault();
+      const btnStart = document.getElementById('btn-pomo-start');
+      const btnPause = document.getElementById('btn-pomo-pause');
+      if (btnPause && !btnPause.classList.contains('hidden')) {
+        btnPause.click();
+        showToast('Pomodoro en pausa ⏸️ (Espacio)');
+      } else if (btnStart && !btnStart.classList.contains('hidden')) {
+        btnStart.click();
+        showToast('Pomodoro iniciado ▶️ (Espacio)');
+      }
+    }
+    // 1 -> Pestaña Mi Día
+    else if (e.key === '1') {
+      e.preventDefault();
+      switchTab('tab-today');
+      showToast('Mi Día [1] 🏠');
+    }
+    // 2 -> Pestaña Agenda (Tareas y Horario)
+    else if (e.key === '2') {
+      e.preventDefault();
+      switchTab('tab-agenda');
+      showToast('Agenda [2] 📅');
+    }
+    // 3 -> Pestaña Estudio (Fichas y Pomodoro)
+    else if (e.key === '3') {
+      e.preventDefault();
+      switchTab('tab-study');
+      showToast('Zona de Estudio [3] 🧠');
+    }
+    // 4 -> Pestaña Progreso y Calificaciones
+    else if (e.key === '4') {
+      e.preventDefault();
+      switchTab('tab-progress');
+      showToast('Progreso & Notas [4] 📊');
     }
   });
 
@@ -900,6 +1070,30 @@ function initEventListeners() {
 
   // Formularios
   document.getElementById('task-form')?.addEventListener('submit', handleTaskFormSubmit);
+
+  // Subtareas en formulario de tareas (Roadmap Item 11)
+  document.getElementById('btn-add-subtask')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    const input = document.getElementById('input-new-subtask');
+    const val = input?.value.trim();
+    if (val) {
+      if (!AppState.tempTaskSubtasks) AppState.tempTaskSubtasks = [];
+      AppState.tempTaskSubtasks.push({
+        id: `st_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+        title: val,
+        done: false
+      });
+      input.value = '';
+      renderTaskModalSubtasks();
+    }
+  });
+
+  document.getElementById('input-new-subtask')?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      document.getElementById('btn-add-subtask')?.click();
+    }
+  });
   document.getElementById('exam-form')?.addEventListener('submit', handleExamFormSubmit);
   document.getElementById('grade-form')?.addEventListener('submit', handleGradeFormSubmit);
   document.getElementById('slot-form')?.addEventListener('submit', handleSlotFormSubmit);
@@ -1589,7 +1783,7 @@ function renderTasksView() {
           : '';
 
       return `
-        <div class="task-item ${isCompleted ? 'completed' : ''}" style="border-left-color: ${sub?.color || '#3b82f6'}">
+        <div class="task-item ${isCompleted ? 'completed' : ''}" style="border-left-color: ${sub?.color || '#3b82f6'}" draggable="true" data-task-id="${task.id}">
           <div class="task-top">
             <input type="checkbox" class="task-checkbox" ${isCompleted ? 'checked' : ''} onchange="window.toggleTaskComplete('${task.id}')" />
             <div class="task-content">
@@ -1608,6 +1802,37 @@ function renderTasksView() {
                   <audio controls src="${task.audioUrl}" style="width: 100%; max-width: 320px; height: 32px;"></audio>
                 </div>
               `
+                  : ''
+              }
+              ${
+                task.subtasks && task.subtasks.length > 0
+                  ? (() => {
+                      const doneCount = task.subtasks.filter((s) => s.done).length;
+                      const totalCount = task.subtasks.length;
+                      const percent = Math.round((doneCount / totalCount) * 100);
+                      return `
+                        <div style="margin-top: 10px; padding: 8px 12px; background: var(--bg-input); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 0.78rem;">
+                            <span style="font-weight: 700; color: var(--text-main);">☑️ Pasos: ${doneCount}/${totalCount} (${percent}%)</span>
+                          </div>
+                          <div style="width: 100%; height: 4px; background: rgba(255,255,255,0.08); border-radius: var(--radius-full); overflow: hidden; margin-bottom: 8px;">
+                            <div style="width: ${percent}%; height: 100%; background: var(--primary); border-radius: var(--radius-full); transition: width 0.3s ease;"></div>
+                          </div>
+                          <div style="display: flex; flex-direction: column; gap: 4px;">
+                            ${task.subtasks
+                              .map(
+                                (st) => `
+                              <label style="display: flex; align-items: center; gap: 8px; font-size: 0.8rem; cursor: pointer; color: ${st.done ? 'var(--text-dim)' : 'var(--text-main)'}; text-decoration: ${st.done ? 'line-through' : 'none'};">
+                                <input type="checkbox" ${st.done ? 'checked' : ''} onclick="event.stopPropagation(); window.toggleTaskSubtask('${task.id}', '${st.id}')" style="cursor: pointer;" />
+                                <span>${escapeHTML(st.title)}</span>
+                              </label>
+                            `
+                              )
+                              .join('')}
+                          </div>
+                        </div>
+                      `;
+                    })()
                   : ''
               }
             </div>
@@ -1860,6 +2085,39 @@ function renderPomodoroView() {
       btnPause.classList.add('hidden');
     }
   }
+
+  // Sincronizar overlay PiP flotante
+  const pipTimer = document.getElementById('pomodoro-pip-timer');
+  const pipMode = document.getElementById('pomodoro-pip-mode');
+  const pipPlay = document.getElementById('pomodoro-pip-btn-play');
+  if (pipTimer) {
+    const mins = Math.floor(AppState.pomodoro.timeLeft / 60);
+    const secs = AppState.pomodoro.timeLeft % 60;
+    pipTimer.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  }
+  if (pipMode) {
+    pipMode.textContent = AppState.pomodoro.mode === 'work' ? 'Concentración 🎯' : 'Descanso ☕';
+  }
+  if (pipPlay) {
+    pipPlay.textContent = AppState.pomodoro.isRunning ? '⏸️' : '▶️';
+  }
+
+  // Si hay ventana PiP nativa abierta (Document PiP)
+  if (window._pomodoroPipWindow && !window._pomodoroPipWindow.closed) {
+    try {
+      const wDoc = window._pomodoroPipWindow.document;
+      const wTimer = wDoc.getElementById('pip-win-timer');
+      const wPlay = wDoc.getElementById('pip-win-play');
+      if (wTimer) {
+        const mins = Math.floor(AppState.pomodoro.timeLeft / 60);
+        const secs = AppState.pomodoro.timeLeft % 60;
+        wTimer.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+      }
+      if (wPlay) {
+        wPlay.textContent = AppState.pomodoro.isRunning ? '⏸️ Pausar' : '▶️ Iniciar';
+      }
+    } catch (e) {}
+  }
 }
 
 // ----------------------------------------------------
@@ -1917,7 +2175,7 @@ function renderExamsView() {
           : '';
 
       return `
-        <div class="exam-card" style="border-left: 5px solid ${sub?.color || '#8b5cf6'}">
+        <div class="exam-card" style="border-left: 5px solid ${sub?.color || '#8b5cf6'}" data-exam-id="${exam.id}">
           <div style="display: flex; justify-content: space-between; align-items: flex-start;">
             <div>
               <span class="tag-subject" style="background: ${sub?.color || '#8b5cf6'}">${sub?.icon || ''} ${sub?.name || 'General'}</span>
@@ -1984,15 +2242,22 @@ function renderGradesView() {
       const score = parseFloat(grade.score);
       let scoreClass = 'score-aprobado';
       if (score >= 9) scoreClass = 'score-sobresaliente';
-      else if (score >= 7) scoreClass = 'score-notable';
-      else if (score < 5) scoreClass = 'score-suspenso';
+      const typeLabels = {
+        exam: '📝 Examen',
+        work: '📂 Trabajo',
+        attitude: '🙋 Actitud'
+      };
+      const typeTag = grade.type
+        ? `<span class="badge" style="background: rgba(255, 255, 255, 0.06); font-size: 0.72rem; color: var(--text-muted); border: 1px solid var(--border-color);">${typeLabels[grade.type] || grade.type} (${grade.weight || 70}%)</span>`
+        : '';
 
       return `
         <div class="grade-item-row">
           <div>
             <div style="font-weight: 700; font-size: 0.95rem;">${escapeHTML(grade.title)}</div>
-            <div class="task-meta">
+            <div class="task-meta" style="flex-wrap: wrap; gap: 6px; margin-top: 4px;">
               <span class="tag-subject" style="background: ${sub?.color || '#3b82f6'}">${sub?.icon || ''} ${sub?.name || 'General'}</span>
+              ${typeTag}
               <span>Trimestre ${grade.term}º</span>
               ${grade.date ? `<span>📅 ${grade.date}</span>` : ''}
             </div>
@@ -2164,6 +2429,34 @@ function renderSettingsView() {
 // ==========================================================================
 
 // --- TAREAS ---
+function renderTaskModalSubtasks() {
+  const container = document.getElementById('task-subtasks-list');
+  const countEl = document.getElementById('task-subtasks-count');
+  if (!container) return;
+
+  const subtasks = AppState.tempTaskSubtasks || [];
+  if (countEl) countEl.textContent = `${subtasks.length} ${subtasks.length === 1 ? 'paso' : 'pasos'}`;
+
+  if (subtasks.length === 0) {
+    container.innerHTML = `<span style="font-size: 0.78rem; color: var(--text-dim); padding: 4px 0;">Sin subtareas añadidas todavía.</span>`;
+    return;
+  }
+
+  container.innerHTML = subtasks.map((st, idx) => `
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; background: var(--bg-card); padding: 6px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+      <span style="font-size: 0.82rem; color: var(--text-main); word-break: break-word;">${escapeHTML(st.title)}</span>
+      <button type="button" class="btn-action-small danger" onclick="window.removeTaskSubtask(${idx})" style="padding: 2px 6px; font-size: 0.7rem;" title="Eliminar paso">✕</button>
+    </div>
+  `).join('');
+}
+
+window.removeTaskSubtask = function(idx) {
+  if (AppState.tempTaskSubtasks) {
+    AppState.tempTaskSubtasks.splice(idx, 1);
+    renderTaskModalSubtasks();
+  }
+};
+
 window.openTaskModal = function (taskId = null) {
   const modal = document.getElementById('task-modal');
   const titleEl = document.getElementById('task-modal-title');
@@ -2190,6 +2483,7 @@ window.openTaskModal = function (taskId = null) {
       descInput.value = task.description || '';
       AppState.tempTaskPhotos = [...(task.photos || [])];
       AppState.tempTaskAudio = task.audioUrl || null;
+      AppState.tempTaskSubtasks = (task.subtasks || []).map(s => ({ ...s }));
       if (AppState.tempTaskAudio && audioPreview && audioPlayer) {
         audioPlayer.src = AppState.tempTaskAudio;
         audioPreview.classList.remove('hidden');
@@ -2207,10 +2501,12 @@ window.openTaskModal = function (taskId = null) {
     descInput.value = '';
     AppState.tempTaskPhotos = [];
     AppState.tempTaskAudio = null;
+    AppState.tempTaskSubtasks = [];
     if (audioPreview) audioPreview.classList.add('hidden');
     if (audioPlayer) audioPlayer.src = '';
   }
 
+  renderTaskModalSubtasks();
   renderPhotosPreview('task-photos-preview', AppState.tempTaskPhotos);
   modal.classList.remove('hidden');
 };
@@ -2236,6 +2532,7 @@ async function handleTaskFormSubmit(e) {
     description,
     photos: [...AppState.tempTaskPhotos],
     audioUrl: AppState.tempTaskAudio || null,
+    subtasks: [...(AppState.tempTaskSubtasks || [])],
     status,
     updatedAt: new Date().toISOString()
   };
@@ -2246,6 +2543,30 @@ async function handleTaskFormSubmit(e) {
   document.getElementById('task-modal').classList.add('hidden');
   showToast('✅ Tarea guardada con éxito', 'success');
 }
+
+window.toggleTaskSubtask = async function (taskId, subtaskId) {
+  const task = AppState.tasks.find((t) => t.id === taskId);
+  if (!task || !task.subtasks) return;
+  const st = task.subtasks.find((s) => s.id === subtaskId);
+  if (st) {
+    st.done = !st.done;
+    if (task.subtasks.every((s) => s.done)) {
+      task.status = 'completed';
+      showToast('🎉 ¡Todas las subtareas completadas!', 'success');
+      const { newlyUnlocked } = await recordStudyActivity('task_completed');
+      const stats = await getGamificationStats();
+      updateGamificationUI(stats);
+      if (newlyUnlocked && newlyUnlocked.length > 0) {
+        newlyUnlocked.forEach((a) => showToast(`🏆 ¡Logro Desbloqueado!: ${a.title}`, 'success'));
+      }
+    } else if (task.status === 'completed') {
+      task.status = 'pending';
+    }
+    await saveItem('tasks', task);
+    await loadAllData();
+    renderAllViews();
+  }
+};
 
 window.toggleTaskComplete = async function (taskId) {
   const task = AppState.tasks.find((t) => t.id === taskId);
@@ -2376,6 +2697,10 @@ window.openGradeModal = function () {
   document.getElementById('grade-title-input').value = '';
   document.getElementById('grade-score-input').value = '';
   document.getElementById('grade-date-input').value = getTodayDateString();
+  const typeSelect = document.getElementById('grade-type-select');
+  const weightInput = document.getElementById('grade-weight-input');
+  if (typeSelect) typeSelect.value = 'exam';
+  if (weightInput) weightInput.value = '70';
   modal.classList.remove('hidden');
 };
 
@@ -2387,14 +2712,17 @@ async function handleGradeFormSubmit(e) {
   const title = document.getElementById('grade-title-input').value.trim();
   const score = parseFloat(document.getElementById('grade-score-input').value);
   const date = document.getElementById('grade-date-input').value;
+  const type = document.getElementById('grade-type-select')?.value || 'exam';
+  const customWeight = parseFloat(document.getElementById('grade-weight-input')?.value);
+  const weight = !isNaN(customWeight) && customWeight > 0 ? customWeight : (type === 'exam' ? 70 : type === 'work' ? 20 : 10);
 
-  const grade = { id, subjectId, term, title, score, date };
+  const grade = { id, subjectId, term, title, score, date, type, weight };
   await saveItem('grades', grade);
   await recordStudyActivity('grade_added');
   await loadAllData();
   renderAllViews();
   document.getElementById('grade-modal').classList.add('hidden');
-  showToast('✅ Calificación guardada');
+  showToast('✅ Calificación guardada con ponderación');
 }
 
 window.confirmDeleteGrade = async function (gradeId) {
@@ -3284,6 +3612,134 @@ function initGradeSimulator() {
   });
 }
 
+// --- SIMULADOR DE NOTA DE ADMISIÓN EVAU / EBAU SOBRE 14 (ROADMAP ITEM 24) ---
+function initEVAUSimulator() {
+  const card = document.getElementById('evau-simulator-card');
+  const btnToggle = document.getElementById('btn-toggle-evau-simulator');
+  const btnClose = document.getElementById('btn-close-evau-simulator');
+  const btnCalc = document.getElementById('btn-calc-evau');
+  const resultBox = document.getElementById('evau-result-box');
+
+  btnToggle?.addEventListener('click', () => {
+    if (!card) return;
+    const isHidden = card.classList.contains('hidden');
+    if (isHidden) {
+      // Autocompletar NMB con la media global de notas si existe
+      const currentAvgEl = document.getElementById('stat-overall-average');
+      const nmbInput = document.getElementById('evau-nmb');
+      if (nmbInput && currentAvgEl && currentAvgEl.textContent !== '--' && !nmbInput.value) {
+        const val = parseFloat(currentAvgEl.textContent);
+        if (!isNaN(val)) nmbInput.value = val.toFixed(2);
+      }
+      card.classList.remove('hidden');
+      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } else {
+      card.classList.add('hidden');
+    }
+  });
+
+  btnClose?.addEventListener('click', () => {
+    card?.classList.add('hidden');
+  });
+
+  btnCalc?.addEventListener('click', () => {
+    if (!resultBox) return;
+
+    const nmb = parseFloat(document.getElementById('evau-nmb')?.value);
+    const cfg = parseFloat(document.getElementById('evau-cfg')?.value);
+    const m1Score = parseFloat(document.getElementById('evau-m1-score')?.value || 0);
+    const m1Weight = parseFloat(document.getElementById('evau-m1-weight')?.value || 0.2);
+    const m2Score = parseFloat(document.getElementById('evau-m2-score')?.value || 0);
+    const m2Weight = parseFloat(document.getElementById('evau-m2-weight')?.value || 0.2);
+
+    if (isNaN(nmb) || isNaN(cfg)) {
+      showToast('⚠️ Ingresa al menos la nota de Bachillerato (NMB) y la Fase General (CFG)', 'warning');
+      return;
+    }
+
+    if (nmb < 0 || nmb > 10 || cfg < 0 || cfg > 10) {
+      showToast('⚠️ Las notas deben estar comprendidas entre 0 y 10', 'warning');
+      return;
+    }
+
+    // Comprobación de mínimos legales de la EVAU
+    if (cfg < 4.0) {
+      resultBox.classList.remove('hidden');
+      resultBox.style.borderColor = 'var(--danger)';
+      resultBox.innerHTML = `
+        <div style="color: var(--danger); font-weight: 700; margin-bottom: 6px;">❌ Calificación Fase General insuficiente</div>
+        <p style="font-size: 0.85rem; margin: 0; color: var(--text-muted);">
+          Para que la Fase General cuente para el cálculo de acceso, la nota de CFG debe ser de al menos <strong>4.000</strong>.
+        </p>
+      `;
+      return;
+    }
+
+    // Nota de acceso (sobre 10)
+    const accessScore = 0.60 * nmb + 0.40 * cfg;
+    if (accessScore < 5.0) {
+      resultBox.classList.remove('hidden');
+      resultBox.style.borderColor = 'var(--danger)';
+      resultBox.innerHTML = `
+        <div style="color: var(--danger); font-weight: 700; margin-bottom: 6px;">⚠️ No supera la nota mínima de acceso (Apto < 5.0)</div>
+        <p style="font-size: 0.85rem; margin: 0; color: var(--text-muted);">
+          Tu nota de acceso es de <strong>${accessScore.toFixed(3)}</strong>. Se requiere un mínimo de <strong>5.000</strong> para acceder a la universidad.
+        </p>
+      `;
+      return;
+    }
+
+    // Fase voluntaria / admisión (solo si >= 5.0)
+    let m1Bonus = 0;
+    if (m1Score >= 5.0) {
+      m1Bonus = m1Score * m1Weight;
+    }
+    let m2Bonus = 0;
+    if (m2Score >= 5.0) {
+      m2Bonus = m2Score * m2Weight;
+    }
+
+    const totalScore = Math.min(14, accessScore + m1Bonus + m2Bonus);
+    const percent = Math.round((totalScore / 14) * 100);
+
+    resultBox.classList.remove('hidden');
+    resultBox.style.borderColor = 'rgba(139, 92, 246, 0.4)';
+    resultBox.innerHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <div>
+          <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 700;">Nota de Admisión Final</span>
+          <div style="font-size: 2.2rem; font-weight: 900; color: #a78bfa; line-height: 1;">
+            ${totalScore.toFixed(3)} <span style="font-size: 1.1rem; color: var(--text-muted); font-weight: 600;">/ 14.000</span>
+          </div>
+        </div>
+        <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #10b981; font-weight: 700; font-size: 0.85rem; padding: 6px 12px; border-radius: var(--radius-sm);">
+          ✅ APTO
+        </span>
+      </div>
+
+      <!-- Barra gráfica de progreso hasta 14 -->
+      <div style="width: 100%; height: 10px; background: rgba(255, 255, 255, 0.08); border-radius: var(--radius-full); overflow: hidden; margin-bottom: 12px;">
+        <div style="width: ${percent}%; height: 100%; background: linear-gradient(90deg, #3b82f6, #8b5cf6); border-radius: var(--radius-full);"></div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; font-size: 0.8rem; background: var(--bg-card); padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+        <div>
+          <div style="color: var(--text-muted);">Acceso (sobre 10)</div>
+          <div style="font-weight: 700; color: var(--text-main); font-size: 0.95rem;">${accessScore.toFixed(3)}</div>
+        </div>
+        <div>
+          <div style="color: var(--text-muted);">Optativa 1 (${m1Weight})</div>
+          <div style="font-weight: 700; color: #10b981; font-size: 0.95rem;">+${m1Bonus.toFixed(3)}</div>
+        </div>
+        <div>
+          <div style="color: var(--text-muted);">Optativa 2 (${m2Weight})</div>
+          <div style="font-weight: 700; color: #10b981; font-size: 0.95rem;">+${m2Bonus.toFixed(3)}</div>
+        </div>
+      </div>
+    `;
+  });
+}
+
 // --- IMPRESIÓN LIMPIA Y DESCARGA A PDF ---
 function initPrintActions() {
   document.getElementById('btn-print-schedule')?.addEventListener('click', () => {
@@ -3874,6 +4330,44 @@ function initPomodoro() {
   document.getElementById('btn-pomo-start')?.addEventListener('click', startPomodoro);
   document.getElementById('btn-pomo-pause')?.addEventListener('click', pausePomodoro);
   document.getElementById('btn-pomo-reset')?.addEventListener('click', resetPomodoro);
+
+  // Sonidos de ambiente Modo Zen (Roadmap Item 16)
+  const ambientSelect = document.getElementById('select-ambient-sound');
+  const ambientVolume = document.getElementById('slider-ambient-volume');
+  const btnZenFs = document.getElementById('btn-pomodoro-zen-fullscreen');
+
+  ambientSelect?.addEventListener('change', (e) => {
+    const sound = e.target.value;
+    const vol = parseFloat(ambientVolume?.value || 0.5);
+    if (sound === 'none') {
+      stopAmbientSound();
+    } else {
+      startAmbientSound(sound, vol);
+      const names = {
+        rain: 'Lluvia suave 🌧️',
+        waves: 'Olas de mar 🌊',
+        cafe: 'Cafetería / Biblioteca ☕',
+        white_noise: 'Ruido Rosa de enfoque 📻'
+      };
+      showToast(`Ambiente Zen activado: ${names[sound] || sound}`);
+    }
+  });
+
+  ambientVolume?.addEventListener('input', (e) => {
+    setAmbientVolume(parseFloat(e.target.value));
+  });
+
+  // Pantalla Completa Modo Zen (Roadmap Item 53)
+  btnZenFs?.addEventListener('click', () => {
+    const pomoTab = document.getElementById('tab-pomodoro');
+    if (!document.fullscreenElement) {
+      pomoTab?.requestFullscreen?.().catch(() => {
+        showToast('Pantalla completa no disponible en este dispositivo');
+      });
+    } else {
+      document.exitFullscreen?.();
+    }
+  });
 }
 
 function setPomodoroMode(mode, minutes) {
@@ -4245,8 +4739,11 @@ function escapeHTML(str) {
 // ==========================================================================
 
 async function initGamification() {
-  const { stats, newlyUnlocked } = await recordStudyActivity('app_opened');
+  const { stats, newlyUnlocked, streakSavedByFreeze } = await recordStudyActivity('app_opened');
   updateGamificationUI(stats);
+  if (streakSavedByFreeze) {
+    showToast('🧊 ¡Tu racha se ha protegido gracias al Congelador de Racha!', 'success');
+  }
   if (newlyUnlocked && newlyUnlocked.length > 0) {
     for (const ach of newlyUnlocked) {
       showToast(`🏆 ¡Logro Desbloqueado!: ${ach.title}`, 'success');
@@ -4277,6 +4774,12 @@ function updateGamificationUI(stats) {
   const statTasksDone = document.getElementById('stat-tasks-done');
   const statPomoSessions = document.getElementById('stat-pomo-sessions');
 
+  const modalRankBadge = document.getElementById('modal-rank-badge');
+  const modalFreezeBadge = document.getElementById('modal-freeze-badge');
+  const modalXpTotal = document.getElementById('modal-xp-total');
+  const modalXpNext = document.getElementById('modal-xp-next');
+  const modalXpFill = document.getElementById('modal-xp-fill');
+
   const days = stats.currentStreak || 1;
   if (headerDays) headerDays.textContent = days;
   if (drawerText) drawerText.textContent = `${days} ${days === 1 ? 'día' : 'días'}`;
@@ -4284,6 +4787,59 @@ function updateGamificationUI(stats) {
   if (statBestStreak) statBestStreak.textContent = stats.bestStreak || 1;
   if (statTasksDone) statTasksDone.textContent = stats.completedTasksCount || 0;
   if (statPomoSessions) statPomoSessions.textContent = stats.pomodoroSessionsCount || 0;
+
+  // Actualizar Rangos y XP (Roadmap Item 25)
+  const rankData = getRankInfo(stats.xp || 0);
+  if (modalRankBadge) {
+    modalRankBadge.textContent = `${rankData.rank.icon} ${rankData.rank.title} (Nivel ${rankData.rank.level})`;
+    modalRankBadge.style.borderColor = rankData.rank.color;
+    modalRankBadge.style.color = rankData.rank.color;
+  }
+
+  // Congelador de Racha (Roadmap Item 28)
+  const freezeCount = stats.streakFreeze?.available ?? 1;
+  if (modalFreezeBadge) {
+    modalFreezeBadge.textContent = freezeCount > 0 
+      ? `🧊 ${freezeCount} ${freezeCount === 1 ? 'Congelador Disponible' : 'Congeladores Disponibles'}`
+      : '🧊 Sin Congelador';
+  }
+
+  if (modalXpTotal) {
+    modalXpTotal.textContent = `${stats.xp || 0} XP Totales`;
+  }
+  if (modalXpNext) {
+    if (rankData.nextRank) {
+      modalXpNext.textContent = `Faltan ${rankData.neededForNext} XP para ${rankData.nextRank.title}`;
+    } else {
+      modalXpNext.textContent = '¡Rango Máximo Alcanzado! 👑';
+    }
+  }
+  if (modalXpFill) {
+    modalXpFill.style.width = `${rankData.progress}%`;
+  }
+
+  // Renderizar Mapa de Calor de 70 días (Roadmap Item 26)
+  renderActivityHeatmap(stats.activityLog || {});
+}
+
+function renderActivityHeatmap(activityLog = {}) {
+  const grid = document.getElementById('heatmap-grid');
+  const activeCountEl = document.getElementById('heatmap-total-active');
+  if (!grid) return;
+
+  const data = generateActivityHeatmap(activityLog, 70);
+  let activeDays = 0;
+
+  grid.innerHTML = data.map(item => {
+    if (item.count > 0) activeDays++;
+    const lvlClass = item.level > 0 ? `lvl-${item.level}` : '';
+    const title = `${item.date}: ${item.count} ${item.count === 1 ? 'actividad' : 'actividades'}`;
+    return `<div class="heatmap-cell ${lvlClass}" title="${title}" data-date="${item.date}"></div>`;
+  }).join('');
+
+  if (activeCountEl) {
+    activeCountEl.textContent = `${activeDays} ${activeDays === 1 ? 'día activo' : 'días activos'}`;
+  }
 }
 
 function renderAchievementsList(stats) {
@@ -5231,18 +5787,29 @@ function renderStudySession() {
     boxName.textContent = `Caja ${b}: ${BOX_NAMES[b] || 'Aprendiendo'}`;
   }
 
-  // Textos dinámicos en los botones de calificación
+  // Textos dinámicos en los botones de calificación SM-2 (Roadmap Item 14)
+  const ratingHardSub = document.getElementById('rating-hard-sub');
   const ratingGoodSub = document.getElementById('rating-good-sub');
   const ratingEasySub = document.getElementById('rating-easy-sub');
-  const currentBox = card.box || 1;
 
-  if (ratingGoodSub) {
-    const nextGoodBox = currentBox === 1 ? 2 : currentBox;
-    ratingGoodSub.textContent = `Caja ${nextGoodBox} &bull; En ${LEITNER_INTERVALS[nextGoodBox]}d`;
-  }
-  if (ratingEasySub) {
-    const nextEasyBox = Math.min(currentBox + 1, 5);
-    ratingEasySub.textContent = `Caja ${nextEasyBox} &bull; En ${LEITNER_INTERVALS[nextEasyBox]}d`;
+  const ef = card.easeFactor || 2.5;
+  const reps = card.repetitions || 0;
+  const currInterval = card.interval || 1;
+  const hardDays = Math.max(1, Math.round(currInterval * 1.2));
+  const goodDays = reps === 0 ? 1 : reps === 1 ? 6 : Math.round(currInterval * ef);
+  const easyDays = reps === 0 ? 3 : Math.round(currInterval * ef * 1.3);
+
+  if (ratingHardSub) ratingHardSub.textContent = `En ${hardDays}d`;
+  if (ratingGoodSub) ratingGoodSub.textContent = `En ${goodDays}d`;
+  if (ratingEasySub) ratingEasySub.textContent = `En ${easyDays}d`;
+
+  // Limpiar modo escritura
+  const writingInput = document.getElementById('input-flashcard-answer');
+  const writingFeedback = document.getElementById('flashcard-writing-feedback');
+  if (writingInput) writingInput.value = '';
+  if (writingFeedback) {
+    writingFeedback.classList.add('hidden');
+    writingFeedback.textContent = '';
   }
 
   // Resetear estado volteado
@@ -5386,14 +5953,14 @@ function initFlashcardsModule() {
     hintBox?.classList.toggle('hidden');
   });
 
-  // 3. Calificación de Respuestas con Leitner
+  // 3. Calificación de Respuestas con SM-2 y Leitner
   const handleRating = async (rating) => {
     triggerHaptic(rating === 'easy' ? 'success' : 'medium');
     if (!AppState.studySessionCards || AppState.studySessionCards.length === 0) return;
     const card = AppState.studySessionCards[AppState.currentStudyCardIndex];
     if (!card) return;
 
-    // Calcular nueva caja e intervalo
+    // Calcular nueva caja e intervalo SM-2
     const updated = processCardReview(card, rating);
 
     // Guardar en base de datos
@@ -5428,9 +5995,71 @@ function initFlashcardsModule() {
     renderStudySession();
   };
 
+  const btnRateAgain = document.getElementById('btn-rate-again');
+  btnRateAgain?.addEventListener('click', () => handleRating('again'));
   btnRateHard?.addEventListener('click', () => handleRating('hard'));
   btnRateGood?.addEventListener('click', () => handleRating('good'));
   btnRateEasy?.addEventListener('click', () => handleRating('easy'));
+
+  // 3.1 Modo Escritura interactivo (Roadmap Item 15)
+  const btnToggleWriting = document.getElementById('btn-toggle-writing-mode');
+  const writingStatus = document.getElementById('writing-mode-status');
+  const writingContainer = document.getElementById('flashcard-writing-container');
+  const writingInput = document.getElementById('input-flashcard-answer');
+  const writingBtn = document.getElementById('btn-check-flashcard-answer');
+  const writingFeedback = document.getElementById('flashcard-writing-feedback');
+
+  let isWritingModeActive = false;
+
+  btnToggleWriting?.addEventListener('click', () => {
+    isWritingModeActive = !isWritingModeActive;
+    if (writingStatus) writingStatus.textContent = isWritingModeActive ? 'ON' : 'OFF';
+    btnToggleWriting.classList.toggle('active', isWritingModeActive);
+    writingContainer?.classList.toggle('hidden', !isWritingModeActive);
+    if (isWritingModeActive && writingInput) {
+      setTimeout(() => writingInput.focus(), 150);
+    }
+  });
+
+  const checkWrittenAnswer = () => {
+    if (!AppState.studySessionCards || AppState.studySessionCards.length === 0) return;
+    const card = AppState.studySessionCards[AppState.currentStudyCardIndex];
+    if (!card || !writingInput) return;
+
+    const answer = writingInput.value.trim();
+    if (!answer) {
+      showToast('Escribe una respuesta para comprobar');
+      return;
+    }
+
+    const res = checkAnswerSimilarity(answer, card.back);
+    if (writingFeedback) {
+      writingFeedback.classList.remove('hidden');
+      writingFeedback.style.background = res.isCorrect ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)';
+      writingFeedback.style.color = res.isCorrect ? '#10b981' : '#ef4444';
+      writingFeedback.innerHTML = `<div>${res.feedback}</div><div style="font-size: 0.75rem; margin-top: 2px; opacity: 0.85;">Coincidencia: ${res.similarity}%</div>`;
+    }
+
+    // Voltear tras un breve instante para que el alumno compare visualmente
+    setTimeout(() => {
+      if (!AppState.isStudyCardFlipped) {
+        toggleFlip();
+      }
+    }, 700);
+  };
+
+  writingBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    checkWrittenAnswer();
+  });
+
+  writingInput?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.stopPropagation();
+      checkWrittenAnswer();
+    }
+  });
 
   // 4. Reiniciar sesión / Repasar todo
   const startAllCardsSession = () => {
@@ -6092,6 +6721,34 @@ function initAIAssistantModule() {
         `;
       }
 
+      // Renderizar feedback pedagógico de English Coach si está presente
+      const englishFeedbackMatch = text.match(/```english_feedback\s*([\s\S]*?)\s*```/);
+      let isEnglish = false;
+      if (englishFeedbackMatch) {
+        isEnglish = true;
+        try {
+          const feedback = JSON.parse(englishFeedbackMatch[1]);
+          const cardHtml = `
+            <div class="english-coach-card">
+              <div class="english-coach-title">
+                <span>🇬🇧 English Coach Feedback</span>
+                <span style="font-size: 0.72rem; color: #8b5cf6;">Tutoría en vivo</span>
+              </div>
+              ${feedback.userSentence ? `<div class="english-feedback-row"><span class="english-feedback-label">🗣️ Tu frase:</span> "${escapeHTML(feedback.userSentence)}"</div>` : ''}
+              ${feedback.betterSentence ? `<div class="english-feedback-row"><span class="english-feedback-label">✅ Versión natural:</span> <strong style="color: #22c55e;">"${escapeHTML(feedback.betterSentence)}"</strong></div>` : ''}
+              ${feedback.explanation ? `<div class="english-feedback-row"><span class="english-feedback-label">💡 Regla gramatical:</span> ${escapeHTML(feedback.explanation)}</div>` : ''}
+              ${feedback.cefrTip ? `<div class="english-feedback-row" style="color: #a78bfa;"><span class="english-feedback-label">✨ Nivel CEFR:</span> ${escapeHTML(feedback.cefrTip)}</div>` : ''}
+              <button type="button" class="btn-save-english-flashcard" data-front="How to say: ${escapeHTML(feedback.userSentence || '')}" data-back="${escapeHTML(feedback.betterSentence || '')}&#10;&#10;💡 ${escapeHTML(feedback.explanation || '')}">
+                🎴 Guardar en Fichas de Inglés
+              </button>
+            </div>
+          `;
+          bodyHtml = bodyHtml.replace(/```english_feedback[\s\S]*?```/, cardHtml);
+        } catch (e) {
+          console.warn('Error al procesar bloque english_feedback:', e);
+        }
+      }
+
       // Botón para escuchar en voz alta
       bodyHtml += `
         <div class="copilot-msg-footer">
@@ -6104,7 +6761,29 @@ function initAIAssistantModule() {
       // Event listener para el botón de audio
       const speakBtn = msgEl.querySelector('.btn-speak-msg');
       speakBtn?.addEventListener('click', () => {
-        speakText(text);
+        const lang = isEnglish ? 'en-US' : 'es-ES';
+        speakText(text, null, lang);
+      });
+
+      // Event listener para guardar feedback de inglés en fichas Leitner con 1 toque
+      msgEl.querySelectorAll('.btn-save-english-flashcard').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const front = btn.getAttribute('data-front');
+          const back = btn.getAttribute('data-back');
+          const englishSub = AppState.subjects.find((s) => s.name.toLowerCase().includes('ingl') || s.name.toLowerCase().includes('english')) || AppState.subjects[0];
+          const newCard = createFlashcard({
+            subjectId: englishSub ? englishSub.id : 'sub_general',
+            front,
+            back,
+            hint: 'English Coach correction'
+          });
+          await saveItem('flashcards', newCard);
+          AppState.flashcards.push(newCard);
+          addXP(15);
+          showToast('🇬🇧 Ficha guardada en tus fichas de estudio (+15 XP)', 'success');
+          btn.disabled = true;
+          btn.textContent = '✅ Ficha Guardada';
+        });
       });
 
       // Event listeners para botones de navegación a pestañas
@@ -6320,6 +6999,846 @@ function initAIAssistantModule() {
     triggerHaptic('success');
   });
 }
+
+// ==========================================================================
+// FASE 4: EXPERIENCIA ESCRITORIO, DRAG & DROP Y MENÚ CONTEXTUAL
+// ==========================================================================
+
+let activeContextItem = null;
+
+function initDesktopInteractions() {
+  const contextMenu = document.getElementById('app-context-menu');
+
+  // Menú contextual clic derecho
+  document.addEventListener('contextmenu', (e) => {
+    const taskEl = e.target.closest('.task-item');
+    const examEl = e.target.closest('.exam-card');
+
+    if (taskEl) {
+      e.preventDefault();
+      const taskId = taskEl.getAttribute('data-task-id');
+      const task = AppState.tasks.find((t) => t.id === taskId);
+      if (!task) return;
+      activeContextItem = { type: 'task', id: task.id, title: task.title, item: task };
+      showContextMenu(e.clientX, e.clientY, `📋 Tarea: ${task.title.substring(0, 20)}...`);
+    } else if (examEl) {
+      e.preventDefault();
+      const examId = examEl.getAttribute('data-exam-id');
+      const exam = AppState.exams.find((ex) => ex.id === examId);
+      if (!exam) return;
+      activeContextItem = { type: 'exam', id: exam.id, title: exam.title, item: exam };
+      showContextMenu(e.clientX, e.clientY, `📝 Examen: ${exam.title.substring(0, 20)}...`);
+    } else {
+      contextMenu?.classList.add('hidden');
+    }
+  });
+
+  // Cerrar menú contextual al hacer clic fuera o presionar Esc
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('#app-context-menu')) {
+      contextMenu?.classList.add('hidden');
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      contextMenu?.classList.add('hidden');
+    }
+  });
+
+  // Acciones del menú contextual
+  document.getElementById('cmenu-btn-priority')?.addEventListener('click', async () => {
+    contextMenu?.classList.add('hidden');
+    if (!activeContextItem || activeContextItem.type !== 'task') {
+      showToast('Esta acción solo aplica a tareas.', 'info');
+      return;
+    }
+    const current = activeContextItem.item.priority || 'media';
+    const nextPriority = current === 'alta' ? 'normal' : current === 'normal' ? 'baja' : 'alta';
+    activeContextItem.item.priority = nextPriority;
+    await saveItem('tasks', activeContextItem.item);
+    renderTasksView();
+    showToast(`Prioridad cambiada a: ${nextPriority.toUpperCase()}`, 'success');
+  });
+
+  document.getElementById('cmenu-btn-ai')?.addEventListener('click', () => {
+    contextMenu?.classList.add('hidden');
+    if (!activeContextItem) return;
+    const modal = document.getElementById('ai-copilot-modal');
+    const input = document.getElementById('copilot-input-text');
+    if (modal && input) {
+      modal.classList.remove('hidden');
+      input.value = `¿Cómo puedo preparar y organizar eficazmente: "${activeContextItem.title}"? Dame consejos paso a paso.`;
+      input.focus();
+    }
+  });
+
+  document.getElementById('cmenu-btn-flashcards')?.addEventListener('click', () => {
+    contextMenu?.classList.add('hidden');
+    if (!activeContextItem) return;
+    window.openFlashcardsAiModal?.(activeContextItem.title, activeContextItem.item.subjectId);
+  });
+
+  document.getElementById('cmenu-btn-ics')?.addEventListener('click', () => {
+    contextMenu?.classList.add('hidden');
+    if (!activeContextItem) return;
+    if (activeContextItem.type === 'exam') {
+      window.handleExportExamICS?.(activeContextItem.id);
+    } else {
+      showToast('Exportación ICS disponible para exámenes.', 'info');
+    }
+  });
+
+  document.getElementById('cmenu-btn-delete')?.addEventListener('click', () => {
+    contextMenu?.classList.add('hidden');
+    if (!activeContextItem) return;
+    if (activeContextItem.type === 'task') {
+      window.confirmDeleteTask(activeContextItem.id);
+    } else if (activeContextItem.type === 'exam') {
+      window.confirmDeleteExam(activeContextItem.id);
+    }
+  });
+
+  // Drag and Drop en Tareas
+  setupTaskDragAndDrop();
+}
+
+function showContextMenu(x, y, title) {
+  const menu = document.getElementById('app-context-menu');
+  const titleEl = document.getElementById('context-menu-title');
+  if (!menu) return;
+
+  if (titleEl) titleEl.textContent = title;
+  menu.classList.remove('hidden');
+
+  const menuWidth = 220;
+  const menuHeight = 210;
+  const posX = Math.min(x, window.innerWidth - menuWidth - 10);
+  const posY = Math.min(y, window.innerHeight - menuHeight - 10);
+
+  menu.style.left = `${Math.max(10, posX)}px`;
+  menu.style.top = `${Math.max(10, posY)}px`;
+}
+
+function setupTaskDragAndDrop() {
+  const container = document.getElementById('tasks-container');
+  if (!container) return;
+
+  container.addEventListener('dragstart', (e) => {
+    const taskEl = e.target.closest('.task-item');
+    if (!taskEl) return;
+    const taskId = taskEl.getAttribute('data-task-id');
+    e.dataTransfer.setData('text/plain', taskId);
+    e.dataTransfer.effectAllowed = 'move';
+    taskEl.classList.add('is-dragging');
+  });
+
+  container.addEventListener('dragend', (e) => {
+    const taskEl = e.target.closest('.task-item');
+    taskEl?.classList.remove('is-dragging');
+  });
+
+  container.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  });
+
+  container.addEventListener('drop', async (e) => {
+    e.preventDefault();
+    const taskId = e.dataTransfer.getData('text/plain');
+    if (!taskId) return;
+
+    const task = AppState.tasks.find((t) => t.id === taskId);
+    if (!task) return;
+
+    const targetEl = e.target.closest('.task-item');
+    if (targetEl && targetEl.getAttribute('data-task-id') !== taskId) {
+      triggerHaptic('medium');
+      showToast('Tarea reordenada', 'info');
+    }
+  });
+}
+
+// ==========================================================================
+// FASE 4: VISTA DE CALENDARIO MENSUAL COMPLETO
+// ==========================================================================
+
+function initCalendarModule() {
+  AppState.calendarYear = new Date().getFullYear();
+  AppState.calendarMonth = new Date().getMonth();
+  AppState.calendarSelectedDate = getTodayDateString();
+
+  document.getElementById('btn-calendar-prev')?.addEventListener('click', () => {
+    AppState.calendarMonth--;
+    if (AppState.calendarMonth < 0) {
+      AppState.calendarMonth = 11;
+      AppState.calendarYear--;
+    }
+    renderCalendarView();
+  });
+
+  document.getElementById('btn-calendar-next')?.addEventListener('click', () => {
+    AppState.calendarMonth++;
+    if (AppState.calendarMonth > 11) {
+      AppState.calendarMonth = 0;
+      AppState.calendarYear++;
+    }
+    renderCalendarView();
+  });
+
+  document.getElementById('btn-calendar-today')?.addEventListener('click', () => {
+    AppState.calendarYear = new Date().getFullYear();
+    AppState.calendarMonth = new Date().getMonth();
+    AppState.calendarSelectedDate = getTodayDateString();
+    renderCalendarView();
+  });
+
+  document.getElementById('btn-calendar-add-task-day')?.addEventListener('click', () => {
+    window.openTaskModal(null, AppState.calendarSelectedDate);
+  });
+}
+
+function renderCalendarView() {
+  const grid = document.getElementById('calendar-month-grid');
+  const monthLabel = document.getElementById('calendar-current-month-label');
+  if (!grid || !monthLabel) return;
+
+  const monthNames = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ];
+  monthLabel.textContent = `${monthNames[AppState.calendarMonth]} ${AppState.calendarYear}`;
+
+  const todayStr = getTodayDateString();
+  const firstDayOfMonth = new Date(AppState.calendarYear, AppState.calendarMonth, 1);
+  let startingDay = firstDayOfMonth.getDay() - 1;
+  if (startingDay < 0) startingDay = 6;
+
+  const daysInMonth = new Date(AppState.calendarYear, AppState.calendarMonth + 1, 0).getDate();
+  const daysInPrevMonth = new Date(AppState.calendarYear, AppState.calendarMonth, 0).getDate();
+
+  let html = `
+    <div class="calendar-weekday-header">Lun</div>
+    <div class="calendar-weekday-header">Mar</div>
+    <div class="calendar-weekday-header">Mié</div>
+    <div class="calendar-weekday-header">Jue</div>
+    <div class="calendar-weekday-header">Vie</div>
+    <div class="calendar-weekday-header">Sáb</div>
+    <div class="calendar-weekday-header">Dom</div>
+  `;
+
+  // Días del mes anterior
+  for (let i = startingDay - 1; i >= 0; i--) {
+    const dayNum = daysInPrevMonth - i;
+    html += `<div class="calendar-day-cell other-month"><span class="calendar-day-number">${dayNum}</span></div>`;
+  }
+
+  // Días del mes actual
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dateStr = `${AppState.calendarYear}-${String(AppState.calendarMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const isToday = dateStr === todayStr;
+    const isSelected = dateStr === AppState.calendarSelectedDate;
+
+    const dayTasks = AppState.tasks.filter((t) => t.dueDate === dateStr);
+    const dayExams = AppState.exams.filter((e) => e.date === dateStr);
+
+    let badgesHtml = '';
+    dayExams.forEach((e) => {
+      const sub = AppState.subjects.find((s) => s.id === e.subjectId);
+      badgesHtml += `<div class="calendar-badge-event calendar-badge-exam" title="Examen: ${escapeHTML(e.title)}">📝 ${sub?.name || 'Examen'}</div>`;
+    });
+    dayTasks.forEach((t) => {
+      badgesHtml += `<div class="calendar-badge-event calendar-badge-task" title="Tarea: ${escapeHTML(t.title)}">📋 ${escapeHTML(t.title)}</div>`;
+    });
+
+    html += `
+      <div class="calendar-day-cell ${isToday ? 'is-today' : ''} ${isSelected ? 'is-selected' : ''}" data-calendar-date="${dateStr}" onclick="window.handleCalendarDayClick('${dateStr}')">
+        <span class="calendar-day-number">${day}</span>
+        ${badgesHtml}
+      </div>
+    `;
+  }
+
+  // Días del mes siguiente para completar la cuadrícula
+  const totalCells = startingDay + daysInMonth;
+  const remainingCells = (7 - (totalCells % 7)) % 7;
+  for (let nextDay = 1; nextDay <= remainingCells; nextDay++) {
+    html += `<div class="calendar-day-cell other-month"><span class="calendar-day-number">${nextDay}</span></div>`;
+  }
+
+  grid.innerHTML = html;
+  renderCalendarDayDetails(AppState.calendarSelectedDate || todayStr);
+}
+
+window.handleCalendarDayClick = function (dateStr) {
+  AppState.calendarSelectedDate = dateStr;
+  renderCalendarView();
+};
+
+function renderCalendarDayDetails(dateStr) {
+  const detailsCard = document.getElementById('calendar-day-details-card');
+  const titleEl = document.getElementById('calendar-selected-day-title');
+  const itemsEl = document.getElementById('calendar-selected-day-items');
+  if (!detailsCard || !itemsEl) return;
+
+  const dayTasks = AppState.tasks.filter((t) => t.dueDate === dateStr);
+  const dayExams = AppState.exams.filter((e) => e.date === dateStr);
+
+  detailsCard.style.display = 'block';
+  if (titleEl) {
+    titleEl.innerHTML = `<span>📌</span> Eventos para ${formatDateSpanish(dateStr)}`;
+  }
+
+  if (dayTasks.length === 0 && dayExams.length === 0) {
+    itemsEl.innerHTML = `<p class="section-subtitle" style="padding: 10px 0;">No hay tareas ni exámenes programados para esta fecha.</p>`;
+    return;
+  }
+
+  let html = '';
+  if (dayExams.length > 0) {
+    html += `<h4 style="margin: 8px 0 4px; font-size: 0.86rem; color: #ef4444;">📝 Exámenes (${dayExams.length})</h4>`;
+    dayExams.forEach((e) => {
+      const sub = AppState.subjects.find((s) => s.id === e.subjectId);
+      html += `
+        <div class="card" style="margin-bottom: 6px; padding: 10px; border-left: 3px solid #ef4444;">
+          <strong>${escapeHTML(e.title)}</strong> - ${sub?.name || 'General'}
+          ${e.topics ? `<div style="font-size: 0.8rem; color: var(--text-muted);">${escapeHTML(e.topics)}</div>` : ''}
+        </div>
+      `;
+    });
+  }
+
+  if (dayTasks.length > 0) {
+    html += `<h4 style="margin: 12px 0 4px; font-size: 0.86rem; color: #3b82f6;">📋 Deberes y Tareas (${dayTasks.length})</h4>`;
+    dayTasks.forEach((t) => {
+      const sub = AppState.subjects.find((s) => s.id === t.subjectId);
+      html += `
+        <div class="card" style="margin-bottom: 6px; padding: 10px; border-left: 3px solid #3b82f6; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-weight: 600; text-decoration: ${t.status === 'completed' ? 'line-through' : 'none'};">${escapeHTML(t.title)}</div>
+            <div style="font-size: 0.78rem; color: var(--text-muted);">${sub?.name || 'General'} • Prioridad ${t.priority || 'normal'}</div>
+          </div>
+          <input type="checkbox" class="task-checkbox" ${t.status === 'completed' ? 'checked' : ''} onchange="window.toggleTaskComplete('${t.id}')" />
+        </div>
+      `;
+    });
+  }
+
+  itemsEl.innerHTML = html;
+}
+
+// ==========================================================================
+// FASE 4: MATRIZ SEMANAL COMPLETA DEL HORARIO ESCOLAR
+// ==========================================================================
+
+function initWeeklyMatrixModule() {
+  const btnToggle = document.getElementById('btn-toggle-schedule-matrix');
+  btnToggle?.addEventListener('click', () => {
+    const matrixContainer = document.getElementById('schedule-matrix-container');
+    const timelineContainer = document.getElementById('schedule-timeline-container');
+    const daySelector = document.getElementById('schedule-day-selector');
+    if (!matrixContainer || !timelineContainer) return;
+
+    if (AppState.scheduleViewMode === 'day') {
+      AppState.scheduleViewMode = 'matrix';
+      btnToggle.innerHTML = '<span>📅</span> Vista por Día';
+      timelineContainer.classList.add('hidden');
+      daySelector?.classList.add('hidden');
+      matrixContainer.classList.remove('hidden');
+      renderScheduleMatrixView();
+    } else {
+      AppState.scheduleViewMode = 'day';
+      btnToggle.innerHTML = '<span>🗂️</span> Matriz Semanal';
+      timelineContainer.classList.remove('hidden');
+      daySelector?.classList.remove('hidden');
+      matrixContainer.classList.add('hidden');
+      renderScheduleView();
+    }
+  });
+}
+
+function renderScheduleMatrixView() {
+  const container = document.getElementById('schedule-matrix-container');
+  if (!container) return;
+
+  const days = [
+    { num: 1, name: 'Lunes' },
+    { num: 2, name: 'Martes' },
+    { num: 3, name: 'Miércoles' },
+    { num: 4, name: 'Jueves' },
+    { num: 5, name: 'Viernes' }
+  ];
+
+  let html = `
+    <table class="schedule-matrix-table">
+      <thead>
+        <tr>
+          <th style="width: 80px;">Hora</th>
+          ${days.map((d) => `<th>${d.name}</th>`).join('')}
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  AppState.timeSlots.forEach((slot) => {
+    if (slot.isBreak) {
+      html += `
+        <tr>
+          <td class="schedule-matrix-time">${slot.start} - ${slot.end}</td>
+          <td colspan="5" style="background: var(--bg-input); font-weight: 700; color: var(--text-muted); padding: 8px;">
+            🥪 Recreo / Descanso
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    html += `
+      <tr>
+        <td class="schedule-matrix-time">${slot.start} - ${slot.end}</td>
+    `;
+
+    days.forEach((d) => {
+      const match = AppState.schedule.find((s) => s.day === d.num && s.slotIndex === slot.index);
+      const sub = match ? AppState.subjects.find((s) => s.id === match.subjectId) : null;
+
+      if (sub) {
+        html += `
+          <td>
+            <div class="matrix-cell-card" style="border-left-color: ${sub.color || '#3b82f6'};" onclick="window.openSlotModal(${d.num}, ${slot.index})">
+              <span>${sub.icon || '📖'} ${escapeHTML(sub.name)}</span>
+              <span class="matrix-cell-room">${match.classroom || sub.classroom || 'Aula'} • ${sub.teacher || ''}</span>
+            </div>
+          </td>
+        `;
+      } else {
+        html += `
+          <td>
+            <div class="matrix-cell-empty" onclick="window.openSlotModal(${d.num}, ${slot.index})">
+              ➕ Asignar
+            </div>
+          </td>
+        `;
+      }
+    });
+
+    html += `</tr>`;
+  });
+
+  html += `</tbody></table>`;
+  container.innerHTML = html;
+}
+
+// ==========================================================================
+// FASE 4: TEMPORIZADOR POMODORO PIP (PICTURE-IN-PICTURE & OVERLAY)
+// ==========================================================================
+
+function initPomodoroPiPModule() {
+  const btnPiP = document.getElementById('btn-pomo-pip');
+  const pipOverlay = document.getElementById('pomodoro-pip-overlay');
+  const pipPlay = document.getElementById('pomodoro-pip-btn-play');
+  const pipClose = document.getElementById('pomodoro-pip-btn-close');
+
+  pipPlay?.addEventListener('click', () => {
+    if (AppState.pomodoro.isRunning) {
+      document.getElementById('btn-pomo-pause')?.click();
+    } else {
+      document.getElementById('btn-pomo-start')?.click();
+    }
+  });
+
+  pipClose?.addEventListener('click', () => {
+    pipOverlay?.classList.add('hidden');
+  });
+
+  btnPiP?.addEventListener('click', async () => {
+    if ('documentPictureInPicture' in window) {
+      try {
+        const pipWindow = await window.documentPictureInPicture.requestWindow({
+          width: 280,
+          height: 160
+        });
+        window._pomodoroPipWindow = pipWindow;
+        pipWindow.document.body.style.cssText =
+          'margin:0; padding:16px; font-family:system-ui; background:#0f172a; color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;';
+        pipWindow.document.body.innerHTML = `
+          <div style="font-size:0.75rem; text-transform:uppercase; color:#94a3b8; font-weight:700;">Concentración Pomodoro</div>
+          <div id="pip-win-timer" style="font-size:2.8rem; font-weight:900; font-family:monospace; color:#3b82f6;">${document.getElementById('pomodoro-display')?.textContent || '25:00'}</div>
+          <div style="display:flex; gap:10px;">
+            <button id="pip-win-play" style="padding:6px 16px; border-radius:20px; border:none; background:#3b82f6; color:#fff; font-weight:700; cursor:pointer;">${AppState.pomodoro.isRunning ? '⏸️ Pausar' : '▶️ Iniciar'}</button>
+          </div>
+        `;
+        pipWindow.document.getElementById('pip-win-play')?.addEventListener('click', () => {
+          if (AppState.pomodoro.isRunning) {
+            document.getElementById('btn-pomo-pause')?.click();
+          } else {
+            document.getElementById('btn-pomo-start')?.click();
+          }
+        });
+        return;
+      } catch (e) {
+        console.log('Document PiP no disponible o denegado, usando overlay flotante:', e);
+      }
+    }
+
+    if (pipOverlay) {
+      pipOverlay.classList.toggle('hidden');
+      showToast(pipOverlay.classList.contains('hidden') ? 'Ventana flotante cerrada' : '🖼️ Temporizador Pomodoro flotante activado', 'info');
+    }
+  });
+}
+
+// ==========================================================================
+// FASE 4: COMPARTIR MAZOS DE FICHAS (EXPORTAR E IMPORTAR JSON)
+// ==========================================================================
+
+function initFlashcardShareModule() {
+  const btnExport = document.getElementById('btn-export-flashcards');
+  const btnImport = document.getElementById('btn-import-flashcards');
+  const fileInput = document.getElementById('input-import-flashcards-file');
+
+  btnExport?.addEventListener('click', () => {
+    const cards = AppState.flashcards;
+    if (cards.length === 0) {
+      showToast('No tienes fichas de estudio para exportar.', 'info');
+      return;
+    }
+    const dataStr = JSON.stringify(
+      {
+        version: '1.0',
+        exportedAt: new Date().toISOString(),
+        flashcards: cards
+      },
+      null,
+      2
+    );
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `agenda-fichas-estudio-${getTodayDateString()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast(`📤 Se han exportado ${cards.length} fichas a archivo JSON`, 'success');
+  });
+
+  btnImport?.addEventListener('click', () => {
+    fileInput?.click();
+  });
+
+  fileInput?.addEventListener('change', async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+      const cards = Array.isArray(parsed.flashcards) ? parsed.flashcards : Array.isArray(parsed) ? parsed : [];
+      if (cards.length === 0) {
+        showToast('El archivo no contiene fichas válidas.', 'error');
+        return;
+      }
+      let importedCount = 0;
+      for (const c of cards) {
+        if (!c.front || !c.back) continue;
+        const newCard = createFlashcard({
+          subjectId: c.subjectId || AppState.subjects[0]?.id || 'sub_general',
+          front: c.front,
+          back: c.back,
+          hint: c.hint || ''
+        });
+        await saveItem('flashcards', newCard);
+        AppState.flashcards.push(newCard);
+        importedCount++;
+      }
+      addXP(importedCount * 5);
+      renderFlashcardsView();
+      showToast(`📥 ¡Éxito! Se han importado ${importedCount} fichas de estudio (+${importedCount * 5} XP)`, 'success');
+    } catch (err) {
+      showToast('Error al importar archivo de fichas: ' + err.message, 'error');
+    }
+    fileInput.value = '';
+  });
+}
+
+// ==========================================================================
+// FASE 5: SIMULADOR DE EXÁMENES CON IA (MOCK TESTS)
+// ==========================================================================
+
+let currentMockQuiz = null;
+let currentMockAnswers = {};
+let mockQuizTimerInterval = null;
+let mockQuizSecondsLeft = 600;
+
+function initMockTestModule() {
+  const selectSubject = document.getElementById('mock-test-subject');
+  const btnStart = document.getElementById('btn-start-mock-test');
+  const btnFinish = document.getElementById('btn-finish-mock-test');
+  const btnCancel = document.getElementById('btn-cancel-mock-test');
+
+  if (selectSubject) {
+    let opts = '<option value="all">Todas las asignaturas / General</option>';
+    AppState.subjects.forEach((s) => {
+      opts += `<option value="${s.id}">${s.icon || '📖'} ${escapeHTML(s.name)}</option>`;
+    });
+    selectSubject.innerHTML = opts;
+  }
+
+  btnStart?.addEventListener('click', async () => {
+    const subId = selectSubject?.value || 'all';
+    const topic = document.getElementById('mock-test-topic')?.value?.trim() || '';
+    const count = parseInt(document.getElementById('mock-test-count')?.value || '5', 10);
+    const duration = parseInt(document.getElementById('mock-test-timer-select')?.value || '600', 10);
+
+    btnStart.disabled = true;
+    btnStart.textContent = '⏳ Generando preguntas con IA...';
+
+    try {
+      const quizData = await generateMockTestWithAI({
+        subjectId: subId,
+        topic,
+        questionCount: count
+      });
+
+      if (!quizData || !quizData.questions || quizData.questions.length === 0) {
+        showToast('No se pudieron generar preguntas para este tema.', 'error');
+        return;
+      }
+
+      currentMockQuiz = { ...quizData, subjectId: subId };
+      currentMockAnswers = {};
+      mockQuizSecondsLeft = duration;
+
+      document.getElementById('mock-test-setup-card')?.classList.add('hidden');
+      document.getElementById('mock-test-active-container')?.classList.remove('hidden');
+      document.getElementById('mock-test-results-container')?.classList.add('hidden');
+
+      const titleEl = document.getElementById('mock-test-running-title');
+      if (titleEl) titleEl.textContent = quizData.title;
+
+      renderMockQuizQuestions(quizData.questions);
+      startMockQuizTimer(duration);
+    } catch (err) {
+      showToast('Error al iniciar simulacro: ' + err.message, 'error');
+    } finally {
+      btnStart.disabled = false;
+      btnStart.textContent = '🚀 Iniciar Simulacro de Examen';
+    }
+  });
+
+  btnFinish?.addEventListener('click', () => {
+    finishMockQuiz();
+  });
+
+  btnCancel?.addEventListener('click', () => {
+    clearInterval(mockQuizTimerInterval);
+    document.getElementById('mock-test-setup-card')?.classList.remove('hidden');
+    document.getElementById('mock-test-active-container')?.classList.add('hidden');
+  });
+}
+
+function renderMockTestView() {
+  const selectSubject = document.getElementById('mock-test-subject');
+  if (selectSubject && selectSubject.children.length <= 1) {
+    let opts = '<option value="all">Todas las asignaturas / General</option>';
+    AppState.subjects.forEach((s) => {
+      opts += `<option value="${s.id}">${s.icon || '📖'} ${escapeHTML(s.name)}</option>`;
+    });
+    selectSubject.innerHTML = opts;
+  }
+}
+
+function renderMockQuizQuestions(questions) {
+  const listEl = document.getElementById('mock-test-questions-list');
+  if (!listEl) return;
+
+  listEl.innerHTML = questions
+    .map(
+      (q, qIdx) => `
+    <div class="mock-quiz-question-card" data-q-index="${qIdx}">
+      <div class="mock-quiz-question-text">
+        <span style="color: var(--primary); font-weight: 800;">${qIdx + 1}.</span> ${escapeHTML(q.question)}
+      </div>
+      <div class="mock-quiz-options-group" style="display: flex; flex-direction: column; gap: 8px;">
+        ${q.options
+          .map(
+            (opt, optIdx) => `
+          <div class="mock-quiz-option" data-q-idx="${qIdx}" data-opt-idx="${optIdx}" onclick="window.handleSelectMockOption(${qIdx}, ${optIdx})">
+            <span style="font-weight: 700;">${['A', 'B', 'C', 'D'][optIdx]})</span>
+            <span>${escapeHTML(opt.replace(/^[A-D]\)\s*/, ''))}</span>
+          </div>
+        `
+          )
+          .join('')}
+      </div>
+    </div>
+  `
+    )
+    .join('');
+}
+
+window.handleSelectMockOption = function (qIdx, optIdx) {
+  currentMockAnswers[qIdx] = optIdx;
+  const qCard = document.querySelector(`.mock-quiz-question-card[data-q-index="${qIdx}"]`);
+  if (!qCard) return;
+  qCard.querySelectorAll('.mock-quiz-option').forEach((el) => el.classList.remove('selected'));
+  const selectedEl = qCard.querySelector(`.mock-quiz-option[data-opt-idx="${optIdx}"]`);
+  selectedEl?.classList.add('selected');
+
+  const totalAnswered = Object.keys(currentMockAnswers).length;
+  const totalQuestions = currentMockQuiz?.questions?.length || 1;
+  const progressEl = document.getElementById('mock-test-progress-text');
+  if (progressEl) progressEl.textContent = `${totalAnswered} de ${totalQuestions} respondidas`;
+};
+
+function startMockQuizTimer(duration) {
+  clearInterval(mockQuizTimerInterval);
+  const badge = document.getElementById('mock-test-countdown-badge');
+  if (duration <= 0) {
+    if (badge) badge.textContent = '⏱️ Sin límite';
+    return;
+  }
+
+  const updateTimer = () => {
+    const mins = Math.floor(mockQuizSecondsLeft / 60);
+    const secs = mockQuizSecondsLeft % 60;
+    if (badge) badge.textContent = `⏱️ ${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    if (mockQuizSecondsLeft <= 0) {
+      clearInterval(mockQuizTimerInterval);
+      showToast('⏰ ¡Tiempo agotado! Corrigiendo examen automáticamente...', 'warning');
+      finishMockQuiz();
+    }
+    mockQuizSecondsLeft--;
+  };
+
+  updateTimer();
+  mockQuizTimerInterval = setInterval(updateTimer, 1000);
+}
+
+function finishMockQuiz() {
+  clearInterval(mockQuizTimerInterval);
+  if (!currentMockQuiz) return;
+
+  const questions = currentMockQuiz.questions;
+  let correctCount = 0;
+  const failedQuestions = [];
+
+  questions.forEach((q, idx) => {
+    const selected = currentMockAnswers[idx];
+    const isCorrect = selected === q.correctIndex;
+    if (isCorrect) {
+      correctCount++;
+    } else {
+      failedQuestions.push(q);
+    }
+  });
+
+  const total = questions.length;
+  const scoreOutOfTen = Math.round((correctCount / total) * 100) / 10;
+  const xpEarned = 30 + correctCount * 10;
+  addXP(xpEarned);
+
+  document.getElementById('mock-test-active-container')?.classList.add('hidden');
+  const resultsContainer = document.getElementById('mock-test-results-container');
+  if (!resultsContainer) return;
+  resultsContainer.classList.remove('hidden');
+
+  let ratingLabel = '¡Buen esfuerzo!';
+  let ratingColor = '#f59e0b';
+  if (scoreOutOfTen >= 9) {
+    ratingLabel = '¡Sobresaliente! 🌟';
+    ratingColor = '#10b981';
+  } else if (scoreOutOfTen >= 7) {
+    ratingLabel = '¡Notable! 👏';
+    ratingColor = '#3b82f6';
+  } else if (scoreOutOfTen >= 5) {
+    ratingLabel = '¡Aprobado! 👍';
+    ratingColor = '#10b981';
+  } else {
+    ratingLabel = '¡Ánimo! Hay que repasar 💪';
+    ratingColor = '#ef4444';
+  }
+
+  let html = `
+    <div style="text-align: center; padding: 20px 10px; border-bottom: 1px solid var(--border-color); margin-bottom: 20px;">
+      <div style="font-size: 3rem; font-weight: 900; color: ${ratingColor};">${scoreOutOfTen} / 10</div>
+      <h3 style="margin: 6px 0; color: ${ratingColor};">${ratingLabel}</h3>
+      <p class="section-subtitle">${correctCount} aciertos de ${total} preguntas • +${xpEarned} XP ganados</p>
+      ${
+        failedQuestions.length > 0
+          ? `
+        <button type="button" id="btn-mock-convert-flashcards" class="btn-primary" style="margin-top: 14px; width: auto; background: linear-gradient(135deg, #3b82f6, #8b5cf6);">
+          🎴 Guardar los ${failedQuestions.length} fallos en Fichas Leitner
+        </button>
+      `
+          : '<p style="color: #10b981; font-weight: 700; margin-top: 10px;">¡Perfección absoluta! No has cometido ningún fallo.</p>'
+      }
+      <button type="button" class="btn-secondary" style="margin-top: 10px; width: auto;" onclick="document.getElementById('mock-test-results-container').classList.add('hidden'); document.getElementById('mock-test-setup-card').classList.remove('hidden');">
+        🔄 Nuevo Simulacro
+      </button>
+    </div>
+
+    <h3 style="margin-bottom: 14px; font-size: 1.05rem;">Corrección Razonada y Desglose de Fallos:</h3>
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+  `;
+
+  questions.forEach((q, idx) => {
+    const selected = currentMockAnswers[idx];
+    const isCorrect = selected === q.correctIndex;
+    const letters = ['A', 'B', 'C', 'D'];
+
+    html += `
+      <div class="card" style="border-left: 4px solid ${isCorrect ? '#22c55e' : '#ef4444'};">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span style="font-weight: 700; font-size: 0.95rem;">${idx + 1}. ${escapeHTML(q.question)}</span>
+          <span style="font-weight: 800; font-size: 0.82rem; color: ${isCorrect ? '#22c55e' : '#ef4444'};">
+            ${isCorrect ? '✅ Acertada' : '❌ Fallo'}
+          </span>
+        </div>
+        <div style="font-size: 0.85rem; margin-bottom: 6px;">
+          Tu respuesta: <strong>${selected !== undefined ? `${letters[selected]}) ${escapeHTML(q.options[selected]?.replace(/^[A-D]\)\s*/, ''))}` : '<span style="color:var(--accent-rose);">No contestada</span>'}</strong>
+        </div>
+        ${
+          !isCorrect
+            ? `
+          <div style="font-size: 0.85rem; color: #22c55e; margin-bottom: 8px;">
+            Respuesta correcta: <strong>${letters[q.correctIndex]}) ${escapeHTML(q.options[q.correctIndex]?.replace(/^[A-D]\)\s*/, ''))}</strong>
+          </div>
+        `
+            : ''
+        }
+        <div class="mock-quiz-explanation">
+          💡 <strong>Explicación:</strong> ${escapeHTML(q.explanation)}
+        </div>
+      </div>
+    `;
+  });
+
+  html += `</div>`;
+  resultsContainer.innerHTML = html;
+
+  document.getElementById('btn-mock-convert-flashcards')?.addEventListener('click', async () => {
+    let savedCount = 0;
+    for (const fq of failedQuestions) {
+      const correctText = fq.options[fq.correctIndex] || '';
+      const newCard = createFlashcard({
+        subjectId: currentMockQuiz.subjectId || AppState.subjects[0]?.id || 'sub_general',
+        front: fq.question,
+        back: `${correctText}\n\n💡 ${fq.explanation}`,
+        hint: 'Pregunta de simulacro de examen'
+      });
+      await saveItem('flashcards', newCard);
+      AppState.flashcards.push(newCard);
+      savedCount++;
+    }
+    showToast(`🎴 Se han creado ${savedCount} fichas de estudio a partir de tus fallos`, 'success');
+    const btnConv = document.getElementById('btn-mock-convert-flashcards');
+    if (btnConv) {
+      btnConv.disabled = true;
+      btnConv.textContent = '✅ Fichas Guardadas';
+    }
+  });
+}
+
 
 
 

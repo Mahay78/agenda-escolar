@@ -75,7 +75,35 @@ export const ACHIEVEMENTS = [
     desc: 'Repasa fichas de estudio con el método de repetición espaciada',
     icon: '🧠',
     condition: (s) => (s.flashcardsReviewedCount || 0) >= 5
+  },
+  {
+    id: 'xp_100',
+    title: 'Estratega Académico',
+    desc: 'Alcanza 100 puntos de experiencia (Nivel 2)',
+    icon: '⚡',
+    condition: (s) => (s.xp || 0) >= 100
+  },
+  {
+    id: 'xp_300',
+    title: 'Erudito del Saber',
+    desc: 'Alcanza 300 puntos de experiencia (Nivel 3)',
+    icon: '🔮',
+    condition: (s) => (s.xp || 0) >= 300
+  },
+  {
+    id: 'xp_700',
+    title: 'Máster Académico Supremo',
+    desc: '¡Alcanza 700 puntos de experiencia y la cúspide académica!',
+    icon: '👑',
+    condition: (s) => (s.xp || 0) >= 700
   }
+];
+
+export const RANKS = [
+  { level: 1, title: 'Novato', icon: '🌱', minXp: 0, maxXp: 99, color: '#94a3b8' },
+  { level: 2, title: 'Estratega', icon: '⚡', minXp: 100, maxXp: 299, color: '#3b82f6' },
+  { level: 3, title: 'Erudito', icon: '🧠', minXp: 300, maxXp: 699, color: '#8b5cf6' },
+  { level: 4, title: 'Máster Académico', icon: '👑', minXp: 700, maxXp: Infinity, color: '#f59e0b' }
 ];
 
 const DEFAULT_STATS = {
@@ -87,8 +115,75 @@ const DEFAULT_STATS = {
   backpackPackedCount: 0,
   gradesCount: 0,
   flashcardsReviewedCount: 0,
+  xp: 0,
+  activityLog: {},
+  streakFreeze: { available: 1, usedDates: [] },
   unlockedAchievements: []
 };
+
+/**
+ * Obtiene la información del rango y progreso según XP actual
+ */
+export function getRankInfo(xp = 0) {
+  let currentRank = RANKS[0];
+  let nextRank = RANKS[1];
+
+  for (let i = 0; i < RANKS.length; i++) {
+    if (xp >= RANKS[i].minXp) {
+      currentRank = RANKS[i];
+      nextRank = RANKS[i + 1] || null;
+    }
+  }
+
+  let progress = 100;
+  let xpInLevel = xp - currentRank.minXp;
+  let neededForNext = 0;
+
+  if (nextRank) {
+    const range = nextRank.minXp - currentRank.minXp;
+    neededForNext = nextRank.minXp - xp;
+    progress = Math.min(100, Math.max(0, Math.round((xpInLevel / range) * 100)));
+  }
+
+  return {
+    rank: currentRank,
+    nextRank,
+    xp,
+    xpInLevel,
+    neededForNext,
+    progress
+  };
+}
+
+/**
+ * Genera la matriz del mapa de calor de actividad diaria (estilo GitHub)
+ */
+export function generateActivityHeatmap(activityLog = {}, days = 70) {
+  const result = [];
+  const today = new Date();
+
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const pad = (n) => String(n).padStart(2, '0');
+    const dateStr = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    const count = activityLog[dateStr] || 0;
+
+    let level = 0;
+    if (count >= 1 && count <= 2) level = 1;
+    else if (count >= 3 && count <= 5) level = 2;
+    else if (count >= 6 && count <= 8) level = 3;
+    else if (count >= 9) level = 4;
+
+    result.push({
+      date: dateStr,
+      count,
+      level,
+      dayOfWeek: d.getDay()
+    });
+  }
+  return result;
+}
 
 /**
  * Obtiene la fecha de hoy en formato YYYY-MM-DD local
@@ -120,22 +215,47 @@ export async function getGamificationStats() {
 }
 
 /**
- * Registra una acción de estudio y actualiza la racha y logros
- * @param {'task_completed'|'pomodoro_completed'|'backpack_packed'|'grade_added'|'app_opened'} actionType 
- * @returns {Promise<{ stats: Object, newlyUnlocked: Array }>}
+ * Registra una acción de estudio y actualiza la racha, XP y logros
+ * @param {'task_completed'|'pomodoro_completed'|'backpack_packed'|'grade_added'|'flashcards_reviewed'|'app_opened'} actionType 
+ * @returns {Promise<{ stats: Object, newlyUnlocked: Array, xpGained: number, streakSavedByFreeze: boolean }>}
  */
 export async function recordStudyActivity(actionType) {
   const stats = await getGamificationStats();
   const today = getTodayDateStr();
 
-  // 1. Actualizar contadores específicos
-  if (actionType === 'task_completed') stats.completedTasksCount++;
-  if (actionType === 'pomodoro_completed') stats.pomodoroSessionsCount++;
-  if (actionType === 'backpack_packed') stats.backpackPackedCount++;
-  if (actionType === 'grade_added') stats.gradesCount++;
-  if (actionType === 'flashcards_reviewed') stats.flashcardsReviewedCount = (stats.flashcardsReviewedCount || 0) + 1;
+  // Asegurar estructura de campos nuevos
+  stats.xp = stats.xp || 0;
+  stats.activityLog = stats.activityLog || {};
+  stats.streakFreeze = stats.streakFreeze || { available: 1, usedDates: [] };
 
-  // 2. Comprobar racha diaria
+  // 1. Asignar XP y contadores específicos
+  let xpGained = 0;
+  if (actionType === 'task_completed') {
+    stats.completedTasksCount = (stats.completedTasksCount || 0) + 1;
+    xpGained = 15;
+  } else if (actionType === 'pomodoro_completed') {
+    stats.pomodoroSessionsCount = (stats.pomodoroSessionsCount || 0) + 1;
+    xpGained = 25;
+  } else if (actionType === 'backpack_packed') {
+    stats.backpackPackedCount = (stats.backpackPackedCount || 0) + 1;
+    xpGained = 10;
+  } else if (actionType === 'grade_added') {
+    stats.gradesCount = (stats.gradesCount || 0) + 1;
+    xpGained = 10;
+  } else if (actionType === 'flashcards_reviewed') {
+    stats.flashcardsReviewedCount = (stats.flashcardsReviewedCount || 0) + 1;
+    xpGained = 10;
+  } else if (actionType === 'app_opened') {
+    xpGained = 2;
+  }
+
+  stats.xp += xpGained;
+
+  // Registrar en el log de actividad diario
+  stats.activityLog[today] = (stats.activityLog[today] || 0) + 1;
+
+  // 2. Comprobar racha diaria y Congelador de Racha (Streak Freeze)
+  let streakSavedByFreeze = false;
   if (!stats.lastActiveDate) {
     stats.currentStreak = 1;
     stats.bestStreak = 1;
@@ -143,13 +263,26 @@ export async function recordStudyActivity(actionType) {
   } else if (stats.lastActiveDate !== today) {
     const diff = daysDifference(stats.lastActiveDate, today);
     if (diff === 1) {
-      // Día consecutivo: aumentar racha
+      // Día consecutivo
       stats.currentStreak++;
       if (stats.currentStreak > stats.bestStreak) {
         stats.bestStreak = stats.currentStreak;
       }
+      // Cada 7 días de racha premiar con un congelador extra (máximo 2)
+      if (stats.currentStreak % 7 === 0 && stats.streakFreeze.available < 2) {
+        stats.streakFreeze.available++;
+      }
+    } else if (diff === 2 && stats.streakFreeze.available > 0) {
+      // Faltó un día pero tenía un congelador disponible: salvar la racha
+      stats.streakFreeze.available--;
+      stats.streakFreeze.usedDates.push(stats.lastActiveDate);
+      stats.currentStreak++;
+      streakSavedByFreeze = true;
+      if (stats.currentStreak > stats.bestStreak) {
+        stats.bestStreak = stats.currentStreak;
+      }
     } else if (diff > 1) {
-      // Racha interrumpida: reiniciar a 1
+      // Racha interrumpida
       stats.currentStreak = 1;
     }
     stats.lastActiveDate = today;
@@ -169,5 +302,5 @@ export async function recordStudyActivity(actionType) {
   stats.unlockedAchievements = Array.from(currentUnlocked);
   await setSetting('gamificationStats', stats);
 
-  return { stats, newlyUnlocked };
+  return { stats, newlyUnlocked, xpGained, streakSavedByFreeze };
 }

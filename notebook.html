@@ -882,6 +882,9 @@
         <button type="button" class="btn-tool" id="btn-tool-summary" title="Resumen ejecutivo rápido">
           ⚡ Resumen
         </button>
+        <button type="button" class="btn-tool" id="btn-tool-scratchpad" title="Abrir mi Bloc de Notas personal">
+          📝 Bloc de Notas
+        </button>
       </div>
 
       <!-- Contenedor del contenido generado -->
@@ -923,6 +926,23 @@
             </div>
           </div>
           <p id="audio-transcript-snippet" style="font-size: 0.8rem; color: var(--text-muted); font-style: italic; line-height: 1.4;"></p>
+        </div>
+
+        <!-- Bloc de Notas Personal (Scratchpad) -->
+        <div class="generated-artifact-card hidden" id="studio-scratchpad-card">
+          <div class="artifact-header">
+            <h3>📝 Bloc de Notas Personal (Scratchpad)</h3>
+            <div class="artifact-actions">
+              <button type="button" class="btn-header-action" id="btn-copy-scratchpad">📋 Copiar</button>
+              <button type="button" class="btn-header-action" id="btn-clear-scratchpad" style="color: var(--accent-rose);">🗑️ Limpiar</button>
+            </div>
+          </div>
+          <div class="artifact-body">
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px;">
+              Guarda tus notas, resúmenes o fragmentos del chat. Se guardan automáticamente en tu dispositivo.
+            </p>
+            <textarea id="notebook-scratchpad-input" style="width: 100%; height: 320px; background: rgba(0,0,0,0.25); color: #fff; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; font-family: inherit; font-size: 0.88rem; line-height: 1.5; resize: vertical;" placeholder="Escribe aquí tus conclusiones o pulsa '📌 En mis Notas' en las respuestas del chat..."></textarea>
+          </div>
         </div>
 
         <!-- Contenedor dinámico para la Guía / Examen / Fichas generadas -->

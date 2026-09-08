@@ -59,6 +59,8 @@ export function createFlashcard({ subjectId, front, back, hint = '' }) {
     hint: hint ? hint.trim() : '',
     box: 1,
     repetitions: 0,
+    easeFactor: 2.5,  // Factor de Facilidad SM-2 (por defecto 2.5)
+    interval: 0,     // Días de intervalo SM-2
     lastReviewed: null,
     nextReviewDate: today,
     createdAt: new Date().toISOString()
@@ -110,34 +112,146 @@ export function calculateFlashcardStats(cards, targetDate = getLocalTodayDateStr
 }
 
 /**
- * Procesa la respuesta del alumno a una ficha según el sistema Leitner
+ * Comprueba la similitud textual para el Modo Escritura (Roadmap Item 15)
+ * @param {string} userAnswer Respuesta escrita por el estudiante
+ * @param {string} correctAnswer Respuesta original de la ficha
+ * @returns {{ isCorrect: boolean, similarity: number, feedback: string }}
+ */
+export function checkAnswerSimilarity(userAnswer, correctAnswer) {
+  if (!userAnswer || !correctAnswer) {
+    return { isCorrect: false, similarity: 0, feedback: 'Escribe una respuesta para comprobar' };
+  }
+
+  const normalize = (str) =>
+    str
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^\w\s]/gi, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+  const userNorm = normalize(userAnswer);
+  const correctNorm = normalize(correctAnswer);
+
+  if (userNorm === correctNorm) {
+    return { isCorrect: true, similarity: 100, feedback: '¡Excelente! Respuesta exacta 🎯' };
+  }
+
+  // Comprobar si la respuesta del usuario está contenida en la respuesta larga o viceversa
+  if (correctNorm.includes(userNorm) && userNorm.length > 3) {
+    const similarity = Math.round((userNorm.length / correctNorm.length) * 100);
+    return { isCorrect: similarity >= 60, similarity, feedback: '¡Vas por muy buen camino! Cubre los conceptos clave.' };
+  }
+
+  // Comparación por palabras clave
+  const userWords = new Set(userNorm.split(' ').filter(w => w.length > 3));
+  const correctWords = new Set(correctNorm.split(' ').filter(w => w.length > 3));
+
+  if (correctWords.size > 0) {
+    let matches = 0;
+    userWords.forEach(w => {
+      if (correctWords.has(w)) matches++;
+    });
+    const wordSimilarity = Math.round((matches / correctWords.size) * 100);
+    if (wordSimilarity >= 60) {
+      return { isCorrect: true, similarity: wordSimilarity, feedback: '¡Muy bien! Has incluido las palabras clave.' };
+    }
+  }
+
+  // Algoritmo de distancia de Levenshtein para palabras o respuestas cortas
+  const a = userNorm;
+  const b = correctNorm;
+  const matrix = Array.from({ length: a.length + 1 }, () => Array(b.length + 1).fill(0));
+  for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
+  for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      matrix[i][j] = Math.min(
+        matrix[i - 1][j] + 1,
+        matrix[i][j - 1] + 1,
+        matrix[i - 1][j - 1] + cost
+      );
+    }
+  }
+
+  const distance = matrix[a.length][b.length];
+  const maxLen = Math.max(a.length, b.length);
+  const similarity = Math.max(0, Math.round(((maxLen - distance) / maxLen) * 100));
+
+  if (similarity >= 75) {
+    return { isCorrect: true, similarity, feedback: '¡Correcto! Solo pequeños fallos ortográficos o de puntuación.' };
+  }
+
+  return {
+    isCorrect: false,
+    similarity,
+    feedback: 'Respuesta diferente. ¡Revisa la solución para reforzar tu memoria!'
+  };
+}
+
+/**
+ * Procesa la respuesta del alumno utilizando el algoritmo SuperMemo SM-2 (Roadmap Item 14)
  * @param {Object} card Ficha actual
- * @param {'hard'|'good'|'easy'} rating Calificación: difícil, regular o fácil
- * @returns {Object} Ficha actualizada
+ * @param {'again'|'hard'|'good'|'easy'} rating Calificación del repaso
+ * @returns {Object} Ficha actualizada con nuevos intervalos SM-2 y caja Leitner
  */
 export function processCardReview(card, rating) {
   const today = getLocalTodayDateString();
-  const currentBox = card.box || 1;
-  let newBox = currentBox;
+  let ef = typeof card.easeFactor === 'number' ? card.easeFactor : 2.5;
+  let reps = card.repetitions || 0;
+  let interval = card.interval || 0;
+  let grade = 4; // Por defecto 'good'
 
-  if (rating === 'hard') {
-    // Si falla o le resulta muy difícil, vuelve a la caja 1
-    newBox = 1;
+  if (rating === 'again' || rating === 'hard') {
+    grade = rating === 'again' ? 1 : 2;
   } else if (rating === 'good') {
-    // Si la sabe regular, si estaba en 1 pasa a 2; si ya estaba en 2+, se mantiene en la misma caja
-    newBox = currentBox === 1 ? 2 : currentBox;
+    grade = 4;
   } else if (rating === 'easy') {
-    // Si le resulta fácil, asciende a la siguiente caja (máximo caja 5)
-    newBox = Math.min(currentBox + 1, 5);
+    grade = 5;
   }
 
-  const intervalDays = LEITNER_INTERVALS[newBox] || 1;
-  const nextReview = addDaysToDateString(today, intervalDays);
+  // 1. Cálculo de intervalo y repeticiones según SM-2
+  if (grade < 3) {
+    // Fallo: reiniciar repeticiones e intervalo a 1 día
+    reps = 0;
+    interval = 1;
+  } else {
+    // Éxito
+    if (reps === 0) {
+      interval = 1;
+    } else if (reps === 1) {
+      interval = 6;
+    } else {
+      interval = Math.round(interval * ef);
+    }
+    reps++;
+  }
+
+  // 2. Actualización del factor de facilidad (EF')
+  // Fórmula oficial SM-2: EF' = EF + (0.1 - (5 - grade) * (0.08 + (5 - grade) * 0.02))
+  ef = ef + (0.1 - (5 - grade) * (0.08 + (5 - grade) * 0.02));
+  if (ef < 1.3) ef = 1.3; // Límite inferior estándar SM-2
+  ef = Math.round(ef * 100) / 100;
+
+  // 3. Mapeo a caja Leitner (1 a 5) para compatibilidad con la interfaz
+  let newBox = 1;
+  if (interval >= 30) newBox = 5;
+  else if (interval >= 14) newBox = 4;
+  else if (interval >= 7) newBox = 3;
+  else if (interval >= 3) newBox = 2;
+  else newBox = 1;
+
+  const nextReview = addDaysToDateString(today, interval);
 
   return {
     ...card,
     box: newBox,
-    repetitions: (card.repetitions || 0) + 1,
+    repetitions: reps,
+    easeFactor: ef,
+    interval: interval,
     lastReviewed: today,
     nextReviewDate: nextReview
   };

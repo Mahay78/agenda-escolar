@@ -4037,5 +4037,602 @@ input, textarea, select, button {
   }
 }
 
+/* ==========================================================================
+   FASE 1 ROADMAP: TEMAS ADICIONALES (ITEM 32)
+   ========================================================================== */
 
+/* 1. Tema OLED Negro Puro (0% consumo de píxeles negros) */
+body.theme-oled {
+  --bg-main: #000000;
+  --bg-card: #0a0a0c;
+  --bg-card-hover: #141418;
+  --bg-input: #111114;
+  --border-color: #222228;
+  --text-main: #ffffff;
+  --text-muted: #9e9ea7;
+  --text-dim: #63636d;
+  --shadow-sm: none;
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.85);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.95);
+}
+
+/* 2. Tema Lavanda Suave */
+body.theme-lavender {
+  --bg-main: #130f24;
+  --bg-card: #1c1636;
+  --bg-card-hover: #261f49;
+  --bg-input: #251e44;
+  --border-color: #3d3266;
+  --text-main: #f5f3ff;
+  --text-muted: #c4b5fd;
+  --text-dim: #8b5cf6;
+  --primary: #a855f7;
+  --primary-hover: #9333ea;
+  --primary-light: rgba(168, 85, 247, 0.18);
+  --shadow-glow: 0 0 20px rgba(168, 85, 247, 0.28);
+}
+
+/* 3. Tema Bosque Esmeralda */
+body.theme-forest {
+  --bg-main: #061712;
+  --bg-card: #0b261d;
+  --bg-card-hover: #12362b;
+  --bg-input: #103328;
+  --border-color: #1a4d3c;
+  --text-main: #ecfdf5;
+  --text-muted: #a7f3d0;
+  --text-dim: #34d399;
+  --primary: #10b981;
+  --primary-hover: #059669;
+  --primary-light: rgba(16, 185, 129, 0.18);
+  --shadow-glow: 0 0 20px rgba(16, 185, 129, 0.28);
+}
+
+/* 4. Tema Pastel Cálido */
+body.theme-pastel {
+  --bg-main: #faf6f0;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f5ede1;
+  --bg-input: #f0e6d6;
+  --border-color: #dfd3c3;
+  --text-main: #332822;
+  --text-muted: #736257;
+  --text-dim: #9c8a7e;
+  --primary: #e07a5f;
+  --primary-hover: #d06547;
+  --primary-light: rgba(224, 122, 95, 0.18);
+  --shadow-md: 0 4px 12px rgba(120, 80, 50, 0.08);
+  --shadow-lg: 0 10px 20px rgba(120, 80, 50, 0.12);
+}
+
+/* ==========================================================================
+   FASE 1 ROADMAP: TIPOGRAFÍA ACCESIBLE PARA DISLEXIA (ITEM 33)
+   ========================================================================== */
+body.font-dyslexic,
+body.font-dyslexic button,
+body.font-dyslexic input,
+body.font-dyslexic textarea,
+body.font-dyslexic select {
+  font-family: 'OpenDyslexic', 'Comic Sans MS', 'Trebuchet MS', system-ui, sans-serif !important;
+  letter-spacing: 0.04em !important;
+  word-spacing: 0.08em !important;
+  line-height: 1.65 !important;
+}
+
+body.font-hyperlegible,
+body.font-hyperlegible button,
+body.font-hyperlegible input,
+body.font-hyperlegible textarea,
+body.font-hyperlegible select {
+  font-family: 'Atkinson Hyperlegible', system-ui, -apple-system, sans-serif !important;
+  letter-spacing: 0.025em !important;
+  line-height: 1.55 !important;
+}
+
+/* ==========================================================================
+   FASE 1 ROADMAP: MAPA DE CALOR (HEATMAP) Y NIVELES XP (ITEMS 25 & 26)
+   ========================================================================== */
+.student-rank-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.82rem;
+  font-weight: 700;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  margin-top: 6px;
+}
+
+.xp-progress-wrapper {
+  margin: 14px 0 10px 0;
+  background: var(--bg-input);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  text-align: left;
+}
+
+.xp-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--text-main);
+}
+
+.xp-bar-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+body.light-theme .xp-bar-track,
+body.theme-pastel .xp-bar-track {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.xp-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), #a855f7);
+  border-radius: var(--radius-full);
+  transition: width 0.5s ease-out;
+}
+
+/* Contenedor del Mapa de Calor */
+.heatmap-card {
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  margin: 16px 0;
+  text-align: left;
+}
+
+.heatmap-scroll-area {
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scrollbar-width: thin;
+}
+
+.heatmap-grid {
+  display: grid;
+  grid-template-rows: repeat(7, 12px);
+  grid-auto-flow: column;
+  grid-auto-columns: 12px;
+  gap: 3px;
+  width: max-content;
+}
+
+.heatmap-cell {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.06);
+  transition: transform 0.12s ease, outline 0.12s ease;
+  cursor: pointer;
+}
+
+body.light-theme .heatmap-cell,
+body.theme-pastel .heatmap-cell {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.heatmap-cell:hover {
+  transform: scale(1.35);
+  outline: 1.5px solid var(--text-main);
+  z-index: 10;
+}
+
+.heatmap-cell.lvl-1 { background: #166534; }
+.heatmap-cell.lvl-2 { background: #15803d; }
+.heatmap-cell.lvl-3 { background: #22c55e; }
+.heatmap-cell.lvl-4 { background: #4ade80; box-shadow: 0 0 6px rgba(74, 222, 128, 0.5); }
+
+.heatmap-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.heatmap-scale {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.heatmap-scale-box {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+/* ==========================================================================
+   FASE 4 & 5: ESCRITORIO, CALENDARIO, MATRIZ, PIP, ENGLISH COACH Y MOCK TESTS
+   ========================================================================== */
+
+/* Menú Contextual Clic Derecho */
+.app-context-menu {
+  position: fixed;
+  z-index: 10000;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  padding: 6px;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  backdrop-filter: blur(14px);
+  animation: contextMenuPop 0.15s ease-out;
+}
+@keyframes contextMenuPop {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+.context-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--text-main);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  width: 100%;
+}
+.context-menu-item:hover {
+  background: var(--bg-card-hover);
+  color: var(--primary);
+}
+.context-menu-divider {
+  height: 1px;
+  background: var(--border-color);
+  margin: 4px 0;
+}
+.context-menu-item.danger:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+/* Drag and Drop en Tareas */
+.task-item[draggable="true"] {
+  cursor: grab;
+}
+.task-item[draggable="true"]:active {
+  cursor: grabbing;
+}
+.task-item.is-dragging {
+  opacity: 0.45;
+  transform: scale(0.98);
+  border: 2px dashed var(--primary) !important;
+}
+
+/* Matriz Semanal Completa */
+.schedule-matrix-wrapper {
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  margin-top: 14px;
+}
+.schedule-matrix-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 650px;
+  text-align: center;
+  font-size: 0.82rem;
+}
+.schedule-matrix-table th {
+  background: var(--bg-input);
+  padding: 10px 8px;
+  font-weight: 700;
+  color: var(--text-main);
+  border-bottom: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
+}
+.schedule-matrix-table th:last-child {
+  border-right: none;
+}
+.schedule-matrix-table td {
+  padding: 6px;
+  border-bottom: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
+  vertical-align: middle;
+  min-height: 52px;
+}
+.schedule-matrix-table td:last-child {
+  border-right: none;
+}
+.schedule-matrix-time {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+  background: var(--bg-input);
+}
+.matrix-cell-empty {
+  color: var(--text-dim);
+  font-size: 0.74rem;
+  cursor: pointer;
+  padding: 10px 4px;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s ease;
+}
+.matrix-cell-empty:hover {
+  background: var(--bg-card-hover);
+  color: var(--primary);
+}
+.matrix-cell-card {
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: left;
+  border-left: 3px solid var(--primary);
+  background: var(--bg-card-hover);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.matrix-cell-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+.matrix-cell-room {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  display: block;
+  margin-top: 2px;
+}
+
+/* Vista de Calendario Mensual Completo */
+.calendar-month-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.calendar-month-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.calendar-nav-buttons {
+  display: flex;
+  gap: 6px;
+}
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  background: var(--bg-card);
+  padding: 10px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+.calendar-weekday-header {
+  text-align: center;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  padding: 6px 0;
+  text-transform: uppercase;
+}
+.calendar-day-cell {
+  min-height: 72px;
+  background: var(--bg-input);
+  border-radius: var(--radius-sm);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+}
+.calendar-day-cell:hover {
+  border-color: var(--primary);
+  background: var(--bg-card-hover);
+}
+.calendar-day-cell.other-month {
+  opacity: 0.35;
+}
+.calendar-day-cell.is-today {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1.5px var(--primary);
+  background: rgba(99, 102, 241, 0.08);
+}
+.calendar-day-cell.is-selected {
+  outline: 2px solid var(--secondary);
+}
+.calendar-day-number {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+.calendar-badge-event {
+  font-size: 0.66rem;
+  padding: 2px 4px;
+  border-radius: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.calendar-badge-task {
+  background: rgba(59, 130, 246, 0.18);
+  color: #3b82f6;
+  border-left: 2px solid #3b82f6;
+}
+.calendar-badge-exam {
+  background: rgba(239, 68, 68, 0.18);
+  color: #ef4444;
+  border-left: 2px solid #ef4444;
+}
+
+/* Pomodoro PiP Floating Widget */
+.pomodoro-pip-overlay {
+  position: fixed;
+  bottom: 84px;
+  right: 20px;
+  z-index: 9999;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  border-radius: var(--radius-lg);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  backdrop-filter: blur(14px);
+  animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pomodoro-pip-overlay.hidden {
+  display: none !important;
+}
+.pomodoro-pip-timer {
+  font-size: 1.4rem;
+  font-weight: 900;
+  font-family: monospace;
+  color: var(--primary);
+}
+.pomodoro-pip-mode {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: var(--text-muted);
+}
+
+/* English Coach Feedback Box */
+.english-coach-card {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(124, 58, 237, 0.12));
+  border: 1px solid rgba(124, 58, 237, 0.35);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.english-coach-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: #8b5cf6;
+}
+.english-feedback-row {
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--text-main);
+}
+.english-feedback-label {
+  font-weight: 700;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+.btn-save-english-flashcard {
+  align-self: flex-start;
+  margin-top: 4px;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  color: white;
+  border: none;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: transform 0.15s ease;
+}
+.btn-save-english-flashcard:hover {
+  transform: scale(1.04);
+}
+
+/* Simulacro de Examen (Mock Tests) */
+.mock-quiz-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+.mock-quiz-question-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.mock-quiz-question-text {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.4;
+}
+.mock-quiz-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.86rem;
+  transition: all 0.15s ease;
+}
+.mock-quiz-option:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--primary);
+}
+.mock-quiz-option.selected {
+  border-color: var(--primary);
+  background: rgba(99, 102, 241, 0.15);
+}
+.mock-quiz-option.correct {
+  border-color: var(--success) !important;
+  background: rgba(34, 197, 94, 0.15) !important;
+  color: #22c55e !important;
+}
+.mock-quiz-option.wrong {
+  border-color: var(--accent-rose) !important;
+  background: rgba(244, 63, 94, 0.15) !important;
+  color: #f43f5e !important;
+}
+.mock-quiz-explanation {
+  background: var(--bg-input);
+  border-left: 3px solid var(--primary);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
 
