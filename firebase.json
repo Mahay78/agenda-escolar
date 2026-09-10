@@ -10,9 +10,28 @@
       "*.bat",
       "*.sh"
     ],
+    "rewrites": [
+      {
+        "source": "/tablet/**",
+        "destination": "/tablet/index.html"
+      },
+      {
+        "source": "/mobile/**",
+        "destination": "/mobile/index.html"
+      }
+    ],
     "headers": [
       {
-        "source": "/sw.js",
+        "source": "**/*.@(js|css)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=31536000"
+          }
+        ]
+      },
+      {
+        "source": "sw.js",
         "headers": [
           {
             "key": "Cache-Control",
