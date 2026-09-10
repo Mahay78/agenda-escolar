@@ -1,52 +1,260 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Cámara Escolar con Zoom & OCR</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>* { touch-action: manipulation; }</style>
-</head>
-<body class="bg-black text-white font-['Plus_Jakarta_Sans',sans-serif] antialiased h-screen w-screen flex flex-col justify-between overflow-hidden select-none">
-  <!-- Topbar -->
-  <header class="p-4 flex items-center justify-between z-20 bg-gradient-to-b from-black/80 to-transparent">
-    <div class="flex items-center gap-2">
-      <span class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs">⚡</span>
-    </div>
-    <div class="flex items-center gap-1 bg-black/60 backdrop-blur p-1 rounded-full border border-white/20 text-xs font-bold">
-      <button class="px-2.5 py-1 rounded-full bg-emerald-500 text-white">✨ ML Kit</button>
-      <button class="px-2.5 py-1 rounded-full text-slate-300">🤖 Gemini 1.5</button>
-    </div>
-    <a href="index.html" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs">✕</a>
-  </header>
 
-  <!-- Visor -->
-  <main class="flex-1 relative flex items-center justify-center p-4">
-    <div class="w-full h-full rounded-3xl border-2 border-dashed border-emerald-400/80 bg-slate-900/60 flex flex-col items-center justify-center p-6 text-center relative">
-      <div class="absolute top-3 left-3 bg-black/70 px-2 py-1 rounded-md text-[10px] font-mono text-emerald-300">
-        [+] AUTO-DESKEW ACTIVO
-      </div>
-      <span class="bg-emerald-500/20 text-emerald-300 text-xs font-bold px-3 py-1 rounded-full border border-emerald-400/40">
-        Pizarra Mat. II (98%)
-      </span>
-      <div class="absolute bottom-6 flex items-center gap-2 bg-black/70 p-1.5 rounded-full border border-white/20">
-        <button class="w-8 h-8 rounded-full bg-white/10 text-xs font-bold">1x</button>
-        <button class="w-8 h-8 rounded-full bg-white text-black text-xs font-bold">2x</button>
-        <button class="w-8 h-8 rounded-full bg-white/10 text-xs font-bold">3x</button>
-      </div>
-    </div>
-  </main>
+<html lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><title>Agenda Escolar PWA</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "border-subtle": "#E2E8F0", "surface-container-high": "#dce9ff", "secondary": "#4648d4", "error": "#ba1a1a", "on-surface": "#0b1c30", "primary-fixed-dim": "#bcc7de", "on-background": "#0b1c30", "surface-dim": "#cbdbf5", "on-error": "#ffffff", "surface-container-lowest": "#ffffff", "tertiary": "#201100", "on-primary": "#ffffff", "surface-sidebar": "#0F172A", "outline-variant": "#c5c6cd", "indigo-ai": "#8B5CF6", "on-primary-container": "#8590a6", "surface-bright": "#f8f9ff", "on-primary-fixed-variant": "#3c475a", "outline": "#75777d", "primary-fixed": "#d8e3fb", "on-primary-fixed": "#111c2d", "on-secondary-fixed": "#07006c", "primary-container": "#1e293b", "on-tertiary-fixed": "#2a1700", "surface-card": "#FFFFFF", "error-container": "#ffdad6", "tertiary-container": "#3c2300", "inverse-surface": "#213145", "surface-container-low": "#eff4ff", "on-tertiary-container": "#c88000", "coral-urgent": "#F43F5E", "on-tertiary-fixed-variant": "#653e00", "secondary-fixed-dim": "#c0c1ff", "inverse-on-surface": "#eaf1ff", "emerald-streak": "#10B981", "on-surface-variant": "#45474c", "surface-container": "#e5eeff", "background": "#f8f9ff", "inverse-primary": "#bcc7de", "surface-container-highest": "#d3e4fe", "primary": "#091426", "border-dark": "#1E293B", "surface-tint": "#545f73", "on-error-container": "#93000a", "tertiary-fixed-dim": "#ffb95f", "on-secondary-container": "#fffbff", "surface-variant": "#d3e4fe", "surface": "#f8f9ff", "tertiary-fixed": "#ffddb8", "secondary-fixed": "#e1e0ff", "on-tertiary": "#ffffff", "on-secondary-fixed-variant": "#2f2ebe", "canvas-bg": "#F8FAFC", "on-secondary": "#ffffff", "secondary-container": "#6063ee" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-2xs": "0.125rem", "sidebar-collapsed": "68px", "space-xl": "2rem", "space-xs": "0.25rem", "max-content-width": "1440px", "space-base": "1rem", "space-2xl": "3rem", "space-lg": "1.5rem", "space-sm": "0.5rem", "space-md": "0.75rem", "sidebar-width": "240px" }, "fontFamily": { "headline-lg": ["Plus Jakarta Sans"], "code-sm": ["JetBrains Mono"], "label-md": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "display": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"] }, "fontSize": { "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "700" }], "code-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" }], "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "display": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-md": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }] } } } };</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased selection:bg-secondary-fixed selection:text-on-secondary-fixed"><aside class="fixed left-0 top-0 h-screen w-sidebar-width bg-surface-sidebar z-50 flex flex-col justify-between select-none shadow-[0_1px_8px_rgba(0,0,0,0.08)]"><div class="flex flex-col flex-1 overflow-y-auto"><div class="h-16 px-space-base flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="Agenda Escolar Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1W7YUEss6DP9Xx1z841d_qHcSCOIN-l-FhxrtKUiT5-W3ctujb3E695E4JvcFlKOwJoERFlgw34EvmYFS36M3HrArIc3x400fLH1AoZYEucmEe1aIVkLAPCvwhq3kxd6fab9Elr7U6Vimt0zw1SCEgHXBCvXV-69uslhDkvNzZHvwJb9BJ1ZyZmF7mq6CqnuAvZ-6FjV6pKE_YyNJsRUW5hB1n4jcwnfaEzeGa5lhXOLCkde7_yj2x0cFE"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-surface-card leading-none tracking-tight">Agenda Escolar</span><span class="mt-space-2xs inline-flex items-center self-start px-space-xs py-0.5 rounded bg-primary-container text-primary-fixed text-[10px] font-code-sm font-semibold uppercase tracking-wider">v3.5 PWA</span></div></div><button aria-label="Colapsar menú lateral" class="text-outline-variant hover:text-surface-card p-1 rounded transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">keyboard_double_arrow_left</span></button></div><div class="px-space-base py-space-xs"><div class="flex items-center justify-between px-space-sm py-space-xs rounded bg-border-dark/60 text-emerald-streak"><div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-streak animate-pulse"></span><span class="font-label-sm text-label-sm">100% Offline Listo</span></div><span class="font-code-sm text-code-sm text-surface-variant/80 text-[10px]">PWA ACTIVE</span></div></div><nav class="flex-1 px-space-sm py-space-xs space-y-space-2xs" data-active-classes="bg-primary-container text-surface-card font-semibold shadow-inner"><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="mi-dia" href="index.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-tertiary-fixed-dim">light_mode</span><span class="font-body-md text-body-md">Mi Día</span></div><span class="px-1.5 py-0.5 rounded-full bg-border-dark text-surface-card font-code-sm text-[11px]">8</span></a><div class="space-y-0.5"><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="agenda" href="agenda.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">calendar_month</span><span class="font-body-md text-body-md">Agenda</span></div><span class="material-symbols-outlined text-[16px] text-outline-variant group-hover:text-surface-card">expand_more</span></a><div class="pl-8 pr-space-xs space-y-0.5"><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="deberes" href="agenda.html"><span>Deberes</span><span class="w-1.5 h-1.5 rounded-full bg-coral-urgent"></span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="examenes" href="agenda.html"><span>Exámenes</span><span class="font-code-sm text-[10px] text-tertiary-fixed-dim font-bold">PROX</span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="horario" href="agenda.html"><span>Horario</span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="mochila" href="agenda.html"><span>Mochila</span><span class="material-symbols-outlined text-[13px] text-outline-variant">backpack</span></a></div></div><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="cuaderno-lm" href="cuaderno-lm.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-indigo-ai">neurology</span><span class="font-body-md text-body-md">Cuaderno LM</span></div><span class="px-1.5 py-0.2 rounded bg-indigo-ai/20 text-indigo-ai font-label-sm text-[10px]">Studio</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="pomodoro-concentracion" href="pomodoro-flashcards.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">timer</span><span class="font-body-md text-body-md">Pomodoro</span></div><span class="font-code-sm text-code-sm text-tertiary-fixed-dim">25:00</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="progreso-notas" href="progreso-ebau.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">insights</span><span class="font-body-md text-body-md">Progreso &amp; Notas</span></div><span class="font-code-sm text-code-sm text-emerald-streak">9.4</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="copiloto-ia" href="english-coach.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-secondary-fixed-dim">smart_toy</span><span class="font-body-md text-body-md">Copiloto IA</span></div><span class="flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-streak opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-streak"></span></span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="ajustes-drive-sync" href="../ajustes-nube.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">sync_saved_locally</span><span class="font-body-md text-body-md">Ajustes &amp; Drive</span></div><span class="material-symbols-outlined text-[16px] text-emerald-streak">cloud_done</span></a></nav></div><div class="p-space-sm bg-border-dark/40 m-space-sm rounded-xl"><div class="flex items-center gap-space-sm"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfmw-gtx0XEK7h8QkzkqF3FppIOTbex1jLhq0ocROUjmLodXPHUohFwpnJvNVkN0ISjq214XEmWTpaUMw3YSio12W-RjtGFeU0sE1SjasnJqTB-yV8QlgvtQlUWVMlziMiyc-kapJhBGjqEArrPwnzz5DrLEfaywd6KV0lCZ0M5ZzcT3XTNGdqZUTS-wEp6J9RCq0b-FMAAjueo_cX1syzKCEK_bQTcBHe-z8fv9oRHSz-6bu4IvxX"/><div class="flex-1 min-w-0"><div class="flex items-center justify-between gap-1"><p class="font-headline-sm text-body-md font-semibold text-surface-card truncate leading-snug">Lucía Fernández</p><span class="inline-flex items-center px-1.5 py-0.5 rounded bg-tertiary-container text-tertiary-fixed font-code-sm text-[10px] font-bold shrink-0">🔥 14</span></div><p class="font-label-sm text-label-sm text-outline-variant truncate">2º Bachillerato • Ciencias</p></div></div></div></aside><div class="pl-sidebar-width"><header class="fixed top-0 left-sidebar-width right-0 h-16 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg"><div class="flex-1 max-w-xl pr-space-base"><div class="relative flex items-center w-full"><span class="material-symbols-outlined absolute left-3 text-[18px] text-on-surface-variant pointer-events-none">search</span><input class="w-full h-10 pl-9 pr-20 bg-surface-container-lowest rounded-lg font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none focus:bg-surface-container-lowest transition-all shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" placeholder="Buscar asignaturas, tareas, notas o fechas..." type="text"/><div class="absolute right-2 flex items-center gap-1"><kbd class="px-1.5 py-0.5 text-[11px] font-code-sm text-on-surface-variant bg-surface-container-high rounded">⌘K</kbd></div></div></div><div class="flex items-center gap-space-sm"><div class="flex items-center gap-1 bg-surface-container-lowest px-space-sm py-1.5 rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]"><span class="material-symbols-outlined text-[17px] text-tertiary-container">hourglass_top</span><span class="font-code-sm text-code-sm font-semibold text-on-surface">25:00</span><button class="text-on-surface-variant hover:text-on-surface ml-1" title="Iniciar Pomodoro" type="button"><span class="material-symbols-outlined text-[17px]">play_arrow</span></button></div><button class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[17px] text-secondary">document_scanner</span><span>OCR</span></button><button class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[17px] text-coral-urgent">mic</span><span>Dictar</span></button><button class="inline-flex items-center gap-1.5 px-space-md py-1.5 rounded-lg bg-primary-container text-surface-card font-label-md text-label-md hover:bg-primary hover:text-surface-card transition-colors shadow-sm" type="button"><span class="material-symbols-outlined text-[18px]">add</span><span>Nueva Tarea</span></button><div class="h-6 w-px bg-border-subtle mx-space-2xs"></div><button aria-label="Notificaciones" class="relative p-2 rounded-lg bg-surface-container-lowest text-on-surface-variant hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-coral-urgent ring-2 ring-surface-card"></span></button></div></header><main class="w-full pt-16 bg-surface min-h-screen"><div class="max-w-max-content-width mx-auto p-space-lg"><div class="flex flex-col w-full select-none pb-space-lg">
+<!-- Container General de la Cámara Escolar -->
+<div class="w-full max-w-md mx-auto flex flex-col gap-space-sm">
+<!-- Top floating HUD bar (translucent glass) -->
+<header class="w-full rounded-xl bg-surface-sidebar/85 backdrop-blur-md shadow-md px-space-md py-space-sm flex items-center justify-between z-20">
+<div class="flex items-center gap-space-xs">
+<button aria-label="Flash / Linterna" class="p-2 rounded-full bg-border-dark/70 text-surface-card hover:bg-border-dark active:scale-95 transition-all flex items-center justify-center" id="btn-flash" type="button">
+<span class="material-symbols-outlined text-[20px] text-tertiary-fixed-dim">flash_on</span>
+</button>
+<button aria-label="Cuadrícula áurea" class="p-2 rounded-full bg-border-dark/70 text-surface-card hover:bg-border-dark active:scale-95 transition-all flex items-center justify-center" id="btn-grid" type="button">
+<span class="material-symbols-outlined text-[20px] text-primary-fixed">grid_goldenratio</span>
+</button>
+</div>
+<!-- Selector de Motor OCR Píldora Dual -->
+<div class="flex items-center bg-surface-sidebar/90 rounded-full p-0.5 shadow-inner">
+<button class="flex items-center gap-1 px-space-sm py-1 rounded-full bg-primary-container text-surface-card font-label-sm text-label-sm transition-all shadow-sm" id="ocr-local-btn" type="button">
+<span class="material-symbols-outlined text-[14px] text-emerald-streak">bolt</span>
+<span>ML Kit</span>
+</button>
+<button class="flex items-center gap-1 px-space-sm py-1 rounded-full text-outline-variant font-label-sm text-label-sm hover:text-surface-card transition-all" id="ocr-gemini-btn" type="button">
+<span class="material-symbols-outlined text-[14px] text-indigo-ai">auto_awesome</span>
+<span>Gemini 1.5</span>
+</button>
+</div>
+<div class="flex items-center gap-space-xs">
+<button aria-label="Ajustes de Escáner" class="p-2 rounded-full bg-border-dark/70 text-surface-card hover:bg-border-dark active:scale-95 transition-all flex items-center justify-center" type="button">
+<span class="material-symbols-outlined text-[20px] text-outline-variant">tune</span>
+</button>
+<button aria-label="Volver" class="p-2 rounded-full bg-border-dark/70 text-surface-card hover:bg-coral-urgent active:scale-95 transition-all flex items-center justify-center" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+</header>
+<!-- Visor de Cámara Principal con Detección Geométrica -->
+<div class="relative w-full aspect-[3/4] bg-surface-sidebar rounded-2xl overflow-hidden shadow-xl flex flex-col justify-between p-space-sm">
+<!-- Background stream simulation (Aula & Pizarra escolar) -->
+<div class="absolute inset-0 z-0 bg-cover bg-center" data-alt="Dark classroom blackboard filled with complex mathematical formulas and physics diagrams written in white and green chalk, captured from a student desk perspective under warm interior classroom lighting with high clarity" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCh5RoOLNXvw7-ztA3YuKVZK4znEm5lycJRJQptvFVEM5hgpa5un5tJJUPp_NmBwUTEHeFA8HQU0KdehtGvvgjAVSVRAo0CC-Ly6r3nLezgb4BrGnXLhdkLoQXIKvlq8KjoT2aq95eOsfuJdM2KB4V8g2J6B88uPNH8z6c5gRblZVR70GgLsU1gHonGcKtkTKqpJZCu2y-wSjAt8SFmYjID6HwuQAu42U_bLUBue28EBGfJD9BRE2Eg')">
+<div class="absolute inset-0 bg-gradient-to-t from-surface-sidebar/90 via-transparent to-surface-sidebar/60"></div>
+</div>
+<!-- Cuadrícula de Composición Escolar (Regla de Tercios) -->
+<div class="absolute inset-0 pointer-events-none z-10 grid grid-cols-3 grid-rows-3 opacity-25" id="camera-grid">
+<div class="shadow-[inset_-1px_0_0_rgba(255,255,255,0.4),inset_0_-1px_0_rgba(255,255,255,0.4)]"></div>
+<div class="shadow-[inset_-1px_0_0_rgba(255,255,255,0.4),inset_0_-1px_0_rgba(255,255,255,0.4)]"></div>
+<div class="shadow-[inset_0_-1px_0_rgba(255,255,255,0.4)]"></div>
+<div class="shadow-[inset_-1px_0_0_rgba(255,255,255,0.4),inset_0_-1px_0_rgba(255,255,255,0.4)]"></div>
+<div class="shadow-[inset_-1px_0_0_rgba(255,255,255,0.4),inset_0_-1px_0_rgba(255,255,255,0.4)]"></div>
+<div class="shadow-[inset_0_-1px_0_rgba(255,255,255,0.4)]"></div>
+<div class="shadow-[inset_-1px_0_0_rgba(255,255,255,0.4)]"></div>
+<div class="shadow-[inset_-1px_0_0_rgba(255,255,255,0.4)]"></div>
+<div></div>
+</div>
+<!-- Live Edge Detection Overlay (Trapezoide de Pizarra Detectada con Glowing Shader effect) -->
+<div class="absolute inset-x-8 inset-y-12 z-10 pointer-events-none transition-all duration-300">
+<!-- Borde poligonal iluminado -->
+<svg class="w-full h-full drop-shadow-[0_0_12px_rgba(16,185,129,0.7)]" preserveaspectratio="none" viewbox="0 0 100 100">
+<polygon fill="rgba(16, 185, 129, 0.08)" points="6,12 94,8 90,88 10,92" stroke="#10B981" stroke-dasharray="3, 1.5" stroke-width="0.8"></polygon>
+</svg>
+<!-- Esquinas reforzadas de anclaje OCR -->
+<div class="absolute -top-1 -left-1 w-4 h-4 bg-emerald-streak rounded-full shadow-lg flex items-center justify-center animate-ping"></div>
+<div class="absolute -top-1 -left-1 w-3 h-3 bg-surface-card rounded-full shadow-sm"></div>
+<div class="absolute -top-1 -right-1 w-3 h-3 bg-emerald-streak rounded-full shadow-sm"></div>
+<div class="absolute -bottom-1 -left-1 w-3 h-3 bg-emerald-streak rounded-full shadow-sm"></div>
+<div class="absolute -bottom-1 -right-1 w-3 h-3 bg-emerald-streak rounded-full shadow-sm"></div>
+<!-- Tag flotante de detección OCR en tiempo real -->
+<div class="absolute top-4 left-1/2 -translate-x-1/2 bg-surface-sidebar/90 text-surface-card font-label-sm text-label-sm px-space-sm py-1 rounded-full shadow-lg flex items-center gap-1.5 backdrop-blur-sm">
+<span class="w-2 h-2 rounded-full bg-emerald-streak animate-pulse"></span>
+<span>Pizarra Mat. II detectada (98%)</span>
+</div>
+</div>
+<!-- Micro Anillo de enfoque táctil central animado -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-transparent shadow-[0_0_0_2px_rgba(255,217,95,0.85)] z-20 pointer-events-none flex items-center justify-center transition-transform duration-200" id="focus-ring">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim"></span>
+</div>
+<!-- Micro Chip Informativo de Telemetría -->
+<div class="relative z-20 flex items-center justify-between w-full">
+<div class="flex items-center gap-1 bg-surface-sidebar/70 backdrop-blur-sm px-2 py-0.5 rounded-md text-surface-card font-code-sm text-[11px]">
+<span class="material-symbols-outlined text-[13px] text-emerald-streak">center_focus_strong</span>
+<span>AUTO-DESKEW</span>
+</div>
+<div class="flex items-center gap-1 bg-surface-sidebar/70 backdrop-blur-sm px-2 py-0.5 rounded-md text-tertiary-fixed-dim font-code-sm text-[11px]">
+<span>4K UHD • 60 FPS</span>
+</div>
+</div>
+<!-- Selector de Zoom Rápido Ergonómico y Slider Óptico/Digital -->
+<div class="relative z-20 w-full flex flex-col items-center gap-space-xs mb-1">
+<!-- Floating Zoom Pills -->
+<div class="flex items-center gap-space-sm bg-surface-sidebar/85 backdrop-blur-md px-space-sm py-1 rounded-full shadow-lg">
+<button class="zoom-pill w-8 h-8 rounded-full font-code-sm text-code-sm font-semibold flex items-center justify-center transition-all bg-border-dark text-surface-card hover:bg-primary-container" data-zoom="1" type="button">1x</button>
+<button class="zoom-pill w-8 h-8 rounded-full font-code-sm text-code-sm font-semibold flex items-center justify-center transition-all bg-primary-container text-tertiary-fixed-dim shadow-sm scale-110" data-zoom="2" type="button">2x</button>
+<button class="zoom-pill w-8 h-8 rounded-full font-code-sm text-code-sm font-semibold flex items-center justify-center transition-all bg-border-dark text-surface-card hover:bg-primary-container" data-zoom="3" type="button">3x</button>
+</div>
+<!-- Barra Graduada de Zoom Continuo con Snap Hático Visual -->
+<div class="w-11/12 max-w-xs flex items-center gap-2 bg-surface-sidebar/60 backdrop-blur-sm px-3 py-1 rounded-full">
+<span class="font-code-sm text-[10px] text-outline-variant">0.5x</span>
+<div class="relative flex-1 flex items-center h-4 cursor-pointer" id="zoom-track">
+<div class="w-full h-1 bg-border-dark rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-secondary-container via-emerald-streak to-tertiary-fixed-dim rounded-full" id="zoom-fill" style="width: 50%;"></div>
+</div>
+<!-- Thumb -->
+<div class="absolute left-1/2 -translate-x-1/2 w-3.5 h-3.5 bg-surface-card rounded-full shadow-md" id="zoom-thumb"></div>
+</div>
+<span class="font-code-sm text-[10px] text-tertiary-fixed-dim font-bold" id="zoom-label">2.0x</span>
+</div>
+</div>
+</div>
+<!-- Carrusel Horizontal de Modos de Captura Escolar -->
+<div class="w-full flex items-center justify-center overflow-x-auto py-1">
+<div class="flex items-center gap-space-xs bg-surface-container-high/60 p-1 rounded-full shadow-sm">
+<button class="mode-btn px-space-md py-1.5 rounded-full bg-primary-container text-surface-card font-label-md text-label-md font-semibold transition-all shadow-sm flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px] text-emerald-streak">co_present</span>
+<span>Pizarra Aula</span>
+</button>
+<button class="mode-btn px-space-md py-1.5 rounded-full text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px]">menu_book</span>
+<span>Apuntes / Libro</span>
+</button>
+<button class="mode-btn px-space-md py-1.5 rounded-full text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px]">square_foot</span>
+<span>Dibujo Técnico</span>
+</button>
+</div>
+</div>
+<!-- Panel de Disparo y Acciones Rápidas Ergonómicas -->
+<div class="w-full bg-surface-card rounded-2xl p-space-md shadow-md flex items-center justify-between gap-space-base">
+<!-- Miniatura Galería Reciente -->
+<div class="flex flex-col items-center gap-1">
+<button aria-label="Abrir galería de capturas" class="relative w-12 h-12 rounded-xl overflow-hidden bg-surface-container-high shadow-inner active:scale-95 transition-transform group" type="button">
+<img class="w-full h-full object-cover" data-alt="Macro close-up shot of handwritten neat study notes in a ruled notebook, highlighted in turquoise and amber markers with legible formulas" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6ab38YMFl6m6mRkvwk4jm1HYMBFdoFXAEEwctCa_SbF5fIbELODJjwPSrMdR_GSCdN-fGagIg59MQNt184eaC3ja65tKnxXWfwxwgFGCrYFDPC-Zz6StKcwqvOi4ecwN9yqFceMPowybXZNFoppLN0ago_1efaSBS7IAc90WJJi-rwdocBXNzOHuSdUHvqM4FPgirIyrpIl5yjF_qQ_qxDRyAp8T-4giLAOT2RlPsHbGGzYwWZiul"/>
+<span class="absolute inset-0 bg-primary/20 group-hover:bg-transparent transition-colors"></span>
+<span class="absolute bottom-0.5 right-0.5 w-3 h-3 rounded-full bg-emerald-streak shadow-sm flex items-center justify-center">
+<span class="material-symbols-outlined text-[9px] text-surface-card">done</span>
+</span>
+</button>
+<span class="font-label-sm text-[10px] text-on-surface-variant">Galería (12)</span>
+</div>
+<!-- Botón Disparador Central con Doble Anillo y Snap Feedback -->
+<div class="relative flex items-center justify-center">
+<div class="absolute w-20 h-20 rounded-full bg-secondary-fixed opacity-70 animate-pulse"></div>
+<button aria-label="Capturar fotografía y escanear" class="relative w-16 h-16 rounded-full bg-surface-sidebar p-1 shadow-xl active:scale-90 transition-all flex items-center justify-center group" id="shutter-button" type="button">
+<div class="w-full h-full rounded-full bg-surface-card flex items-center justify-center group-hover:bg-surface-bright transition-colors shadow-inner">
+<span class="material-symbols-outlined text-[26px] text-primary transition-transform group-hover:scale-110">photo_camera</span>
+</div>
+</button>
+</div>
+<!-- Selector Filtro de Alto Contraste para Pizarra (Tiza Blanca / Rotulador) -->
+<div class="flex flex-col items-center gap-1">
+<button aria-label="Filtro de Alto Contraste" class="w-12 h-12 rounded-xl bg-tertiary-container text-tertiary-fixed flex flex-col items-center justify-center shadow-sm active:scale-95 transition-all hover:bg-tertiary" id="contrast-filter-btn" type="button">
+<span class="material-symbols-outlined text-[22px] text-tertiary-fixed-dim">contrast</span>
+</button>
+<span class="font-label-sm text-[10px] text-on-surface-variant font-semibold">Alto Contraste</span>
+</div>
+</div>
+<!-- Banner Inferior de Asistencia con Doble Motor OCR -->
+<div class="w-full rounded-xl bg-surface-container p-space-sm shadow-sm flex items-start gap-space-sm">
+<div class="p-1.5 rounded-lg bg-emerald-streak/15 text-emerald-streak shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-1.5">
+<p class="font-label-md text-label-md font-semibold text-on-surface">Doble motor OCR activo</p>
+<span class="px-1.5 py-0.2 rounded bg-emerald-streak/20 text-emerald-streak font-code-sm text-[10px] font-bold">OFFLINE + AI</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-tight mt-0.5">
+          Detecta tablas, polinomios LaTeX y transcribe fechas de examen directo a la Agenda.
+        </p>
+</div>
+</div>
+<!-- Mini Drawer Flotante de Resultados de Detección Previa -->
+<div class="w-full rounded-xl bg-surface-card p-space-sm shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-secondary shrink-0">
+<span class="material-symbols-outlined text-[18px]">functions</span>
+</div>
+<div class="min-w-0">
+<p class="font-label-md text-label-md font-semibold text-on-surface truncate">Último escaneo: Física Cuántica</p>
+<p class="font-code-sm text-code-sm text-on-surface-variant text-[11px] truncate">E = h·f • Exportado a Cuaderno LM</p>
+</div>
+</div>
+<button class="px-space-sm py-1 rounded-lg bg-surface-container-high text-on-surface font-label-sm text-label-sm hover:bg-secondary hover:text-on-secondary transition-colors shrink-0" type="button">
+        Revisar
+      </button>
+</div>
+</div>
+</div>
+<script>
+  // Interacciones rápidas de UI para la cámara PWA
+  const zoomPills = document.querySelectorAll('.zoom-pill');
+  const zoomLabel = document.getElementById('zoom-label');
+  const zoomFill = document.getElementById('zoom-fill');
+  const zoomThumb = document.getElementById('zoom-thumb');
+  const shutterBtn = document.getElementById('shutter-button');
+  const focusRing = document.getElementById('focus-ring');
+  const ocrLocalBtn = document.getElementById('ocr-local-btn');
+  const ocrGeminiBtn = document.getElementById('ocr-gemini-btn');
+  const filterBtn = document.getElementById('contrast-filter-btn');
 
-  <!-- Disparo -->
-  <footer class="p-6 bg-gradient-to-t from-black/95 via-black/80 to-transparent flex items-center justify-around z-20">
-    <div class="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-xs">🖼</div>
-    <button class="w-16 h-16 rounded-full border-4 border-white flex items-center justify-center p-1 active:scale-95 transition">
-      <div class="w-full h-full rounded-full bg-white"></div>
-    </button>
-    <div class="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-xs">🌓</div>
-  </footer>
-</body>
-</html>
+  // Selector de Zoom
+  const zoomValues = { '1': { pct: '25%', text: '1.0x' }, '2': { pct: '50%', text: '2.0x' }, '3': { pct: '75%', text: '3.0x' } };
+  zoomPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      zoomPills.forEach(p => {
+        p.classList.remove('bg-primary-container', 'text-tertiary-fixed-dim', 'scale-110');
+        p.classList.add('bg-border-dark', 'text-surface-card');
+      });
+      pill.classList.remove('bg-border-dark', 'text-surface-card');
+      pill.classList.add('bg-primary-container', 'text-tertiary-fixed-dim', 'scale-110');
+      
+      const z = pill.getAttribute('data-zoom');
+      if(zoomValues[z]) {
+        zoomLabel.textContent = zoomValues[z].text;
+        zoomFill.style.width = zoomValues[z].pct;
+        zoomThumb.style.left = zoomValues[z].pct;
+      }
+    });
+  });
+
+  // Switch de motor OCR
+  ocrLocalBtn.addEventListener('click', () => {
+    ocrLocalBtn.className = 'flex items-center gap-1 px-space-sm py-1 rounded-full bg-primary-container text-surface-card font-label-sm text-label-sm transition-all shadow-sm';
+    ocrGeminiBtn.className = 'flex items-center gap-1 px-space-sm py-1 rounded-full text-outline-variant font-label-sm text-label-sm hover:text-surface-card transition-all';
+  });
+
+  ocrGeminiBtn.addEventListener('click', () => {
+    ocrGeminiBtn.className = 'flex items-center gap-1 px-space-sm py-1 rounded-full bg-primary-container text-surface-card font-label-sm text-label-sm transition-all shadow-sm';
+    ocrLocalBtn.className = 'flex items-center gap-1 px-space-sm py-1 rounded-full text-outline-variant font-label-sm text-label-sm hover:text-surface-card transition-all';
+  });
+
+  // Animación del Obturador (Shutter Snap)
+  if (shutterBtn) {
+    shutterBtn.addEventListener('click', () => {
+      focusRing.classList.add('scale-75', 'shadow-[0_0_0_3px_#10B981]');
+      setTimeout(() => {
+        focusRing.classList.remove('scale-75', 'shadow-[0_0_0_3px_#10B981]');
+      }, 400);
+    });
+  }
+
+  // Toggle de Alto Contraste
+  let contrastActive = false;
+  if (filterBtn) {
+    filterBtn.addEventListener('click', () => {
+      contrastActive = !contrastActive;
+      if (contrastActive) {
+        filterBtn.classList.add('bg-emerald-streak', 'text-surface-card');
+        filterBtn.classList.remove('bg-tertiary-container', 'text-tertiary-fixed');
+      } else {
+        filterBtn.classList.remove('bg-emerald-streak', 'text-surface-card');
+        filterBtn.classList.add('bg-tertiary-container', 'text-tertiary-fixed');
+      }
+    });
+  }
+</script></div></main></div></body></html>

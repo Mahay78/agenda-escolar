@@ -1,21 +1,754 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agenda Escolar - Calificaciones & EBAU</title>
-  <meta http-equiv="refresh" content="0; url=./index.html?tab=tab-progress" />
-  <script>window.location.replace("./index.html?tab=tab-progress");</script>
-  <style>
-    body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; text-align: center; }
-    .spinner { width: 40px; height: 40px; border: 3px solid rgba(59, 130, 246, 0.2); border-top-color: #3b82f6; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 16px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    a { color: #60a5fa; text-decoration: none; font-weight: 500; }
-  </style>
-</head>
-<body>
-  <div class="spinner"></div>
-  <h2>Cargando Calificaciones & EBAU...</h2>
-  <p><a href="./index.html?tab=tab-progress">Haz clic aquí si no redirige automáticamente</a></p>
-</body>
-</html>
+
+<html lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><title>Agenda Escolar PWA</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "border-subtle": "#E2E8F0", "surface-container-high": "#dce9ff", "secondary": "#4648d4", "error": "#ba1a1a", "on-surface": "#0b1c30", "primary-fixed-dim": "#bcc7de", "on-background": "#0b1c30", "surface-dim": "#cbdbf5", "on-error": "#ffffff", "surface-container-lowest": "#ffffff", "tertiary": "#201100", "on-primary": "#ffffff", "surface-sidebar": "#0F172A", "outline-variant": "#c5c6cd", "indigo-ai": "#8B5CF6", "on-primary-container": "#8590a6", "surface-bright": "#f8f9ff", "on-primary-fixed-variant": "#3c475a", "outline": "#75777d", "primary-fixed": "#d8e3fb", "on-primary-fixed": "#111c2d", "on-secondary-fixed": "#07006c", "primary-container": "#1e293b", "on-tertiary-fixed": "#2a1700", "surface-card": "#FFFFFF", "error-container": "#ffdad6", "tertiary-container": "#3c2300", "inverse-surface": "#213145", "surface-container-low": "#eff4ff", "on-tertiary-container": "#c88000", "coral-urgent": "#F43F5E", "on-tertiary-fixed-variant": "#653e00", "secondary-fixed-dim": "#c0c1ff", "inverse-on-surface": "#eaf1ff", "emerald-streak": "#10B981", "on-surface-variant": "#45474c", "surface-container": "#e5eeff", "background": "#f8f9ff", "inverse-primary": "#bcc7de", "surface-container-highest": "#d3e4fe", "primary": "#091426", "border-dark": "#1E293B", "surface-tint": "#545f73", "on-error-container": "#93000a", "tertiary-fixed-dim": "#ffb95f", "on-secondary-container": "#fffbff", "surface-variant": "#d3e4fe", "surface": "#f8f9ff", "tertiary-fixed": "#ffddb8", "secondary-fixed": "#e1e0ff", "on-tertiary": "#ffffff", "on-secondary-fixed-variant": "#2f2ebe", "canvas-bg": "#F8FAFC", "on-secondary": "#ffffff", "secondary-container": "#6063ee" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-2xs": "0.125rem", "sidebar-collapsed": "68px", "space-xl": "2rem", "space-xs": "0.25rem", "max-content-width": "1440px", "space-base": "1rem", "space-2xl": "3rem", "space-lg": "1.5rem", "space-sm": "0.5rem", "space-md": "0.75rem", "sidebar-width": "240px" }, "fontFamily": { "headline-lg": ["Plus Jakarta Sans"], "code-sm": ["JetBrains Mono"], "label-md": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "display": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"] }, "fontSize": { "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "700" }], "code-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" }], "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "display": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-md": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased selection:bg-secondary-fixed selection:text-on-secondary-fixed"><aside class="fixed left-0 top-0 h-screen w-sidebar-width bg-surface-sidebar z-50 flex flex-col justify-between select-none shadow-[0_1px_8px_rgba(0,0,0,0.08)]"><div class="flex flex-col flex-1 overflow-y-auto"><div class="h-16 px-space-base flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="Agenda Escolar Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1W7YUEss6DP9Xx1z841d_qHcSCOIN-l-FhxrtKUiT5-W3ctujb3E695E4JvcFlKOwJoERFlgw34EvmYFS36M3HrArIc3x400fLH1AoZYEucmEe1aIVkLAPCvwhq3kxd6fab9Elr7U6Vimt0zw1SCEgHXBCvXV-69uslhDkvNzZHvwJb9BJ1ZyZmF7mq6CqnuAvZ-6FjV6pKE_YyNJsRUW5hB1n4jcwnfaEzeGa5lhXOLCkde7_yj2x0cFE"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-surface-card leading-none tracking-tight">Agenda Escolar</span><span class="mt-space-2xs inline-flex items-center self-start px-space-xs py-0.5 rounded bg-primary-container text-primary-fixed text-[10px] font-code-sm font-semibold uppercase tracking-wider">v3.5 PWA</span></div></div><button aria-label="Colapsar menú lateral" class="text-outline-variant hover:text-surface-card p-1 rounded transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">keyboard_double_arrow_left</span></button></div><div class="px-space-base py-space-xs"><div class="flex items-center justify-between px-space-sm py-space-xs rounded bg-border-dark/60 text-emerald-streak"><div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-streak animate-pulse"></span><span class="font-label-sm text-label-sm">100% Offline Listo</span></div><span class="font-code-sm text-code-sm text-surface-variant/80 text-[10px]">PWA ACTIVE</span></div></div><nav class="flex-1 px-space-sm py-space-xs space-y-space-2xs" data-active-classes="bg-primary-container text-surface-card font-semibold shadow-inner"><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="mi-dia" href="index.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-tertiary-fixed-dim">light_mode</span><span class="font-body-md text-body-md">Mi Día</span></div><span class="px-1.5 py-0.5 rounded-full bg-border-dark text-surface-card font-code-sm text-[11px]">8</span></a><div class="space-y-0.5"><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="agenda" href="deberes-examenes.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">calendar_month</span><span class="font-body-md text-body-md">Agenda</span></div><span class="material-symbols-outlined text-[16px] text-outline-variant group-hover:text-surface-card">expand_more</span></a><div class="pl-8 pr-space-xs space-y-0.5"><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="deberes" href="deberes-examenes.html"><span>Deberes</span><span class="w-1.5 h-1.5 rounded-full bg-coral-urgent"></span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="examenes" href="deberes-examenes.html"><span>Exámenes</span><span class="font-code-sm text-[10px] text-tertiary-fixed-dim font-bold">PROX</span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="horario" href="horario-mochila.html"><span>Horario</span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="mochila" href="horario-mochila.html"><span>Mochila</span><span class="material-symbols-outlined text-[13px] text-outline-variant">backpack</span></a></div></div><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="cuaderno-lm" href="notebook.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-indigo-ai">neurology</span><span class="font-body-md text-body-md">Cuaderno LM</span></div><span class="px-1.5 py-0.2 rounded bg-indigo-ai/20 text-indigo-ai font-label-sm text-[10px]">Studio</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="pomodoro-concentracion" href="pomodoro-flashcards.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">timer</span><span class="font-body-md text-body-md">Pomodoro</span></div><span class="font-code-sm text-code-sm text-tertiary-fixed-dim">25:00</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="progreso-notas" href="progreso-ebau.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">insights</span><span class="font-body-md text-body-md">Progreso &amp; Notas</span></div><span class="font-code-sm text-code-sm text-emerald-streak">9.4</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="copiloto-ia" href="english-coach.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-secondary-fixed-dim">smart_toy</span><span class="font-body-md text-body-md">Copiloto IA</span></div><span class="flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-streak opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-streak"></span></span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="ajustes-drive-sync" href="ajustes-nube.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">sync_saved_locally</span><span class="font-body-md text-body-md">Ajustes &amp; Drive</span></div><span class="material-symbols-outlined text-[16px] text-emerald-streak">cloud_done</span></a></nav></div><div class="p-space-sm bg-border-dark/40 m-space-sm rounded-xl"><div class="flex items-center gap-space-sm"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfmw-gtx0XEK7h8QkzkqF3FppIOTbex1jLhq0ocROUjmLodXPHUohFwpnJvNVkN0ISjq214XEmWTpaUMw3YSio12W-RjtGFeU0sE1SjasnJqTB-yV8QlgvtQlUWVMlziMiyc-kapJhBGjqEArrPwnzz5DrLEfaywd6KV0lCZ0M5ZzcT3XTNGdqZUTS-wEp6J9RCq0b-FMAAjueo_cX1syzKCEK_bQTcBHe-z8fv9oRHSz-6bu4IvxX"/><div class="flex-1 min-w-0"><div class="flex items-center justify-between gap-1"><p class="font-headline-sm text-body-md font-semibold text-surface-card truncate leading-snug">Lucía Fernández</p><span class="inline-flex items-center px-1.5 py-0.5 rounded bg-tertiary-container text-tertiary-fixed font-code-sm text-[10px] font-bold shrink-0">🔥 14</span></div><p class="font-label-sm text-label-sm text-outline-variant truncate">2º Bachillerato • Ciencias</p></div></div></div></aside><div class="pl-sidebar-width"><header class="fixed top-0 left-sidebar-width right-0 h-16 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg"><div class="flex-1 max-w-xl pr-space-base"><div class="relative flex items-center w-full"><span class="material-symbols-outlined absolute left-3 text-[18px] text-on-surface-variant pointer-events-none">search</span><input class="w-full h-10 pl-9 pr-20 bg-surface-container-lowest rounded-lg font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none focus:bg-surface-container-lowest transition-all shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" placeholder="Buscar asignaturas, tareas, notas o fechas..." type="text"/><div class="absolute right-2 flex items-center gap-1"><kbd class="px-1.5 py-0.5 text-[11px] font-code-sm text-on-surface-variant bg-surface-container-high rounded">⌘K</kbd></div></div></div><div class="flex items-center gap-space-sm"><div class="flex items-center gap-1 bg-surface-container-lowest px-space-sm py-1.5 rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]"><span class="material-symbols-outlined text-[17px] text-tertiary-container">hourglass_top</span><span class="font-code-sm text-code-sm font-semibold text-on-surface">25:00</span><button class="text-on-surface-variant hover:text-on-surface ml-1" title="Iniciar Pomodoro" type="button"><span class="material-symbols-outlined text-[17px]">play_arrow</span></button></div><button class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[17px] text-secondary">document_scanner</span><span>OCR</span></button><button class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[17px] text-coral-urgent">mic</span><span>Dictar</span></button><button class="inline-flex items-center gap-1.5 px-space-md py-1.5 rounded-lg bg-primary-container text-surface-card font-label-md text-label-md hover:bg-primary hover:text-surface-card transition-colors shadow-sm" type="button"><span class="material-symbols-outlined text-[18px]">add</span><span>Nueva Tarea</span></button><div class="h-6 w-px bg-border-subtle mx-space-2xs"></div><button aria-label="Notificaciones" class="relative p-2 rounded-lg bg-surface-container-lowest text-on-surface-variant hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-coral-urgent ring-2 ring-surface-card"></span></button></div></header><main class="w-full pt-16 bg-surface min-h-screen"><div class="max-w-max-content-width mx-auto p-space-lg"><div class="flex flex-col w-full gap-space-lg select-none">
+<!-- ENCABEZADO DE SECCIÓN Y CONTROLES GLOBALES -->
+<header class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-base bg-surface-card p-space-lg rounded-xl shadow-sm">
+<div class="space-y-1">
+<div class="flex items-center gap-space-sm flex-wrap">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+          Expediente Activo
+        </span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">ID: LUC-2024-BACH2</span>
+<span class="inline-flex items-center gap-1 text-emerald-streak font-code-sm text-code-sm bg-emerald-streak/10 px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-[14px]">verified</span>
+          Calificaciones Validadas
+        </span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Progreso Académico &amp; Calificaciones</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+        2º Bachillerato Científico-Tecnológico • Curso 2024/2025 • Media Ponderada Actual: <strong class="font-semibold text-on-surface">8.84</strong> (Sobresaliente)
+      </p>
+</div>
+<!-- Barra de acciones rápidas & conmutador de trimestre -->
+<div class="flex flex-wrap items-center gap-space-sm">
+<div class="inline-flex items-center bg-surface-container-low p-1 rounded-lg">
+<button class="px-3 py-1.5 rounded bg-surface-card text-on-surface font-label-md text-label-md shadow-sm transition-all" id="btn-t1" type="button">1º Trimestre</button>
+<button class="px-3 py-1.5 rounded text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors" id="btn-t2" type="button">2º Trimestre</button>
+<button class="px-3 py-1.5 rounded text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors" id="btn-t3" type="button">3º Trimestre</button>
+<button class="px-3 py-1.5 rounded text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors" id="btn-anual" type="button">Anual</button>
+</div>
+<button class="inline-flex items-center gap-1.5 px-space-md py-2 rounded-lg bg-indigo-ai text-on-primary font-label-md text-label-md hover:bg-indigo-ai/90 transition-all shadow-sm" onclick="document.getElementById('simulador-ebau-section').scrollIntoView({behavior:'smooth'})" type="button">
+<span class="material-symbols-outlined text-[18px]">calculate</span>
+<span>Simulador EBAU</span>
+<span class="px-1.5 py-0.2 rounded bg-surface-card/20 text-surface-card font-code-sm text-[10px]">14.0 pts</span>
+</button>
+<button class="inline-flex items-center gap-1.5 px-space-md py-2 rounded-lg bg-primary-container text-surface-card font-label-md text-label-md hover:bg-primary transition-all shadow-sm" onclick="alert('Generando Certificado Académico Oficial en PDF...')" type="button">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+<span>Exportar Boletín PDF</span>
+</button>
+</div>
+</header>
+<!-- FILA DE KPIS PRINCIPALES -->
+<section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-space-base">
+<!-- KPI 1: Media Global -->
+<div class="bg-surface-card p-space-base rounded-xl shadow-sm flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Media Global Trimestre</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-display text-display text-on-surface">8.84</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">/ 10</span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-lg bg-secondary-fixed flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[22px]">grade</span>
+</div>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="inline-flex items-center gap-1 text-emerald-streak font-code-sm text-[12px] font-semibold">
+<span class="material-symbols-outlined text-[16px]">trending_up</span>
+          +0.35 vs 1º Bach
+        </span>
+<span class="px-2 py-0.5 rounded bg-emerald-streak/10 text-emerald-streak font-label-sm text-label-sm">Sobresaliente</span>
+</div>
+</div>
+<!-- KPI 2: Simulador EBAU Estimado -->
+<div class="bg-surface-card p-space-base rounded-xl shadow-sm flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">EBAU Estimada (Proyección)</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-display text-display text-indigo-ai">12.450</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">/ 14.000</span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-lg bg-indigo-ai/10 flex items-center justify-center text-indigo-ai">
+<span class="material-symbols-outlined text-[22px]">school</span>
+</div>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Corte ref: <strong>11.850</strong> (Ing. Software)</span>
+<span class="px-2 py-0.5 rounded bg-indigo-ai/10 text-indigo-ai font-label-sm text-label-sm">Admitido</span>
+</div>
+</div>
+<!-- KPI 3: Pruebas y Tareas Evaluadas -->
+<div class="bg-surface-card p-space-base rounded-xl shadow-sm flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Pruebas Evaluadas</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-display text-display text-on-surface">24<span class="font-body-lg text-body-lg text-on-surface-variant font-normal"> / 28</span></span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[22px]">fact_check</span>
+</div>
+</div>
+<div class="mt-space-sm space-y-1">
+<div class="flex items-center justify-between font-code-sm text-[12px] text-on-surface-variant">
+<span>Progreso del periodo</span>
+<span class="font-semibold text-on-surface">86%</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-secondary-container rounded-full" style="width: 86%;"></div>
+</div>
+</div>
+</div>
+<!-- KPI 4: Racha de Estudio & Constancia -->
+<div class="bg-surface-card p-space-base rounded-xl shadow-sm flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Racha &amp; Nivel Estudio</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-display text-display text-on-tertiary-container flex items-center gap-1">
+              🔥 14
+              <span class="font-body-md text-body-md text-on-surface font-normal">días</span>
+</span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-lg bg-tertiary-fixed flex items-center justify-center text-tertiary-container">
+<span class="material-symbols-outlined text-[22px]">workspace_premium</span>
+</div>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Rango: <strong class="text-on-surface">Erudito</strong></span>
+<span class="px-2 py-0.5 rounded bg-tertiary-fixed text-tertiary-container font-code-sm text-[11px] font-bold">+180 XP hoy</span>
+</div>
+</div>
+</section>
+<!-- SECCIÓN CENTRAL: DESGLOSE DE ASIGNATURAS Y CALIFICACIONES PONDERADAS -->
+<section class="space-y-space-md">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Desglose de Materias y Calificaciones Ponderadas</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Cálculos automáticos con criterios de departamento y ponderaciones oficiales.</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Ordenar por:</span>
+<select class="h-9 px-3 bg-surface-card text-on-surface font-label-md text-label-md rounded-lg shadow-sm focus:outline-none">
+<option>Mayor Calificación</option>
+<option>Mayor Peso EBAU (0.2)</option>
+<option>Orden Alfabético</option>
+</select>
+</div>
+</div>
+<!-- Malla de Asignaturas (6 asignaturas completas) -->
+<div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-space-base">
+<!-- MATEMÁTICAS II -->
+<article class="bg-surface-card p-space-base rounded-xl shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="space-y-space-sm">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary">Troncal Modalidad • 4 Créditos</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-0.5">Matemáticas II</h3>
+</div>
+<div class="flex flex-col items-end">
+<div class="flex items-baseline gap-1">
+<span class="font-display text-[26px] font-bold text-emerald-streak">9.20</span>
+<span class="font-code-sm text-[12px] text-on-surface-variant">/ 10</span>
+</div>
+<span class="px-2 py-0.2 rounded bg-emerald-streak/10 text-emerald-streak font-label-sm text-[10px]">Sobresaliente</span>
+</div>
+</div>
+<!-- Ponderaciones detalladas -->
+<div class="space-y-2 pt-2 bg-surface-container-low p-space-sm rounded-lg">
+<div class="flex justify-between items-center font-body-sm text-body-sm">
+<span class="text-on-surface-variant">Exámenes Parciales (70%)</span>
+<span class="font-code-sm font-semibold text-on-surface">9.50</span>
+</div>
+<div class="w-full h-1.5 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 95%;"></div>
+</div>
+<div class="flex justify-between items-center font-body-sm text-body-sm">
+<span class="text-on-surface-variant">Tareas &amp; Cuaderno (20%)</span>
+<span class="font-code-sm font-semibold text-on-surface">8.50</span>
+</div>
+<div class="w-full h-1.5 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-secondary-container rounded-full" style="width: 85%;"></div>
+</div>
+<div class="flex justify-between items-center font-body-sm text-body-sm">
+<span class="text-on-surface-variant">Actitud &amp; Retos LM (10%)</span>
+<span class="font-code-sm font-semibold text-on-surface">9.00</span>
+</div>
+<div class="w-full h-1.5 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-emerald-streak rounded-full" style="width: 90%;"></div>
+</div>
+</div>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center justify-between">
+<span class="inline-flex items-center gap-1 text-on-surface-variant font-code-sm text-[11px]">
+<span class="material-symbols-outlined text-[15px] text-indigo-ai">stars</span>
+            Ponderación EBAU: <strong class="text-on-surface">0.20</strong>
+</span>
+<button class="text-secondary hover:text-primary font-label-sm text-label-sm inline-flex items-center gap-1 transition-colors" type="button">
+<span>Ver 4 pruebas</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</article>
+<!-- FÍSICA Y QUÍMICA -->
+<article class="bg-surface-card p-space-base rounded-xl shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="space-y-space-sm">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-coral-urgent"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-coral-urgent">Troncal Modalidad • 4 Créditos</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-0.5">Física</h3>
+</div>
+<div class="flex flex-col items-end">
+<div class="flex items-baseline gap-1">
+<span class="font-display text-[26px] font-bold text-on-surface">8.50</span>
+<span class="font-code-sm text-[12px] text-on-surface-variant">/ 10</span>
+</div>
+<span class="px-2 py-0.2 rounded bg-surface-container text-on-surface font-label-sm text-[10px]">Notable</span>
+</div>
+</div>
+<div class="space-y-2 pt-2 bg-surface-container-low p-space-sm rounded-lg">
+<div class="flex justify-between items-center font-body-sm text-body-sm">
+<span class="text-on-surface-variant">Exámenes Teórico-Prácticos (65%)</span>
+<span class="font-code-sm font-semibold text-on-surface">8.25</span>
+</div>
+<div class="w-full h-1.5 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-coral-urgent rounded-full" style="width: 82.5%;"></div>
+</div>
+<div class="flex justify-between items-center font-body-sm text-body-sm">
+<span class="text-on-surface-variant">Prácticas Laboratorio &amp; OCR (25%)</span>
+<span class="font-code-sm font-semibold text-on-surface">9.20</span>
+</div>
+<div class="w-full h-1.5 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-emerald-streak rounded-full" style="width: 92%;"></div>
+</div>
+<div class="flex justify-between items-center font-body-sm text-body-sm">
+<span class="text-on-surface-variant">Problemas Semanales (10%)</span>
+<span class="font-code-sm font-semibold text-on-surface">8.00</span>
+</div>
+<div class="w-full h-1.5 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-secondary-container rounded-full" style="width: 80%;"></div>
+</div>
+</div>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center justify-between">
+<span class="inline-flex items-center gap-1 text-on-surface-variant font-code-sm text-[11px]">
+<span class="material-symbols-outlined text-[15px] text-indigo-ai">stars</span>
+            Ponderación EBAU: <strong class="text-on-surface">0.20</strong>
+</span>
+<button class="text-secondary hover:text-primary font-label-sm text-label-sm inline-flex items-center gap-1 transition-colors" type="button">
+<span>Ver 5 pruebas</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</article>
+<!-- INGLÉS C1 AVANZADO -->
+<article class="bg-surface-card p-space-base rounded-xl shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="space-y-space-sm">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-streak"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-emerald-streak">Común Fase General • 3 Créditos</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-0.5">Inglés C1 Avanzado</h3>
+</div>
+<div class="flex flex-col items-end">
+<div class="flex items-baseline gap-1">
+<span class="font-display text-[26px] font-bold text-emerald-streak">9.60</span>
+<span class="font-code-sm text-[12px] text-on-surface-variant">/ 10</span>
+</div>
+<span class="px-2 py-0.2 rounded bg-emerald-streak/10 text-emerald-streak font-label-sm text-[10px]">Sobresaliente Alto</span>
+</div>
+</div>
+<div class="space-y-2 pt-2 bg-surface-container-low p-space-sm rounded-lg">
+<div class="flex justify-between items-center font-body-sm text-body-sm">
+<span class="text-on-surface-variant">Speaking &amp; Debate (35%)</span>
+<span class="font-code-sm font-semibold text-on-surface">9.80</span>
+</div>
+<div class="w-full h-1.5 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-emerald-streak rounded-full" style="width: 98%;"></div>
+</div>
+<div class="flex justify-between items-center font-body-sm text-body-sm">
+<span class="text-on-surface-variant">Writing &amp; Essay (35%)</span>
+<span class="font-code-sm font-semibold text-on-surface">9.40</span>
+</div>
+<div class="w-full h-1.5 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-secondary-container rounded-full" style="width: 94%;"></div>
+</div>
+<div class="flex justify-between items-center font-body-sm text-body-sm">
+<span class="text-on-surface-variant">Use of English &amp; Listening (30%)</span>
+<span class="font-code-sm font-semibold text-on-surface">9.60</span>
+</div>
+<div class="w-full h-1.5 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 96%;"></div>
+</div>
+</div>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center justify-between">
+<span class="inline-flex items-center gap-1 text-on-surface-variant font-code-sm text-[11px]">
+<span class="material-symbols-outlined text-[15px] text-indigo-ai">stars</span>
+            Fase Obligatoria EBAU
+          </span>
+<button class="text-secondary hover:text-primary font-label-sm text-label-sm inline-flex items-center gap-1 transition-colors" type="button">
+<span>Ver 4 pruebas</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</article>
+<!-- HISTORIA DE ESPAÑA -->
+<article class="bg-surface-card p-space-base rounded-xl shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="space-y-space-sm">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary-container"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-tertiary-container">Común Fase General • 3 Créditos</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-0.5">Historia de España</h3>
+</div>
+<div class="flex flex-col items-end">
+<div class="flex items-baseline gap-1">
+<span class="font-display text-[26px] font-bold text-on-surface">8.75</span>
+<span class="font-code-sm text-[12px] text-on-surface-variant">/ 10</span>
+</div>
+<span class="px-2 py-0.2 rounded bg-surface-container text-on-surface font-label-sm text-[10px]">Notable Alto</span>
+</div>
+</div>
+<div class="space-y-2 pt-2 bg-surface-container-low p-space-sm rounded-lg">
+<div class="flex justify-between items-center font-body-sm text-body-sm">
+<span class="text-on-surface-variant">Desarrollo Temas Examen (70%)</span>
+<span class="font-code-sm font-semibold text-on-surface">8.50</span>
+</div>
+<div class="w-full h-1.5 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-tertiary-container rounded-full" style="width: 85%;"></div>
+</div>
+<div class="flex justify-between items-center font-body-sm text-body-sm">
+<span class="text-on-surface-variant">Análisis de Fuentes Cuaderno LM (20%)</span>
+<span class="font-code-sm font-semibold text-on-surface">9.50</span>
+</div>
+<div class="w-full h-1.5 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-emerald-streak rounded-full" style="width: 95%;"></div>
+</div>
+<div class="flex justify-between items-center font-body-sm text-body-sm">
+<span class="text-on-surface-variant">Glosario &amp; Cronología (10%)</span>
+<span class="font-code-sm font-semibold text-on-surface">9.00</span>
+</div>
+<div class="w-full h-1.5 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-secondary-container rounded-full" style="width: 90%;"></div>
+</div>
+</div>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center justify-between">
+<span class="inline-flex items-center gap-1 text-on-surface-variant font-code-sm text-[11px]">
+<span class="material-symbols-outlined text-[15px] text-indigo-ai">stars</span>
+            Fase Obligatoria EBAU
+          </span>
+<button class="text-secondary hover:text-primary font-label-sm text-label-sm inline-flex items-center gap-1 transition-colors" type="button">
+<span>Ver 3 pruebas</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</article>
+<!-- DIBUJO TÉCNICO II -->
+<article class="bg-surface-card p-space-base rounded-xl shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="space-y-space-sm">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-indigo-ai"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-indigo-ai">Modalidad Específica • 3 Créditos</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-0.5">Dibujo Técnico II</h3>
+</div>
+<div class="flex flex-col items-end">
+<div class="flex items-baseline gap-1">
+<span class="font-display text-[26px] font-bold text-on-surface">8.90</span>
+<span class="font-code-sm text-[12px] text-on-surface-variant">/ 10</span>
+</div>
+<span class="px-2 py-0.2 rounded bg-surface-container text-on-surface font-label-sm text-[10px]">Notable Alto</span>
+</div>
+</div>
+<div class="space-y-2 pt-2 bg-surface-container-low p-space-sm rounded-lg">
+<div class="flex justify-between items-center font-body-sm text-body-sm">
+<span class="text-on-surface-variant">Láminas Diédrico &amp; CAD (60%)</span>
+<span class="font-code-sm font-semibold text-on-surface">9.10</span>
+</div>
+<div class="w-full h-1.5 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-indigo-ai rounded-full" style="width: 91%;"></div>
+</div>
+<div class="flex justify-between items-center font-body-sm text-body-sm">
+<span class="text-on-surface-variant">Pruebas Prácticas de Taller (40%)</span>
+<span class="font-code-sm font-semibold text-on-surface">8.60</span>
+</div>
+<div class="w-full h-1.5 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-secondary-container rounded-full" style="width: 86%;"></div>
+</div>
+<div class="flex justify-between items-center font-body-sm text-body-sm opacity-60">
+<span class="text-on-surface-variant">Cuaderno de Trazados</span>
+<span class="font-code-sm font-semibold text-on-surface">Convalidado</span>
+</div>
+<div class="w-full h-1.5 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-emerald-streak rounded-full" style="width: 100%;"></div>
+</div>
+</div>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center justify-between">
+<span class="inline-flex items-center gap-1 text-on-surface-variant font-code-sm text-[11px]">
+<span class="material-symbols-outlined text-[15px] text-indigo-ai">stars</span>
+            Ponderación EBAU: <strong class="text-on-surface">0.20</strong>
+</span>
+<button class="text-secondary hover:text-primary font-label-sm text-label-sm inline-flex items-center gap-1 transition-colors" type="button">
+<span>Ver 5 pruebas</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</article>
+<!-- LENGUA CASTELLANA Y LITERATURA -->
+<article class="bg-surface-card p-space-base rounded-xl shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="space-y-space-sm">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-surface-tint"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-surface-tint">Común Fase General • 3 Créditos</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-0.5">Lengua Castellana y Lit.</h3>
+</div>
+<div class="flex flex-col items-end">
+<div class="flex items-baseline gap-1">
+<span class="font-display text-[26px] font-bold text-on-surface">8.10</span>
+<span class="font-code-sm text-[12px] text-on-surface-variant">/ 10</span>
+</div>
+<span class="px-2 py-0.2 rounded bg-surface-container text-on-surface font-label-sm text-[10px]">Notable</span>
+</div>
+</div>
+<div class="space-y-2 pt-2 bg-surface-container-low p-space-sm rounded-lg">
+<div class="flex justify-between items-center font-body-sm text-body-sm">
+<span class="text-on-surface-variant">Comentarios de Texto (50%)</span>
+<span class="font-code-sm font-semibold text-on-surface">8.00</span>
+</div>
+<div class="w-full h-1.5 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-surface-tint rounded-full" style="width: 80%;"></div>
+</div>
+<div class="flex justify-between items-center font-body-sm text-body-sm">
+<span class="text-on-surface-variant">Examen Teórico Morfosintaxis (40%)</span>
+<span class="font-code-sm font-semibold text-on-surface">8.20</span>
+</div>
+<div class="w-full h-1.5 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-secondary-container rounded-full" style="width: 82%;"></div>
+</div>
+<div class="flex justify-between items-center font-body-sm text-body-sm">
+<span class="text-on-surface-variant">Lecturas Obligatorias (10%)</span>
+<span class="font-code-sm font-semibold text-on-surface">8.50</span>
+</div>
+<div class="w-full h-1.5 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-emerald-streak rounded-full" style="width: 85%;"></div>
+</div>
+</div>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center justify-between">
+<span class="inline-flex items-center gap-1 text-on-surface-variant font-code-sm text-[11px]">
+<span class="material-symbols-outlined text-[15px] text-indigo-ai">stars</span>
+            Fase Obligatoria EBAU
+          </span>
+<button class="text-secondary hover:text-primary font-label-sm text-label-sm inline-flex items-center gap-1 transition-colors" type="button">
+<span>Ver 4 pruebas</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</article>
+</div>
+</section>
+<!-- PANEL DE UTILIDADES ACADÉMICAS AVANZADAS (2 COLUMNAS INFERIORES) -->
+<section class="grid grid-cols-1 xl:grid-cols-12 gap-space-lg" id="simulador-ebau-section">
+<!-- COLUMNA 1: CALCULADORA '¿QUÉ NECESITO EN EL EXAMEN FINAL?' (5 Cols) -->
+<div class="xl:col-span-5 bg-surface-card p-space-lg rounded-xl shadow-sm flex flex-col justify-between space-y-space-md">
+<div class="space-y-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[20px]">target</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface leading-tight">¿Qué necesito en el Examen Final?</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Calculadora inversa de notas mínimas requeridas.</p>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded bg-primary-container text-surface-card font-code-sm text-[11px]">Smart Goal</span>
+</div>
+<!-- Selector de materia -->
+<div class="space-y-1 pt-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Seleccionar Asignatura</label>
+<div class="relative">
+<select class="w-full h-10 px-3 bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface focus:outline-none appearance-none cursor-pointer" id="calc-subject-select">
+<option value="fisica">Física (Media actual: 8.50)</option>
+<option value="mates">Matemáticas II (Media actual: 9.20)</option>
+<option value="lengua">Lengua Castellana (Media actual: 8.10)</option>
+<option value="historia">Historia de España (Media actual: 8.75)</option>
+<option value="dibujo">Dibujo Técnico II (Media actual: 8.90)</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-2.5 text-[20px] pointer-events-none text-on-surface-variant">expand_more</span>
+</div>
+</div>
+<!-- Selector de nota objetivo -->
+<div class="space-y-1.5">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Calificación Final Deseada en el Boletín</label>
+<div class="grid grid-cols-4 gap-2" id="target-pill-group">
+<button class="py-2 rounded-lg font-code-sm text-body-sm bg-surface-container-low text-on-surface-variant hover:bg-surface-container transition-all" data-val="5.0" type="button">5.0 <span class="block text-[10px] font-normal">Aprobado</span></button>
+<button class="py-2 rounded-lg font-code-sm text-body-sm bg-surface-container-low text-on-surface-variant hover:bg-surface-container transition-all" data-val="7.0" type="button">7.0 <span class="block text-[10px] font-normal">Notable</span></button>
+<button class="py-2 rounded-lg font-code-sm text-body-sm bg-primary-container text-surface-card shadow-sm transition-all font-semibold" data-val="9.0" type="button">9.0 <span class="block text-[10px] font-normal">Sobresaliente</span></button>
+<button class="py-2 rounded-lg font-code-sm text-body-sm bg-surface-container-low text-on-surface-variant hover:bg-surface-container transition-all" data-val="10.0" type="button">10.0 <span class="block text-[10px] font-normal">Matrícula</span></button>
+</div>
+</div>
+<!-- Indicador dinámico de nota requerida -->
+<div class="p-space-base bg-surface-container-low rounded-xl space-y-3 mt-2">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant">Examen Evaluación Final (Peso 35%)</span>
+<span class="font-code-sm text-headline-sm font-bold text-coral-urgent" id="needed-grade-display">9.42</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-coral-urgent rounded-full" id="grade-progress-bar" style="width: 94.2%;"></div>
+</div>
+<div class="flex items-start gap-2 pt-1">
+<span class="material-symbols-outlined text-[18px] text-tertiary-fixed-dim shrink-0 mt-0.5">info</span>
+<p class="font-body-sm text-body-sm text-on-surface" id="calc-advice-text">
+              Para obtener un <strong class="text-on-surface">9.0</strong> en Física necesitas un <strong>9.42</strong> en el examen final global. Tus entregas del laboratorio ya te aseguran 2.30 puntos netos.
+            </p>
+</div>
+</div>
+</div>
+<div class="pt-space-sm flex items-center justify-between">
+<span class="font-code-sm text-[12px] text-on-surface-variant">Criterio: Ponderación Continua</span>
+<button class="font-label-md text-label-md text-secondary hover:text-primary transition-colors" onclick="alert('Historial de simulaciones archivado')" type="button">Guardar Escenario</button>
+</div>
+</div>
+<!-- COLUMNA 2: SIMULADOR OFICIAL SELECTIVIDAD / EBAU / EVAU (7 Cols) -->
+<div class="xl:col-span-7 bg-surface-card p-space-lg rounded-xl shadow-sm flex flex-col justify-between space-y-space-md">
+<div class="space-y-space-md">
+<!-- Header del simulador EBAU -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div>
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-streak animate-pulse"></span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Simulador Oficial EBAU / EVAU (14.000 Puntos)</h3>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Fórmula Oficial: 0.6×Bachillerato + 0.4×Fase General + (M1 × P1) + (M2 × P2)</p>
+</div>
+<span class="self-start sm:self-center px-2.5 py-1 rounded bg-secondary-fixed text-on-secondary-fixed font-code-sm text-[12px] font-bold">
+            Distrito Único 2025
+          </span>
+</div>
+<!-- Gran Gauge Visual de la Nota de Corte sobre 14 -->
+<div class="p-space-base bg-surface-container-low rounded-xl space-y-3">
+<div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+<div class="flex items-baseline gap-2">
+<span class="font-display text-[32px] font-bold text-on-surface">12.244</span>
+<span class="font-code-sm text-body-md text-on-surface-variant">/ 14.000 puntos proyectados</span>
+</div>
+<span class="font-body-sm text-body-sm text-emerald-streak font-semibold inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+              Supera el 89% de grados universitarios
+            </span>
+</div>
+<!-- Barra de Rango y Marcas de Corte -->
+<div class="relative pt-2 pb-5">
+<div class="w-full h-3 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-secondary-container rounded-full" style="width: 87.45%;"></div>
+</div>
+<!-- Marcadores de Carreras Reales -->
+<div class="absolute left-[82.8%] top-5 -translate-x-1/2 flex flex-col items-center">
+<span class="w-1.5 h-2 bg-on-surface-variant rounded-full"></span>
+<span class="font-code-sm text-[10px] text-on-surface-variant whitespace-nowrap">Ing. Software (11.60)</span>
+</div>
+<div class="absolute left-[87.1%] top-5 -translate-x-1/2 flex flex-col items-center">
+<span class="w-1.5 h-2 bg-secondary rounded-full"></span>
+<span class="font-code-sm text-[10px] text-secondary font-bold whitespace-nowrap">Biotecnología (12.20)</span>
+</div>
+<div class="absolute left-[91.4%] top-5 -translate-x-1/2 flex flex-col items-center">
+<span class="w-1.5 h-2 bg-coral-urgent rounded-full"></span>
+<span class="font-code-sm text-[10px] text-coral-urgent whitespace-nowrap">Medicina (12.80)</span>
+</div>
+</div>
+</div>
+<!-- Desglose Matemático Oficial EBAU -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-space-sm">
+<!-- Componente 1: Bachillerato (60%) -->
+<div class="bg-surface-card p-3 rounded-lg shadow-sm space-y-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant">1. Media Bach (60%)</span>
+<div class="flex items-baseline justify-between">
+<span class="font-code-sm text-[13px] text-on-surface">8.84 × 0.6</span>
+<span class="font-code-sm text-headline-sm font-bold text-on-surface">5.304</span>
+</div>
+<p class="font-body-sm text-[11px] text-on-surface-variant">Base expediente 1º + 2º</p>
+</div>
+<!-- Componente 2: Fase Obligatoria (40%) -->
+<div class="bg-surface-card p-3 rounded-lg shadow-sm space-y-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant">2. Fase General (40%)</span>
+<div class="flex items-baseline justify-between">
+<span class="font-code-sm text-[13px] text-on-surface">8.50 × 0.4</span>
+<span class="font-code-sm text-headline-sm font-bold text-on-surface">3.400</span>
+</div>
+<p class="font-body-sm text-[11px] text-on-surface-variant">Lengua, Historia, Idioma, Troncal</p>
+</div>
+<!-- Componente 3: Fase Específica (Ponderaciones) -->
+<div class="bg-surface-card p-3 rounded-lg shadow-sm space-y-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant">3. Específica (Max 4.0)</span>
+<div class="flex items-baseline justify-between">
+<span class="font-code-sm text-[13px] text-on-surface">M1(0.2) + M2(0.2)</span>
+<span class="font-code-sm text-headline-sm font-bold text-emerald-streak">3.540</span>
+</div>
+<p class="font-body-sm text-[11px] text-on-surface-variant">Mates (1.84) + Física (1.70)</p>
+</div>
+</div>
+<!-- Selector interactivo de Materias para Ponderación Voluntaria -->
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Configurar Materias Optativas de Ponderación:</span>
+<span class="font-code-sm text-[11px] text-secondary font-semibold">Coeficiente Máximo: 0.20</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-sm">
+<!-- Materia Específica 1 -->
+<div class="flex items-center justify-between p-2.5 bg-surface-container-low rounded-lg">
+<div class="flex items-center gap-2 min-w-0">
+<span class="material-symbols-outlined text-[18px] text-secondary">functions</span>
+<div class="min-w-0">
+<p class="font-label-md text-label-md text-on-surface truncate">Matemáticas II</p>
+<p class="font-code-sm text-[11px] text-on-surface-variant">Nota: 9.20 × 0.2 = <strong class="text-on-surface">1.840 pts</strong></p>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded bg-emerald-streak/10 text-emerald-streak font-code-sm text-[11px] font-bold">Activa 0.2</span>
+</div>
+<!-- Materia Específica 2 -->
+<div class="flex items-center justify-between p-2.5 bg-surface-container-low rounded-lg">
+<div class="flex items-center gap-2 min-w-0">
+<span class="material-symbols-outlined text-[18px] text-coral-urgent">science</span>
+<div class="min-w-0">
+<p class="font-label-md text-label-md text-on-surface truncate">Física</p>
+<p class="font-code-sm text-[11px] text-on-surface-variant">Nota: 8.50 × 0.2 = <strong class="text-on-surface">1.700 pts</strong></p>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded bg-emerald-streak/10 text-emerald-streak font-code-sm text-[11px] font-bold">Activa 0.2</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Simulador con Botón de Análisis -->
+<div class="pt-space-sm flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px] text-emerald-streak">check</span>
+<span>Actualizado con ponderaciones de Universidad Politécnica &amp; Complutense.</span>
+</div>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-colors self-end" onclick="alert('Abriendo catálogo de grados universitarios compatibles con nota 12.244...')" type="button">
+<span class="material-symbols-outlined text-[17px]">travel_explore</span>
+<span>Ver Grados Disponibles</span>
+</button>
+</div>
+</div>
+</section>
+</div>
+<script>
+  // Micro-interacción: Cambio dinámico en la calculadora '¿Qué necesito en el Examen Final?'
+  (function() {
+    const subjectSelect = document.getElementById('calc-subject-select');
+    const targetGroup = document.getElementById('target-pill-group');
+    const neededGradeDisplay = document.getElementById('needed-grade-display');
+    const progressBar = document.getElementById('grade-progress-bar');
+    const adviceText = document.getElementById('calc-advice-text');
+
+    const subjectData = {
+      fisica: { name: 'Física', current: 8.50, weight: 0.35, partialsNet: 5.525 },
+      mates: { name: 'Matemáticas II', current: 9.20, weight: 0.30, partialsNet: 6.44 },
+      lengua: { name: 'Lengua Castellana', current: 8.10, weight: 0.40, partialsNet: 4.86 },
+      historia: { name: 'Historia de España', current: 8.75, weight: 0.35, partialsNet: 5.687 },
+      dibujo: { name: 'Dibujo Técnico II', current: 8.90, weight: 0.40, partialsNet: 5.34 }
+    };
+
+    let selectedTarget = 9.0;
+
+    function recalculate() {
+      const subjKey = subjectSelect.value;
+      const subj = subjectData[subjKey];
+      
+      // Cálculo de nota requerida en examen final
+      // finalGrade = partialsNet + (examGrade * weight)
+      // examGrade = (target - partialsNet) / weight
+      let needed = (selectedTarget - subj.partialsNet) / subj.weight;
+      
+      if (needed < 0) needed = 0;
+      let displayStr = needed > 10 ? '+10 (Inalcanzable)' : needed.toFixed(2);
+      
+      neededGradeDisplay.textContent = displayStr;
+
+      if (needed > 10) {
+        neededGradeDisplay.className = 'font-code-sm text-headline-sm font-bold text-error';
+        progressBar.className = 'h-full bg-error rounded-full';
+        progressBar.style.width = '100%';
+        adviceText.innerHTML = `Con tus notas actuales, alcanzar un <strong>${selectedTarget.toFixed(1)}</strong> en ${subj.name} requiere más del 10.0 en el examen de peso ${(subj.weight*100).toFixed(0)}%. Te recomendamos ajustar a un objetivo más equilibrado.`;
+      } else {
+        const percent = Math.min(100, Math.max(10, needed * 10));
+        progressBar.style.width = percent + '%';
+        
+        if (needed >= 9.0) {
+          neededGradeDisplay.className = 'font-code-sm text-headline-sm font-bold text-coral-urgent';
+          progressBar.className = 'h-full bg-coral-urgent rounded-full';
+        } else if (needed >= 7.0) {
+          neededGradeDisplay.className = 'font-code-sm text-headline-sm font-bold text-secondary';
+          progressBar.className = 'h-full bg-secondary rounded-full';
+        } else {
+          neededGradeDisplay.className = 'font-code-sm text-headline-sm font-bold text-emerald-streak';
+          progressBar.className = 'h-full bg-emerald-streak rounded-full';
+        }
+
+        adviceText.innerHTML = `Para obtener un <strong>${selectedTarget.toFixed(1)}</strong> en ${subj.name} necesitas un <strong>${displayStr}</strong> en el examen final (Ponderación ${(subj.weight*100).toFixed(0)}%). Tus trabajos previos ya te aseguran ${subj.partialsNet.toFixed(2)} puntos acumulados.`;
+      }
+    }
+
+    if (subjectSelect) {
+      subjectSelect.addEventListener('change', recalculate);
+    }
+
+    if (targetGroup) {
+      targetGroup.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', function() {
+          targetGroup.querySelectorAll('button').forEach(b => {
+            b.className = 'py-2 rounded-lg font-code-sm text-body-sm bg-surface-container-low text-on-surface-variant hover:bg-surface-container transition-all';
+          });
+          this.className = 'py-2 rounded-lg font-code-sm text-body-sm bg-primary-container text-surface-card shadow-sm transition-all font-semibold';
+          selectedTarget = parseFloat(this.getAttribute('data-val'));
+          recalculate();
+        });
+      });
+    }
+
+    // Micro-interacción: Conmutador de Trimestres
+    const trimBtns = ['btn-t1', 'btn-t2', 'btn-t3', 'btn-anual'];
+    trimBtns.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('click', () => {
+          trimBtns.forEach(otherId => {
+            const other = document.getElementById(otherId);
+            if (other) {
+              other.className = 'px-3 py-1.5 rounded text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors';
+            }
+          });
+          el.className = 'px-3 py-1.5 rounded bg-surface-card text-on-surface font-label-md text-label-md shadow-sm transition-all';
+        });
+      }
+    });
+  })();
+</script></div></main></div></body></html>

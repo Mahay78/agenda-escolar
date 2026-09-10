@@ -1,76 +1,419 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Portafolio & Taller - Tablet</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>body { padding-bottom: 96px; }</style>
-</head>
-<body class="bg-[#f8f9ff] text-slate-800 font-['Plus_Jakarta_Sans',sans-serif] antialiased min-h-screen flex flex-col">
-  <!-- Cabecera Tablet -->
-  <header class="px-6 py-4 bg-white sticky top-0 z-20 border-b border-slate-100 flex items-center justify-between">
-    <div>
-      <span class="text-[10px] font-bold uppercase tracking-wider text-pink-600">Galería de Proyectos & Bocetos</span>
-      <h1 class="text-base font-black text-slate-900">Portafolio Artístico & Taller</h1>
-    </div>
-    <div class="flex items-center gap-2">
-      <button class="px-3.5 py-1.5 bg-pink-600 text-white font-bold text-xs rounded-xl shadow-sm">+ Nuevo Proyecto</button>
-      <button class="px-3.5 py-1.5 bg-slate-100 text-slate-700 font-bold text-xs rounded-xl">📄 Exportar Dossier PDF</button>
-    </div>
-  </header>
 
-  <!-- Rejilla de Proyectos Tablet (3 Columnas) -->
-  <main class="max-w-6xl w-full mx-auto p-6 flex-1">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div class="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm space-y-3">
-        <div class="h-44 bg-gradient-to-tr from-purple-500 to-indigo-600 flex items-center justify-center text-4xl text-white">🎨</div>
-        <div class="p-5 pt-0 space-y-2 text-xs">
-          <div class="flex justify-between items-center text-[10px] font-bold">
-            <span class="text-purple-600 uppercase">Dibujo Técnico</span>
-            <span class="text-slate-400">Lámina 08</span>
-          </div>
-          <h3 class="font-extrabold text-sm text-slate-900">Secciones Cónicas & Elipses</h3>
-          <p class="text-slate-500 text-[11px]">Trazado con regla y compás sobre lámina A3 opaca.</p>
-        </div>
-      </div>
+<html lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><title>Agenda Escolar PWA</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "border-subtle": "#E2E8F0", "surface-container-high": "#dce9ff", "secondary": "#4648d4", "error": "#ba1a1a", "on-surface": "#0b1c30", "primary-fixed-dim": "#bcc7de", "on-background": "#0b1c30", "surface-dim": "#cbdbf5", "on-error": "#ffffff", "surface-container-lowest": "#ffffff", "tertiary": "#201100", "on-primary": "#ffffff", "surface-sidebar": "#0F172A", "outline-variant": "#c5c6cd", "indigo-ai": "#8B5CF6", "on-primary-container": "#8590a6", "surface-bright": "#f8f9ff", "on-primary-fixed-variant": "#3c475a", "outline": "#75777d", "primary-fixed": "#d8e3fb", "on-primary-fixed": "#111c2d", "on-secondary-fixed": "#07006c", "primary-container": "#1e293b", "on-tertiary-fixed": "#2a1700", "surface-card": "#FFFFFF", "error-container": "#ffdad6", "tertiary-container": "#3c2300", "inverse-surface": "#213145", "surface-container-low": "#eff4ff", "on-tertiary-container": "#c88000", "coral-urgent": "#F43F5E", "on-tertiary-fixed-variant": "#653e00", "secondary-fixed-dim": "#c0c1ff", "inverse-on-surface": "#eaf1ff", "emerald-streak": "#10B981", "on-surface-variant": "#45474c", "surface-container": "#e5eeff", "background": "#f8f9ff", "inverse-primary": "#bcc7de", "surface-container-highest": "#d3e4fe", "primary": "#091426", "border-dark": "#1E293B", "surface-tint": "#545f73", "on-error-container": "#93000a", "tertiary-fixed-dim": "#ffb95f", "on-secondary-container": "#fffbff", "surface-variant": "#d3e4fe", "surface": "#f8f9ff", "tertiary-fixed": "#ffddb8", "secondary-fixed": "#e1e0ff", "on-tertiary": "#ffffff", "on-secondary-fixed-variant": "#2f2ebe", "canvas-bg": "#F8FAFC", "on-secondary": "#ffffff", "secondary-container": "#6063ee" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-2xs": "0.125rem", "sidebar-collapsed": "68px", "space-xl": "2rem", "space-xs": "0.25rem", "max-content-width": "1440px", "space-base": "1rem", "space-2xl": "3rem", "space-lg": "1.5rem", "space-sm": "0.5rem", "space-md": "0.75rem", "sidebar-width": "240px" }, "fontFamily": { "headline-lg": ["Plus Jakarta Sans"], "code-sm": ["JetBrains Mono"], "label-md": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "display": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"] }, "fontSize": { "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "700" }], "code-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" }], "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "display": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-md": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased selection:bg-secondary-fixed selection:text-on-secondary-fixed"><aside class="fixed left-0 top-0 h-screen w-sidebar-width bg-surface-sidebar z-50 flex flex-col justify-between select-none shadow-[0_1px_8px_rgba(0,0,0,0.08)]"><div class="flex flex-col flex-1 overflow-y-auto"><div class="h-16 px-space-base flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="Agenda Escolar Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1W7YUEss6DP9Xx1z841d_qHcSCOIN-l-FhxrtKUiT5-W3ctujb3E695E4JvcFlKOwJoERFlgw34EvmYFS36M3HrArIc3x400fLH1AoZYEucmEe1aIVkLAPCvwhq3kxd6fab9Elr7U6Vimt0zw1SCEgHXBCvXV-69uslhDkvNzZHvwJb9BJ1ZyZmF7mq6CqnuAvZ-6FjV6pKE_YyNJsRUW5hB1n4jcwnfaEzeGa5lhXOLCkde7_yj2x0cFE"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-surface-card leading-none tracking-tight">Agenda Escolar</span><span class="mt-space-2xs inline-flex items-center self-start px-space-xs py-0.5 rounded bg-primary-container text-primary-fixed text-[10px] font-code-sm font-semibold uppercase tracking-wider">v3.5 PWA</span></div></div><button aria-label="Colapsar menú lateral" class="text-outline-variant hover:text-surface-card p-1 rounded transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">keyboard_double_arrow_left</span></button></div><div class="px-space-base py-space-xs"><div class="flex items-center justify-between px-space-sm py-space-xs rounded bg-border-dark/60 text-emerald-streak"><div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-streak animate-pulse"></span><span class="font-label-sm text-label-sm">100% Offline Listo</span></div><span class="font-code-sm text-code-sm text-surface-variant/80 text-[10px]">PWA ACTIVE</span></div></div><nav class="flex-1 px-space-sm py-space-xs space-y-space-2xs" data-active-classes="bg-primary-container text-surface-card font-semibold shadow-inner"><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="mi-dia" href="index.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-tertiary-fixed-dim">light_mode</span><span class="font-body-md text-body-md">Mi Día</span></div><span class="px-1.5 py-0.5 rounded-full bg-border-dark text-surface-card font-code-sm text-[11px]">8</span></a><div class="space-y-0.5"><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="agenda" href="deberes-examenes.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">calendar_month</span><span class="font-body-md text-body-md">Agenda</span></div><span class="material-symbols-outlined text-[16px] text-outline-variant group-hover:text-surface-card">expand_more</span></a><div class="pl-8 pr-space-xs space-y-0.5"><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="deberes" href="deberes-examenes.html"><span>Deberes</span><span class="w-1.5 h-1.5 rounded-full bg-coral-urgent"></span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="examenes" href="deberes-examenes.html"><span>Exámenes</span><span class="font-code-sm text-[10px] text-tertiary-fixed-dim font-bold">PROX</span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="horario" href="horario-mochila.html"><span>Horario</span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="mochila" href="horario-mochila.html"><span>Mochila</span><span class="material-symbols-outlined text-[13px] text-outline-variant">backpack</span></a></div></div><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="cuaderno-lm" href="cuaderno-lm.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-indigo-ai">neurology</span><span class="font-body-md text-body-md">Cuaderno LM</span></div><span class="px-1.5 py-0.2 rounded bg-indigo-ai/20 text-indigo-ai font-label-sm text-[10px]">Studio</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="pomodoro-concentracion" href="pomodoro-flashcards.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">timer</span><span class="font-body-md text-body-md">Pomodoro</span></div><span class="font-code-sm text-code-sm text-tertiary-fixed-dim">25:00</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="progreso-notas" href="progreso-ebau.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">insights</span><span class="font-body-md text-body-md">Progreso &amp; Notas</span></div><span class="font-code-sm text-code-sm text-emerald-streak">9.4</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="copiloto-ia" href="english-coach.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-secondary-fixed-dim">smart_toy</span><span class="font-body-md text-body-md">Copiloto IA</span></div><span class="flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-streak opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-streak"></span></span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="ajustes-drive-sync" href="ajustes-nube.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">sync_saved_locally</span><span class="font-body-md text-body-md">Ajustes &amp; Drive</span></div><span class="material-symbols-outlined text-[16px] text-emerald-streak">cloud_done</span></a></nav></div><div class="p-space-sm bg-border-dark/40 m-space-sm rounded-xl"><div class="flex items-center gap-space-sm"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfmw-gtx0XEK7h8QkzkqF3FppIOTbex1jLhq0ocROUjmLodXPHUohFwpnJvNVkN0ISjq214XEmWTpaUMw3YSio12W-RjtGFeU0sE1SjasnJqTB-yV8QlgvtQlUWVMlziMiyc-kapJhBGjqEArrPwnzz5DrLEfaywd6KV0lCZ0M5ZzcT3XTNGdqZUTS-wEp6J9RCq0b-FMAAjueo_cX1syzKCEK_bQTcBHe-z8fv9oRHSz-6bu4IvxX"/><div class="flex-1 min-w-0"><div class="flex items-center justify-between gap-1"><p class="font-headline-sm text-body-md font-semibold text-surface-card truncate leading-snug">Lucía Fernández</p><span class="inline-flex items-center px-1.5 py-0.5 rounded bg-tertiary-container text-tertiary-fixed font-code-sm text-[10px] font-bold shrink-0">🔥 14</span></div><p class="font-label-sm text-label-sm text-outline-variant truncate">2º Bachillerato • Ciencias</p></div></div></div></aside><div class="pl-sidebar-width"><header class="fixed top-0 left-sidebar-width right-0 h-16 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg"><div class="flex-1 max-w-xl pr-space-base"><div class="relative flex items-center w-full"><span class="material-symbols-outlined absolute left-3 text-[18px] text-on-surface-variant pointer-events-none">search</span><input class="w-full h-10 pl-9 pr-20 bg-surface-container-lowest rounded-lg font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none focus:bg-surface-container-lowest transition-all shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" placeholder="Buscar asignaturas, tareas, notas o fechas..." type="text"/><div class="absolute right-2 flex items-center gap-1"><kbd class="px-1.5 py-0.5 text-[11px] font-code-sm text-on-surface-variant bg-surface-container-high rounded">⌘K</kbd></div></div></div><div class="flex items-center gap-space-sm"><div class="flex items-center gap-1 bg-surface-container-lowest px-space-sm py-1.5 rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]"><span class="material-symbols-outlined text-[17px] text-tertiary-container">hourglass_top</span><span class="font-code-sm text-code-sm font-semibold text-on-surface">25:00</span><button class="text-on-surface-variant hover:text-on-surface ml-1" title="Iniciar Pomodoro" type="button"><span class="material-symbols-outlined text-[17px]">play_arrow</span></button></div><button class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[17px] text-secondary">document_scanner</span><span>OCR</span></button><button class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[17px] text-coral-urgent">mic</span><span>Dictar</span></button><button class="inline-flex items-center gap-1.5 px-space-md py-1.5 rounded-lg bg-primary-container text-surface-card font-label-md text-label-md hover:bg-primary hover:text-surface-card transition-colors shadow-sm" type="button"><span class="material-symbols-outlined text-[18px]">add</span><span>Nueva Tarea</span></button><div class="h-6 w-px bg-border-subtle mx-space-2xs"></div><button aria-label="Notificaciones" class="relative p-2 rounded-lg bg-surface-container-lowest text-on-surface-variant hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-coral-urgent ring-2 ring-surface-card"></span></button></div></header><main class="w-full pt-16 bg-surface min-h-screen"><div class="max-w-max-content-width mx-auto p-space-lg"><div class="flex flex-col w-full">
+<section class="flex flex-col gap-space-base mb-space-lg">
+<div class="flex flex-wrap items-center justify-between gap-space-base bg-surface-container-lowest p-space-base rounded-xl shadow-sm">
+<div class="flex flex-col gap-space-2xs min-w-0">
+<div class="flex items-center gap-space-sm flex-wrap">
+<span class="inline-flex items-center gap-1.5 px-space-xs py-0.5 rounded-full bg-indigo-ai/15 text-indigo-ai font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-indigo-ai"></span>
+            Taller Activo • Modo Tablet Stylus
+          </span>
+<span class="text-outline-variant font-code-sm text-code-sm">2º Bachillerato Artístico &amp; Técnico</span>
+</div>
+<div class="flex items-center gap-space-md mt-0.5 flex-wrap">
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Portafolio de Proyectos &amp; Taller Artístico</h1>
+<div class="relative inline-flex items-center">
+<select class="appearance-none bg-surface-container-low text-on-surface font-headline-sm text-headline-sm pl-space-md pr-8 py-1 rounded-lg focus:outline-none cursor-pointer" id="courseSelect">
+<option selected="" value="dibujo-tecnico">Dibujo Técnico II</option>
+<option value="educacion-plastica">Educación Plástica y Visual</option>
+<option value="tecnologia">Tecnología e Ingeniería</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 text-on-surface-variant pointer-events-none text-[20px]">unfold_more</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-space-sm flex-wrap">
+<div class="flex items-center p-1 bg-surface-container-low rounded-lg">
+<button class="flex items-center gap-1.5 px-space-sm py-1.5 rounded-md bg-surface-container-lowest text-on-surface font-label-md text-label-md shadow-sm transition-all" title="Vista Ficha Técnica" type="button">
+<span class="material-symbols-outlined text-[18px] text-secondary">splitscreen</span>
+<span>Ficha &amp; Proceso</span>
+</button>
+<button class="flex items-center gap-1.5 px-space-sm py-1.5 rounded-md text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all" title="Bitácora en Grid" type="button">
+<span class="material-symbols-outlined text-[18px]">grid_view</span>
+<span>Bitácora (Grid)</span>
+</button>
+</div>
+<div class="h-7 w-px bg-surface-container-high hidden md:block"></div>
+<button class="flex items-center gap-2 px-space-md py-2 rounded-xl bg-secondary text-on-secondary font-label-md text-label-md hover:bg-secondary-container shadow-md transition-transform active:scale-95" id="stylusCanvasBtn" type="button">
+<span class="material-symbols-outlined text-[20px]">stylus</span>
+<span>Lienzo Stylus / Boceto</span>
+<span class="inline-flex items-center gap-1 pl-1.5 font-code-sm text-[10px] bg-primary/20 px-1.5 py-0.5 rounded-full" title="Sensibilidad a la presión 4096 niveles activa">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-streak"></span> 4K lvls
+          </span>
+</button>
+<button class="flex items-center gap-1.5 px-space-md py-2 rounded-xl bg-surface-container-low text-on-surface font-label-md text-label-md hover:bg-surface-container-high transition-colors" type="button">
+<span class="material-symbols-outlined text-[19px] text-on-surface-variant">picture_as_pdf</span>
+<span>Exportar Dossier PDF</span>
+</button>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<div class="lg:col-span-7 flex flex-col gap-space-lg">
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-base">
+<div class="flex flex-wrap items-center justify-between gap-space-sm">
+<div class="flex flex-col">
+<span class="font-code-sm text-code-sm text-indigo-ai uppercase tracking-wider">PROYECTO PRINCIPAL • TRIMESTRE 1</span>
+<h2 class="font-headline-md text-headline-md text-on-surface mt-0.5">Escultura Geométrica &amp; Perspectiva Axonométrica</h2>
+</div>
+<div class="flex items-center gap-1 bg-surface-container-low px-2.5 py-1 rounded-full">
+<span class="material-symbols-outlined text-[16px] text-tertiary-fixed-dim">history</span>
+<span class="font-code-sm text-code-sm text-on-surface">Última ed: Hoy 11:42 con S-Pen</span>
+</div>
+</div>
+<div class="w-full overflow-x-auto py-1">
+<div class="flex items-center min-w-[560px] gap-2">
+<div class="flex-1 flex items-center gap-2 p-2 rounded-lg bg-emerald-streak/10 text-on-surface">
+<span class="material-symbols-outlined text-emerald-streak text-[18px]">check_circle</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-[10px] text-emerald-streak font-semibold uppercase">Fase 1 • Completada</span>
+<span class="font-label-md text-label-md font-semibold">Boceto &amp; Idea</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant text-[16px]">arrow_forward</span>
+<div class="flex-1 flex items-center gap-2 p-2 rounded-lg bg-primary-container text-surface-card shadow-sm">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-[18px] animate-pulse">draw</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-[10px] text-tertiary-fixed-dim font-semibold uppercase">Fase 2 • ACTUAL</span>
+<span class="font-label-md text-label-md font-semibold text-surface-card">Taller / Proceso</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant text-[16px]">arrow_forward</span>
+<div class="flex-1 flex items-center gap-2 p-2 rounded-lg bg-surface-container-low text-on-surface-variant opacity-85">
+<span class="material-symbols-outlined text-[18px]">brush</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-[10px] text-outline uppercase">Fase 3</span>
+<span class="font-label-md text-label-md">Acabado Final</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant text-[16px]">arrow_forward</span>
+<div class="flex-1 flex items-center gap-2 p-2 rounded-lg bg-surface-container-low text-on-surface-variant opacity-70">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-[10px] text-outline uppercase">Fase 4</span>
+<span class="font-label-md text-label-md">Evaluación</span>
+</div>
+</div>
+</div>
+</div>
+<div class="relative w-full rounded-xl overflow-hidden bg-surface-container group shadow-inner">
+<div class="relative w-full h-[400px]">
+<img class="w-full h-full object-cover" data-alt="Close-up shot of a modern geometric plaster sculpture on a raw wooden turntable in an art studio, natural morning window light, pencils, calipers, and technical drafting tools placed softly in background, ultra-sharp detail, modern academic workshop vibe" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_Fb7qDLLzs1rl7C-gcxxLXuqB7lA5PyX1Nqyrjnn31GrUJpWWJMyagBa3QqbEU8hrTUeVQ3lpn6UjE10Ls-0kU4qGXGC1IjIzT80sX0tuIbrztFULhyvahi7oo9n_WAplR3KPbUZCM654wJBdfa9ysmgvZG1rrNwl-YC0btuNrOvXduQH9ZA4bPKb7F4xTAqjRDVZWVdFhePUzXMTispsUM_c1ERHPNG3ylJ3SzyU4dM-k-lKEPbI"/>
+<div class="absolute inset-0 pointer-events-none p-space-md flex flex-col justify-between">
+<div class="flex items-center justify-between pointer-events-auto">
+<div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary-container/85 backdrop-blur-md text-surface-card font-code-sm text-code-sm shadow-md">
+<span class="w-2 h-2 rounded-full bg-emerald-streak animate-ping"></span>
+<span>Capa activa: #03 Cotas Stylus</span>
+</div>
+<div class="flex items-center gap-1 bg-surface-card/90 backdrop-blur-md p-1 rounded-lg shadow-md text-on-surface">
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface transition-colors" title="Zoom In" type="button"><span class="material-symbols-outlined text-[20px]">zoom_in</span></button>
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface transition-colors" title="Girar Vista" type="button"><span class="material-symbols-outlined text-[20px]">360</span></button>
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface transition-colors" title="Deshacer Trazo" type="button"><span class="material-symbols-outlined text-[20px]">undo</span></button>
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface transition-colors" title="Pantalla Completa Canvas" type="button"><span class="material-symbols-outlined text-[20px]">fullscreen</span></button>
+</div>
+</div>
+<div class="relative w-full h-full flex items-center justify-center">
+<div class="absolute top-1/4 left-1/3 border border-dashed border-secondary text-secondary bg-surface-container-lowest/90 px-2 py-0.5 rounded font-code-sm text-[11px] shadow-sm">
+                  h: 35.0 cm ± 2mm
+                </div>
+<div class="absolute bottom-1/3 right-1/4 bg-coral-urgent/90 text-on-primary px-2 py-0.5 rounded-full font-code-sm text-[10px] flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[12px]">draw</span> Corregir ángulo diedro 45°
+                </div>
+</div>
+<div class="flex items-center justify-between pointer-events-auto bg-primary-container/90 backdrop-blur-md p-space-sm rounded-lg text-surface-card">
+<div class="flex items-center gap-space-sm">
+<span class="font-label-sm text-label-sm text-outline-variant uppercase">Herramientas Stylus:</span>
+<div class="flex items-center gap-1">
+<button class="p-1.5 rounded-md bg-secondary text-on-secondary shadow" title="Rotulador Calibrado 0.4mm" type="button"><span class="material-symbols-outlined text-[18px]">pen_size_2</span></button>
+<button class="p-1.5 rounded-md hover:bg-border-dark text-surface-card" title="Regla y Escuadra" type="button"><span class="material-symbols-outlined text-[18px]">straighten</span></button>
+<button class="p-1.5 rounded-md hover:bg-border-dark text-surface-card" title="Medidor de Ángulos" type="button"><span class="material-symbols-outlined text-[18px]">square_foot</span></button>
+<button class="p-1.5 rounded-md hover:bg-border-dark text-surface-card" title="Goma de Precisión" type="button"><span class="material-symbols-outlined text-[18px]">ink_eraser</span></button>
+</div>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="font-code-sm text-[11px] text-primary-fixed">Paleta:</span>
+<span class="w-4 h-4 rounded-full bg-[#f4ebd0] shadow-sm" title="#f4ebd0 Yeso Natural"></span>
+<span class="w-4 h-4 rounded-full bg-[#9c7a5b] shadow-sm" title="#9c7a5b Haya Clara"></span>
+<span class="w-4 h-4 rounded-full bg-[#202738] shadow-sm" title="#202738 Grafito 6B"></span>
+<span class="w-4 h-4 rounded-full bg-secondary shadow-sm" title="Guía de cota"></span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-body-md font-semibold text-on-surface">Evolución Histórica &amp; Bitácora del Proceso (4 Hitos)</span>
+<button class="font-label-sm text-secondary hover:underline flex items-center gap-0.5" type="button">
+<span>Añadir foto con cámara tablet</span>
+<span class="material-symbols-outlined text-[16px]">add_a_photo</span>
+</button>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-space-sm">
+<div class="group flex flex-col gap-1 p-2 rounded-lg bg-surface-container-low hover:bg-surface-container transition-all cursor-pointer">
+<div class="relative aspect-video rounded-md overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Crisp architectural pencil sketch on grid graph paper showing 3D isometric projection of multifaceted geometric shapes, sharp lead lines, drafting measurements" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEnUJ7NsjuNycak_ojEe7kPMrsreKJLqd9w6j0N7fhdsTaBm4u9PAFgjS3PG-a0yMjN2LhEXBcNpYRd7D6-e_j58fA4iQ2OcpI14fEvro2Sle2F-ayE3_HeygDUrqUD6rNK41aDFIgSenK2t24K8QemFSqN5q9eJkagR1E8KvoXFM5Dnd9EXNMruI29sNxYkOnkS8Kg6sqSzXw1rH6VG0NCRCiG-3CB-haxAmWpJEiqnwDEO-kXKRD"/>
+<span class="absolute bottom-1 right-1 px-1 bg-primary/80 text-surface-card font-code-sm text-[9px] rounded">12 Oct</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-on-surface truncate">1. Boceto grafito</span>
+<span class="font-body-sm text-[11px] text-on-surface-variant">Trazo axonométrico</span>
+</div>
+</div>
+<div class="group flex flex-col gap-1 p-2 rounded-lg bg-surface-container-low hover:bg-surface-container transition-all cursor-pointer">
+<div class="relative aspect-video rounded-md overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Wireframe armature made of thin galvanized iron wires forming geometric polygons on a wooden base plate, studio background with workshop lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkHXJwmn1Uz5lHCP0gBf5N7ZNGFkuAOdZZVJgMI2KIpEN00AyzpOLZ0_wysjab2dbI7AXmcDps14IVjFvaq8FXG5G3FLFxymDHEgqqHBOzAWMnhvxMl5M4FHQr0s0YH0Sk55NqSLSGmIwBqBDn2pOwt8YyWjwF4CH6lJ11JJJMoB4QXzrLFJ6gAIPu1oGPYqMw2CWCqSM2jIw4g_Avz6_kH0I6THA34_P06Y7ScK4kQKQKHLZOzO3D"/>
+<span class="absolute bottom-1 right-1 px-1 bg-primary/80 text-surface-card font-code-sm text-[9px] rounded">19 Oct</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-on-surface truncate">2. Estructura alambre</span>
+<span class="font-body-sm text-[11px] text-on-surface-variant">Esqueleto de soporte</span>
+</div>
+</div>
+<div class="group flex flex-col gap-1 p-2 rounded-lg bg-surface-container-low hover:bg-surface-container transition-all cursor-pointer">
+<div class="relative aspect-video rounded-md overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Application of thick white plaster layers over wireframe sculpture, spatula textures, wet plaster surfaces reflecting soft diffuse light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXdeTZtV3uVrfJin7WkqmWbF0VBle6tf_QbzLr2oCdS3wy7guINX0BrUUS1Cbb2XpneuBMr12hibVVzez3pnB-yfIiB-26_88WoBVrOnc87Mhz_NQ2A-R_8GH97WFuJHaSNHAZix8nrOhNY0-a5325wRZwG2-Jh2E34lC2BPX-E4XOqQNbPSlzbipnpGEepINj6Sb988H_rC6CECtYwuMbQ4NXyRmmpsjbTxGIMHAAYh7h1NjWzyX_"/>
+<span class="absolute bottom-1 right-1 px-1 bg-primary/80 text-surface-card font-code-sm text-[9px] rounded">24 Oct</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-on-surface truncate">3. Primera capa yeso</span>
+<span class="font-body-sm text-[11px] text-on-surface-variant">Volumetría base</span>
+</div>
+</div>
+<div class="group flex flex-col gap-1 p-2 rounded-lg bg-surface-container-high ring-2 ring-secondary/40 transition-all cursor-pointer">
+<div class="relative aspect-video rounded-md overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Sanding smooth surfaces of a geometric plaster artwork with sandpaper blocks, fine white powder dust settled on wooden workshop table" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAX9JapHA10kLvV5s_OBbg1Lu5CKodjD_s2NJb4aYD6_P4auiOBeFMnuQyHQr8SKe2t5GZu4xHVttX-zy9Z-EE1lSK1QHBrUHXV3sb-Rkx55DkLl2O18Uek_Gl4Lr0GNaeqPbtC2RFRcITA6csZs1ffeIfN0BAWcdTrtlk0biZmYmJEKOYn00t2zPGR9KH9N9S_NhG6_NneiEfwaNr0imlG_8oB0nYqeL6QTVF1F09TrySglW3tj5Hk"/>
+<span class="absolute bottom-1 right-1 px-1 bg-secondary text-on-secondary font-code-sm text-[9px] rounded font-semibold">Hoy</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-on-surface truncate">4. Lijado fino</span>
+<span class="font-body-sm text-[11px] text-secondary font-semibold">En progreso (P240)</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-space-base shadow-sm flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-coral-urgent text-[20px]">backpack</span>
+<h3 class="font-headline-sm text-body-lg font-semibold text-on-surface">Materiales necesarios para el próximo Taller</h3>
+</div>
+<span class="font-code-sm text-code-sm text-emerald-streak font-semibold">Sincronizado con Mochila Inteligente</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-space-sm">
+<div class="flex items-center justify-between p-space-sm bg-surface-container-low rounded-lg">
+<div class="flex items-center gap-2">
+<input checked="" class="w-4 h-4 rounded text-secondary accent-secondary cursor-pointer" id="mat1" type="checkbox"/>
+<label class="font-body-sm text-body-sm text-on-surface cursor-pointer" for="mat1">Lijas de grano fino (P240)</label>
+</div>
+<span class="material-symbols-outlined text-emerald-streak text-[18px]">check</span>
+</div>
+<div class="flex items-center justify-between p-space-sm bg-surface-container-low rounded-lg">
+<div class="flex items-center gap-2">
+<input checked="" class="w-4 h-4 rounded text-secondary accent-secondary cursor-pointer" id="mat2" type="checkbox"/>
+<label class="font-body-sm text-body-sm text-on-surface cursor-pointer" for="mat2">Cúter de precisión</label>
+</div>
+<span class="material-symbols-outlined text-emerald-streak text-[18px]">check</span>
+</div>
+<div class="flex items-center justify-between p-space-sm bg-error-container/40 rounded-lg">
+<div class="flex items-center gap-2">
+<input class="w-4 h-4 rounded text-coral-urgent accent-coral-urgent cursor-pointer" id="mat3" type="checkbox"/>
+<label class="font-body-sm text-body-sm text-on-surface font-semibold cursor-pointer" for="mat3">Barniz mate al agua</label>
+</div>
+<span class="font-label-sm text-[10px] bg-coral-urgent text-on-primary px-1.5 py-0.5 rounded font-code-sm">Falta</span>
+</div>
+</div>
+</div>
+</div>
+<div class="lg:col-span-5 flex flex-col gap-space-lg">
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-base">
+<div class="flex items-center justify-between">
+<span class="font-code-sm text-code-sm text-on-surface-variant font-semibold">EXPEDIENTE DE PROYECTO</span>
+<span class="inline-flex items-center gap-1 text-coral-urgent font-code-sm text-code-sm font-semibold bg-coral-urgent/10 px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined text-[14px]">timer</span> Viernes 8 Nov • 14 días
+          </span>
+</div>
+<div class="grid grid-cols-2 gap-space-sm">
+<div class="p-space-sm rounded-lg bg-surface-container-low">
+<span class="font-label-sm text-[11px] text-on-surface-variant uppercase">Técnica &amp; Materiales</span>
+<p class="font-headline-sm text-body-md font-semibold text-on-surface mt-0.5">Mixta: escayola &amp; madera</p>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-low">
+<span class="font-label-sm text-[11px] text-on-surface-variant uppercase">Dimensiones Reales</span>
+<p class="font-headline-sm text-body-md font-semibold text-on-surface mt-0.5">35 × 25 × 20 cm</p>
+</div>
+</div>
+<div class="flex flex-col gap-space-sm pt-space-xs">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary text-[18px]">verified</span>
+<h4 class="font-headline-sm text-body-md font-semibold text-on-surface">Rúbrica de Evaluación Oficial (LOMLOE)</h4>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="font-headline-md text-headline-md font-bold text-secondary">9.17</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">/ 10</span>
+</div>
+</div>
+<div class="flex flex-col gap-space-sm bg-surface-container-low p-space-base rounded-xl">
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between text-body-sm">
+<span class="font-label-md text-label-md text-on-surface">Proporción, Escala y Axonometría</span>
+<span class="font-code-sm text-code-sm font-bold text-emerald-streak">9.5 <span class="font-normal text-on-surface-variant">/ 10</span></span>
+</div>
+<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-emerald-streak h-full rounded-full transition-all duration-500" style="width: 95%;"></div>
+</div>
+<span class="font-body-sm text-[11px] text-on-surface-variant">Excelente correspondencia con el alzado y la planta preliminares.</span>
+</div>
+<div class="flex flex-col gap-1 pt-1">
+<div class="flex items-center justify-between text-body-sm">
+<span class="font-label-md text-label-md text-on-surface">Limpieza, Aristas y Acabados</span>
+<span class="font-code-sm text-code-sm font-bold text-secondary">8.8 <span class="font-normal text-on-surface-variant">/ 10</span></span>
+</div>
+<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full transition-all duration-500" style="width: 88%;"></div>
+</div>
+<span class="font-body-sm text-[11px] text-on-surface-variant">Requiere nivelar las aristas convexas antes de dar la imprimación.</span>
+</div>
+<div class="flex flex-col gap-1 pt-1">
+<div class="flex items-center justify-between text-body-sm">
+<span class="font-label-md text-label-md text-on-surface">Creatividad Conceptual &amp; Tensión Espacial</span>
+<span class="font-code-sm text-code-sm font-bold text-indigo-ai">9.2 <span class="font-normal text-on-surface-variant">/ 10</span></span>
+</div>
+<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-indigo-ai h-full rounded-full transition-all duration-500" style="width: 92%;"></div>
+</div>
+<span class="font-body-sm text-[11px] text-on-surface-variant">Buen diálogo de vacío-volumen inspirado en Oteiza y Chillida.</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-space-sm pt-space-2xs">
+<div class="flex items-center justify-between">
+<h4 class="font-headline-sm text-body-md font-semibold text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-tertiary-fixed-dim">record_voice_over</span>
+              Autoevaluación &amp; Notas de Taller
+            </h4>
+<span class="font-code-sm text-[11px] text-outline">Modo Dictado Rápido</span>
+</div>
+<div class="relative bg-surface-container-low p-space-base rounded-xl flex flex-col gap-space-sm">
+<div class="flex items-start gap-space-sm">
+<span class="material-symbols-outlined text-secondary text-[22px] mt-0.5">format_quote</span>
+<p class="font-body-sm text-body-sm text-on-surface italic leading-relaxed">
+                "Hoy en clase el profesor recomendó reforzar la junta central con cola de carpintero antes de aplicar el barniz final. El lijado con grano P240 ha dejado las caras ortogonales suaves sin despostillar las esquinas vivas."
+              </p>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<div class="flex items-center gap-2">
+<button class="w-8 h-8 rounded-full bg-surface-container-lowest flex items-center justify-center text-on-surface hover:bg-surface shadow-sm" title="Reproducir nota de audio" type="button">
+<span class="material-symbols-outlined text-[18px]">play_arrow</span>
+</button>
+<div class="flex flex-col">
+<span class="font-label-sm text-[11px] font-semibold text-on-surface">Audio_Taller_04.m4a</span>
+<span class="font-code-sm text-[10px] text-outline">00:48 min • Transcrito con IA</span>
+</div>
+</div>
+<button class="flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-coral-urgent text-on-primary font-label-md text-label-md hover:opacity-90 shadow-sm active:scale-95 transition-all" id="dictateNoteBtn" type="button">
+<span class="material-symbols-outlined text-[16px]">mic</span>
+<span>Dictar Nota</span>
+</button>
+</div>
+</div>
+</div>
+<div class="p-space-base rounded-xl bg-primary-container text-surface-card flex flex-col gap-space-sm shadow-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-[20px]">lightbulb</span>
+<span class="font-headline-sm text-body-md font-semibold text-surface-card">Feedback Docente (Prof. D. Martín)</span>
+</div>
+<span class="font-code-sm text-[11px] text-tertiary-fixed-dim">Ayer 17:30</span>
+</div>
+<p class="font-body-sm text-body-sm text-primary-fixed leading-normal">
+            "Excelente control de la perspectiva axonométrica isométrica. Asegúrate de secar bien entre manos de yeso para evitar grietas por contracción."
+          </p>
+</div>
+</div>
+</div>
+</div>
+<div class="hidden fixed inset-0 z-50 bg-primary/70 backdrop-blur-sm flex items-center justify-center p-space-md" id="stylusModal">
+<div class="bg-surface-container-lowest w-full max-w-4xl h-[870px] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+<div class="flex items-center justify-between px-space-lg py-space-base bg-surface-container-low">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-secondary text-[24px]">stylus_note</span>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface leading-tight">Lienzo Táctil &amp; Boceto Directo</h3>
+<p class="font-body-sm text-[11px] text-on-surface-variant">Sensibilidad de presión activa • Detección de palma habilitada</p>
+</div>
+</div>
+<div class="flex items-center gap-space-sm">
+<button class="px-space-md py-1.5 rounded-lg bg-secondary text-on-secondary font-label-md text-label-md shadow-sm" type="button">Guardar en Portafolio</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container" id="closeStylusModal" type="button"><span class="material-symbols-outlined text-[22px]">close</span></button>
+</div>
+</div>
+<div class="flex-1 bg-surface-card relative flex items-center justify-center overflow-hidden">
+<svg class="absolute inset-0 w-full h-full stroke-surface-container-high/40" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<pattern height="24" id="grid" patternunits="userSpaceOnUse" width="24">
+<path d="M 24 0 L 0 0 0 24" fill="none" stroke-width="0.75"></path>
+</pattern>
+</defs>
+<rect fill="url(#grid)" height="100%" width="100%"></rect>
+</svg>
+<div class="text-center flex flex-col items-center gap-space-sm select-none pointer-events-none z-10">
+<span class="material-symbols-outlined text-[48px] text-secondary/30">draw</span>
+<p class="font-headline-sm text-headline-sm text-on-surface-variant/40">Superficie lista para Apple Pencil / S-Pen</p>
+<span class="font-code-sm text-code-sm text-outline-variant">Presión calibrada 0 - 4096 niveles</span>
+</div>
+</div>
+<div class="p-space-sm bg-surface-container-low flex items-center justify-between px-space-lg">
+<div class="flex items-center gap-space-md">
+<span class="font-label-sm text-on-surface-variant">Trazo: 1.2 mm</span>
+<span class="font-label-sm text-on-surface-variant">Opacidad: 100%</span>
+<span class="font-label-sm text-on-surface-variant">Estabilizador: Nivel 3</span>
+</div>
+<button class="font-label-sm text-error flex items-center gap-1 hover:underline" type="button">
+<span class="material-symbols-outlined text-[16px]">delete</span> Limpiar Lienzo
+        </button>
+</div>
+</div>
+</div>
+<script>
+    (function() {
+      const stylusBtn = document.getElementById('stylusCanvasBtn');
+      const stylusModal = document.getElementById('stylusModal');
+      const closeModal = document.getElementById('closeStylusModal');
+      const dictateBtn = document.getElementById('dictateNoteBtn');
 
-      <div class="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm space-y-3">
-        <div class="h-44 bg-gradient-to-tr from-amber-400 to-rose-500 flex items-center justify-center text-4xl text-white">📐</div>
-        <div class="p-5 pt-0 space-y-2 text-xs">
-          <div class="flex justify-between items-center text-[10px] font-bold">
-            <span class="text-amber-600 uppercase">Tecnología</span>
-            <span class="text-slate-400">Maqueta 3D</span>
-          </div>
-          <h3 class="font-extrabold text-sm text-slate-900">Brazo Robótico Hidráulico</h3>
-          <p class="text-slate-500 text-[11px]">Diseño de jeringuillas y tubos de presión con corte láser.</p>
-        </div>
-      </div>
+      if (stylusBtn && stylusModal) {
+        stylusBtn.addEventListener('click', () => {
+          stylusModal.classList.remove('hidden');
+        });
+      }
 
-      <div class="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm space-y-3">
-        <div class="h-44 bg-gradient-to-tr from-emerald-400 to-teal-600 flex items-center justify-center text-4xl text-white">🔬</div>
-        <div class="p-5 pt-0 space-y-2 text-xs">
-          <div class="flex justify-between items-center text-[10px] font-bold">
-            <span class="text-emerald-600 uppercase">Biología & Geología</span>
-            <span class="text-slate-400">Informe Lab</span>
-          </div>
-          <h3 class="font-extrabold text-sm text-slate-900">Observación Mitótica al Microscopio</h3>
-          <p class="text-slate-500 text-[11px]">Muestra de células de raíz de cebolla teñidas con orceína.</p>
-        </div>
-      </div>
-    </div>
-  </main>
+      if (closeModal && stylusModal) {
+        closeModal.addEventListener('click', () => {
+          stylusModal.classList.add('hidden');
+        });
+      }
 
-  <!-- Barra Navegación Isla Tablet -->
-  <nav class="fixed bottom-4 inset-x-0 mx-auto max-w-2xl bg-white/95 backdrop-blur border border-slate-200 z-30 px-6 py-2.5 rounded-full shadow-xl flex justify-around items-center text-xs font-bold text-slate-500">
-    <a href="index.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>🏠</span><span>Mi Día</span></a>
-    <a href="deberes-examenes.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>📅</span><span>Agenda</span></a>
-    <a href="cuaderno-lm.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>📚</span><span>Cuaderno LM</span></a>
-    <a href="pomodoro-flashcards.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>🧠</span><span>Estudio</span></a>
-    <a href="progreso-ebau.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>📊</span><span>Progreso</span></a>
-  </nav>
-</body>
-</html>
+      if (dictateBtn) {
+        dictateBtn.addEventListener('click', () => {
+          const isRecording = dictateBtn.getAttribute('data-recording') === 'true';
+          if (!isRecording) {
+            dictateBtn.setAttribute('data-recording', 'true');
+            dictateBtn.classList.remove('bg-coral-urgent');
+            dictateBtn.classList.add('bg-emerald-streak');
+            dictateBtn.innerHTML = '<span class="material-symbols-outlined text-[16px] animate-pulse">radio_button_checked</span><span>Grabando...</span>';
+          } else {
+            dictateBtn.setAttribute('data-recording', 'false');
+            dictateBtn.classList.remove('bg-emerald-streak');
+            dictateBtn.classList.add('bg-coral-urgent');
+            dictateBtn.innerHTML = '<span class="material-symbols-outlined text-[16px]">mic</span><span>Dictar Nota</span>';
+          }
+        });
+      }
+    })();
+  </script>
+</div></div></main></div></body></html>

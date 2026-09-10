@@ -1,75 +1,402 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Agenda: Deberes & Exámenes - Tablet</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>body { padding-bottom: 96px; }</style>
-</head>
-<body class="bg-[#f8f9ff] text-slate-800 font-['Plus_Jakarta_Sans',sans-serif] antialiased min-h-screen flex flex-col">
-  <!-- Cabecera Tablet -->
-  <header class="px-6 py-4 bg-white sticky top-0 z-20 border-b border-slate-100 flex items-center justify-between">
-    <div>
-      <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600">Semana 8 • Curso 2026</span>
-      <h1 class="text-base font-black text-slate-900">Agenda: Deberes, Exámenes & Horario</h1>
-    </div>
-    <div class="flex items-center gap-2">
-      <button class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl shadow-sm">+ Nueva Tarea</button>
-      <button class="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl shadow-sm">+ Examen</button>
-    </div>
-  </header>
 
-  <!-- Filtros -->
-  <div class="max-w-6xl w-full mx-auto px-6 pt-4 flex gap-2 text-xs font-bold">
-    <button class="px-4 py-2 rounded-full bg-blue-600 text-white shadow-sm">Deberes Pendientes (3)</button>
-    <button class="px-4 py-2 rounded-full bg-white border border-slate-200 text-slate-600 hover:bg-slate-50">Exámenes (2)</button>
-    <a href="horario-mochila.html" class="px-4 py-2 rounded-full bg-white border border-slate-200 text-slate-600 hover:bg-slate-50">Horario Semanal</a>
-  </div>
-
-  <!-- Rejilla de Tarjetas 2 Columnas -->
-  <main class="max-w-6xl w-full mx-auto p-6 flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
-    <!-- Tarea 1 -->
-    <div class="p-5 bg-white border-2 border-rose-200 rounded-3xl shadow-sm space-y-3">
-      <div class="flex justify-between items-center text-xs">
-        <span class="font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-lg border border-purple-200">FÍSICA II</span>
-        <span class="font-mono text-[11px] font-bold text-rose-700 bg-rose-50 px-2.5 py-0.5 rounded-md">Entrega Mañana 08:30h</span>
-      </div>
-      <h3 class="font-black text-base text-slate-900">Problemas 14 al 22 de Termodinámica</h3>
-      <p class="text-xs text-slate-600 leading-relaxed">Ciclo de Carnot, entropía y rendimiento de máquinas térmicas. Entregar en hojas sueltas.</p>
-      <div class="flex items-center justify-between pt-3 border-t border-slate-100 text-xs">
-        <span class="bg-blue-50 text-blue-700 px-2.5 py-1 rounded-xl font-semibold text-[11px] flex items-center gap-1">
-          📷 Foto OCR Pizarra Aula 204
+<html lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><title>Agenda Escolar PWA</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "border-subtle": "#E2E8F0", "surface-container-high": "#dce9ff", "secondary": "#4648d4", "error": "#ba1a1a", "on-surface": "#0b1c30", "primary-fixed-dim": "#bcc7de", "on-background": "#0b1c30", "surface-dim": "#cbdbf5", "on-error": "#ffffff", "surface-container-lowest": "#ffffff", "tertiary": "#201100", "on-primary": "#ffffff", "surface-sidebar": "#0F172A", "outline-variant": "#c5c6cd", "indigo-ai": "#8B5CF6", "on-primary-container": "#8590a6", "surface-bright": "#f8f9ff", "on-primary-fixed-variant": "#3c475a", "outline": "#75777d", "primary-fixed": "#d8e3fb", "on-primary-fixed": "#111c2d", "on-secondary-fixed": "#07006c", "primary-container": "#1e293b", "on-tertiary-fixed": "#2a1700", "surface-card": "#FFFFFF", "error-container": "#ffdad6", "tertiary-container": "#3c2300", "inverse-surface": "#213145", "surface-container-low": "#eff4ff", "on-tertiary-container": "#c88000", "coral-urgent": "#F43F5E", "on-tertiary-fixed-variant": "#653e00", "secondary-fixed-dim": "#c0c1ff", "inverse-on-surface": "#eaf1ff", "emerald-streak": "#10B981", "on-surface-variant": "#45474c", "surface-container": "#e5eeff", "background": "#f8f9ff", "inverse-primary": "#bcc7de", "surface-container-highest": "#d3e4fe", "primary": "#091426", "border-dark": "#1E293B", "surface-tint": "#545f73", "on-error-container": "#93000a", "tertiary-fixed-dim": "#ffb95f", "on-secondary-container": "#fffbff", "surface-variant": "#d3e4fe", "surface": "#f8f9ff", "tertiary-fixed": "#ffddb8", "secondary-fixed": "#e1e0ff", "on-tertiary": "#ffffff", "on-secondary-fixed-variant": "#2f2ebe", "canvas-bg": "#F8FAFC", "on-secondary": "#ffffff", "secondary-container": "#6063ee" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-2xs": "0.125rem", "sidebar-collapsed": "68px", "space-xl": "2rem", "space-xs": "0.25rem", "max-content-width": "1440px", "space-base": "1rem", "space-2xl": "3rem", "space-lg": "1.5rem", "space-sm": "0.5rem", "space-md": "0.75rem", "sidebar-width": "240px" }, "fontFamily": { "headline-lg": ["Plus Jakarta Sans"], "code-sm": ["JetBrains Mono"], "label-md": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "display": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"] }, "fontSize": { "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "700" }], "code-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" }], "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "display": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-md": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased selection:bg-secondary-fixed selection:text-on-secondary-fixed"><aside class="fixed left-0 top-0 h-screen w-sidebar-width bg-surface-sidebar z-50 flex flex-col justify-between select-none shadow-[0_1px_8px_rgba(0,0,0,0.08)]"><div class="flex flex-col flex-1 overflow-y-auto"><div class="h-16 px-space-base flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="Agenda Escolar Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1W7YUEss6DP9Xx1z841d_qHcSCOIN-l-FhxrtKUiT5-W3ctujb3E695E4JvcFlKOwJoERFlgw34EvmYFS36M3HrArIc3x400fLH1AoZYEucmEe1aIVkLAPCvwhq3kxd6fab9Elr7U6Vimt0zw1SCEgHXBCvXV-69uslhDkvNzZHvwJb9BJ1ZyZmF7mq6CqnuAvZ-6FjV6pKE_YyNJsRUW5hB1n4jcwnfaEzeGa5lhXOLCkde7_yj2x0cFE"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-surface-card leading-none tracking-tight">Agenda Escolar</span><span class="mt-space-2xs inline-flex items-center self-start px-space-xs py-0.5 rounded bg-primary-container text-primary-fixed text-[10px] font-code-sm font-semibold uppercase tracking-wider">v3.5 PWA</span></div></div><button aria-label="Colapsar menú lateral" class="text-outline-variant hover:text-surface-card p-1 rounded transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">keyboard_double_arrow_left</span></button></div><div class="px-space-base py-space-xs"><div class="flex items-center justify-between px-space-sm py-space-xs rounded bg-border-dark/60 text-emerald-streak"><div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-streak animate-pulse"></span><span class="font-label-sm text-label-sm">100% Offline Listo</span></div><span class="font-code-sm text-code-sm text-surface-variant/80 text-[10px]">PWA ACTIVE</span></div></div><nav class="flex-1 px-space-sm py-space-xs space-y-space-2xs" data-active-classes="bg-primary-container text-surface-card font-semibold shadow-inner"><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="mi-dia" href="index.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-tertiary-fixed-dim">light_mode</span><span class="font-body-md text-body-md">Mi Día</span></div><span class="px-1.5 py-0.5 rounded-full bg-border-dark text-surface-card font-code-sm text-[11px]">8</span></a><div class="space-y-0.5"><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="agenda" href="deberes-examenes.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">calendar_month</span><span class="font-body-md text-body-md">Agenda</span></div><span class="material-symbols-outlined text-[16px] text-outline-variant group-hover:text-surface-card">expand_more</span></a><div class="pl-8 pr-space-xs space-y-0.5"><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="deberes" href="deberes-examenes.html"><span>Deberes</span><span class="w-1.5 h-1.5 rounded-full bg-coral-urgent"></span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="examenes" href="deberes-examenes.html"><span>Exámenes</span><span class="font-code-sm text-[10px] text-tertiary-fixed-dim font-bold">PROX</span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="horario" href="horario-mochila.html"><span>Horario</span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="mochila" href="horario-mochila.html"><span>Mochila</span><span class="material-symbols-outlined text-[13px] text-outline-variant">backpack</span></a></div></div><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="cuaderno-lm" href="cuaderno-lm.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-indigo-ai">neurology</span><span class="font-body-md text-body-md">Cuaderno LM</span></div><span class="px-1.5 py-0.2 rounded bg-indigo-ai/20 text-indigo-ai font-label-sm text-[10px]">Studio</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="pomodoro-concentracion" href="pomodoro-flashcards.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">timer</span><span class="font-body-md text-body-md">Pomodoro</span></div><span class="font-code-sm text-code-sm text-tertiary-fixed-dim">25:00</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="progreso-notas" href="progreso-ebau.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">insights</span><span class="font-body-md text-body-md">Progreso &amp; Notas</span></div><span class="font-code-sm text-code-sm text-emerald-streak">9.4</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="copiloto-ia" href="english-coach.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-secondary-fixed-dim">smart_toy</span><span class="font-body-md text-body-md">Copiloto IA</span></div><span class="flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-streak opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-streak"></span></span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="ajustes-drive-sync" href="ajustes-nube.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">sync_saved_locally</span><span class="font-body-md text-body-md">Ajustes &amp; Drive</span></div><span class="material-symbols-outlined text-[16px] text-emerald-streak">cloud_done</span></a></nav></div><div class="p-space-sm bg-border-dark/40 m-space-sm rounded-xl"><div class="flex items-center gap-space-sm"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfmw-gtx0XEK7h8QkzkqF3FppIOTbex1jLhq0ocROUjmLodXPHUohFwpnJvNVkN0ISjq214XEmWTpaUMw3YSio12W-RjtGFeU0sE1SjasnJqTB-yV8QlgvtQlUWVMlziMiyc-kapJhBGjqEArrPwnzz5DrLEfaywd6KV0lCZ0M5ZzcT3XTNGdqZUTS-wEp6J9RCq0b-FMAAjueo_cX1syzKCEK_bQTcBHe-z8fv9oRHSz-6bu4IvxX"/><div class="flex-1 min-w-0"><div class="flex items-center justify-between gap-1"><p class="font-headline-sm text-body-md font-semibold text-surface-card truncate leading-snug">Lucía Fernández</p><span class="inline-flex items-center px-1.5 py-0.5 rounded bg-tertiary-container text-tertiary-fixed font-code-sm text-[10px] font-bold shrink-0">🔥 14</span></div><p class="font-label-sm text-label-sm text-outline-variant truncate">2º Bachillerato • Ciencias</p></div></div></div></aside><div class="pl-sidebar-width"><header class="fixed top-0 left-sidebar-width right-0 h-16 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg"><div class="flex-1 max-w-xl pr-space-base"><div class="relative flex items-center w-full"><span class="material-symbols-outlined absolute left-3 text-[18px] text-on-surface-variant pointer-events-none">search</span><input class="w-full h-10 pl-9 pr-20 bg-surface-container-lowest rounded-lg font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none focus:bg-surface-container-lowest transition-all shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" placeholder="Buscar asignaturas, tareas, notas o fechas..." type="text"/><div class="absolute right-2 flex items-center gap-1"><kbd class="px-1.5 py-0.5 text-[11px] font-code-sm text-on-surface-variant bg-surface-container-high rounded">⌘K</kbd></div></div></div><div class="flex items-center gap-space-sm"><div class="flex items-center gap-1 bg-surface-container-lowest px-space-sm py-1.5 rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]"><span class="material-symbols-outlined text-[17px] text-tertiary-container">hourglass_top</span><span class="font-code-sm text-code-sm font-semibold text-on-surface">25:00</span><button class="text-on-surface-variant hover:text-on-surface ml-1" title="Iniciar Pomodoro" type="button"><span class="material-symbols-outlined text-[17px]">play_arrow</span></button></div><button class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[17px] text-secondary">document_scanner</span><span>OCR</span></button><button class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[17px] text-coral-urgent">mic</span><span>Dictar</span></button><button class="inline-flex items-center gap-1.5 px-space-md py-1.5 rounded-lg bg-primary-container text-surface-card font-label-md text-label-md hover:bg-primary hover:text-surface-card transition-colors shadow-sm" type="button"><span class="material-symbols-outlined text-[18px]">add</span><span>Nueva Tarea</span></button><div class="h-6 w-px bg-border-subtle mx-space-2xs"></div><button aria-label="Notificaciones" class="relative p-2 rounded-lg bg-surface-container-lowest text-on-surface-variant hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-coral-urgent ring-2 ring-surface-card"></span></button></div></header><main class="w-full pt-16 bg-surface min-h-screen"><div class="max-w-max-content-width mx-auto p-space-lg"><div class="flex flex-col w-full gap-space-lg select-none">
+<!-- Cabecera Tablet con Accesibilidad Táctil (Mínimo 44px de zona de toque) -->
+<section class="flex flex-col xl:flex-row xl:items-center justify-between gap-space-base bg-surface-container-lowest p-space-lg rounded-xl shadow-sm">
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center gap-space-sm flex-wrap">
+<span class="px-space-sm py-1 rounded-full bg-coral-urgent/10 text-coral-urgent font-label-sm text-label-sm font-bold inline-flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-coral-urgent animate-ping"></span>
+          3 Tareas Urgentes
         </span>
-        <a href="cuaderno-lm.html" class="text-blue-600 font-bold hover:underline">Ver Apuntes Relacionados ›</a>
-      </div>
-    </div>
+<span class="px-space-sm py-1 rounded-full bg-surface-container text-on-surface-variant font-code-sm text-code-sm">
+          Tablet Stylus Active • 2º Bach. Ciencias
+        </span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">
+        Deberes, Exámenes &amp; Planificador
+      </h1>
+</div>
+<!-- Controles de Vista y Acciones Táctiles Rápidas -->
+<div class="flex items-center gap-space-sm flex-wrap">
+<!-- Selector de Vista Segmentado -->
+<div class="flex p-1 bg-surface-container rounded-lg gap-1">
+<button class="min-h-[44px] px-space-base rounded-md bg-surface-container-lowest text-on-surface font-label-md text-label-md shadow-sm flex items-center gap-2 active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[18px]">view_kanban</span>
+<span>Tablero</span>
+</button>
+<button class="min-h-[44px] px-space-base rounded-md text-on-surface-variant hover:text-on-surface font-label-md text-label-md flex items-center gap-2 active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[18px]">format_list_bulleted</span>
+<span>Lista Temporal</span>
+</button>
+<button class="min-h-[44px] px-space-base rounded-md text-on-surface-variant hover:text-on-surface font-label-md text-label-md flex items-center gap-2 active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[18px]">calendar_view_week</span>
+<span>Semana</span>
+</button>
+</div>
+<!-- Botón Escaneo Cámara OCR Pizarra -->
+<button class="min-h-[44px] px-space-base rounded-lg bg-secondary-container text-on-secondary-container font-label-md text-label-md hover:bg-secondary transition-colors shadow-sm flex items-center gap-2 active:scale-95" id="btn-camera-ocr" type="button">
+<span class="material-symbols-outlined text-[20px]">photo_camera</span>
+<span class="font-semibold">Escanear Pizarra OCR</span>
+</button>
+<!-- Botón Nueva Entrega -->
+<button class="min-h-[44px] px-space-base rounded-lg bg-primary-container text-surface-card font-label-md text-label-md hover:bg-primary transition-colors shadow-sm flex items-center gap-2 active:scale-95" type="button">
+<span class="material-symbols-outlined text-[20px]">add_circle</span>
+<span>Nueva Entrega</span>
+</button>
+</div>
+</section>
+<!-- Layout Principal de Dos Columnas Táctiles (65% / 35%) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- Columna Principal (65%) -->
+<main class="lg:col-span-8 flex flex-col gap-space-lg min-w-0">
+<!-- Filtros Rápidos en Pastillas Táctiles Ergonométricas (44px min altura) -->
+<div class="flex items-center gap-space-xs overflow-x-auto pb-1 touch-pan-x no-scrollbar">
+<button class="min-h-[44px] px-space-base rounded-full bg-primary-container text-surface-card font-label-md text-label-md font-semibold whitespace-nowrap shadow-sm active:scale-95 transition-transform flex items-center gap-1.5" type="button">
+<span>Todas</span>
+<span class="px-1.5 py-0.5 rounded-full bg-surface-card/20 text-[11px] font-code-sm">12</span>
+</button>
+<button class="min-h-[44px] px-space-base rounded-full bg-surface-container-lowest text-coral-urgent font-label-md text-label-md font-semibold whitespace-nowrap shadow-sm hover:bg-coral-urgent/10 active:scale-95 transition-transform flex items-center gap-1.5" type="button">
+<span class="w-2 h-2 rounded-full bg-coral-urgent"></span>
+<span>Urgentes Hoy/Mañana</span>
+<span class="px-1.5 py-0.5 rounded-full bg-coral-urgent/15 text-[11px] font-code-sm">3</span>
+</button>
+<button class="min-h-[44px] px-space-base rounded-full bg-surface-container-lowest text-on-surface font-label-md text-label-md whitespace-nowrap shadow-sm hover:bg-surface-container active:scale-95 transition-transform flex items-center gap-1.5" type="button">
+<span>Esta Semana</span>
+<span class="px-1.5 py-0.5 rounded-full bg-surface-container text-on-surface-variant text-[11px] font-code-sm">5</span>
+</button>
+<button class="min-h-[44px] px-space-base rounded-full bg-surface-container-lowest text-indigo-ai font-label-md text-label-md whitespace-nowrap shadow-sm hover:bg-indigo-ai/10 active:scale-95 transition-transform flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px]">document_scanner</span>
+<span>Con Foto / OCR</span>
+<span class="px-1.5 py-0.5 rounded-full bg-indigo-ai/15 text-[11px] font-code-sm">4</span>
+</button>
+<button class="min-h-[44px] px-space-base rounded-full bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md whitespace-nowrap shadow-sm hover:bg-surface-container active:scale-95 transition-transform" type="button">
+          Completadas (18)
+        </button>
+</div>
+<!-- Tarjeta Heroica Prioritaria: OCR & Tinta Digital -->
+<article class="bg-surface-container-lowest rounded-xl p-space-lg shadow-md relative overflow-hidden transition-shadow">
+<!-- Indicador de Asignatura Izquierda -->
+<div class="absolute left-0 top-0 bottom-0 w-2 bg-secondary"></div>
+<div class="flex flex-col gap-space-md pl-2">
+<!-- Cabecera de la Tarjeta Hero -->
+<div class="flex flex-wrap items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="px-space-sm py-1 rounded-md bg-secondary/15 text-secondary font-label-sm text-label-sm font-bold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                Física &amp; Química
+              </span>
+<span class="px-space-sm py-1 rounded-md bg-coral-urgent/10 text-coral-urgent font-code-sm text-code-sm font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">timer</span>
+                Mañana, 08:30 (Faltan 14h)
+              </span>
+<span class="px-space-sm py-1 rounded-md bg-indigo-ai/15 text-indigo-ai font-label-sm text-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">edit_note</span>
+                Pizarra Digitalizada + Notas Stylus
+              </span>
+</div>
+<!-- Botón Grande de Checklist Táctil -->
+<button class="min-h-[44px] min-w-[44px] px-space-sm rounded-lg bg-surface-container text-on-surface-variant hover:bg-emerald-streak/20 hover:text-emerald-streak flex items-center justify-center gap-2 transition-all active:scale-90" onclick="this.classList.toggle('bg-emerald-streak'); this.classList.toggle('text-surface-card');" title="Marcar como Completada" type="button">
+<span class="material-symbols-outlined text-[24px]">check_circle</span>
+<span class="font-label-md text-label-md hidden sm:inline">Hecho</span>
+</button>
+</div>
+<!-- Título y Enunciado del Ejercicio -->
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface tracking-tight">
+              Problemas 14 al 22 Termodinámica (Tema 3: Ciclo de Carnot y Entropía)
+            </h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">
+              Resolver con diagramas P-V trazados a mano con Stylus. Prestar atención al cálculo del rendimiento térmico en el problema 19.
+            </p>
+</div>
+<!-- Miniatura OCR con Anotación del Profesor en Rojo -->
+<div class="grid grid-cols-1 sm:grid-cols-12 gap-space-md p-space-md bg-surface-container-low rounded-lg items-center">
+<div class="sm:col-span-4 relative rounded-lg overflow-hidden shadow-sm group">
+<img class="w-full h-36 object-cover transform group-hover:scale-105 transition-transform duration-300" data-alt="High-resolution captured photo of a classroom whiteboard covered with physics formulas, thermodynamics cycles, and handwritten red ink teacher corrections. Modern classroom setting, angled capture with stylus mark overlays in vivid red." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmrvHrBVg0nwnChWRSQsmUF6XDtAjwBp0_w2nw1KsSJ8OqELZoFvD0ZdIeS9LhpOgNk95unxXIneuSmkoa-49sRi2WUbMKomvgdn6l8nvf-BOkmSQSsYjhZW4jquQK30hiAkK1HPy18fRv08KlzGPTwNZ1iva24hSDXWWL1bIw1zO4TehNXIVDqapDQtfulC8mq-pQ43TW5zANQbFLltKdBlYE6RRgM5tdO1GH_f-FtwSxv1T9Qldb"/>
+<div class="absolute bottom-2 left-2 px-2 py-1 rounded bg-inverse-surface/85 text-inverse-on-surface text-[10px] font-code-sm backdrop-blur-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px] text-coral-urgent">edit</span>
+                Nota roja del profesor
+              </div>
+</div>
+<div class="sm:col-span-8 flex flex-col justify-between gap-space-sm h-full">
+<div class="space-y-1">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Texto extraído por OCR</span>
+<p class="font-code-sm text-code-sm text-on-surface bg-surface-container-lowest p-space-sm rounded border-l-2 border-secondary font-mono leading-relaxed">
+                  η = 1 - (T_c / T_h) • W_net = Q_h - Q_c • “Recordar conversión a Kelvin obligatoria”
+                </p>
+</div>
+<!-- Acciones de Estudio con Stylus / Cuaderno LM -->
+<div class="flex items-center gap-space-sm pt-1 flex-wrap">
+<button class="min-h-[44px] px-space-base rounded-lg bg-indigo-ai text-surface-card font-label-md text-label-md flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-sm" type="button">
+<span class="material-symbols-outlined text-[18px]">neurology</span>
+<span>Resolver con Cuaderno LM</span>
+</button>
+<button class="min-h-[44px] px-space-sm rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md flex items-center gap-1.5 hover:bg-surface-container active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[18px] text-secondary">draw</span>
+<span>Abrir Lienzo Stylus</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</article>
+<!-- Lista Táctil de Tareas por Urgencia -->
+<section class="flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">Tareas Pendientes</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-code-sm text-[12px]">3 prioritarias</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Toca para abrir inspector de detalles</span>
+</div>
+<!-- Tarea 1: Historia de España -->
+<div class="bg-surface-container-lowest p-space-base rounded-xl shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-space-base relative overflow-hidden active:bg-surface-container-low cursor-pointer">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-tertiary-fixed-dim"></div>
+<div class="flex items-start gap-space-base pl-2 flex-1 min-w-0">
+<!-- Botón de Checkbox táctil 44px -->
+<button class="min-h-[44px] min-w-[44px] rounded-lg bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-emerald-streak transition-colors shrink-0" onclick="event.stopPropagation(); this.classList.toggle('bg-emerald-streak'); this.classList.toggle('text-surface-card');" type="button">
+<span class="material-symbols-outlined text-[22px]">circle</span>
+</button>
+<div class="flex flex-col gap-1 min-w-0">
+<div class="flex items-center gap-2 flex-wrap">
+<span class="px-2 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">
+                  Historia de España
+                </span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-code-sm text-[11px] flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-coral-urgent">priority_high</span>
+                  Prioridad Alta
+                </span>
+<span class="px-2 py-0.5 rounded bg-indigo-ai/10 text-indigo-ai font-label-sm text-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">gesture</span>
+                  Stylus Canvas Adjunto (3 pág)
+                </span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold truncate">
+                Ensayo: La Restauración Borbónica y el Turno de Partidos de Cánovas
+              </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Entrega en plataforma antes del Viernes 23:59. Incluir mapa conceptual elaborado a mano alzada.
+              </p>
+</div>
+</div>
+<!-- Acciones Táctiles en Columna Tarea -->
+<div class="flex items-center gap-space-sm pl-space-lg md:pl-0 shrink-0 w-full md:w-auto justify-end">
+<span class="font-code-sm text-code-sm text-tertiary-container font-semibold">Viernes, 25 Oct</span>
+<button class="min-h-[44px] min-w-[44px] rounded-lg bg-surface-container-low hover:bg-surface-container flex items-center justify-center text-on-surface-variant transition-colors" title="Anotar con Lápiz" type="button">
+<span class="material-symbols-outlined text-[20px]">brush</span>
+</button>
+</div>
+</div>
+<!-- Tarea 2: Matemáticas II -->
+<div class="bg-surface-container-lowest p-space-base rounded-xl shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-space-base relative overflow-hidden active:bg-surface-container-low cursor-pointer">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-secondary-container"></div>
+<div class="flex items-start gap-space-base pl-2 flex-1 min-w-0">
+<!-- Botón de Checkbox táctil 44px -->
+<button class="min-h-[44px] min-w-[44px] rounded-lg bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-emerald-streak transition-colors shrink-0" onclick="event.stopPropagation(); this.classList.toggle('bg-emerald-streak'); this.classList.toggle('text-surface-card');" type="button">
+<span class="material-symbols-outlined text-[22px]">circle</span>
+</button>
+<div class="flex flex-col gap-1 min-w-0">
+<div class="flex items-center gap-2 flex-wrap">
+<span class="px-2 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-semibold">
+                  Matemáticas II
+                </span>
+<span class="px-2 py-0.5 rounded bg-emerald-streak/10 text-emerald-streak font-code-sm text-[11px] flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">functions</span>
+                  Fórmula OCR Detectada
+                </span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold truncate">
+                Ejercicios de Integrales Definidas por Partes (Pág. 192, ej. 4 al 9)
+              </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Comprobar regla mnemotécnica ALPES en el ejercicio 7 con logaritmos neperianos.
+              </p>
+</div>
+</div>
+<!-- Acciones de Repaso Leitner -->
+<div class="flex items-center gap-space-sm pl-space-lg md:pl-0 shrink-0 w-full md:w-auto justify-end">
+<button class="min-h-[44px] px-space-base rounded-lg bg-surface-container text-on-surface font-label-sm text-label-sm hover:bg-surface-container-high transition-colors flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px] text-secondary">style</span>
+<span>Enviar a Leitner</span>
+</button>
+<span class="font-code-sm text-code-sm text-on-surface-variant">Lunes, 28 Oct</span>
+</div>
+</div>
+<!-- Tarea 3: Inglés C1 -->
+<div class="bg-surface-container-lowest p-space-base rounded-xl shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-space-base relative overflow-hidden active:bg-surface-container-low cursor-pointer">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-emerald-streak"></div>
+<div class="flex items-start gap-space-base pl-2 flex-1 min-w-0">
+<!-- Botón de Checkbox táctil 44px -->
+<button class="min-h-[44px] min-w-[44px] rounded-lg bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-emerald-streak transition-colors shrink-0" onclick="event.stopPropagation(); this.classList.toggle('bg-emerald-streak'); this.classList.toggle('text-surface-card');" type="button">
+<span class="material-symbols-outlined text-[22px]">circle</span>
+</button>
+<div class="flex flex-col gap-1 min-w-0">
+<div class="flex items-center gap-2 flex-wrap">
+<span class="px-2 py-0.5 rounded bg-emerald-streak/15 text-emerald-streak font-label-sm text-label-sm font-semibold">
+                  Inglés C1 • Cambridge
+                </span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-code-sm text-[11px]">
+                  220 - 260 palabras
+                </span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold truncate">
+                Opinion Essay: Social Media Regulations vs. Free Speech
+              </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Usar conectores formales tipo C1 (Furthermore, Inadvertently, It is widely claimed).
+              </p>
+</div>
+</div>
+<div class="flex items-center gap-space-sm pl-space-lg md:pl-0 shrink-0 w-full md:w-auto justify-end">
+<span class="font-code-sm text-code-sm text-on-surface-variant">Martes, 29 Oct</span>
+<button class="min-h-[44px] min-w-[44px] rounded-lg bg-surface-container-low hover:bg-surface-container flex items-center justify-center text-on-surface-variant transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]">smart_toy</span>
+</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Columna Lateral Derecha Contextual (35%) -->
+<aside class="lg:col-span-4 flex flex-col gap-space-lg">
+<!-- Próximos Exámenes & Ponderación Trimestral -->
+<section class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-coral-urgent text-[22px]">event_upcoming</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-bold">Próximos Exámenes</h2>
+</div>
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-code-sm text-[11px]">1er Trimestre</span>
+</div>
+<div class="flex flex-col gap-space-md">
+<!-- Examen 1: Física Cuántica -->
+<div class="p-space-base rounded-lg bg-surface-container-low flex flex-col gap-space-sm">
+<div class="flex items-start justify-between gap-2">
+<div>
+<span class="font-label-sm text-label-sm font-semibold text-secondary">Física y Química</span>
+<h4 class="font-headline-sm text-body-lg font-bold text-on-surface">Campo Eléctrico &amp; Ondas</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Temas 1 al 4 • Aula 2.4</p>
+</div>
+<div class="text-right">
+<span class="px-2 py-1 rounded bg-coral-urgent/10 text-coral-urgent font-code-sm text-[12px] font-bold block">
+                  En 4 días
+                </span>
+<span class="font-code-sm text-[10px] text-on-surface-variant mt-1 block">Lunes 28 Oct</span>
+</div>
+</div>
+<!-- Ponderación y Barra de Preparación -->
+<div class="space-y-1.5 pt-1">
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>Pondera 35% de nota</span>
+<span class="font-bold text-emerald-streak font-code-sm">75% Preparado</span>
+</div>
+<div class="w-full h-2.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-emerald-streak rounded-full transition-all" style="width: 75%;"></div>
+</div>
+</div>
+</div>
+<!-- Examen 2: Matemáticas II -->
+<div class="p-space-base rounded-lg bg-surface-container-low flex flex-col gap-space-sm">
+<div class="flex items-start justify-between gap-2">
+<div>
+<span class="font-label-sm text-label-sm font-semibold text-secondary-container">Matemáticas II</span>
+<h4 class="font-headline-sm text-body-lg font-bold text-on-surface">Análisis &amp; Derivabilidad</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Bloque 2 • Aula Magna</p>
+</div>
+<div class="text-right">
+<span class="px-2 py-1 rounded bg-tertiary-fixed-dim/20 text-tertiary-fixed-variant font-code-sm text-[12px] font-bold block">
+                  En 7 días
+                </span>
+<span class="font-code-sm text-[10px] text-on-surface-variant mt-1 block">Jueves 31 Oct</span>
+</div>
+</div>
+<div class="space-y-1.5 pt-1">
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>Pondera 30% de nota</span>
+<span class="font-bold text-secondary font-code-sm">45% Preparado</span>
+</div>
+<div class="w-full h-2.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full transition-all" style="width: 45%;"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Asistente IA de Planificación & Carga Diaria -->
+<section class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-indigo-ai/15 flex items-center justify-center text-indigo-ai">
+<span class="material-symbols-outlined text-[20px]">smart_toy</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Copiloto de Estudio</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Optimización de carga para hoy</p>
+</div>
+</div>
+<div class="p-space-base rounded-lg bg-indigo-ai/5 flex flex-col gap-space-sm">
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-indigo-ai text-[18px] shrink-0 mt-0.5">tips_and_updates</span>
+<p class="font-body-sm text-body-sm text-on-surface leading-snug">
+              “Dedica hoy <strong class="text-on-surface font-semibold">45 minutos</strong> a repasar Termodinámica antes de la medianoche para llegar con holgura al examen del lunes.”
+            </p>
+</div>
+<button class="min-h-[44px] w-full rounded-lg bg-indigo-ai text-surface-card font-label-md text-label-md flex items-center justify-center gap-2 hover:opacity-90 active:scale-98 transition-all" type="button">
+<span class="material-symbols-outlined text-[18px]">play_circle</span>
+<span>Iniciar Sesión Pomodoro (45 min)</span>
+</button>
+</div>
+</section>
+<!-- Captura Rápida OCR Multimodal (Tablet Drag & Drop / Lápiz Óptico) -->
+<section class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Captura OCR de Pizarra</h3>
+<span class="material-symbols-outlined text-[20px] text-secondary">document_scanner</span>
+</div>
+<!-- Zona de toque amplio para arrastrar o tomar foto -->
+<div class="min-h-[160px] p-space-base rounded-xl bg-surface-container-low flex flex-col items-center justify-center text-center gap-space-xs cursor-pointer hover:bg-surface-container transition-all active:scale-98" id="drop-zone">
+<div class="w-12 h-12 rounded-full bg-surface-container-lowest flex items-center justify-center text-secondary shadow-sm">
+<span class="material-symbols-outlined text-[26px]">add_a_photo</span>
+</div>
+<span class="font-headline-sm text-body-md font-bold text-on-surface">Toca para fotografiar la pizarra</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant max-w-[220px]">
+            o arrastra una captura de pantalla con el lápiz óptico
+          </span>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm px-1">
+<span class="inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-emerald-streak">check</span>
+            Fórmulas LaTeX
+          </span>
+<span class="inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-emerald-streak">check</span>
+            Detección de Fechas
+          </span>
+</div>
+</section>
+</aside>
+</div>
+</div>
+<script>
+  // Micro-interacción: feedback háptico simulado y botón de cámara para Tablet
+  const cameraBtn = document.getElementById('btn-camera-ocr');
+  if (cameraBtn) {
+    cameraBtn.addEventListener('click', () => {
+      const toast = document.createElement('div');
+      toast.className = 'fixed bottom-6 right-6 z-50 px-4 py-3 bg-primary text-surface-card font-label-md rounded-xl shadow-xl flex items-center gap-2 transform transition-all duration-300';
+      toast.innerHTML = '<span class="material-symbols-outlined text-emerald-streak">photo_camera</span> Escaneando con cámara trasera HD... Enfoca la pizarra.';
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+      }, 2500);
+    });
+  }
 
-    <!-- Tarea 2 -->
-    <div class="p-5 bg-white border border-slate-200 rounded-3xl shadow-sm space-y-3">
-      <div class="flex justify-between items-center text-xs">
-        <span class="font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-lg border border-blue-200">INGLÉS C1</span>
-        <span class="font-mono text-[11px] font-bold text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-md">Jueves 14:00h</span>
-      </div>
-      <h3 class="font-black text-base text-slate-900">Essay: The Impact of AI in Modern Education</h3>
-      <p class="text-xs text-slate-600 leading-relaxed">Redacción formal de opinión con introducción, 2 argumentos a favor, contraargumento y conclusión.</p>
-      <div class="flex items-center justify-between pt-3 border-t border-slate-100 text-xs">
-        <span class="text-slate-400">Mínimo 250 palabras</span>
-        <a href="english-coach.html" class="text-blue-600 font-bold hover:underline">Revisar con English Coach ›</a>
-      </div>
-    </div>
-  </main>
-
-  <!-- Barra Navegación Isla Tablet -->
-  <nav class="fixed bottom-4 inset-x-0 mx-auto max-w-2xl bg-white/95 backdrop-blur border border-slate-200 z-30 px-6 py-2.5 rounded-full shadow-xl flex justify-around items-center text-xs font-bold text-slate-500">
-    <a href="index.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>🏠</span><span>Mi Día</span></a>
-    <a href="deberes-examenes.html" class="flex items-center gap-2 text-blue-600 px-3 py-1.5 rounded-full bg-blue-50"><span>📅</span><span>Agenda</span></a>
-    <a href="cuaderno-lm.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>📚</span><span>Cuaderno LM</span></a>
-    <a href="pomodoro-flashcards.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>🧠</span><span>Estudio</span></a>
-    <a href="progreso-ebau.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>📊</span><span>Progreso</span></a>
-  </nav>
-</body>
-</html>
+  const dropZone = document.getElementById('drop-zone');
+  if (dropZone) {
+    dropZone.addEventListener('click', () => {
+      cameraBtn?.click();
+    });
+  }
+</script></div></main></div></body></html>

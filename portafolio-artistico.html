@@ -1,21 +1,470 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agenda Escolar - Portafolio & Taller</title>
-  <meta http-equiv="refresh" content="0; url=./index.html?tab=tab-projects" />
-  <script>window.location.replace("./index.html?tab=tab-projects");</script>
-  <style>
-    body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; text-align: center; }
-    .spinner { width: 40px; height: 40px; border: 3px solid rgba(59, 130, 246, 0.2); border-top-color: #3b82f6; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 16px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    a { color: #60a5fa; text-decoration: none; font-weight: 500; }
-  </style>
-</head>
-<body>
-  <div class="spinner"></div>
-  <h2>Cargando Portafolio & Taller...</h2>
-  <p><a href="./index.html?tab=tab-projects">Haz clic aquí si no redirige automáticamente</a></p>
-</body>
-</html>
+
+<html lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><title>Agenda Escolar PWA</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "border-subtle": "#E2E8F0", "surface-container-high": "#dce9ff", "secondary": "#4648d4", "error": "#ba1a1a", "on-surface": "#0b1c30", "primary-fixed-dim": "#bcc7de", "on-background": "#0b1c30", "surface-dim": "#cbdbf5", "on-error": "#ffffff", "surface-container-lowest": "#ffffff", "tertiary": "#201100", "on-primary": "#ffffff", "surface-sidebar": "#0F172A", "outline-variant": "#c5c6cd", "indigo-ai": "#8B5CF6", "on-primary-container": "#8590a6", "surface-bright": "#f8f9ff", "on-primary-fixed-variant": "#3c475a", "outline": "#75777d", "primary-fixed": "#d8e3fb", "on-primary-fixed": "#111c2d", "on-secondary-fixed": "#07006c", "primary-container": "#1e293b", "on-tertiary-fixed": "#2a1700", "surface-card": "#FFFFFF", "error-container": "#ffdad6", "tertiary-container": "#3c2300", "inverse-surface": "#213145", "surface-container-low": "#eff4ff", "on-tertiary-container": "#c88000", "coral-urgent": "#F43F5E", "on-tertiary-fixed-variant": "#653e00", "secondary-fixed-dim": "#c0c1ff", "inverse-on-surface": "#eaf1ff", "emerald-streak": "#10B981", "on-surface-variant": "#45474c", "surface-container": "#e5eeff", "background": "#f8f9ff", "inverse-primary": "#bcc7de", "surface-container-highest": "#d3e4fe", "primary": "#091426", "border-dark": "#1E293B", "surface-tint": "#545f73", "on-error-container": "#93000a", "tertiary-fixed-dim": "#ffb95f", "on-secondary-container": "#fffbff", "surface-variant": "#d3e4fe", "surface": "#f8f9ff", "tertiary-fixed": "#ffddb8", "secondary-fixed": "#e1e0ff", "on-tertiary": "#ffffff", "on-secondary-fixed-variant": "#2f2ebe", "canvas-bg": "#F8FAFC", "on-secondary": "#ffffff", "secondary-container": "#6063ee" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-2xs": "0.125rem", "sidebar-collapsed": "68px", "space-xl": "2rem", "space-xs": "0.25rem", "max-content-width": "1440px", "space-base": "1rem", "space-2xl": "3rem", "space-lg": "1.5rem", "space-sm": "0.5rem", "space-md": "0.75rem", "sidebar-width": "240px" }, "fontFamily": { "headline-lg": ["Plus Jakarta Sans"], "code-sm": ["JetBrains Mono"], "label-md": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "display": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"] }, "fontSize": { "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "700" }], "code-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" }], "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "display": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-md": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased selection:bg-secondary-fixed selection:text-on-secondary-fixed"><aside class="fixed left-0 top-0 h-screen w-sidebar-width bg-surface-sidebar z-50 flex flex-col justify-between select-none shadow-[0_1px_8px_rgba(0,0,0,0.08)]"><div class="flex flex-col flex-1 overflow-y-auto"><div class="h-16 px-space-base flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="Agenda Escolar Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1W7YUEss6DP9Xx1z841d_qHcSCOIN-l-FhxrtKUiT5-W3ctujb3E695E4JvcFlKOwJoERFlgw34EvmYFS36M3HrArIc3x400fLH1AoZYEucmEe1aIVkLAPCvwhq3kxd6fab9Elr7U6Vimt0zw1SCEgHXBCvXV-69uslhDkvNzZHvwJb9BJ1ZyZmF7mq6CqnuAvZ-6FjV6pKE_YyNJsRUW5hB1n4jcwnfaEzeGa5lhXOLCkde7_yj2x0cFE"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-surface-card leading-none tracking-tight">Agenda Escolar</span><span class="mt-space-2xs inline-flex items-center self-start px-space-xs py-0.5 rounded bg-primary-container text-primary-fixed text-[10px] font-code-sm font-semibold uppercase tracking-wider">v3.5 PWA</span></div></div><button aria-label="Colapsar menú lateral" class="text-outline-variant hover:text-surface-card p-1 rounded transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">keyboard_double_arrow_left</span></button></div><div class="px-space-base py-space-xs"><div class="flex items-center justify-between px-space-sm py-space-xs rounded bg-border-dark/60 text-emerald-streak"><div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-streak animate-pulse"></span><span class="font-label-sm text-label-sm">100% Offline Listo</span></div><span class="font-code-sm text-code-sm text-surface-variant/80 text-[10px]">PWA ACTIVE</span></div></div><nav class="flex-1 px-space-sm py-space-xs space-y-space-2xs" data-active-classes="bg-primary-container text-surface-card font-semibold shadow-inner"><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="mi-dia" href="index.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-tertiary-fixed-dim">light_mode</span><span class="font-body-md text-body-md">Mi Día</span></div><span class="px-1.5 py-0.5 rounded-full bg-border-dark text-surface-card font-code-sm text-[11px]">8</span></a><div class="space-y-0.5"><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="agenda" href="deberes-examenes.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">calendar_month</span><span class="font-body-md text-body-md">Agenda</span></div><span class="material-symbols-outlined text-[16px] text-outline-variant group-hover:text-surface-card">expand_more</span></a><div class="pl-8 pr-space-xs space-y-0.5"><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="deberes" href="deberes-examenes.html"><span>Deberes</span><span class="w-1.5 h-1.5 rounded-full bg-coral-urgent"></span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="examenes" href="deberes-examenes.html"><span>Exámenes</span><span class="font-code-sm text-[10px] text-tertiary-fixed-dim font-bold">PROX</span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="horario" href="horario-mochila.html"><span>Horario</span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="mochila" href="horario-mochila.html"><span>Mochila</span><span class="material-symbols-outlined text-[13px] text-outline-variant">backpack</span></a></div></div><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="cuaderno-lm" href="notebook.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-indigo-ai">neurology</span><span class="font-body-md text-body-md">Cuaderno LM</span></div><span class="px-1.5 py-0.2 rounded bg-indigo-ai/20 text-indigo-ai font-label-sm text-[10px]">Studio</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="pomodoro-concentracion" href="pomodoro-flashcards.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">timer</span><span class="font-body-md text-body-md">Pomodoro</span></div><span class="font-code-sm text-code-sm text-tertiary-fixed-dim">25:00</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="progreso-notas" href="progreso-ebau.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">insights</span><span class="font-body-md text-body-md">Progreso &amp; Notas</span></div><span class="font-code-sm text-code-sm text-emerald-streak">9.4</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="copiloto-ia" href="english-coach.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-secondary-fixed-dim">smart_toy</span><span class="font-body-md text-body-md">Copiloto IA</span></div><span class="flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-streak opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-streak"></span></span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="ajustes-drive-sync" href="ajustes-nube.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">sync_saved_locally</span><span class="font-body-md text-body-md">Ajustes &amp; Drive</span></div><span class="material-symbols-outlined text-[16px] text-emerald-streak">cloud_done</span></a></nav></div><div class="p-space-sm bg-border-dark/40 m-space-sm rounded-xl"><div class="flex items-center gap-space-sm"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfmw-gtx0XEK7h8QkzkqF3FppIOTbex1jLhq0ocROUjmLodXPHUohFwpnJvNVkN0ISjq214XEmWTpaUMw3YSio12W-RjtGFeU0sE1SjasnJqTB-yV8QlgvtQlUWVMlziMiyc-kapJhBGjqEArrPwnzz5DrLEfaywd6KV0lCZ0M5ZzcT3XTNGdqZUTS-wEp6J9RCq0b-FMAAjueo_cX1syzKCEK_bQTcBHe-z8fv9oRHSz-6bu4IvxX"/><div class="flex-1 min-w-0"><div class="flex items-center justify-between gap-1"><p class="font-headline-sm text-body-md font-semibold text-surface-card truncate leading-snug">Lucía Fernández</p><span class="inline-flex items-center px-1.5 py-0.5 rounded bg-tertiary-container text-tertiary-fixed font-code-sm text-[10px] font-bold shrink-0">🔥 14</span></div><p class="font-label-sm text-label-sm text-outline-variant truncate">2º Bachillerato • Ciencias</p></div></div></div></aside><div class="pl-sidebar-width"><header class="fixed top-0 left-sidebar-width right-0 h-16 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg"><div class="flex-1 max-w-xl pr-space-base"><div class="relative flex items-center w-full"><span class="material-symbols-outlined absolute left-3 text-[18px] text-on-surface-variant pointer-events-none">search</span><input class="w-full h-10 pl-9 pr-20 bg-surface-container-lowest rounded-lg font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none focus:bg-surface-container-lowest transition-all shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" placeholder="Buscar asignaturas, tareas, notas o fechas..." type="text"/><div class="absolute right-2 flex items-center gap-1"><kbd class="px-1.5 py-0.5 text-[11px] font-code-sm text-on-surface-variant bg-surface-container-high rounded">⌘K</kbd></div></div></div><div class="flex items-center gap-space-sm"><div class="flex items-center gap-1 bg-surface-container-lowest px-space-sm py-1.5 rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]"><span class="material-symbols-outlined text-[17px] text-tertiary-container">hourglass_top</span><span class="font-code-sm text-code-sm font-semibold text-on-surface">25:00</span><button class="text-on-surface-variant hover:text-on-surface ml-1" title="Iniciar Pomodoro" type="button"><span class="material-symbols-outlined text-[17px]">play_arrow</span></button></div><button class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[17px] text-secondary">document_scanner</span><span>OCR</span></button><button class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[17px] text-coral-urgent">mic</span><span>Dictar</span></button><button class="inline-flex items-center gap-1.5 px-space-md py-1.5 rounded-lg bg-primary-container text-surface-card font-label-md text-label-md hover:bg-primary hover:text-surface-card transition-colors shadow-sm" type="button"><span class="material-symbols-outlined text-[18px]">add</span><span>Nueva Tarea</span></button><div class="h-6 w-px bg-border-subtle mx-space-2xs"></div><button aria-label="Notificaciones" class="relative p-2 rounded-lg bg-surface-container-lowest text-on-surface-variant hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-coral-urgent ring-2 ring-surface-card"></span></button></div></header><main class="w-full pt-16 bg-surface min-h-screen"><div class="max-w-max-content-width mx-auto p-space-lg"><div class="flex flex-col w-full space-y-space-lg">
+<!-- Cabecera de Página & Acciones Clave -->
+<header class="flex flex-col gap-space-md">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div>
+<div class="flex items-center gap-space-xs text-secondary font-label-sm text-label-sm uppercase tracking-wider mb-1">
+<span class="material-symbols-outlined text-[16px]">palette</span>
+<span>Taller Creativo &amp; Proyectos Técnicos</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">
+          Portafolio de Proyectos &amp; Taller Artístico
+        </h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">
+          Seguimiento técnico, fases de elaboración y registro visual paso a paso • Curso 2024/2025
+        </p>
+</div>
+<!-- Barra de Acciones Globales -->
+<div class="flex items-center gap-space-sm self-start lg:self-center shrink-0">
+<button class="inline-flex items-center gap-2 px-space-md py-2 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md shadow-sm hover:bg-surface-container-high transition-colors" type="button">
+<span class="material-symbols-outlined text-[19px] text-secondary">picture_as_pdf</span>
+<span>Exportar Dossier PDF Completo</span>
+</button>
+<button class="inline-flex items-center gap-1.5 px-space-md py-2 rounded-lg bg-primary-container text-on-primary font-label-md text-label-md shadow-sm hover:bg-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-[19px]">add</span>
+<span>Nuevo Proyecto</span>
+</button>
+</div>
+</div>
+<!-- Controles de Navegación, Filtros y Búsqueda -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-sm pt-space-xs">
+<!-- Filtro de Estados / Fases (Pills) -->
+<nav aria-label="Filtro por estado de proyecto" class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
+<button class="px-space-md py-1.5 rounded-full bg-primary-container text-on-primary font-label-sm text-label-sm shadow-sm whitespace-nowrap" type="button">
+          Todos (6)
+        </button>
+<button class="px-space-md py-1.5 rounded-full bg-surface-container-lowest text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors font-label-sm text-label-sm shadow-sm whitespace-nowrap" type="button">
+          Boceto / Idea (1)
+        </button>
+<button class="inline-flex items-center gap-1.5 px-space-md py-1.5 rounded-full bg-surface-container-lowest text-on-surface hover:bg-surface-container-high transition-colors font-label-sm text-label-sm shadow-sm whitespace-nowrap" type="button">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>En Proceso / Taller (2)</span>
+</button>
+<button class="inline-flex items-center gap-1.5 px-space-md py-1.5 rounded-full bg-surface-container-lowest text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors font-label-sm text-label-sm shadow-sm whitespace-nowrap" type="button">
+<span class="w-2 h-2 rounded-full bg-emerald-streak"></span>
+<span>Terminado (2)</span>
+</button>
+<button class="px-space-md py-1.5 rounded-full bg-surface-container-lowest text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors font-label-sm text-label-sm shadow-sm whitespace-nowrap" type="button">
+          Entregado / Evaluado (1)
+        </button>
+</nav>
+<!-- Búsqueda & Selector de Materia -->
+<div class="flex items-center gap-space-sm">
+<div class="relative flex items-center min-w-[220px]">
+<span class="material-symbols-outlined absolute left-3 text-[17px] text-on-surface-variant pointer-events-none">filter_list</span>
+<input class="w-full h-9 pl-9 pr-3 rounded-lg bg-surface-container-lowest text-on-surface font-body-sm text-body-sm shadow-sm focus:outline-none placeholder:text-on-surface-variant/60" placeholder="Filtrar por técnica o título..." type="text"/>
+</div>
+<div class="relative">
+<select aria-label="Materia académica" class="h-9 pl-3 pr-8 rounded-lg bg-surface-container-lowest text-on-surface font-label-sm text-label-sm shadow-sm appearance-none focus:outline-none cursor-pointer">
+<option value="todas">Todas las materias</option>
+<option selected="" value="dibujo-tecnico">Dibujo Técnico II</option>
+<option value="plastica">Educación Plástica y Visual</option>
+<option value="tecnologia">Tecnología e Ingeniería</option>
+<option value="interdisciplinar">Proyectos Interdisciplinares</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-2 text-[18px] text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Layout Principal Split 60% / 40% -->
+<main class="grid grid-cols-1 xl:grid-cols-12 gap-space-lg items-start">
+<!-- COLUMNA IZQUIERDA (60% ~ 7 Cols): Lista Enriquecida de Proyectos -->
+<section class="xl:col-span-7 flex flex-col space-y-space-md">
+<!-- Banner Estadístico Resumido -->
+<div class="grid grid-cols-3 gap-space-sm p-space-sm rounded-xl bg-surface-container-lowest shadow-sm">
+<div class="flex items-center gap-space-sm px-space-sm py-1.5 rounded-lg bg-surface-container-low">
+<span class="material-symbols-outlined text-[24px] text-secondary">architecture</span>
+<div>
+<p class="font-code-sm text-[11px] text-on-surface-variant">TALLER ACTIVO</p>
+<p class="font-headline-sm text-headline-sm text-on-surface leading-tight font-bold">2 Obras</p>
+</div>
+</div>
+<div class="flex items-center gap-space-sm px-space-sm py-1.5 rounded-lg bg-surface-container-low">
+<span class="material-symbols-outlined text-[24px] text-emerald-streak">verified</span>
+<div>
+<p class="font-code-sm text-[11px] text-on-surface-variant">CALIFICACIÓN MEDIA</p>
+<p class="font-headline-sm text-headline-sm text-emerald-streak leading-tight font-bold">9.5 / 10</p>
+</div>
+</div>
+<div class="flex items-center gap-space-sm px-space-sm py-1.5 rounded-lg bg-surface-container-low">
+<span class="material-symbols-outlined text-[24px] text-tertiary-container">event_upcoming</span>
+<div>
+<p class="font-code-sm text-[11px] text-on-surface-variant">PRÓXIMA ENTREGA</p>
+<p class="font-headline-sm text-headline-sm text-tertiary-container leading-tight font-bold">14 Nov</p>
+</div>
+</div>
+</div>
+<!-- Tarjeta 1: Proyecto Seleccionado / Activo -->
+<article class="p-space-base rounded-xl bg-surface-container-lowest shadow-md transition-all cursor-pointer relative overflow-hidden group">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-secondary"></div>
+<div class="flex flex-col sm:flex-row gap-space-base">
+<div class="w-full sm:w-44 h-36 rounded-lg overflow-hidden shrink-0 bg-surface-container relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Architectural scaled model isometric axonometric technical drawing with sun path calculations, drafting tools, wood balsa framework and blueprint paper rendered in precision light workspace aesthetic with indigo accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABFTsxocYQXunUStxs61J52jUWy-6JMBCOtOZfLIopOY6iheqpI1xxTwLyYCvcUh_Cotc-egMm4K8fQY7-gNWA-b3HyWKAhnrvPNj4TU8WvCqgjewSqQQY5D-EsBom2f89clljeeLnDGQ4VHbLHLB1VMFAkH4ftoCuPzCNX5Iea4xNWpNgGQ5LgxZbLZLhdrKwoYCBbrea2gMHKGmlLcc28bAXmoGyfFW6xvGLcJPd-xMO-m-2y0Rq"/>
+<span class="absolute top-2 left-2 px-2 py-0.5 rounded bg-primary-container text-on-primary font-code-sm text-[10px] font-semibold">
+              SELECCIONADO
+            </span>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between gap-2 mb-1">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-full bg-secondary/10 text-secondary font-label-sm text-label-sm">
+                    Dibujo Técnico II &amp; Tecnología
+                  </span>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-tertiary-container font-label-sm text-label-sm font-semibold">
+                    Fase 3/4
+                  </span>
+</div>
+<span class="font-code-sm text-[11px] text-on-surface-variant">Entrega: 14 Nov</span>
+</div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface leading-snug group-hover:text-secondary transition-colors">
+                Maqueta Arquitectónica Bioclimática &amp; Geometría Descriptiva
+              </h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 mt-1">
+                Construcción a escala 1:50 con orientación solar pasiva, cubiertas ajardinadas desmontables y cálculo de asoleamiento mediante sombras cónicas.
+              </p>
+</div>
+<!-- Progreso y Metadatos -->
+<div class="mt-space-sm pt-space-xs">
+<div class="flex items-center justify-between text-label-sm font-label-sm mb-1.5">
+<span class="text-on-surface font-semibold">Progreso global del proyecto</span>
+<span class="font-code-sm text-secondary font-bold">75% Completado</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-secondary rounded-full transition-all duration-500" style="width: 75%"></div>
+</div>
+<div class="flex items-center justify-between mt-space-sm text-label-sm font-label-sm text-on-surface-variant">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px] text-tertiary-container">grade</span>
+<span>Ponderación: <strong class="text-on-surface font-semibold">35% trimestre</strong></span>
+</span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px]">photo_library</span>
+<span>4 fotos de bitácora</span>
+</span>
+</div>
+</div>
+</div>
+</div>
+</article>
+<!-- Tarjeta 2: Proyecto Terminado -->
+<article class="p-space-base rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-all cursor-pointer group">
+<div class="flex flex-col sm:flex-row gap-space-base">
+<div class="w-full sm:w-40 h-32 rounded-lg overflow-hidden shrink-0 bg-surface-container relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Still life charcoal drawing on Ingres textured heavy paper showing dramatic chiaroscuro lighting, polished spheres, glass cylinders, drapery and fine shading technique with artistic high school atelier background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCju-AdwkqaIaOLIi1b75067AzOLRQTRmQ0CCXd6L5eiaPi8EASaDJFxKF3WC6Gzc3zbf1tc_PAFI5_MUm7WuJzeRuYHLffoc-euvVqtRcTEtiEEkrY_leYZABHQ0lNQcTBjgv-SEcRQZCoUIB2lsX7oxt4zlBtIULCOX0OyByZESKW3n72wgc7OeHF4pKmC2-UcVU_6i21FeE8Vh1GpslivQ4uqTzsmhL6kyosdZDgvBJcmBZkoXm0"/>
+<span class="absolute top-2 left-2 px-2 py-0.5 rounded bg-emerald-streak text-on-primary font-code-sm text-[10px] font-semibold">
+              9.5 EVALUADO
+            </span>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between gap-2 mb-1">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm">
+                  Educación Artística
+                </span>
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-emerald-streak font-semibold">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+<span>Terminado</span>
+</span>
+</div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-secondary transition-colors">
+                Estudio de Claroscuro &amp; Perspectiva Cónica - Bodegón Contemporáneo
+              </h2>
+<div class="flex items-center gap-2 mt-2">
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-code-sm text-[11px]">Carboncillo</span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-code-sm text-[11px]">Papel Ingres 160g</span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-code-sm text-[11px]">50x70 cm</span>
+</div>
+</div>
+<div class="flex items-center justify-between mt-space-sm pt-2 text-label-sm font-label-sm text-on-surface-variant">
+<span>Evaluado por Dña. Carmen Villalba</span>
+<span class="text-emerald-streak font-semibold">Sobresaliente (Dossier archivado)</span>
+</div>
+</div>
+</div>
+</article>
+<!-- Tarjeta 3: Brazo Robótico (Tecnología e Ingeniería) -->
+<article class="p-space-base rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-all cursor-pointer group">
+<div class="flex flex-col sm:flex-row gap-space-base">
+<div class="w-full sm:w-40 h-32 rounded-lg overflow-hidden shrink-0 bg-surface-container relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Mechanical robotic arm prototype with 3D printed PLA blue and grey joints, servo motors, Arduino microcontroller wiring in a clean high-tech classroom lab setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWgxTWpQ9AQJvoTDPE5kDSDx68bbzPcYW0aNx7G4gWAMvG4KOPeTtbKQx7thbjGnzPrx-pGok-ieGPnjZDkLV8jPf4WpEhfcqByA_pNpZTHUGKD3a3sxoAKLTmTfNlC5SVsyd6sxMy1I7VOVgsNmnFu0cS1UzE31cLmMja-aB0wsMDP09TXDpDZr-RXpg2pXRlcQxUTmsBzhbhkl9Da7wteILpqXG7uXL7SHy2lZbKEKhr6hoMWEDP"/>
+<span class="absolute top-2 left-2 px-2 py-0.5 rounded bg-surface-sidebar text-on-primary font-code-sm text-[10px] font-semibold">
+              EN TALLER
+            </span>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between gap-2 mb-1">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm">
+                  Tecnología e Ingeniería
+                </span>
+<span class="font-code-sm text-[11px] text-tertiary-container font-semibold">Entrega en 18 días</span>
+</div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-secondary transition-colors">
+                Brazo Robótico Articulado mediante Servomotores e Impresión 3D
+              </h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1 mt-1">
+                Diseño paramétrico en Fusion 360, cinemática directa y control con Arduino IDE.
+              </p>
+</div>
+<div class="mt-space-sm">
+<div class="flex items-center justify-between text-label-sm font-label-sm mb-1">
+<span class="text-on-surface-variant">Impresión de eslabones y calibrado</span>
+<span class="font-code-sm text-secondary font-bold">40%</span>
+</div>
+<div class="w-full h-1.5 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 40%"></div>
+</div>
+</div>
+</div>
+</div>
+</article>
+<!-- Tarjeta 4: Mural Colectivo (Boceto / Idea) -->
+<article class="p-space-base rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-all cursor-pointer group">
+<div class="flex flex-col sm:flex-row gap-space-base">
+<div class="w-full sm:w-40 h-28 rounded-lg overflow-hidden shrink-0 bg-surface-container flex items-center justify-center text-on-surface-variant">
+<div class="flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-[32px] text-secondary">brush</span>
+<span class="font-code-sm text-[10px]">Fase Previa</span>
+</div>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between gap-2 mb-1">
+<span class="px-2 py-0.5 rounded-full bg-indigo-ai/10 text-indigo-ai font-label-sm text-label-sm">
+                  Lengua &amp; Artes Interdisciplinares
+                </span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">
+                  Boceto / Idea
+                </span>
+</div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-secondary transition-colors">
+                Mural Colectivo: Cronología Visual de la Generación del 27
+              </h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1 mt-1">
+                Composición alegórica para el vestíbulo principal. Moodboard preliminar y paleta cromática en revisión.
+              </p>
+</div>
+<div class="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
+<span>Equipo: 4 alumnos</span>
+<span class="font-code-sm text-[11px]">Reunión de taller: Jueves 12:30</span>
+</div>
+</div>
+</div>
+</article>
+</section>
+<!-- COLUMNA DERECHA (40% ~ 5 Cols): Inspector Detallado de Proyecto -->
+<aside class="xl:col-span-5 flex flex-col space-y-space-md">
+<!-- Ficha Técnica Oficial -->
+<div class="p-space-base rounded-xl bg-surface-container-lowest shadow-sm">
+<div class="flex items-center justify-between pb-space-sm mb-space-sm border-b-0">
+<div class="flex items-center gap-2">
+<div class="w-2.5 h-2.5 rounded-full bg-secondary"></div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">
+              Ficha Técnica Oficial
+            </h3>
+</div>
+<span class="px-2 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed font-code-sm text-[11px] font-semibold">
+            ESCALA 1:50
+          </span>
+</div>
+<div class="space-y-space-xs text-body-sm font-body-sm">
+<div class="flex items-start justify-between py-1 px-space-xs rounded hover:bg-surface-container-low transition-colors">
+<span class="text-on-surface-variant">Dimensiones:</span>
+<span class="font-code-sm text-code-sm font-semibold text-on-surface text-right">60 x 40 x 35 cm</span>
+</div>
+<div class="flex items-start justify-between py-1 px-space-xs rounded hover:bg-surface-container-low transition-colors">
+<span class="text-on-surface-variant shrink-0">Materiales &amp; Soporte:</span>
+<span class="text-on-surface font-medium text-right max-w-[240px]">Madera de balsa, cartón pluma, metacrilato reciclado y cianocrilato</span>
+</div>
+<div class="flex items-start justify-between py-1 px-space-xs rounded hover:bg-surface-container-low transition-colors">
+<span class="text-on-surface-variant shrink-0">Técnica constructiva:</span>
+<span class="text-on-surface font-medium text-right">Corte láser &amp; modelado CAD</span>
+</div>
+<div class="flex items-start justify-between py-1 px-space-xs rounded hover:bg-surface-container-low transition-colors">
+<span class="text-on-surface-variant">Docente evaluador:</span>
+<span class="text-on-surface font-semibold text-right">Dña. Carmen Villalba</span>
+</div>
+</div>
+<!-- Criterios de Rúbrica -->
+<div class="mt-space-md pt-space-sm rounded-lg bg-surface-container-low p-space-sm">
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2 font-semibold">
+            Criterios de Evaluación &amp; Rúbrica
+          </p>
+<div class="grid grid-cols-2 gap-2">
+<div class="bg-surface-container-lowest p-2 rounded">
+<div class="flex justify-between items-center text-[11px] font-label-sm">
+<span class="text-on-surface">Precisión geométrica</span>
+<span class="font-code-sm text-secondary font-bold">30%</span>
+</div>
+<div class="w-full h-1 bg-surface-container rounded-full mt-1.5 overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 100%"></div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-2 rounded">
+<div class="flex justify-between items-center text-[11px] font-label-sm">
+<span class="text-on-surface">Sostenibilidad pasiva</span>
+<span class="font-code-sm text-secondary font-bold">30%</span>
+</div>
+<div class="w-full h-1 bg-surface-container rounded-full mt-1.5 overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 85%"></div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-2 rounded">
+<div class="flex justify-between items-center text-[11px] font-label-sm">
+<span class="text-on-surface">Memoria descriptiva</span>
+<span class="font-code-sm text-on-surface-variant font-bold">20%</span>
+</div>
+<div class="w-full h-1 bg-surface-container rounded-full mt-1.5 overflow-hidden">
+<div class="h-full bg-surface-tint rounded-full" style="width: 40%"></div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-2 rounded">
+<div class="flex justify-between items-center text-[11px] font-label-sm">
+<span class="text-on-surface">Acabado y limpieza</span>
+<span class="font-code-sm text-on-surface-variant font-bold">20%</span>
+</div>
+<div class="w-full h-1 bg-surface-container rounded-full mt-1.5 overflow-hidden">
+<div class="h-full bg-surface-tint rounded-full" style="width: 70%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Línea Temporal de Fases con Checklists -->
+<div class="p-space-base rounded-xl bg-surface-container-lowest shadow-sm">
+<div class="flex items-center justify-between mb-space-sm">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">
+            Fases de Elaboración
+          </h3>
+<span class="font-code-sm text-code-sm text-secondary font-bold">Fase 3 de 4</span>
+</div>
+<div class="space-y-space-sm relative">
+<!-- Item 1: Completado -->
+<div class="flex items-start gap-space-sm">
+<div class="w-6 h-6 rounded-full bg-emerald-streak text-on-primary flex items-center justify-center shrink-0 shadow-sm mt-0.5">
+<span class="material-symbols-outlined text-[16px]">check</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<p class="font-label-md text-label-md text-on-surface line-through decoration-on-surface-variant/50">
+                  1. Bocetos conceptuales &amp; Axonometría
+                </p>
+<span class="font-code-sm text-[11px] text-emerald-streak font-semibold">Completado</span>
+</div>
+<p class="font-body-sm text-[12px] text-on-surface-variant">Croquis acotados validados por profesora el 18 Oct.</p>
+</div>
+</div>
+<!-- Item 2: Completado -->
+<div class="flex items-start gap-space-sm">
+<div class="w-6 h-6 rounded-full bg-emerald-streak text-on-primary flex items-center justify-center shrink-0 shadow-sm mt-0.5">
+<span class="material-symbols-outlined text-[16px]">check</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<p class="font-label-md text-label-md text-on-surface line-through decoration-on-surface-variant/50">
+                  2. Despiece y acopio de materiales
+                </p>
+<span class="font-code-sm text-[11px] text-emerald-streak font-semibold">Completado</span>
+</div>
+<p class="font-body-sm text-[12px] text-on-surface-variant">Plantillas pasadas a láser en laboratorio Maker.</p>
+</div>
+</div>
+<!-- Item 3: En Curso (Hoy) -->
+<div class="flex items-start gap-space-sm p-2 rounded-lg bg-surface-container-high/60">
+<div class="w-6 h-6 rounded-full bg-secondary text-on-primary flex items-center justify-center shrink-0 shadow-sm mt-0.5">
+<span class="material-symbols-outlined text-[15px] animate-spin">sync</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<p class="font-label-md text-label-md text-on-surface font-bold">
+                  3. Montaje estructural &amp; Cubierta bioclimática
+                </p>
+<span class="px-1.5 py-0.5 rounded bg-secondary text-on-primary font-code-sm text-[10px] font-bold">HOY</span>
+</div>
+<p class="font-body-sm text-[12px] text-on-surface-variant mt-0.5">Ajuste de celosías pasivas de madera y encolado perimetral.</p>
+</div>
+</div>
+<!-- Item 4: Pendiente -->
+<div class="flex items-start gap-space-sm opacity-60">
+<div class="w-6 h-6 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[16px]">radio_button_unchecked</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<p class="font-label-md text-label-md text-on-surface">
+                  4. Dossier técnico &amp; Presentación oral
+                </p>
+<span class="font-code-sm text-[11px] text-on-surface-variant">Pendiente</span>
+</div>
+<p class="font-body-sm text-[12px] text-on-surface-variant">Memoria escrita de 8 páginas y diapositivas finales.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Galería Fotográfica "Paso a Paso" (Registro Visual Bitácora) -->
+<div class="p-space-base rounded-xl bg-surface-container-lowest shadow-sm">
+<div class="flex items-center justify-between mb-space-sm">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">
+              Bitácora Fotográfica
+            </h3>
+<p class="font-body-sm text-[12px] text-on-surface-variant">Registro secuencial con cámara del taller</p>
+</div>
+<button class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-secondary/10 text-secondary hover:bg-secondary/20 transition-colors font-label-sm text-label-sm" type="button">
+<span class="material-symbols-outlined text-[16px]">photo_camera</span>
+<span>+ Captura OCR</span>
+</button>
+</div>
+<!-- Rejilla de Miniaturas con Notas -->
+<div class="grid grid-cols-2 gap-space-sm">
+<!-- Foto 1 -->
+<div class="flex flex-col gap-1 group">
+<div class="w-full h-24 rounded-lg overflow-hidden bg-surface-container relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200" data-alt="Technical preliminary sketches of building floor plans and axonometric projection with graphite pencils on tracing paper on wooden desk" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCImRcdxcM_0GQbb1gxlGhDRa224P4eBo1VbabG_W6cC70_GIeMAtBxghAZWf2GFmbAe6ICWmVhCh2aoLTia0aNe2U_mcIF99MYBmW4qkv8PPHdvGDyryJiyp4O58rIIJbcVdZWG4I2e3RL2oiDD3OCYfWAepU5x2ITnwQsTwwjo2qM8Uyj6GhlFSdnviP_RnLOgb_soUftkmM_J2AkOzmTtRUjq0wcYwij4I5fwoA_fpiyE4r5UjSD"/>
+<span class="absolute bottom-1 right-1 px-1.5 py-0.2 bg-primary/80 text-on-primary font-code-sm text-[9px] rounded">18 Oct</span>
+</div>
+<p class="font-body-sm text-[11px] font-semibold text-on-surface truncate">1. Croquis y cálculo acotado</p>
+</div>
+<!-- Foto 2 -->
+<div class="flex flex-col gap-1 group">
+<div class="w-full h-24 rounded-lg overflow-hidden bg-surface-container relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200" data-alt="High school workshop table with laser-cut balsa wood structural pieces labeled and organized with precision scalpel knife" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhv94hVtCDRevlhBCBKmGnhoF0UWLyUCDeaAar8lv-4dZx1B6M5hTWAXiSvGacxQtQBEQYpdawry3bpoWqMUPE_qKh5gm5FrAhNqUf1hyMuHllilThPjgYIDLSBYU5Ahg7Cco0hYZa33I6LmzqO_qU1k6NlQIdhUzCvc4qipYGOacyoc4wMP04i2zqIiva2bCeJx1d0q_LXUbQcnCK9DOGZQawq0DEgFfJpTtAUTia9nDdfb2UarWF"/>
+<span class="absolute bottom-1 right-1 px-1.5 py-0.2 bg-primary/80 text-on-primary font-code-sm text-[9px] rounded">25 Oct</span>
+</div>
+<p class="font-body-sm text-[11px] font-semibold text-on-surface truncate">2. Corte piezas en taller</p>
+</div>
+<!-- Foto 3 -->
+<div class="flex flex-col gap-1 group">
+<div class="w-full h-24 rounded-lg overflow-hidden bg-surface-container relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200" data-alt="Partial assembly of wooden miniature architectural frame showing cantilevered bioclimatic overhang and glued joints" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgUvdKL_cbc_78g9V01OK4c-kh4wGKNL01tdIdIid6AUdYu2ZIhxxLoLWwEvqB9i-Xg0ggXoVy7TmiZ_ExeyNc_khl42RK_ev23j_SIU4-605fOBoe9tsAQsCNVFpK2i0f08_rVTRpWUIC4qbN9Y-UKrGeghwoZ6TjRGx55SaPW30T5o0cvxKb0DstMNhpVVIh1y044GNd9OjNK4CH7_SyAfUa1w4LszQK0JcPHCQnXaDfAA7wpcmi"/>
+<span class="absolute bottom-1 right-1 px-1.5 py-0.2 bg-primary/80 text-on-primary font-code-sm text-[9px] rounded">Ayer</span>
+</div>
+<p class="font-body-sm text-[11px] font-semibold text-on-surface truncate">3. Estructura ensamblada</p>
+</div>
+<!-- Botón / Tarjeta Añadir Captura Directa -->
+<div class="w-full h-24 rounded-lg bg-surface-container-low hover:bg-surface-container flex flex-col items-center justify-center text-center p-2 cursor-pointer transition-colors group">
+<span class="material-symbols-outlined text-[24px] text-secondary group-hover:scale-110 transition-transform">add_a_photo</span>
+<span class="font-label-sm text-[11px] text-on-surface mt-1 font-semibold">Subir Foto o Escaneo</span>
+<span class="font-code-sm text-[9px] text-on-surface-variant">OCR de anotaciones</span>
+</div>
+</div>
+</div>
+<!-- Acciones Rápidas del Proyecto -->
+<div class="p-space-base rounded-xl bg-surface-container-lowest shadow-sm flex flex-col gap-space-sm">
+<button class="w-full flex items-center justify-center gap-2 py-2.5 px-space-md rounded-lg bg-primary-container text-on-primary font-label-md text-label-md hover:bg-primary transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-[18px]">auto_stories</span>
+<span>Generar Dossier de Proyecto en PDF</span>
+</button>
+<button class="w-full flex items-center justify-center gap-2 py-2 px-space-md rounded-lg bg-indigo-ai/10 text-indigo-ai font-label-md text-label-md hover:bg-indigo-ai/20 transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">neurology</span>
+<span>Pedir Consejo al Copiloto IA (Acabados / Memoria)</span>
+</button>
+</div>
+</aside>
+</main>
+</div></div></main></div></body></html>

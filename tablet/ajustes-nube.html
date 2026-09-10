@@ -1,86 +1,454 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Ajustes & Nube - Tablet</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>body { padding-bottom: 96px; }</style>
-</head>
-<body class="bg-[#f8f9ff] text-slate-800 font-['Plus_Jakarta_Sans',sans-serif] antialiased min-h-screen flex flex-col">
-  <!-- Cabecera Tablet -->
-  <header class="px-6 py-4 bg-white sticky top-0 z-20 border-b border-slate-100 flex items-center justify-between">
-    <div>
-      <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Configuración del Sistema</span>
-      <h1 class="text-base font-black text-slate-900">Ajustes, Nube & Inteligencia Artificial</h1>
-    </div>
-    <div class="flex items-center gap-2">
-      <span class="text-xs bg-emerald-50 text-emerald-700 font-bold px-3 py-1 rounded-full border border-emerald-200">Sincronizado</span>
-    </div>
-  </header>
 
-  <!-- Rejilla Ajustes Tablet (2 Columnas) -->
-  <main class="max-w-6xl w-full mx-auto p-6 flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
-    <!-- Nube & Respaldos -->
-    <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4">
-      <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Sincronización en la Nube</h3>
-      <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <span class="text-2xl">☁️</span>
-          <div>
-            <div class="font-bold text-xs text-slate-900">Firebase & Firestore Sync</div>
-            <div class="text-[11px] text-slate-500">Copia continua offline/online</div>
-          </div>
-        </div>
-        <span class="text-xs font-bold text-emerald-600">Activo</span>
-      </div>
-
-      <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <span class="text-2xl">📁</span>
-          <div>
-            <div class="font-bold text-xs text-slate-900">Copia a Google Drive</div>
-            <div class="text-[11px] text-slate-500">Respaldo seguro en tu Drive personal</div>
-          </div>
-        </div>
-        <button class="px-3 py-1.5 bg-blue-50 text-blue-700 font-bold text-xs rounded-xl border border-blue-200">Conectar</button>
-      </div>
-
-      <div class="flex gap-2 pt-2">
-        <button class="flex-1 py-2.5 bg-slate-900 text-white font-bold text-xs rounded-xl shadow">Exportar Copia (.json)</button>
-        <button class="flex-1 py-2.5 bg-slate-100 text-slate-700 font-bold text-xs rounded-xl">Restaurar Copia</button>
-      </div>
-    </div>
-
-    <!-- IA & Preferencias -->
-    <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4">
-      <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Copiloto IA & Gemini Flash</h3>
-      <div class="space-y-2 text-xs">
-        <label class="font-bold text-slate-700 block">Clave API de Google Gemini (Gratis):</label>
-        <input type="password" placeholder="AIzaSy..." class="w-full p-3 font-mono rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:border-blue-500">
-        <p class="text-[11px] text-slate-400">Tus datos nunca salen de tu dispositivo hacia servidores de terceros.</p>
-      </div>
-
-      <div class="pt-2 border-t border-slate-100 space-y-2">
-        <div class="text-xs font-bold text-slate-700">Tema y Tipografía</div>
-        <div class="grid grid-cols-2 gap-2 text-xs">
-          <button class="p-2.5 rounded-xl border-2 border-blue-600 bg-blue-50/50 font-bold text-blue-700">Modo Claro (Stitch)</button>
-          <button class="p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-600">Modo Oscuro OLED</button>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- Barra Navegación Isla Tablet -->
-  <nav class="fixed bottom-4 inset-x-0 mx-auto max-w-2xl bg-white/95 backdrop-blur border border-slate-200 z-30 px-6 py-2.5 rounded-full shadow-xl flex justify-around items-center text-xs font-bold text-slate-500">
-    <a href="index.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>🏠</span><span>Mi Día</span></a>
-    <a href="deberes-examenes.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>📅</span><span>Agenda</span></a>
-    <a href="cuaderno-lm.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>📚</span><span>Cuaderno LM</span></a>
-    <a href="pomodoro-flashcards.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>🧠</span><span>Estudio</span></a>
-    <a href="progreso-ebau.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>📊</span><span>Progreso</span></a>
-  </nav>
-</body>
-</html>
+<html lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><title>Agenda Escolar PWA</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "border-subtle": "#E2E8F0", "surface-container-high": "#dce9ff", "secondary": "#4648d4", "error": "#ba1a1a", "on-surface": "#0b1c30", "primary-fixed-dim": "#bcc7de", "on-background": "#0b1c30", "surface-dim": "#cbdbf5", "on-error": "#ffffff", "surface-container-lowest": "#ffffff", "tertiary": "#201100", "on-primary": "#ffffff", "surface-sidebar": "#0F172A", "outline-variant": "#c5c6cd", "indigo-ai": "#8B5CF6", "on-primary-container": "#8590a6", "surface-bright": "#f8f9ff", "on-primary-fixed-variant": "#3c475a", "outline": "#75777d", "primary-fixed": "#d8e3fb", "on-primary-fixed": "#111c2d", "on-secondary-fixed": "#07006c", "primary-container": "#1e293b", "on-tertiary-fixed": "#2a1700", "surface-card": "#FFFFFF", "error-container": "#ffdad6", "tertiary-container": "#3c2300", "inverse-surface": "#213145", "surface-container-low": "#eff4ff", "on-tertiary-container": "#c88000", "coral-urgent": "#F43F5E", "on-tertiary-fixed-variant": "#653e00", "secondary-fixed-dim": "#c0c1ff", "inverse-on-surface": "#eaf1ff", "emerald-streak": "#10B981", "on-surface-variant": "#45474c", "surface-container": "#e5eeff", "background": "#f8f9ff", "inverse-primary": "#bcc7de", "surface-container-highest": "#d3e4fe", "primary": "#091426", "border-dark": "#1E293B", "surface-tint": "#545f73", "on-error-container": "#93000a", "tertiary-fixed-dim": "#ffb95f", "on-secondary-container": "#fffbff", "surface-variant": "#d3e4fe", "surface": "#f8f9ff", "tertiary-fixed": "#ffddb8", "secondary-fixed": "#e1e0ff", "on-tertiary": "#ffffff", "on-secondary-fixed-variant": "#2f2ebe", "canvas-bg": "#F8FAFC", "on-secondary": "#ffffff", "secondary-container": "#6063ee" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-2xs": "0.125rem", "sidebar-collapsed": "68px", "space-xl": "2rem", "space-xs": "0.25rem", "max-content-width": "1440px", "space-base": "1rem", "space-2xl": "3rem", "space-lg": "1.5rem", "space-sm": "0.5rem", "space-md": "0.75rem", "sidebar-width": "240px" }, "fontFamily": { "headline-lg": ["Plus Jakarta Sans"], "code-sm": ["JetBrains Mono"], "label-md": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "display": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"] }, "fontSize": { "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "700" }], "code-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" }], "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "display": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-md": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased selection:bg-secondary-fixed selection:text-on-secondary-fixed"><aside class="fixed left-0 top-0 h-screen w-sidebar-width bg-surface-sidebar z-50 flex flex-col justify-between select-none shadow-[0_1px_8px_rgba(0,0,0,0.08)]"><div class="flex flex-col flex-1 overflow-y-auto"><div class="h-16 px-space-base flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="Agenda Escolar Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1W7YUEss6DP9Xx1z841d_qHcSCOIN-l-FhxrtKUiT5-W3ctujb3E695E4JvcFlKOwJoERFlgw34EvmYFS36M3HrArIc3x400fLH1AoZYEucmEe1aIVkLAPCvwhq3kxd6fab9Elr7U6Vimt0zw1SCEgHXBCvXV-69uslhDkvNzZHvwJb9BJ1ZyZmF7mq6CqnuAvZ-6FjV6pKE_YyNJsRUW5hB1n4jcwnfaEzeGa5lhXOLCkde7_yj2x0cFE"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-surface-card leading-none tracking-tight">Agenda Escolar</span><span class="mt-space-2xs inline-flex items-center self-start px-space-xs py-0.5 rounded bg-primary-container text-primary-fixed text-[10px] font-code-sm font-semibold uppercase tracking-wider">v3.5 PWA</span></div></div><button aria-label="Colapsar menú lateral" class="text-outline-variant hover:text-surface-card p-1 rounded transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">keyboard_double_arrow_left</span></button></div><div class="px-space-base py-space-xs"><div class="flex items-center justify-between px-space-sm py-space-xs rounded bg-border-dark/60 text-emerald-streak"><div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-streak animate-pulse"></span><span class="font-label-sm text-label-sm">100% Offline Listo</span></div><span class="font-code-sm text-code-sm text-surface-variant/80 text-[10px]">PWA ACTIVE</span></div></div><nav class="flex-1 px-space-sm py-space-xs space-y-space-2xs" data-active-classes="bg-primary-container text-surface-card font-semibold shadow-inner"><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="mi-dia" href="index.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-tertiary-fixed-dim">light_mode</span><span class="font-body-md text-body-md">Mi Día</span></div><span class="px-1.5 py-0.5 rounded-full bg-border-dark text-surface-card font-code-sm text-[11px]">8</span></a><div class="space-y-0.5"><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="agenda" href="deberes-examenes.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">calendar_month</span><span class="font-body-md text-body-md">Agenda</span></div><span class="material-symbols-outlined text-[16px] text-outline-variant group-hover:text-surface-card">expand_more</span></a><div class="pl-8 pr-space-xs space-y-0.5"><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="deberes" href="deberes-examenes.html"><span>Deberes</span><span class="w-1.5 h-1.5 rounded-full bg-coral-urgent"></span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="examenes" href="deberes-examenes.html"><span>Exámenes</span><span class="font-code-sm text-[10px] text-tertiary-fixed-dim font-bold">PROX</span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="horario" href="horario-mochila.html"><span>Horario</span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="mochila" href="horario-mochila.html"><span>Mochila</span><span class="material-symbols-outlined text-[13px] text-outline-variant">backpack</span></a></div></div><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="cuaderno-lm" href="cuaderno-lm.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-indigo-ai">neurology</span><span class="font-body-md text-body-md">Cuaderno LM</span></div><span class="px-1.5 py-0.2 rounded bg-indigo-ai/20 text-indigo-ai font-label-sm text-[10px]">Studio</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="pomodoro-concentracion" href="pomodoro-flashcards.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">timer</span><span class="font-body-md text-body-md">Pomodoro</span></div><span class="font-code-sm text-code-sm text-tertiary-fixed-dim">25:00</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="progreso-notas" href="progreso-ebau.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">insights</span><span class="font-body-md text-body-md">Progreso &amp; Notas</span></div><span class="font-code-sm text-code-sm text-emerald-streak">9.4</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="copiloto-ia" href="english-coach.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-secondary-fixed-dim">smart_toy</span><span class="font-body-md text-body-md">Copiloto IA</span></div><span class="flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-streak opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-streak"></span></span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="ajustes-drive-sync" href="ajustes-nube.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">sync_saved_locally</span><span class="font-body-md text-body-md">Ajustes &amp; Drive</span></div><span class="material-symbols-outlined text-[16px] text-emerald-streak">cloud_done</span></a></nav></div><div class="p-space-sm bg-border-dark/40 m-space-sm rounded-xl"><div class="flex items-center gap-space-sm"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfmw-gtx0XEK7h8QkzkqF3FppIOTbex1jLhq0ocROUjmLodXPHUohFwpnJvNVkN0ISjq214XEmWTpaUMw3YSio12W-RjtGFeU0sE1SjasnJqTB-yV8QlgvtQlUWVMlziMiyc-kapJhBGjqEArrPwnzz5DrLEfaywd6KV0lCZ0M5ZzcT3XTNGdqZUTS-wEp6J9RCq0b-FMAAjueo_cX1syzKCEK_bQTcBHe-z8fv9oRHSz-6bu4IvxX"/><div class="flex-1 min-w-0"><div class="flex items-center justify-between gap-1"><p class="font-headline-sm text-body-md font-semibold text-surface-card truncate leading-snug">Lucía Fernández</p><span class="inline-flex items-center px-1.5 py-0.5 rounded bg-tertiary-container text-tertiary-fixed font-code-sm text-[10px] font-bold shrink-0">🔥 14</span></div><p class="font-label-sm text-label-sm text-outline-variant truncate">2º Bachillerato • Ciencias</p></div></div></div></aside><div class="pl-sidebar-width"><header class="fixed top-0 left-sidebar-width right-0 h-16 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg"><div class="flex-1 max-w-xl pr-space-base"><div class="relative flex items-center w-full"><span class="material-symbols-outlined absolute left-3 text-[18px] text-on-surface-variant pointer-events-none">search</span><input class="w-full h-10 pl-9 pr-20 bg-surface-container-lowest rounded-lg font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none focus:bg-surface-container-lowest transition-all shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" placeholder="Buscar asignaturas, tareas, notas o fechas..." type="text"/><div class="absolute right-2 flex items-center gap-1"><kbd class="px-1.5 py-0.5 text-[11px] font-code-sm text-on-surface-variant bg-surface-container-high rounded">⌘K</kbd></div></div></div><div class="flex items-center gap-space-sm"><div class="flex items-center gap-1 bg-surface-container-lowest px-space-sm py-1.5 rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]"><span class="material-symbols-outlined text-[17px] text-tertiary-container">hourglass_top</span><span class="font-code-sm text-code-sm font-semibold text-on-surface">25:00</span><button class="text-on-surface-variant hover:text-on-surface ml-1" title="Iniciar Pomodoro" type="button"><span class="material-symbols-outlined text-[17px]">play_arrow</span></button></div><button class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[17px] text-secondary">document_scanner</span><span>OCR</span></button><button class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[17px] text-coral-urgent">mic</span><span>Dictar</span></button><button class="inline-flex items-center gap-1.5 px-space-md py-1.5 rounded-lg bg-primary-container text-surface-card font-label-md text-label-md hover:bg-primary hover:text-surface-card transition-colors shadow-sm" type="button"><span class="material-symbols-outlined text-[18px]">add</span><span>Nueva Tarea</span></button><div class="h-6 w-px bg-border-subtle mx-space-2xs"></div><button aria-label="Notificaciones" class="relative p-2 rounded-lg bg-surface-container-lowest text-on-surface-variant hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-coral-urgent ring-2 ring-surface-card"></span></button></div></header><main class="w-full pt-16 bg-surface min-h-screen"><div class="max-w-max-content-width mx-auto p-space-lg"><div class="flex flex-col w-full pb-space-2xl space-y-space-lg">
+<!-- CABECERA DE LA VISTA: ERGONOMÍA TABLET -->
+<header class="relative overflow-hidden bg-surface-container-lowest rounded-xl p-space-lg shadow-sm">
+<div class="absolute -right-20 -top-20 w-80 h-80 bg-secondary-fixed/30 rounded-full blur-3xl pointer-events-none"></div>
+<div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-space-base">
+<div class="space-y-space-xs">
+<div class="flex flex-wrap items-center gap-space-xs">
+<span class="inline-flex items-center gap-1.5 px-space-sm py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[15px]">tablet_mac</span>
+            Modo Tablet Activo (11")
+          </span>
+<span class="inline-flex items-center gap-1.5 px-space-sm py-1 rounded-full bg-emerald-streak/10 text-emerald-streak font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-emerald-streak animate-pulse"></span>
+            PWA 100% Offline Lista
+          </span>
+<span class="inline-flex items-center gap-1.5 px-space-sm py-1 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[15px] text-emerald-streak">cloud_done</span>
+            Estado Nube: Sincronizado
+          </span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">
+          Ajustes &amp; Sincronización en la Nube
+        </h1>
+<p class="font-body-md text-body-md text-on-surface-variant">
+          Configuración PWA, Google Drive, Firebase, Stylus y Accesibilidad de lectura táctil.
+        </p>
+</div>
+<div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-space-sm shrink-0">
+<div class="flex flex-col items-start sm:items-end justify-center px-space-sm py-1">
+<span class="font-code-sm text-code-sm text-outline-variant uppercase tracking-wider text-[11px]">Última sincronización</span>
+<span class="font-code-sm text-code-sm font-semibold text-on-surface">Hoy, 10:42 AM (Drive)</span>
+</div>
+<button class="min-h-[44px] px-space-base py-2.5 rounded-lg bg-primary text-on-primary font-label-md text-label-md hover:bg-primary-container active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-sm" id="btn-sync-now" type="button">
+<span class="material-symbols-outlined text-[20px] text-secondary-fixed">cloud_sync</span>
+<span>Sincronizar Ahora</span>
+</button>
+</div>
+</div>
+</header>
+<!-- DISTRIBUCIÓN PRINCIPAL EN DOS COLUMNAS TABLET -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+<!-- COLUMNA IZQUIERDA: SERVICIOS CLOUD, FIREBASE & IA (6 COLS) -->
+<div class="lg:col-span-6 flex flex-col space-y-space-lg">
+<!-- TARJETA 1: GOOGLE DRIVE SYNC -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col space-y-space-base">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed">
+<span class="material-symbols-outlined text-[24px]">add_to_drive</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Google Drive Sync</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Almacenamiento permanente y copias de seguridad</p>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-emerald-streak/10 text-emerald-streak font-code-sm text-[11px] font-semibold">CONECTADO</span>
+</div>
+<!-- Perfil conectado -->
+<div class="bg-surface-container-low rounded-xl p-space-base flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center font-headline-sm text-primary">
+              LF
+            </div>
+<div class="min-w-0">
+<p class="font-label-md text-label-md text-on-surface truncate">lucia.estudiante@ies-ciencias.es</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Google Workspace for Education</p>
+</div>
+</div>
+<button class="min-h-[44px] px-space-base py-2 rounded-lg bg-surface-container-lowest text-error font-label-sm text-label-sm hover:bg-error-container/40 transition-colors self-start sm:self-center" type="button">
+            Desconectar
+          </button>
+</div>
+<!-- Carpeta y Almacenamiento -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-sm">
+<div class="bg-surface-container-low rounded-xl p-space-base flex flex-col justify-between space-y-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Carpeta de Destino en Drive</span>
+<div class="flex items-center gap-1.5 font-code-sm text-code-sm text-on-surface font-semibold truncate">
+<span class="material-symbols-outlined text-[18px] text-secondary">folder</span>
+<span>/AgendaEscolar_2025/</span>
+</div>
+<button class="min-h-[44px] text-left text-secondary font-label-sm text-label-sm hover:underline mt-1" type="button">
+              Cambiar directorio raíz →
+            </button>
+</div>
+<div class="bg-surface-container-low rounded-xl p-space-base flex flex-col justify-between space-y-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Uso en Drive</span>
+<span class="font-code-sm text-code-sm font-semibold text-on-surface">142 MB / 15 GB</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 1.2%;"></div>
+</div>
+<span class="font-body-sm text-[11px] text-on-surface-variant">Copias encriptadas AES-256</span>
+</div>
+</div>
+<!-- Toggles táctiles Drive -->
+<div class="space-y-space-xs pt-space-xs">
+<label class="flex items-center justify-between p-space-sm rounded-lg hover:bg-surface-container-low transition-colors cursor-pointer min-h-[48px]">
+<div class="flex flex-col pr-space-base">
+<span class="font-label-md text-label-md text-on-surface">Copia automática diaria al conectarse a Wi-Fi</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Sube un volcado diario a las 23:00 h sin consumir datos móviles</span>
+</div>
+<input checked="" class="w-6 h-6 rounded accent-primary text-on-primary cursor-pointer shrink-0" type="checkbox"/>
+</label>
+<label class="flex items-center justify-between p-space-sm rounded-lg hover:bg-surface-container-low transition-colors cursor-pointer min-h-[48px]">
+<div class="flex flex-col pr-space-base">
+<span class="font-label-md text-label-md text-on-surface">Respaldar fotos de pizarra en resolución original</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Sincroniza capturas OCR y diagramas de clase completos</span>
+</div>
+<input checked="" class="w-6 h-6 rounded accent-primary text-on-primary cursor-pointer shrink-0" type="checkbox"/>
+</label>
+</div>
+<!-- Botón Exportar Manual -->
+<div class="pt-space-xs">
+<button class="w-full min-h-[44px] px-space-base py-2.5 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md hover:bg-surface-container-highest transition-colors flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined text-[19px]">file_download</span>
+<span>Exportar Backup Completo (.JSON + Fotos)</span>
+</button>
+</div>
+</section>
+<!-- TARJETA 2: FIREBASE REALTIME SYNC -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col space-y-space-base">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed">
+<span class="material-symbols-outlined text-[24px]">sync_alt</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Firebase Cloud Sync</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Sincronización en vivo entre Tablet, Móvil y PC</p>
+</div>
+</div>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-streak/10 text-emerald-streak font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-emerald-streak"></span>
+            En línea
+          </span>
+</div>
+<!-- Multidispositivo en tiempo real -->
+<div class="grid grid-cols-3 gap-space-sm text-center">
+<div class="bg-surface-container-low rounded-xl p-space-base flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-[26px] text-secondary">tablet</span>
+<span class="font-label-sm text-label-sm text-on-surface">iPad Pro 11"</span>
+<span class="font-code-sm text-[10px] text-emerald-streak font-semibold">ESTE DISPOSITIVO</span>
+</div>
+<div class="bg-surface-container-low rounded-xl p-space-base flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-[26px] text-on-surface-variant">phone_iphone</span>
+<span class="font-label-sm text-label-sm text-on-surface">iPhone 14</span>
+<span class="font-code-sm text-[10px] text-on-surface-variant">Hace 4 min</span>
+</div>
+<div class="bg-surface-container-low rounded-xl p-space-base flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-[26px] text-on-surface-variant">laptop_mac</span>
+<span class="font-label-sm text-label-sm text-on-surface">MacBook Air M2</span>
+<span class="font-code-sm text-[10px] text-on-surface-variant">Hace 2 horas</span>
+</div>
+</div>
+<!-- Clave de sesión cifrada -->
+<div class="bg-surface-container-low rounded-xl p-space-base flex items-center justify-between gap-space-sm">
+<div class="space-y-0.5 min-w-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Clave de Nodo de Cifrado (E2EE)</span>
+<p class="font-code-sm text-code-sm text-on-surface truncate font-semibold">fb-sec-9842a-x901-b2c4819aa30</p>
+</div>
+<button class="min-h-[44px] min-w-[44px] p-2 rounded-lg bg-surface-container-lowest text-on-surface-variant hover:text-on-surface flex items-center justify-center" title="Copiar clave" type="button">
+<span class="material-symbols-outlined text-[20px]">content_copy</span>
+</button>
+</div>
+<label class="flex items-center justify-between p-space-sm rounded-lg hover:bg-surface-container-low transition-colors cursor-pointer min-h-[48px]">
+<div class="flex flex-col pr-space-base">
+<span class="font-label-md text-label-md text-on-surface">Sincronizar notas de stylus vectoriales al instante</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Transmite trazos de tinta digital en menos de 150ms a otros terminales</span>
+</div>
+<input checked="" class="w-6 h-6 rounded accent-primary text-on-primary cursor-pointer shrink-0" type="checkbox"/>
+</label>
+</section>
+<!-- TARJETA 3: IA & API KEYS -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col space-y-space-base">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-indigo-ai/20 flex items-center justify-center text-indigo-ai">
+<span class="material-symbols-outlined text-[24px]">neurology</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Inteligencia Artificial &amp; Modelos</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Tutor Socrático, OCR Inteligente y Cuaderno LM</p>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-indigo-ai/10 text-indigo-ai font-code-sm text-[11px] font-semibold">GEMINI 1.5</span>
+</div>
+<!-- Selector de motor -->
+<div class="space-y-space-xs">
+<label class="font-label-md text-label-md text-on-surface">Motor de Procesamiento</label>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-xs">
+<button class="min-h-[44px] p-space-sm rounded-xl bg-primary text-on-primary flex items-center gap-space-sm text-left" type="button">
+<span class="material-symbols-outlined text-[20px] text-secondary-fixed">bolt</span>
+<div>
+<p class="font-label-md text-label-md leading-snug">Gemini 1.5 Flash (Nube)</p>
+<p class="font-body-sm text-[11px] text-surface-variant/80">Ultra rápido, resúmenes largos</p>
+</div>
+</button>
+<button class="min-h-[44px] p-space-sm rounded-xl bg-surface-container-low text-on-surface hover:bg-surface-container-high transition-colors flex items-center gap-space-sm text-left" type="button">
+<span class="material-symbols-outlined text-[20px] text-emerald-streak">offline_bolt</span>
+<div>
+<p class="font-label-md text-label-md leading-snug">ML Kit Local (100% Offline)</p>
+<p class="font-body-sm text-[11px] text-on-surface-variant">Sin red, privacidad absoluta</p>
+</div>
+</button>
+</div>
+</div>
+<!-- API Key Input -->
+<div class="space-y-space-xs">
+<div class="flex items-center justify-between">
+<label class="font-label-md text-label-md text-on-surface">Clave de API de Google AI Studio</label>
+<a class="font-label-sm text-label-sm text-secondary hover:underline" href="#">Obtener clave gratis ↗</a>
+</div>
+<div class="flex flex-col sm:flex-row gap-space-xs">
+<div class="relative flex-1">
+<input class="w-full min-h-[44px] px-space-base pr-10 rounded-lg bg-surface-container-low font-code-sm text-code-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest transition-all" readonly="" type="password" value="AIzaSyB892_K4nLk98192hKd0192jMn9128"/>
+<button class="absolute right-2 top-2.5 text-on-surface-variant hover:text-on-surface p-1" type="button">
+<span class="material-symbols-outlined text-[18px]">visibility_off</span>
+</button>
+</div>
+<button class="min-h-[44px] px-space-base py-2 rounded-lg bg-emerald-streak/15 text-emerald-streak font-label-md text-label-md hover:bg-emerald-streak/25 transition-colors flex items-center justify-center gap-1.5 shrink-0" type="button">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+<span>Probar Conexión (Válida ✓)</span>
+</button>
+</div>
+</div>
+<!-- Selector Pedagógico -->
+<div class="space-y-space-xs">
+<label class="font-label-md text-label-md text-on-surface">Nivel Pedagógico del Copiloto</label>
+<div class="relative">
+<select class="w-full min-h-[44px] px-space-base rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface appearance-none focus:outline-none focus:bg-surface-container-lowest transition-all">
+<option selected="">2º Bachillerato • Preparación Selectividad / PAU</option>
+<option>1º Bachillerato • Modalidad Ciencias</option>
+<option>Grado Universitario • Primer Ciclo</option>
+<option>Educación Secundaria Obligatoria (4º ESO)</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-3 pointer-events-none text-on-surface-variant text-[20px]">expand_more</span>
+</div>
+</div>
+</section>
+</div>
+<!-- COLUMNA DERECHA: TABLET STYLUS, RENDIMIENTO PWA & ACCESIBILIDAD (6 COLS) -->
+<div class="lg:col-span-6 flex flex-col space-y-space-lg">
+<!-- TARJETA 4: STYLUS & ENTRADA TÁCTIL (APPLE PENCIL / S-PEN) -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col space-y-space-base">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed">
+<span class="material-symbols-outlined text-[24px]">draw</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Stylus &amp; Entrada Táctil</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Ajustes para Apple Pencil, S-Pen o Lápiz Universal</p>
+</div>
+</div>
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">battery_charging_full</span>
+            Pencil 94%
+          </span>
+</div>
+<!-- Palm Rejection Toggle táctil grande -->
+<div class="bg-surface-container-low rounded-xl p-space-base flex items-center justify-between">
+<div class="pr-space-base">
+<div class="flex items-center gap-1.5 font-label-md text-label-md text-on-surface">
+<span>Rechazo de Palma Inteligente (Palm Rejection)</span>
+<span class="px-1.5 py-0.2 rounded bg-emerald-streak/20 text-emerald-streak text-[10px] font-code-sm font-bold">ACTIVO</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Ignora el apoyo de la mano en pantalla durante la escritura en pizarras y ejercicios</p>
+</div>
+<button aria-label="Toggle Palm Rejection" class="w-14 h-8 bg-primary rounded-full p-1 transition-colors flex items-center justify-end shrink-0" type="button">
+<span class="w-6 h-6 bg-surface-card rounded-full shadow-sm"></span>
+</button>
+</div>
+<!-- Sensibilidad a la presión -->
+<div class="space-y-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface">Sensibilidad de Presión</span>
+<span class="font-code-sm text-code-sm text-secondary font-semibold">Media (Recomendada)</span>
+</div>
+<div class="grid grid-cols-3 gap-space-xs">
+<button class="min-h-[44px] rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-colors" type="button">
+              Suave
+            </button>
+<button class="min-h-[44px] rounded-lg bg-primary text-on-primary font-label-md text-label-md shadow-sm" type="button">
+              Media
+            </button>
+<button class="min-h-[44px] rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-colors" type="button">
+              Firme
+            </button>
+</div>
+</div>
+<!-- Doble toque stylus -->
+<div class="space-y-space-xs">
+<label class="font-label-md text-label-md text-on-surface">Acción de Doble Toque en el Lápiz</label>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-xs">
+<label class="flex items-center gap-space-sm p-space-sm rounded-lg bg-surface-container-low cursor-pointer min-h-[44px]">
+<input checked="" class="w-5 h-5 accent-primary cursor-pointer" name="pencil_tap" type="radio"/>
+<span class="font-label-md text-label-md text-on-surface">Cambiar a Borrador</span>
+</label>
+<label class="flex items-center gap-space-sm p-space-sm rounded-lg bg-surface-container-low cursor-pointer min-h-[44px]">
+<input class="w-5 h-5 accent-primary cursor-pointer" name="pencil_tap" type="radio"/>
+<span class="font-label-md text-label-md text-on-surface">Lazo de Selección</span>
+</label>
+</div>
+</div>
+<button class="min-h-[44px] px-space-base py-2 rounded-lg bg-surface-container-low text-on-surface hover:bg-surface-container-high transition-colors font-label-md text-label-md flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined text-[19px]">tune</span>
+<span>Calibrar Trazos de Stylus (Lienzo de Prueba)</span>
+</button>
+</section>
+<!-- TARJETA 5: RENDIMIENTO & MODO OFFLINE PWA -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col space-y-space-base">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-emerald-streak/15 flex items-center justify-center text-emerald-streak">
+<span class="material-symbols-outlined text-[24px]">inventory_2</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Rendimiento &amp; Caché Offline PWA</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Almacenamiento local para estudiar sin internet</p>
+</div>
+</div>
+<span class="font-code-sm text-code-sm font-semibold text-emerald-streak">348 MB USADOS</span>
+</div>
+<!-- Desglose de almacenamiento local IndexedDB -->
+<div class="space-y-space-xs">
+<div class="flex items-center justify-between text-body-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Desglose en IndexedDB Local</span>
+<span class="font-code-sm text-code-sm text-on-surface">Límite asignado: 2.0 GB</span>
+</div>
+<div class="w-full h-3 rounded-full bg-surface-container-low flex overflow-hidden">
+<div class="bg-secondary h-full" style="width: 55%;" title="Fotos Pizarra OCR"></div>
+<div class="bg-tertiary-fixed-dim h-full" style="width: 25%;" title="Grabaciones de Audio"></div>
+<div class="bg-emerald-streak h-full" style="width: 20%;" title="Tarjetas Leitner y Textos"></div>
+</div>
+<div class="flex flex-wrap items-center gap-x-space-base gap-y-1 pt-1 font-body-sm text-[12px] text-on-surface-variant">
+<span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-secondary"></span> 85 Fotos Pizarra (192 MB)</span>
+<span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-tertiary-fixed-dim"></span> 14 Audios Clase (87 MB)</span>
+<span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-streak"></span> 120 Leitner &amp; DB (69 MB)</span>
+</div>
+</div>
+<!-- Botones de Acción de Rendimiento -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-xs pt-space-xs">
+<button class="min-h-[44px] px-space-base py-2 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-colors flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined text-[19px] text-error">delete_sweep</span>
+<span>Limpiar Archivos Temp.</span>
+</button>
+<button class="min-h-[44px] px-space-base py-2 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-md text-label-md transition-colors flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined text-[19px] text-secondary">download_for_offline</span>
+<span>Descargar Todo p/ Viaje</span>
+</button>
+</div>
+</section>
+<!-- TARJETA 6: ACCESIBILIDAD & LECTURA -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col space-y-space-base">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[24px]">accessibility_new</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Accesibilidad &amp; Lectura</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Confort visual para sesiones prolongadas de estudio</p>
+</div>
+</div>
+</div>
+<!-- OpenDyslexic Toggle -->
+<label class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container-high transition-colors cursor-pointer min-h-[48px]">
+<div class="flex flex-col pr-space-base">
+<span class="font-label-md text-label-md text-on-surface">Tipografía OpenDyslexic (Lectura facilitada)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Aplica tipografía adaptada con base ensanchada en textos y enunciados</span>
+</div>
+<input class="w-6 h-6 rounded accent-primary text-on-primary cursor-pointer shrink-0" type="checkbox"/>
+</label>
+<!-- Tamaño de texto -->
+<div class="space-y-space-xs">
+<span class="font-label-md text-label-md text-on-surface">Tamaño de Texto en Pantalla</span>
+<div class="grid grid-cols-3 gap-space-xs">
+<button class="min-h-[44px] rounded-lg bg-primary text-on-primary font-label-md text-label-md shadow-sm" type="button">
+              Estándar (+0 pt)
+            </button>
+<button class="min-h-[44px] rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-colors" type="button">
+              Mediano (+2 pt)
+            </button>
+<button class="min-h-[44px] rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-colors" type="button">
+              Grande (+4 pt)
+            </button>
+</div>
+</div>
+<!-- Modos adicionales de confort -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-xs">
+<label class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-low cursor-pointer min-h-[44px]">
+<span class="font-label-md text-label-md text-on-surface">Alto Contraste Nocturno</span>
+<input class="w-5 h-5 accent-primary cursor-pointer" type="checkbox"/>
+</label>
+<label class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-low cursor-pointer min-h-[44px]">
+<span class="font-label-md text-label-md text-on-surface">Modo Zen Focus (Sin badges)</span>
+<input class="w-5 h-5 accent-primary cursor-pointer" type="checkbox"/>
+</label>
+</div>
+</section>
+</div>
+</div>
+<!-- PIE DE PÁGINA TÉCNICO & BUILD SYSTEM -->
+<footer class="bg-surface-container-lowest rounded-xl p-space-base shadow-sm flex flex-col md:flex-row items-center justify-between gap-space-sm text-on-surface-variant font-body-sm text-body-sm">
+<div class="flex flex-wrap items-center gap-space-base text-center md:text-left">
+<div class="flex items-center gap-1.5 font-code-sm text-code-sm">
+<span class="w-2 h-2 rounded-full bg-emerald-streak"></span>
+<span class="font-semibold text-on-surface">Service Worker:</span>
+<span class="bg-surface-container-low px-1.5 py-0.5 rounded text-secondary font-mono">sw.js (activo)</span>
+</div>
+<span class="hidden md:inline text-outline-variant">•</span>
+<span class="font-code-sm text-code-sm">v3.5 Tablet Edition (Build 2025.2-PWA)</span>
+</div>
+<div class="flex items-center gap-space-base">
+<a class="min-h-[44px] px-space-sm inline-flex items-center gap-1.5 text-secondary hover:underline font-label-md text-label-md" href="https://github.com/Mahay78/agenda-escolar" rel="noopener noreferrer" target="_blank">
+<span class="material-symbols-outlined text-[18px]">code</span>
+<span>Mahay78/agenda-escolar</span>
+</a>
+<button class="min-h-[44px] px-space-base py-2 rounded-lg bg-surface-container-high text-on-surface font-label-sm text-label-sm hover:bg-surface-container-highest transition-colors" type="button">
+        Comprobar Actualizaciones
+      </button>
+</div>
+</footer>
+</div>
+<!-- SCRIPT DE MICRO-INTERACCIÓN TABLET PARA SINCRONIZACIÓN -->
+<script>
+  (function() {
+    const syncBtn = document.getElementById('btn-sync-now');
+    if (syncBtn) {
+      syncBtn.addEventListener('click', function() {
+        const originalText = syncBtn.innerHTML;
+        syncBtn.disabled = true;
+        syncBtn.innerHTML = `
+          <span class="material-symbols-outlined text-[20px] animate-spin text-secondary-fixed">sync</span>
+          <span>Sincronizando con Drive &amp; Firebase...</span>
+        `;
+        setTimeout(() => {
+          syncBtn.disabled = false;
+          syncBtn.innerHTML = `
+            <span class="material-symbols-outlined text-[20px] text-emerald-streak">check_circle</span>
+            <span>¡Sincronizado! (Hace 1s)</span>
+          `;
+          setTimeout(() => {
+            syncBtn.innerHTML = originalText;
+          }, 3500);
+        }, 1400);
+      });
+    }
+  })();
+</script></div></main></div></body></html>

@@ -1,95 +1,513 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>English Coach C1 - Tablet</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>body { padding-bottom: 96px; }</style>
-</head>
-<body class="bg-[#f8f9ff] text-slate-800 font-['Plus_Jakarta_Sans',sans-serif] antialiased min-h-screen flex flex-col">
-  <!-- Cabecera Tablet -->
-  <header class="px-6 py-4 bg-white sticky top-0 z-20 border-b border-slate-100 flex items-center justify-between">
-    <div>
-      <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600">Cambridge Advanced C1 • PAU / EOI</span>
-      <h1 class="text-base font-black text-slate-900">English Coach & Writing Corrector</h1>
-    </div>
-    <div class="flex items-center gap-2">
-      <span class="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-bold border border-blue-200">Speaking & Writing</span>
-      <button class="px-3.5 py-1.5 bg-slate-900 text-white font-bold text-xs rounded-xl shadow-sm">🎙 Practicar por Voz</button>
-    </div>
-  </header>
 
-  <!-- Rejilla 2 Columnas Tablet -->
-  <main class="max-w-6xl w-full mx-auto p-6 flex-1 grid grid-cols-1 md:grid-cols-12 gap-6">
-    <!-- Columna Izquierda (7 cols): Conversación y Pregunta del Tutor -->
-    <div class="md:col-span-7 space-y-4">
-      <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4">
-        <div class="flex justify-between items-center text-xs">
-          <span class="font-bold text-slate-400 uppercase tracking-wider">Tutor Socrático C1</span>
-          <span class="bg-emerald-50 text-emerald-700 px-2.5 py-0.5 rounded-md font-bold text-[11px]">Nivel Objetivo: C1 (7.5+ IELTS)</span>
-        </div>
-
-        <div class="p-4 bg-slate-50 border border-slate-100 rounded-2xl space-y-2">
-          <div class="text-[11px] font-bold text-slate-400 uppercase">Tema de Discusión:</div>
-          <p class="text-base font-semibold text-slate-900 leading-relaxed">
-            "Is digital hyper-connectivity alienating youngsters, or is it merely fostering innovative paradigms of global solidarity?"
+<html lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><title>Agenda Escolar PWA</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "border-subtle": "#E2E8F0", "surface-container-high": "#dce9ff", "secondary": "#4648d4", "error": "#ba1a1a", "on-surface": "#0b1c30", "primary-fixed-dim": "#bcc7de", "on-background": "#0b1c30", "surface-dim": "#cbdbf5", "on-error": "#ffffff", "surface-container-lowest": "#ffffff", "tertiary": "#201100", "on-primary": "#ffffff", "surface-sidebar": "#0F172A", "outline-variant": "#c5c6cd", "indigo-ai": "#8B5CF6", "on-primary-container": "#8590a6", "surface-bright": "#f8f9ff", "on-primary-fixed-variant": "#3c475a", "outline": "#75777d", "primary-fixed": "#d8e3fb", "on-primary-fixed": "#111c2d", "on-secondary-fixed": "#07006c", "primary-container": "#1e293b", "on-tertiary-fixed": "#2a1700", "surface-card": "#FFFFFF", "error-container": "#ffdad6", "tertiary-container": "#3c2300", "inverse-surface": "#213145", "surface-container-low": "#eff4ff", "on-tertiary-container": "#c88000", "coral-urgent": "#F43F5E", "on-tertiary-fixed-variant": "#653e00", "secondary-fixed-dim": "#c0c1ff", "inverse-on-surface": "#eaf1ff", "emerald-streak": "#10B981", "on-surface-variant": "#45474c", "surface-container": "#e5eeff", "background": "#f8f9ff", "inverse-primary": "#bcc7de", "surface-container-highest": "#d3e4fe", "primary": "#091426", "border-dark": "#1E293B", "surface-tint": "#545f73", "on-error-container": "#93000a", "tertiary-fixed-dim": "#ffb95f", "on-secondary-container": "#fffbff", "surface-variant": "#d3e4fe", "surface": "#f8f9ff", "tertiary-fixed": "#ffddb8", "secondary-fixed": "#e1e0ff", "on-tertiary": "#ffffff", "on-secondary-fixed-variant": "#2f2ebe", "canvas-bg": "#F8FAFC", "on-secondary": "#ffffff", "secondary-container": "#6063ee" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-2xs": "0.125rem", "sidebar-collapsed": "68px", "space-xl": "2rem", "space-xs": "0.25rem", "max-content-width": "1440px", "space-base": "1rem", "space-2xl": "3rem", "space-lg": "1.5rem", "space-sm": "0.5rem", "space-md": "0.75rem", "sidebar-width": "240px" }, "fontFamily": { "headline-lg": ["Plus Jakarta Sans"], "code-sm": ["JetBrains Mono"], "label-md": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "display": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"] }, "fontSize": { "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "700" }], "code-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" }], "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "display": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-md": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased selection:bg-secondary-fixed selection:text-on-secondary-fixed"><aside class="fixed left-0 top-0 h-screen w-sidebar-width bg-surface-sidebar z-50 flex flex-col justify-between select-none shadow-[0_1px_8px_rgba(0,0,0,0.08)]"><div class="flex flex-col flex-1 overflow-y-auto"><div class="h-16 px-space-base flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="Agenda Escolar Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1W7YUEss6DP9Xx1z841d_qHcSCOIN-l-FhxrtKUiT5-W3ctujb3E695E4JvcFlKOwJoERFlgw34EvmYFS36M3HrArIc3x400fLH1AoZYEucmEe1aIVkLAPCvwhq3kxd6fab9Elr7U6Vimt0zw1SCEgHXBCvXV-69uslhDkvNzZHvwJb9BJ1ZyZmF7mq6CqnuAvZ-6FjV6pKE_YyNJsRUW5hB1n4jcwnfaEzeGa5lhXOLCkde7_yj2x0cFE"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-surface-card leading-none tracking-tight">Agenda Escolar</span><span class="mt-space-2xs inline-flex items-center self-start px-space-xs py-0.5 rounded bg-primary-container text-primary-fixed text-[10px] font-code-sm font-semibold uppercase tracking-wider">v3.5 PWA</span></div></div><button aria-label="Colapsar menú lateral" class="text-outline-variant hover:text-surface-card p-1 rounded transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">keyboard_double_arrow_left</span></button></div><div class="px-space-base py-space-xs"><div class="flex items-center justify-between px-space-sm py-space-xs rounded bg-border-dark/60 text-emerald-streak"><div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-streak animate-pulse"></span><span class="font-label-sm text-label-sm">100% Offline Listo</span></div><span class="font-code-sm text-code-sm text-surface-variant/80 text-[10px]">PWA ACTIVE</span></div></div><nav class="flex-1 px-space-sm py-space-xs space-y-space-2xs" data-active-classes="bg-primary-container text-surface-card font-semibold shadow-inner"><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="mi-dia" href="index.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-tertiary-fixed-dim">light_mode</span><span class="font-body-md text-body-md">Mi Día</span></div><span class="px-1.5 py-0.5 rounded-full bg-border-dark text-surface-card font-code-sm text-[11px]">8</span></a><div class="space-y-0.5"><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="agenda" href="deberes-examenes.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">calendar_month</span><span class="font-body-md text-body-md">Agenda</span></div><span class="material-symbols-outlined text-[16px] text-outline-variant group-hover:text-surface-card">expand_more</span></a><div class="pl-8 pr-space-xs space-y-0.5"><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="deberes" href="deberes-examenes.html"><span>Deberes</span><span class="w-1.5 h-1.5 rounded-full bg-coral-urgent"></span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="examenes" href="deberes-examenes.html"><span>Exámenes</span><span class="font-code-sm text-[10px] text-tertiary-fixed-dim font-bold">PROX</span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="horario" href="horario-mochila.html"><span>Horario</span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="mochila" href="horario-mochila.html"><span>Mochila</span><span class="material-symbols-outlined text-[13px] text-outline-variant">backpack</span></a></div></div><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="cuaderno-lm" href="cuaderno-lm.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-indigo-ai">neurology</span><span class="font-body-md text-body-md">Cuaderno LM</span></div><span class="px-1.5 py-0.2 rounded bg-indigo-ai/20 text-indigo-ai font-label-sm text-[10px]">Studio</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="pomodoro-concentracion" href="pomodoro-flashcards.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">timer</span><span class="font-body-md text-body-md">Pomodoro</span></div><span class="font-code-sm text-code-sm text-tertiary-fixed-dim">25:00</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="progreso-notas" href="progreso-ebau.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">insights</span><span class="font-body-md text-body-md">Progreso &amp; Notas</span></div><span class="font-code-sm text-code-sm text-emerald-streak">9.4</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="copiloto-ia" href="english-coach.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-secondary-fixed-dim">smart_toy</span><span class="font-body-md text-body-md">Copiloto IA</span></div><span class="flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-streak opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-streak"></span></span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="ajustes-drive-sync" href="ajustes-nube.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">sync_saved_locally</span><span class="font-body-md text-body-md">Ajustes &amp; Drive</span></div><span class="material-symbols-outlined text-[16px] text-emerald-streak">cloud_done</span></a></nav></div><div class="p-space-sm bg-border-dark/40 m-space-sm rounded-xl"><div class="flex items-center gap-space-sm"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfmw-gtx0XEK7h8QkzkqF3FppIOTbex1jLhq0ocROUjmLodXPHUohFwpnJvNVkN0ISjq214XEmWTpaUMw3YSio12W-RjtGFeU0sE1SjasnJqTB-yV8QlgvtQlUWVMlziMiyc-kapJhBGjqEArrPwnzz5DrLEfaywd6KV0lCZ0M5ZzcT3XTNGdqZUTS-wEp6J9RCq0b-FMAAjueo_cX1syzKCEK_bQTcBHe-z8fv9oRHSz-6bu4IvxX"/><div class="flex-1 min-w-0"><div class="flex items-center justify-between gap-1"><p class="font-headline-sm text-body-md font-semibold text-surface-card truncate leading-snug">Lucía Fernández</p><span class="inline-flex items-center px-1.5 py-0.5 rounded bg-tertiary-container text-tertiary-fixed font-code-sm text-[10px] font-bold shrink-0">🔥 14</span></div><p class="font-label-sm text-label-sm text-outline-variant truncate">2º Bachillerato • Ciencias</p></div></div></div></aside><div class="pl-sidebar-width"><header class="fixed top-0 left-sidebar-width right-0 h-16 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg"><div class="flex-1 max-w-xl pr-space-base"><div class="relative flex items-center w-full"><span class="material-symbols-outlined absolute left-3 text-[18px] text-on-surface-variant pointer-events-none">search</span><input class="w-full h-10 pl-9 pr-20 bg-surface-container-lowest rounded-lg font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none focus:bg-surface-container-lowest transition-all shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" placeholder="Buscar asignaturas, tareas, notas o fechas..." type="text"/><div class="absolute right-2 flex items-center gap-1"><kbd class="px-1.5 py-0.5 text-[11px] font-code-sm text-on-surface-variant bg-surface-container-high rounded">⌘K</kbd></div></div></div><div class="flex items-center gap-space-sm"><div class="flex items-center gap-1 bg-surface-container-lowest px-space-sm py-1.5 rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]"><span class="material-symbols-outlined text-[17px] text-tertiary-container">hourglass_top</span><span class="font-code-sm text-code-sm font-semibold text-on-surface">25:00</span><button class="text-on-surface-variant hover:text-on-surface ml-1" title="Iniciar Pomodoro" type="button"><span class="material-symbols-outlined text-[17px]">play_arrow</span></button></div><button class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[17px] text-secondary">document_scanner</span><span>OCR</span></button><button class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[17px] text-coral-urgent">mic</span><span>Dictar</span></button><button class="inline-flex items-center gap-1.5 px-space-md py-1.5 rounded-lg bg-primary-container text-surface-card font-label-md text-label-md hover:bg-primary hover:text-surface-card transition-colors shadow-sm" type="button"><span class="material-symbols-outlined text-[18px]">add</span><span>Nueva Tarea</span></button><div class="h-6 w-px bg-border-subtle mx-space-2xs"></div><button aria-label="Notificaciones" class="relative p-2 rounded-lg bg-surface-container-lowest text-on-surface-variant hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-coral-urgent ring-2 ring-surface-card"></span></button></div></header><main class="w-full pt-16 bg-surface min-h-screen"><div class="max-w-max-content-width mx-auto p-space-lg"><div class="flex flex-col w-full gap-y-space-md">
+<!-- Tablet Focus Header: Goal, Streak & Mode Tabs -->
+<header class="w-full bg-surface-card rounded-xl p-space-base shadow-sm flex flex-col xl:flex-row xl:items-center justify-between gap-space-base select-none">
+<div class="flex items-center gap-space-md min-w-0">
+<div class="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary shrink-0">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">record_voice_over</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-sm flex-wrap">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate">English Socratic Tutor &amp; Coach</span>
+<span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-code-sm text-code-sm font-semibold">C1 Advanced • PAU/EBAU</span>
+</div>
+<div class="flex items-center gap-space-base mt-0.5">
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-emerald-streak">verified</span> Cambridge CAE Target 2025
+          </span>
+<span class="font-code-sm text-code-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-secondary">stylus_note</span> Stylus &amp; Touch Ready
+          </span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-space-base flex-wrap sm:flex-nowrap justify-between xl:justify-end">
+<!-- Streak Pill -->
+<div class="flex items-center gap-space-sm bg-surface-container px-space-md py-2 rounded-xl">
+<div class="w-7 h-7 rounded-lg bg-tertiary-container flex items-center justify-center text-tertiary-fixed shrink-0">
+<span class="material-symbols-outlined text-[18px]">local_fire_department</span>
+</div>
+<div class="flex flex-col pr-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Speaking Streak</span>
+<span class="font-code-sm text-code-sm font-bold text-on-surface">9 Días Consecutivos</span>
+</div>
+</div>
+<!-- Mode Selector Tabs Optimized for iPad Tap -->
+<div class="inline-flex p-1 bg-surface-container-high rounded-xl gap-1">
+<button class="px-space-md py-2 rounded-lg bg-surface-card text-on-surface font-label-md text-label-md shadow-sm transition-all flex items-center gap-1.5" id="btn-mode-voice" onclick="switchMode('voice')">
+<span class="material-symbols-outlined text-[18px] text-secondary">mic</span>
+<span>Speaking con Voz</span>
+</button>
+<button class="px-space-md py-2 rounded-lg text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all flex items-center gap-1.5" id="btn-mode-writing" onclick="switchMode('writing')">
+<span class="material-symbols-outlined text-[18px] text-indigo-ai">draw</span>
+<span>Writing Checker</span>
+</button>
+<button class="px-space-md py-2 rounded-lg text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all flex items-center gap-1.5" id="btn-mode-pau" onclick="switchMode('pau')">
+<span class="material-symbols-outlined text-[18px] text-coral-urgent">history_edu</span>
+<span>Simulacro Oral PAU</span>
+</button>
+<button class="px-space-md py-2 rounded-lg text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all flex items-center gap-1.5" id="btn-mode-cambridge" onclick="switchMode('cambridge')">
+<span class="material-symbols-outlined text-[18px] text-emerald-streak">groups_3</span>
+<span>Roleplay CAE</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Split Workspace: Ergonomic Left Dialogue vs Right Pedagogic Engine -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md">
+<!-- LEFT COLUMN: Socratic Chat & Voice Interaction (7 cols on tablet/desktop) -->
+<section class="lg:col-span-7 flex flex-col gap-space-md min-h-[640px]">
+<!-- Interactive Conversation Card -->
+<div class="bg-surface-card rounded-xl shadow-sm p-space-base flex flex-col flex-1 relative overflow-hidden">
+<!-- Top Chat Meta Bar -->
+<div class="flex items-center justify-between pb-space-sm bg-surface-card z-10">
+<div class="flex items-center gap-space-sm">
+<div class="relative">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="A refined British English professor portrait in a softly lit academic library, warm scholarly ambiance, soft focus bokeh with bookshelves, natural daylight, crisp composition" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0cy8TYW0uLQVQjO7PpvjPUoVadCmJyYvedZgAJaXKpk62LKnqT_ZB0ws20WrocDjoJLyyJUPoXIgTuygdwCfKZVdivoOwkRLxVRIQbd4qA5jdR8Sz2i3A1KJfTcNPAGIVUinulcdpgULXCvyFkQit9rLPad4qn-9YMQPuXky56abKQxWXuCQedNLR7o4xWN1TgrnP3oYLtwS3B6s8M7HroAeB8axiisby6gHaZdsxKz0_riWVq1zc"/>
+<span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-streak ring-2 ring-surface-card"></span>
+</div>
+<div>
+<div class="flex items-center gap-1.5">
+<span class="font-headline-sm text-body-md font-semibold text-on-surface">Dr. Alistair Finch</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">Oxford RP Coach</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Socratic Inquiry: Social Media &amp; Critical Thinking</p>
+</div>
+</div>
+<div class="flex items-center gap-space-xs bg-surface-container-low px-2 py-1 rounded-lg">
+<button class="px-2 py-1 rounded font-code-sm text-code-sm font-semibold text-on-surface hover:bg-surface-card transition-colors" onclick="changeSpeed(this)" title="Velocidad audio tutor">1.0x</button>
+<span class="w-px h-3 bg-surface-variant"></span>
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-card transition-colors" title="Activar acento RP británico">
+<span class="material-symbols-outlined text-[18px]">graphic_eq</span>
+</button>
+</div>
+</div>
+<!-- Scrollable Conversation Feed -->
+<div class="flex-1 overflow-y-auto space-y-space-md py-space-sm pr-1" id="chat-stream">
+<!-- Socratic Prompt 1 -->
+<div class="flex items-start gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed font-code-sm text-[12px] font-bold shrink-0 mt-1">AF</div>
+<div class="flex flex-col gap-1 max-w-[85%]">
+<div class="bg-surface-container p-space-md rounded-2xl rounded-tl-sm text-on-surface space-y-2">
+<p class="font-body-md text-body-md leading-relaxed">
+                  "Welcome back, Lucía. Let us tackle our PAU Part 3 prompt: <span class="font-semibold italic">Should algorithms on social media be subject to state censorship to prevent misinformation?</span>"
+                </p>
+<div class="flex items-center gap-space-sm pt-1">
+<button class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-surface-card text-on-surface font-label-sm text-label-sm hover:bg-surface-bright transition-colors shadow-sm" onclick="playSampleAudio('tutor-1')">
+<span class="material-symbols-outlined text-[16px] text-secondary">volume_up</span>
+<span>Listen (0:14)</span>
+</button>
+<span class="font-code-sm text-[11px] text-on-surface-variant">/ˈɔːlɡərɪðəmz/</span>
+</div>
+</div>
+<span class="font-code-sm text-[11px] text-on-surface-variant pl-1">10:41 AM • Received</span>
+</div>
+</div>
+<!-- Student Voice Response 1 -->
+<div class="flex items-start justify-end gap-space-sm">
+<div class="flex flex-col items-end gap-1 max-w-[85%]">
+<div class="bg-primary text-on-primary p-space-md rounded-2xl rounded-tr-sm space-y-2">
+<p class="font-body-md text-body-md leading-relaxed">
+                  "I think that governments <span class="bg-coral-urgent/30 px-1 py-0.5 rounded text-surface-card underline decoration-coral-urgent font-medium cursor-pointer" onclick="highlightFeedback('phrase-1')">must control the news</span> because fake news <span class="bg-coral-urgent/30 px-1 py-0.5 rounded text-surface-card underline decoration-coral-urgent font-medium cursor-pointer" onclick="highlightFeedback('phrase-2')">are dangerous</span> for young people who cannot contrast sources."
+                </p>
+<!-- Phonetic Breakdown Pill -->
+<div class="bg-primary-container p-2 rounded-lg flex items-center justify-between gap-space-sm">
+<div class="flex items-center gap-1.5 font-code-sm text-[11px] text-surface-variant">
+<span class="material-symbols-outlined text-[14px] text-tertiary-fixed-dim">mic</span>
+<span>/deɪndʒərəs/ • 92% match</span>
+</div>
+<button class="text-surface-variant hover:text-surface-card transition-colors">
+<span class="material-symbols-outlined text-[16px]">play_circle</span>
+</button>
+</div>
+</div>
+<div class="flex items-center gap-2 pr-1">
+<span class="font-label-sm text-[11px] text-emerald-streak flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[13px]">check_circle</span> Live Transcribed
+                </span>
+<span class="font-code-sm text-[11px] text-on-surface-variant">10:42 AM</span>
+</div>
+</div>
+<img class="w-8 h-8 rounded-full object-cover shrink-0 mt-1" data-alt="Close-up candid portrait of a female student with focused expression wearing study headphones in a modern bright classroom, subtle lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPmwJlNfLZ7uXudiwllHLd1LlsoRpuPDV0oDYT36mp9rnQK9FJkqWEYnHjFWIjZB0IwW8v5sF-ZuvSpMKKV2dyADHDN-SoMXSzVp33wdSQt66BuQAiAmQ60XzvYQ9AFe-k3tj1vxp1lFW4zTRtCpGx2PDqqoRAKOVf9Ae42_kEmtZuQ2QOakkRcY34-ZWHucLVC6b-U4miByOU5PZVhw-jZOKgBpDmU0n5yZN-DFpBX6vJKGSaAr0o"/>
+</div>
+<!-- Socratic Tutor Counter-Question -->
+<div class="flex items-start gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed font-code-sm text-[12px] font-bold shrink-0 mt-1">AF</div>
+<div class="flex flex-col gap-1 max-w-[85%]">
+<div class="bg-surface-container p-space-md rounded-2xl rounded-tl-sm text-on-surface space-y-2">
+<p class="font-body-md text-body-md leading-relaxed">
+                  "A coherent premise, Lucía. However, consider the civil liberties perspective: who determines what constitutes 'truth'? Could such state oversight pave the way for an authoritarian echo chamber?"
+                </p>
+<div class="flex items-center gap-space-sm pt-1">
+<button class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-surface-card text-on-surface font-label-sm text-label-sm hover:bg-surface-bright transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[16px] text-secondary">volume_up</span>
+<span>Listen (0:19)</span>
+</button>
+<span class="font-label-sm text-label-sm text-secondary font-medium">Socratic Challenge Level 4/5</span>
+</div>
+</div>
+<span class="font-code-sm text-[11px] text-on-surface-variant pl-1">10:43 AM • Received</span>
+</div>
+</div>
+</div>
+<!-- Bottom Touch Voice & Input Dock (Ergonomic for iPad thumb reaches) -->
+<div class="pt-space-sm bg-surface-card flex flex-col gap-space-sm">
+<!-- Real-Time Waveform & Live Transcription Banner -->
+<div class="w-full bg-surface-container-lowest p-space-sm rounded-xl flex items-center justify-between gap-space-md shadow-sm" id="live-waveform">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-coral-urgent animate-ping"></span>
+<span class="font-code-sm text-code-sm font-semibold text-on-surface">VOICE ENGINE READY</span>
+</div>
+<!-- Animated Audio Waveform Mockup -->
+<div class="flex items-center gap-1 h-6">
+<span class="w-1 bg-secondary rounded-full h-3 animate-pulse"></span>
+<span class="w-1 bg-secondary rounded-full h-5"></span>
+<span class="w-1 bg-secondary rounded-full h-2"></span>
+<span class="w-1 bg-secondary rounded-full h-6 animate-pulse"></span>
+<span class="w-1 bg-secondary rounded-full h-4"></span>
+<span class="w-1 bg-secondary rounded-full h-2"></span>
+<span class="w-1 bg-secondary rounded-full h-5 animate-pulse"></span>
+</div>
+<span class="font-code-sm text-code-sm text-on-surface-variant">Noise Cancellation: High</span>
+</div>
+<!-- Main Touch Action Bar -->
+<div class="flex items-center gap-space-sm">
+<!-- Secondary Quick Keyboard Input -->
+<button class="h-14 px-space-md rounded-xl bg-surface-container text-on-surface hover:bg-surface-container-high transition-all flex items-center justify-center gap-1.5 active:scale-95 shrink-0" title="Escribir con teclado de pantalla">
+<span class="material-symbols-outlined text-[22px]">keyboard</span>
+</button>
+<!-- Prominent Voice Recording Button (Central Tablet Affordance) -->
+<button class="h-14 flex-1 rounded-xl bg-primary text-on-primary hover:bg-primary/90 active:scale-[0.99] transition-all flex items-center justify-center gap-space-sm shadow-md group" id="record-btn" onclick="toggleRecording()">
+<div class="w-8 h-8 rounded-full bg-coral-urgent flex items-center justify-center text-on-error group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[20px]">mic</span>
+</div>
+<div class="flex flex-col text-left">
+<span class="font-headline-sm text-body-md font-semibold text-on-primary leading-tight">Mantén o Toca para Hablar</span>
+<span class="font-code-sm text-[11px] text-primary-fixed-dim">Detección automática de pausas fonéticas</span>
+</div>
+</button>
+<!-- Stylus Pen Quick Note Mode Button -->
+<button class="h-14 px-space-md rounded-xl bg-surface-container text-indigo-ai hover:bg-surface-container-high transition-all flex items-center justify-center gap-1.5 active:scale-95 shrink-0" onclick="toggleStylusMode()" title="Anotación Stylus / Apple Pencil">
+<span class="material-symbols-outlined text-[22px]">edit</span>
+<span class="hidden sm:inline font-label-md text-label-md">Stylus</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- RIGHT COLUMN: Real-Time Pedagogic Feedback & Stylus Writing Inspector (5 cols) -->
+<section class="lg:col-span-5 flex flex-col gap-space-md">
+<!-- CARD 1: Immediate Pedagogic Feedback Box -->
+<div class="bg-surface-card rounded-xl shadow-sm p-space-base flex flex-col gap-space-sm relative" id="pedagogic-box">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-md bg-coral-urgent/10 text-coral-urgent flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">school</span>
+</div>
+<span class="font-headline-sm text-body-md font-bold text-on-surface">Pedagogic Feedback Inmediato</span>
+</div>
+<span class="px-2 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-code-sm text-[11px] font-bold">CAE Focus</span>
+</div>
+<!-- Analyzed Student Phrase -->
+<div class="bg-surface-container-low p-space-sm rounded-lg flex flex-col gap-1">
+<span class="font-label-sm text-[11px] text-on-surface-variant uppercase tracking-wider">Frase Analizada</span>
+<p class="font-body-md text-body-md text-on-surface font-medium italic">
+            "...governments must control the news because fake news are dangerous..."
           </p>
-        </div>
+</div>
+<!-- Diagnostic Breakdown -->
+<div class="space-y-2">
+<!-- Correction Row 1 -->
+<div class="bg-surface-bright p-space-sm rounded-lg flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-coral-urgent flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">error_outline</span> Uncountable Noun Agreement
+              </span>
+<span class="font-code-sm text-[10px] text-on-surface-variant">PAU Penalty: -0.25</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface">
+              En inglés, <code class="font-code-sm bg-surface-container px-1 py-0.5 rounded text-on-surface font-semibold">news</code> es siempre incontable y singular.
+            </p>
+<div class="flex items-center gap-2 mt-0.5">
+<span class="font-code-sm text-body-sm text-coral-urgent line-through">fake news are</span>
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant">arrow_forward</span>
+<span class="font-code-sm text-body-sm text-emerald-streak font-bold">fake news is</span>
+</div>
+</div>
+<!-- Suggested Advanced C1/C2 Connectors -->
+<div class="bg-surface-container-high/60 p-space-sm rounded-lg flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-secondary flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">auto_awesome</span> Conectores Avanzados C1
+              </span>
+<span class="font-code-sm text-[10px] text-on-surface font-bold">+1.2 Lexical</span>
+</div>
+<div class="flex items-wrap gap-1.5">
+<button class="px-2 py-1 rounded bg-surface-card hover:bg-secondary-fixed text-on-surface font-code-sm text-[11px] transition-colors shadow-sm flex items-center gap-1" onclick="copyConnector('Notwithstanding')">
+<span>Notwithstanding</span>
+<span class="material-symbols-outlined text-[12px] text-on-surface-variant">content_copy</span>
+</button>
+<button class="px-2 py-1 rounded bg-surface-card hover:bg-secondary-fixed text-on-surface font-code-sm text-[11px] transition-colors shadow-sm flex items-center gap-1" onclick="copyConnector('Furthermore')">
+<span>Furthermore</span>
+<span class="material-symbols-outlined text-[12px] text-on-surface-variant">content_copy</span>
+</button>
+<button class="px-2 py-1 rounded bg-surface-card hover:bg-secondary-fixed text-on-surface font-code-sm text-[11px] transition-colors shadow-sm flex items-center gap-1" onclick="copyConnector('In stark contrast')">
+<span>In stark contrast</span>
+<span class="material-symbols-outlined text-[12px] text-on-surface-variant">content_copy</span>
+</button>
+</div>
+</div>
+</div>
+<!-- 1-Tap Flashcard Leitner Action -->
+<button class="w-full mt-1 py-2.5 px-space-md rounded-xl bg-secondary-fixed text-on-secondary-fixed hover:bg-secondary hover:text-on-secondary font-label-md text-label-md transition-all flex items-center justify-center gap-2 active:scale-98 shadow-sm" id="leitner-btn" onclick="saveToLeitner()">
+<span class="material-symbols-outlined text-[18px]">style</span>
+<span>Convertir Corrección a Flashcard Leitner (1 toque)</span>
+</button>
+</div>
+<!-- CARD 2: PAU & Cambridge Official Scoring Rubric in Real-Time -->
+<div class="bg-surface-card rounded-xl shadow-sm p-space-base flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px] text-secondary">analytics</span>
+<span class="font-headline-sm text-body-md font-bold text-on-surface">Rúbrica Oficial en Tiempo Real</span>
+</div>
+<span class="font-code-sm text-code-sm font-bold text-emerald-streak bg-emerald-streak/10 px-2 py-0.5 rounded">Media: 8.87 / 10</span>
+</div>
+<div class="grid grid-cols-2 gap-space-sm">
+<!-- Metric 1 -->
+<div class="p-space-sm bg-surface-container rounded-xl flex flex-col gap-1">
+<div class="flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Fluidez Oral</span>
+<span class="font-code-sm text-code-sm font-bold text-on-surface">8.8</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-emerald-streak rounded-full" style="width: 88%"></div>
+</div>
+<span class="font-code-sm text-[10px] text-on-surface-variant">Ritmo natural sostenido</span>
+</div>
+<!-- Metric 2 -->
+<div class="p-space-sm bg-surface-container rounded-xl flex flex-col gap-1">
+<div class="flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Rango Léxico C1</span>
+<span class="font-code-sm text-code-sm font-bold text-on-surface">9.2</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 92%"></div>
+</div>
+<span class="font-code-sm text-[10px] text-on-surface-variant">Excelente variedad de adjetivos</span>
+</div>
+<!-- Metric 3 -->
+<div class="p-space-sm bg-surface-container rounded-xl flex flex-col gap-1">
+<div class="flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Precisión Gramática</span>
+<span class="font-code-sm text-code-sm font-bold text-on-surface">8.5</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-tertiary-container rounded-full" style="width: 85%"></div>
+</div>
+<span class="font-code-sm text-[10px] text-on-surface-variant">1 error de concordancia</span>
+</div>
+<!-- Metric 4 -->
+<div class="p-space-sm bg-surface-container rounded-xl flex flex-col gap-1">
+<div class="flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Pronunciación / Fonética</span>
+<span class="font-code-sm text-code-sm font-bold text-on-surface">9.0</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-indigo-ai rounded-full" style="width: 90%"></div>
+</div>
+<span class="font-code-sm text-[10px] text-on-surface-variant">Acento neutro comprensible</span>
+</div>
+</div>
+</div>
+<!-- CARD 3: Stylus Writing & Essay Checker Canvas (Apple Pencil / S-Pen Support) -->
+<div class="bg-surface-card rounded-xl shadow-sm p-space-base flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px] text-indigo-ai">draw</span>
+<div class="flex flex-col">
+<span class="font-headline-sm text-body-md font-bold text-on-surface">Visor Stylus &amp; Writing</span>
+<span class="font-label-sm text-[11px] text-on-surface-variant">Soporte Apple Pencil &amp; S-Pen con rechazo de palma</span>
+</div>
+</div>
+<div class="flex items-center gap-1 bg-surface-container p-1 rounded-lg">
+<button class="w-7 h-7 rounded bg-surface-card text-on-surface flex items-center justify-center shadow-sm" onclick="selectStylusTool(this, 'pen')" title="Pluma Stylus">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+</button>
+<button class="w-7 h-7 rounded text-on-surface-variant hover:text-on-surface flex items-center justify-center" onclick="selectStylusTool(this, 'highlighter')" title="Resaltador Fluor">
+<span class="material-symbols-outlined text-[16px]">ink_highlighter</span>
+</button>
+<button class="w-7 h-7 rounded text-on-surface-variant hover:text-on-surface flex items-center justify-center" onclick="selectStylusTool(this, 'eraser')" title="Borrador">
+<span class="material-symbols-outlined text-[16px]">ink_eraser</span>
+</button>
+</div>
+</div>
+<!-- Paper Canvas Area with Stylus Annotations -->
+<div class="relative w-full h-44 bg-surface-container-low rounded-xl p-space-md overflow-hidden select-none touch-none">
+<!-- Lined Paper Pattern via inline SVG background -->
+<svg class="absolute inset-0 w-full h-full opacity-10 pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<pattern height="24" id="tablet-lines" patternunits="userSpaceOnUse" width="100">
+<line stroke="currentColor" stroke-width="1" x1="0" x2="100" y1="24" y2="24"></line>
+</pattern>
+</defs>
+<rect fill="url(#tablet-lines)" height="100%" width="100%"></rect>
+</svg>
+<!-- Digital Text Layer -->
+<div class="relative z-10 text-on-surface font-body-sm text-body-sm leading-6 space-y-1">
+<p>
+<span class="relative inline-block">
+                In my perspective, regulating social networks
+                <!-- Stylus handwritten circle stroke -->
+<svg class="absolute -inset-1 w-full h-full text-coral-urgent pointer-events-none" fill="none" viewbox="0 0 240 30">
+<path d="M5,15 C50,-2 200,-5 235,15 C210,32 40,30 2,18" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path>
+</svg>
+</span>
+              is of paramount importance.
+            </p>
+<p class="text-on-surface-variant">
+              However, such interventions should never jeopardize fundamental freedom of speech...
+            </p>
+</div>
+<!-- Stylus Handwritten Annotation Overlay (Simulated Apple Pencil markup) -->
+<div class="absolute bottom-2 right-4 z-20 pointer-events-none flex items-center gap-1.5 bg-surface-card/90 px-2 py-1 rounded-md shadow-sm">
+<span class="material-symbols-outlined text-[16px] text-indigo-ai">draw</span>
+<span class="font-code-sm text-[11px] text-on-surface font-semibold">Palm Rejection: ACTIVO</span>
+</div>
+</div>
+<!-- Stylus Export & Send to Tutor Button -->
+<div class="flex items-center justify-between pt-1">
+<span class="font-code-sm text-code-sm text-on-surface-variant">Redacción: 184 / 220 palabras</span>
+<button class="px-space-md py-1.5 rounded-lg bg-primary-container text-on-primary font-label-md text-label-md hover:bg-primary transition-colors flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">send_and_archive</span>
+<span>Corregir Ensayo con IA</span>
+</button>
+</div>
+</div>
+</section>
+</div>
+</div>
+<script>
+  let isRecording = false;
 
-        <div class="space-y-2">
-          <label class="text-xs font-bold text-slate-700 block">Tu Respuesta o Párrafo de Ensayo:</label>
-          <textarea rows="4" class="w-full p-4 text-xs bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:outline-none focus:border-blue-500 leading-relaxed resize-none" placeholder="Escribe tu redacción o responde a la pregunta en inglés..."></textarea>
-          <div class="flex justify-end">
-            <button class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl shadow-sm">Analizar Gramática & Nivel C1</button>
-          </div>
-        </div>
-      </div>
-    </div>
+  function toggleRecording() {
+    isRecording = !isRecording;
+    const btn = document.getElementById('record-btn');
+    const label = btn.querySelector('span.font-headline-sm');
+    const sub = btn.querySelector('span.font-code-sm');
+    const icon = btn.querySelector('span.material-symbols-outlined');
 
-    <!-- Columna Derecha (5 cols): Feedback Pedagógico en Tiempo Real -->
-    <div class="md:col-span-5 space-y-4">
-      <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4">
-        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Corrección Pedagógica</h3>
+    if (isRecording) {
+      btn.classList.add('bg-coral-urgent');
+      btn.classList.remove('bg-primary');
+      label.textContent = "Escuchando tu pronunciación...";
+      sub.textContent = "Toca de nuevo para enviar al Tutor Socrático";
+      icon.textContent = "graphic_eq";
+    } else {
+      btn.classList.remove('bg-coral-urgent');
+      btn.classList.add('bg-primary');
+      label.textContent = "Mantén o Toca para Hablar";
+      sub.textContent = "Detección automática de pausas fonéticas";
+      icon.textContent = "mic";
+      
+      // Simulate append student utterance
+      simulateStudentReply();
+    }
+  }
 
-        <div class="p-4 bg-rose-50/80 border border-rose-200 rounded-2xl space-y-2 text-xs">
-          <div class="font-bold text-rose-700 flex items-center gap-1.5">
-            <span>⚠️</span> Error Detectado (Preposición / Conector):
-          </div>
-          <div class="line-through text-rose-900 font-mono bg-white/60 p-2 rounded-lg">
-            "In spite of social media creates echo chambers..."
-          </div>
-          <p class="text-[11px] text-slate-600">
-            *In spite of* debe ir seguido de sustantivo o gerundio (-ing), nunca de una cláusula con verbo conjugado directo.
+  function simulateStudentReply() {
+    const stream = document.getElementById('chat-stream');
+    const reply = document.createElement('div');
+    reply.className = "flex items-start justify-end gap-space-sm";
+    reply.innerHTML = `
+      <div class="flex flex-col items-end gap-1 max-w-[85%] animate-fade-in">
+        <div class="bg-primary text-on-primary p-space-md rounded-2xl rounded-tr-sm space-y-2">
+          <p class="font-body-md text-body-md leading-relaxed">
+            "Furthermore, if states control content unilaterally, democratic scrutiny would be severely compromised."
           </p>
-
-          <div class="pt-2 border-t border-rose-200">
-            <div class="font-bold text-emerald-700 flex items-center gap-1.5 mb-1">
-              <span>✨</span> Alternativa Formal C1 Recomendada:
-            </div>
-            <div class="font-semibold text-emerald-900 font-mono bg-white p-2 rounded-lg border border-emerald-200">
-              "Notwithstanding the proliferation of echo chambers..."
+          <div class="bg-primary-container p-2 rounded-lg flex items-center justify-between gap-space-sm">
+            <div class="flex items-center gap-1.5 font-code-sm text-[11px] text-emerald-streak">
+              <span class="material-symbols-outlined text-[14px]">verified</span>
+              <span>C1 Advanced Syntax Detected (Conditional Type 2)</span>
             </div>
           </div>
-
-          <button class="w-full mt-3 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold text-xs shadow flex items-center justify-center gap-1.5">
-            <span>🧠</span> Guardar en Fichas de Repaso Leitner
-          </button>
         </div>
+        <span class="font-code-sm text-[11px] text-on-surface-variant">Ahora mismo</span>
       </div>
-    </div>
-  </main>
+      <div class="w-8 h-8 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-bold text-code-sm shrink-0 mt-1">LF</div>
+    `;
+    stream.appendChild(reply);
+    stream.scrollTop = stream.scrollHeight;
+  }
 
-  <!-- Barra Navegación Isla Tablet -->
-  <nav class="fixed bottom-4 inset-x-0 mx-auto max-w-2xl bg-white/95 backdrop-blur border border-slate-200 z-30 px-6 py-2.5 rounded-full shadow-xl flex justify-around items-center text-xs font-bold text-slate-500">
-    <a href="index.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>🏠</span><span>Mi Día</span></a>
-    <a href="deberes-examenes.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>📅</span><span>Agenda</span></a>
-    <a href="cuaderno-lm.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>📚</span><span>Cuaderno LM</span></a>
-    <a href="pomodoro-flashcards.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>🧠</span><span>Estudio</span></a>
-    <a href="progreso-ebau.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>📊</span><span>Progreso</span></a>
-  </nav>
-</body>
-</html>
+  function saveToLeitner() {
+    const leitnerBtn = document.getElementById('leitner-btn');
+    leitnerBtn.innerHTML = `
+      <span class="material-symbols-outlined text-[18px] text-emerald-streak">check_circle</span>
+      <span class="text-emerald-streak font-semibold">¡Añadido al Sistema Leitner! (Caja 1 - Repaso Mañana)</span>
+    `;
+    leitnerBtn.classList.add('bg-emerald-streak/10');
+    setTimeout(() => {
+      leitnerBtn.innerHTML = `
+        <span class="material-symbols-outlined text-[18px]">style</span>
+        <span>Convertir Corrección a Flashcard Leitner (1 toque)</span>
+      `;
+      leitnerBtn.classList.remove('bg-emerald-streak/10');
+    }, 2500);
+  }
+
+  function copyConnector(word) {
+    navigator.clipboard?.writeText(word);
+    const box = document.getElementById('pedagogic-box');
+    const note = document.createElement('div');
+    note.className = "absolute top-2 right-2 bg-primary text-on-primary text-[11px] font-code-sm px-2 py-1 rounded shadow-md pointer-events-none";
+    note.textContent = `Copiado: "${word}"`;
+    box.appendChild(note);
+    setTimeout(() => note.remove(), 1200);
+  }
+
+  function changeSpeed(btn) {
+    const speeds = ['1.0x', '1.25x', '0.8x'];
+    const current = btn.textContent;
+    const next = speeds[(speeds.indexOf(current) + 1) % speeds.length];
+    btn.textContent = next;
+  }
+
+  function switchMode(mode) {
+    const modes = ['voice', 'writing', 'pau', 'cambridge'];
+    modes.forEach(m => {
+      const el = document.getElementById(`btn-mode-${m}`);
+      if (m === mode) {
+        el.className = "px-space-md py-2 rounded-lg bg-surface-card text-on-surface font-label-md text-label-md shadow-sm transition-all flex items-center gap-1.5";
+      } else {
+        el.className = "px-space-md py-2 rounded-lg text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all flex items-center gap-1.5";
+      }
+    });
+  }
+
+  function selectStylusTool(btn, tool) {
+    const group = btn.parentElement.querySelectorAll('button');
+    group.forEach(b => {
+      b.className = "w-7 h-7 rounded text-on-surface-variant hover:text-on-surface flex items-center justify-center";
+    });
+    btn.className = "w-7 h-7 rounded bg-surface-card text-on-surface flex items-center justify-center shadow-sm";
+  }
+
+  function playSampleAudio(id) {
+    // Feedback visual for audio playback toggle
+    console.log("Playing sample audio: " + id);
+  }
+
+  function highlightFeedback(anchor) {
+    const pedBox = document.getElementById('pedagogic-box');
+    pedBox.scrollIntoView({ behavior: 'smooth' });
+    pedBox.classList.add('ring-2', 'ring-secondary');
+    setTimeout(() => pedBox.classList.remove('ring-2', 'ring-secondary'), 1500);
+  }
+
+  function toggleStylusMode() {
+    alert("Modo Stylus Activado: Utiliza tu Apple Pencil o S-Pen directamente sobre el recuadro de redacción.");
+  }
+</script></div></main></div></body></html>

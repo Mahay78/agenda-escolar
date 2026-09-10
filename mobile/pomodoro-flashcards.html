@@ -1,51 +1,352 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Pomodoro & Flashcards - Móvil</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>body { padding-bottom: 84px; }</style>
-</head>
-<body class="bg-[#f8f9ff] text-slate-800 font-['Plus_Jakarta_Sans',sans-serif] antialiased min-h-screen">
-  <header class="p-4 bg-white sticky top-0 z-20 border-b border-slate-100 flex items-center justify-between">
-    <h1 class="text-lg font-black text-slate-900">Pomodoro Zen & Fichas</h1>
-    <span class="text-xs font-mono font-bold px-2 py-0.5 bg-amber-50 text-amber-700 rounded-full border border-amber-200">Mazo: Física II</span>
-  </header>
 
-  <main class="p-4 space-y-4">
-    <!-- Reloj Pomodoro -->
-    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm text-center space-y-3">
-      <div class="text-4xl font-black font-mono text-slate-900">25:00</div>
-      <div class="flex justify-center gap-2 text-xs font-bold">
-        <button class="px-5 py-2 rounded-xl bg-slate-900 text-white shadow">▶ Iniciar</button>
-        <button class="px-4 py-2 rounded-xl bg-slate-100 text-slate-600">☕ Pausa 5m</button>
-      </div>
-    </div>
+<html class="h-full" lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;width:100%;min-height:100%;}body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-primary-container": "#8590a6", "secondary-fixed": "#e1e0ff", "on-secondary-fixed-variant": "#2f2ebe", "secondary-fixed-dim": "#c0c1ff", "canvas-bg": "#F8FAFC", "on-primary-fixed-variant": "#3c475a", "surface-container-high": "#dce9ff", "on-primary": "#ffffff", "error": "#ba1a1a", "on-background": "#0b1c30", "on-secondary": "#ffffff", "surface-card": "#FFFFFF", "emerald-streak": "#10B981", "coral-urgent": "#F43F5E", "surface-container-low": "#eff4ff", "on-primary-fixed": "#111c2d", "surface-container-lowest": "#ffffff", "on-surface": "#0b1c30", "primary-container": "#1e293b", "primary-fixed": "#d8e3fb", "on-error-container": "#93000a", "surface-container": "#e5eeff", "primary": "#091426", "on-secondary-container": "#fffbff", "surface-sidebar": "#0F172A", "border-subtle": "#E2E8F0", "surface-variant": "#d3e4fe", "on-error": "#ffffff", "on-tertiary": "#ffffff", "error-container": "#ffdad6", "secondary": "#4648d4", "secondary-container": "#6063ee", "inverse-surface": "#213145", "on-secondary-fixed": "#07006c", "inverse-on-surface": "#eaf1ff", "outline": "#75777d", "surface-bright": "#f8f9ff", "inverse-primary": "#bcc7de", "primary-fixed-dim": "#bcc7de", "surface-dim": "#cbdbf5", "surface-tint": "#545f73", "on-surface-variant": "#45474c", "tertiary": "#201100", "outline-variant": "#c5c6cd", "on-tertiary-fixed": "#2a1700", "on-tertiary-container": "#c88000", "tertiary-container": "#3c2300", "on-tertiary-fixed-variant": "#653e00", "indigo-ai": "#8B5CF6", "tertiary-fixed": "#ffddb8", "tertiary-fixed-dim": "#ffb95f", "surface-container-highest": "#d3e4fe", "background": "#f8f9ff", "surface": "#f8f9ff", "border-dark": "#1E293B" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-xl": "2rem", "space-2xs": "0.125rem", "sidebar-collapsed": "68px", "space-md": "0.75rem", "space-base": "1rem", "max-content-width": "1440px", "space-xs": "0.25rem", "space-2xl": "3rem", "space-lg": "1.5rem", "space-sm": "0.5rem", "sidebar-width": "240px" }, "fontFamily": { "code-sm": ["JetBrains Mono"], "body-md": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "headline-lg": ["Plus Jakarta Sans"], "display": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"] }, "fontSize": { "code-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" }], "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "700" }], "display": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "headline-md": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }] } } } };</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface text-on-surface font-body-md text-body-md antialiased min-h-screen flex flex-col selection:bg-secondary-fixed selection:text-on-secondary-fixed"><header class="fixed top-0 inset-x-0 z-50 pt-safe bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(15,23,42,0.04)]"><div class="h-16 px-space-base flex items-center justify-between gap-space-sm max-w-[390px] mx-auto"><div class="flex items-center gap-space-xs min-w-0"><img alt="Brand logo. - Primary color: #1e293b - Font: plusJakartaSans - Mode: light - Roundness: rounded-md" class="h-8 w-auto object-contain flex-shrink-0" src="https://lh3.googleusercontent.com/aida/AEtjO1Xt0QI0bujpW_dAX6H7ljtxJlCAeurRG7yg3WmK34Y3337QOpaekcq2TvDmfsT6QOLx6yPvqFQ6lMR0ONV4XN3pCbbC0Moc44u3wWWmskWgCAED-65JhSEUE7be9aTm2W_LEGn-W7Tt7oCW9YNICLJJsA8a5Qr889E1KJLpp4CM9cCBFCL7ut8087eXUNV1e4V_aGdKGv3zYQM9qYoEicpJskkjCizFOezyaJjzJiwKpuwovKwFQR4UTIE"/><div class="flex flex-col min-w-0"><span class="font-headline-sm text-headline-sm text-primary tracking-tight truncate leading-none">Agenda</span><span class="font-label-sm text-label-sm text-on-surface-variant truncate uppercase tracking-wider">Mi Día</span></div></div><div class="flex items-center gap-space-xs flex-shrink-0"><div class="inline-flex items-center gap-space-2xs bg-surface-container px-space-xs py-space-2xs rounded-full shadow-[0_1px_4px_rgba(15,23,42,0.03)]"><span class="w-1.5 h-1.5 rounded-full bg-emerald-streak"></span><span class="font-code-sm text-code-sm text-on-surface font-medium hidden xs:inline">100% Offline</span><span class="font-code-sm text-code-sm text-on-surface font-medium xs:hidden">Offline</span></div><div class="inline-flex items-center gap-space-2xs bg-surface-container-low px-space-xs py-space-2xs rounded-full"><span class="material-symbols-outlined text-[16px] text-tertiary-fixed-dim leading-none">local_fire_department</span><span class="font-code-sm text-code-sm text-on-surface font-semibold">14</span></div><div class="p-0.5 rounded-full bg-surface-container-high"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1W4HtfLKFvhZVOn8lq_RjPqpGDGf01l7uvEiv2NXqf6436Nl-aHuR6CAtML8AINYW1OVdencKpooat0WT2GlpFG_-ej9iEW_PBAzEh930WYkrjjjAF3YAH1y4mhhDO4Nq1mBSa9y3bEaooe4_tDk3xyDk7bovvFdweQeRBRERIg_Z3lOeN0tnlp_OWtLXv0n0Ezx50Wx7aq8YZE5jHzP8kAeve1UlCF2mEW5PrOOS5oSFbTZjs9zPtCi5A"/></div></div></div></header><main class="flex-1 flex flex-col relative w-full max-w-[390px] mx-auto px-space-base pt-16 pb-28 bg-surface"><div class="flex flex-col w-full space-y-space-md">
+<!-- Segmented View Switcher -->
+<div class="p-space-2xs bg-surface-container rounded-xl flex items-center shadow-sm">
+<button class="flex-1 py-space-xs px-space-sm rounded-lg font-label-md text-label-md font-semibold flex items-center justify-center gap-space-2xs bg-surface-card text-primary shadow-sm transition-all duration-200" id="tab-pomodoro" onclick="switchMode('pomodoro')" type="button">
+<span class="material-symbols-outlined text-[18px] text-indigo-ai">timer</span>
+<span>Pomodoro Zen</span>
+</button>
+<button class="flex-1 py-space-xs px-space-sm rounded-lg font-label-md text-label-md font-semibold flex items-center justify-center gap-space-2xs text-on-surface-variant hover:text-primary transition-all duration-200" id="tab-leitner" onclick="switchMode('leitner')" type="button">
+<span class="material-symbols-outlined text-[18px] text-emerald-streak">style</span>
+<span>Fichas Leitner</span>
+<span class="bg-surface-container-high text-primary font-code-sm text-[10px] px-1.5 py-0.5 rounded-full font-bold">12</span>
+</button>
+</div>
+<!-- VIEW 1: POMODORO ZEN -->
+<section class="flex flex-col space-y-space-md transition-all duration-300" id="view-pomodoro">
+<!-- Ambient Focus Card -->
+<div class="bg-surface-card rounded-xl p-space-base shadow-sm flex flex-col items-center relative overflow-hidden">
+<!-- Ambient decorative aura -->
+<div class="absolute -top-12 -right-12 w-36 h-36 bg-surface-container rounded-full blur-2xl opacity-60 pointer-events-none"></div>
+<div class="absolute -bottom-10 -left-10 w-32 h-32 bg-surface-container-high rounded-full blur-2xl opacity-50 pointer-events-none"></div>
+<!-- Current Session Header & Tag -->
+<div class="w-full flex items-center justify-between z-10 mb-space-sm">
+<div class="flex items-center gap-space-2xs bg-surface-container px-space-sm py-1 rounded-full">
+<span class="w-2 h-2 rounded-full bg-emerald-streak animate-pulse"></span>
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-wider">Física Teórica II</span>
+</div>
+<div class="flex items-center gap-space-2xs text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-tertiary-fixed-dim">local_fire_department</span>
+<span class="font-code-sm text-code-sm text-primary font-semibold">Bloque 3/4</span>
+</div>
+</div>
+<!-- Zen Circular Countdown -->
+<div class="relative w-52 h-52 flex items-center justify-center my-space-xs">
+<svg class="w-full h-full -rotate-90 transform" viewbox="0 0 160 160">
+<circle class="text-surface-container fill-none" cx="80" cy="80" r="70" stroke="currentColor" stroke-width="6"></circle>
+<circle class="text-secondary fill-none transition-all duration-1000 ease-linear" cx="80" cy="80" id="timer-progress-ring" r="70" stroke="currentColor" stroke-dasharray="440" stroke-dashoffset="88" stroke-linecap="round" stroke-width="6"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant tracking-widest uppercase mb-1">Enfoque Profundo</span>
+<span class="font-code-sm text-[38px] leading-tight font-bold tracking-tight text-primary" id="timer-display">25:00</span>
+<span class="font-label-sm text-label-sm text-emerald-streak font-medium mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">spa</span> Modo Silencioso
+          </span>
+</div>
+</div>
+<!-- Zen Controls -->
+<div class="flex items-center justify-center gap-space-md mt-space-xs z-10 w-full">
+<button aria-label="Reiniciar tiempo" class="w-11 h-11 rounded-full bg-surface-container-low text-on-surface-variant flex items-center justify-center hover:bg-surface-container active:scale-95 transition-all" onclick="resetTimer()" type="button">
+<span class="material-symbols-outlined text-[20px]">restart_alt</span>
+</button>
+<button aria-label="Iniciar o pausar sesión" class="h-14 px-space-lg rounded-full bg-primary-container text-on-primary font-label-md text-label-md flex items-center justify-center gap-space-xs shadow-md active:scale-95 hover:bg-surface-sidebar transition-all" id="btn-timer-toggle" onclick="toggleTimer()" type="button">
+<span class="material-symbols-outlined text-[24px]" id="timer-icon">play_arrow</span>
+<span class="font-semibold text-body-md" id="timer-label">Comenzar Zen</span>
+</button>
+<button aria-label="Saltar bloque" class="w-11 h-11 rounded-full bg-surface-container-low text-on-surface-variant flex items-center justify-center hover:bg-surface-container active:scale-95 transition-all" onclick="skipTimer()" type="button">
+<span class="material-symbols-outlined text-[20px]">skip_next</span>
+</button>
+</div>
+<!-- Ambient Sound Selector -->
+<div class="w-full mt-space-base pt-space-md bg-surface-container-low/60 rounded-xl p-space-sm z-10">
+<div class="flex items-center justify-between mb-space-xs px-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Sonido de Fondo</span>
+<span class="font-code-sm text-code-sm text-indigo-ai flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">graphic_eq</span> Activo
+          </span>
+</div>
+<div class="grid grid-cols-3 gap-space-xs">
+<button class="ambient-pill flex flex-col items-center justify-center p-space-xs rounded-lg bg-surface-card text-primary shadow-sm text-center transition-all" onclick="selectAmbient(this, 'lluvia')" type="button">
+<span class="material-symbols-outlined text-[20px] text-secondary mb-0.5">rainy</span>
+<span class="font-label-sm text-label-sm font-semibold truncate w-full">Lluvia suave</span>
+</button>
+<button class="ambient-pill flex flex-col items-center justify-center p-space-xs rounded-lg bg-surface-container text-on-surface-variant text-center transition-all" onclick="selectAmbient(this, 'cafe')" type="button">
+<span class="material-symbols-outlined text-[20px] mb-0.5">local_cafe</span>
+<span class="font-label-sm text-label-sm font-medium truncate w-full">Cafetería</span>
+</button>
+<button class="ambient-pill flex flex-col items-center justify-center p-space-xs rounded-lg bg-surface-container text-on-surface-variant text-center transition-all" onclick="selectAmbient(this, 'biblioteca')" type="button">
+<span class="material-symbols-outlined text-[20px] mb-0.5">menu_book</span>
+<span class="font-label-sm text-label-sm font-medium truncate w-full">Biblioteca</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- LEITNER SYSTEM PROGRESS (Visible & persistent insight) -->
+<section class="bg-surface-card rounded-xl p-space-base shadow-sm space-y-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<div class="w-7 h-7 rounded-lg bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed-variant">
+<span class="material-symbols-outlined text-[18px]">inventory_2</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-body-md font-bold text-primary leading-tight">Cajas de Leitner</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Repetición espaciada activa</p>
+</div>
+</div>
+<span class="font-code-sm text-code-sm font-semibold px-space-xs py-0.5 rounded-full bg-surface-container text-on-surface">100 Fichas</span>
+</div>
+<!-- 5 Leitner Boxes Strip -->
+<div class="grid grid-cols-5 gap-1.5 pt-space-xs">
+<!-- Box 1 -->
+<div class="flex flex-col items-center bg-coral-urgent/10 p-space-xs rounded-lg text-center">
+<span class="font-label-sm text-[10px] text-coral-urgent font-bold tracking-tight">Caja 1</span>
+<span class="font-code-sm text-body-md font-bold text-primary my-0.5">12</span>
+<span class="font-label-sm text-[9px] text-on-surface-variant uppercase">Diaria</span>
+</div>
+<!-- Box 2 -->
+<div class="flex flex-col items-center bg-surface-container-high p-space-xs rounded-lg text-center">
+<span class="font-label-sm text-[10px] text-secondary font-bold tracking-tight">Caja 2</span>
+<span class="font-code-sm text-body-md font-bold text-primary my-0.5">8</span>
+<span class="font-label-sm text-[9px] text-on-surface-variant uppercase">3 días</span>
+</div>
+<!-- Box 3 -->
+<div class="flex flex-col items-center bg-surface-container p-space-xs rounded-lg text-center">
+<span class="font-label-sm text-[10px] text-primary font-bold tracking-tight">Caja 3</span>
+<span class="font-code-sm text-body-md font-bold text-primary my-0.5">15</span>
+<span class="font-label-sm text-[9px] text-on-surface-variant uppercase">Semanal</span>
+</div>
+<!-- Box 4 -->
+<div class="flex flex-col items-center bg-surface-container-low p-space-xs rounded-lg text-center">
+<span class="font-label-sm text-[10px] text-primary font-bold tracking-tight">Caja 4</span>
+<span class="font-code-sm text-body-md font-bold text-primary my-0.5">20</span>
+<span class="font-label-sm text-[9px] text-on-surface-variant uppercase">Quincenal</span>
+</div>
+<!-- Box 5 -->
+<div class="flex flex-col items-center bg-emerald-streak/10 p-space-xs rounded-lg text-center">
+<span class="font-label-sm text-[10px] text-emerald-streak font-bold tracking-tight">Caja 5</span>
+<span class="font-code-sm text-body-md font-bold text-emerald-streak my-0.5">45</span>
+<span class="font-label-sm text-[9px] text-on-surface-variant uppercase">Dominio</span>
+</div>
+</div>
+</section>
+<!-- INTERACTIVE FLASHCARD SECTION -->
+<section class="space-y-space-sm" id="view-flashcard-interactive">
+<div class="flex items-center justify-between px-space-xs">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Repaso Actual • Ficha 4 de 12</span>
+<span class="font-code-sm text-label-sm text-secondary font-bold">Caja 1 ➔ Caja 2</span>
+</div>
+<!-- 3D Flip Card Container -->
+<div class="relative w-full min-h-[260px] cursor-pointer perspective" onclick="toggleFlashcard()">
+<!-- Card Front -->
+<div class="w-full min-h-[260px] bg-surface-card rounded-xl p-space-base shadow-sm flex flex-col justify-between transition-all duration-300" id="flashcard-front">
+<div>
+<div class="flex items-center justify-between mb-space-sm">
+<span class="px-space-xs py-0.5 rounded bg-surface-container text-primary font-label-sm text-label-sm font-semibold">Pregunta Clave</span>
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">touch_app</span>
+</div>
+<p class="font-headline-sm text-headline-sm text-primary font-semibold leading-snug">
+            ¿Cuál es la ley de inducción de Faraday y qué indica el signo negativo de la ley de Lenz?
+          </p>
+</div>
+<div class="pt-space-base flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<img class="w-10 h-10 rounded-lg object-cover bg-surface-container" data-alt="A clean minimalist vector diagram of electromagnetic magnetic field flux passing through a wire coil circuit with glowing indigo electric vectors and golden induction arrows on a soft slate background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGUS58dtidfZ8nkUGlDMEnddKgUb6ZAEttuYNxgQ3nOqDM1-fIlXmhl2KQ_m4CQ5YNgN4OtQIf3bjus0RWZ8MgSd-_5YokFNUtwV6PlrTMcho696t06c8yXnmFZ64w-_dmIBH_FmGnewAU3x8QzziGRsmE04lrc9Q6Wp7ucJ5lbWhR8i1n0-1cZcu6Sz4Ga5mdnM5-82RTUV_TS1uT9p3KNXXzOT5k-iF7CP4U5pp0Qo1Wc9jjqE3P"/>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Toca para ver la respuesta</span>
+</div>
+<span class="material-symbols-outlined text-secondary text-[22px]">flip</span>
+</div>
+</div>
+<!-- Card Back (Hidden by default) -->
+<div class="hidden w-full min-h-[260px] bg-surface-card rounded-xl p-space-base shadow-sm flex flex-col justify-between transition-all duration-300" id="flashcard-back">
+<div>
+<div class="flex items-center justify-between mb-space-sm">
+<span class="px-space-xs py-0.5 rounded bg-emerald-streak/10 text-emerald-streak font-label-sm text-label-sm font-semibold">Respuesta Verificada</span>
+<span class="material-symbols-outlined text-[18px] text-secondary">verified</span>
+</div>
+<p class="font-body-md text-body-md text-primary leading-relaxed">
+            La <strong class="text-secondary">Ley de Faraday</strong> establece que la tensión inducida en un circuito cerrado es directamente proporcional a la rapidez con que cambia el flujo magnético que atraviesa una superficie cualquiera con el circuito como borde:
+          </p>
+<div class="mt-space-xs p-space-xs rounded-lg bg-surface-container-low font-code-sm text-code-sm text-primary text-center">
+            $\mathcal{E} = -\frac{d\Phi_B}{dt}$
+          </div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-space-xs">
+            El <span class="font-bold text-coral-urgent">signo negativo (Lenz)</span> indica que la corriente inducida genera un campo que se opone a la variación del flujo que la produce.
+          </p>
+</div>
+<div class="pt-space-xs flex items-center justify-end">
+<span class="font-label-sm text-label-sm text-secondary font-medium">Volver a ver la pregunta</span>
+</div>
+</div>
+</div>
+<!-- Leitner Self-Assessment Actions -->
+<div class="space-y-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant px-space-xs">¿Cómo te fue con este concepto?</span>
+<div class="grid grid-cols-3 gap-space-xs">
+<button class="p-space-xs rounded-lg bg-error-container/60 hover:bg-error-container text-on-error-container flex flex-col items-center justify-center shadow-sm active:scale-95 transition-all" onclick="rateCard('hard')" type="button">
+<span class="font-label-md text-label-md font-bold">Difícil</span>
+<span class="font-code-sm text-[10px] text-coral-urgent font-semibold mt-0.5">➔ Caja 1</span>
+</button>
+<button class="p-space-xs rounded-lg bg-surface-container hover:bg-surface-container-high text-primary flex flex-col items-center justify-center shadow-sm active:scale-95 transition-all" onclick="rateCard('good')" type="button">
+<span class="font-label-md text-label-md font-bold">Bien</span>
+<span class="font-code-sm text-[10px] text-secondary font-semibold mt-0.5">➔ Caja 3</span>
+</button>
+<button class="p-space-xs rounded-lg bg-emerald-streak/15 hover:bg-emerald-streak/25 text-emerald-streak flex flex-col items-center justify-center shadow-sm active:scale-95 transition-all" onclick="rateCard('easy')" type="button">
+<span class="font-label-md text-label-md font-bold">Fácil</span>
+<span class="font-code-sm text-[10px] text-emerald-streak font-bold mt-0.5">➔ Caja 4</span>
+</button>
+</div>
+</div>
+</section>
+<!-- QUICK CAPTURE / OCR ACTION STRIP -->
+<section class="bg-surface-card rounded-xl p-space-base shadow-sm flex items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-primary flex-shrink-0">
+<span class="material-symbols-outlined text-[22px]">document_scanner</span>
+</div>
+<div class="min-w-0">
+<h3 class="font-headline-sm text-body-md font-bold text-primary truncate">Crear Flashcards</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Escribe o captura apuntes con IA</p>
+</div>
+</div>
+<div class="flex items-center gap-space-2xs flex-shrink-0">
+<button aria-label="Escanear apuntes con OCR" class="p-space-xs rounded-lg bg-surface-container text-primary hover:bg-surface-container-high transition-colors" title="Escanear con OCR" type="button">
+<span class="material-symbols-outlined text-[20px]">photo_camera</span>
+</button>
+<button class="px-space-sm py-space-xs rounded-lg bg-primary-container text-on-primary font-label-sm text-label-sm font-semibold flex items-center gap-1 hover:bg-surface-sidebar active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[16px]">add</span> Nueva
+      </button>
+</div>
+</section>
+<!-- DAILY STREAK MINI HERO BANNER -->
+<section class="relative overflow-hidden rounded-xl bg-surface-container p-space-base shadow-sm">
+<div class="flex items-center justify-between relative z-10">
+<div class="space-y-1">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[20px] text-tertiary-fixed-dim">local_fire_department</span>
+<span class="font-headline-sm text-body-md font-bold text-primary">¡Racha de 14 días activa!</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Has completado 45 repeticiones hoy. Estás al 90% de retención cerebral.</p>
+</div>
+<div class="flex-shrink-0 ml-space-sm">
+<img class="w-12 h-12 rounded-full object-cover bg-surface-card shadow-sm" data-alt="A stylized miniature golden badge with warm glowing sparks and an emerald leaf motif representing academic dedication and daily intellectual streak on a clean slate background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbWNiNzHMBszvUGL1MNAGtFbtoKWs7b1_gzT5Y5dWXBncqX_hDBG8tOLLD5PtyRBwQ17A-xOUGSyKPmqR3DGYRUoplLkhyPfdn-DSUK54YqIG-ca2BpB8zCPKzTGvZh5PxBnk8v7MI1AjWVDMppocfhzVrR6djtgYQTKtLn3QEcOrcukJAsULbaKDUoZI2lY-nnPLPU4wSYKACKsfQpyfBJzb7BHf_kIpeGWHJv2ykKFA3Ox3EYUnO"/>
+</div>
+</div>
+</section>
+</div>
+<script>
+  // Mode switcher behavior
+  function switchMode(mode) {
+    const tabPomodoro = document.getElementById('tab-pomodoro');
+    const tabLeitner = document.getElementById('tab-leitner');
+    const viewPomodoro = document.getElementById('view-pomodoro');
+    
+    if (mode === 'pomodoro') {
+      tabPomodoro.className = 'flex-1 py-space-xs px-space-sm rounded-lg font-label-md text-label-md font-semibold flex items-center justify-center gap-space-2xs bg-surface-card text-primary shadow-sm transition-all duration-200';
+      tabLeitner.className = 'flex-1 py-space-xs px-space-sm rounded-lg font-label-md text-label-md font-semibold flex items-center justify-center gap-space-2xs text-on-surface-variant hover:text-primary transition-all duration-200';
+      viewPomodoro.classList.remove('hidden');
+    } else {
+      tabLeitner.className = 'flex-1 py-space-xs px-space-sm rounded-lg font-label-md text-label-md font-semibold flex items-center justify-center gap-space-2xs bg-surface-card text-primary shadow-sm transition-all duration-200';
+      tabPomodoro.className = 'flex-1 py-space-xs px-space-sm rounded-lg font-label-md text-label-md font-semibold flex items-center justify-center gap-space-2xs text-on-surface-variant hover:text-primary transition-all duration-200';
+      // Smooth scroll focus to flashcard
+      const cardSection = document.getElementById('view-flashcard-interactive');
+      if (cardSection) {
+        cardSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }
 
-    <!-- Ficha Leitner Interactiva -->
-    <div class="p-5 bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-2xl shadow space-y-3 min-h-[160px] flex flex-col justify-between">
-      <div class="flex justify-between text-xs text-blue-200">
-        <span>Ficha 4 de 20 • Caja 3</span>
-        <span>Toca para voltear 🔄</span>
-      </div>
-      <h3 class="text-base font-extrabold text-center">¿Cuál es la unidad del flujo magnético en el SI?</h3>
-      <div class="flex justify-between gap-2 pt-2">
-        <button class="flex-1 py-1.5 bg-rose-500/80 rounded-lg text-xs font-bold">Repetir</button>
-        <button class="flex-1 py-1.5 bg-emerald-500 rounded-lg text-xs font-bold">¡Dominada!</button>
-      </div>
-    </div>
-  </main>
+  // Flashcard flip interaction
+  function toggleFlashcard() {
+    const front = document.getElementById('flashcard-front');
+    const back = document.getElementById('flashcard-back');
+    if (front.classList.contains('hidden')) {
+      front.classList.remove('hidden');
+      back.classList.add('hidden');
+    } else {
+      front.classList.add('hidden');
+      back.classList.remove('hidden');
+    }
+  }
 
-  <nav class="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur border-t border-slate-200 z-30 px-4 py-2 flex justify-around items-center text-[10px] font-bold text-slate-500">
-    <a href="index.html" class="flex flex-col items-center gap-1 hover:text-slate-900"><span>🏠</span><span>Mi Día</span></a>
-    <a href="agenda.html" class="flex flex-col items-center gap-1 hover:text-slate-900"><span>📅</span><span>Agenda</span></a>
-    <a href="camera-ocr.html" class="w-12 h-12 -mt-5 rounded-full bg-slate-900 text-white flex items-center justify-center text-xl shadow-lg border-4 border-[#f8f9ff]">+</a>
-    <a href="cuaderno-lm.html" class="flex flex-col items-center gap-1 text-blue-600"><span>🧠</span><span>Estudio</span></a>
-    <a href="progreso-ebau.html" class="flex flex-col items-center gap-1 hover:text-slate-900"><span>📊</span><span>Progreso</span></a>
-  </nav>
-</body>
-</html>
+  // Self assessment feedback
+  function rateCard(rating) {
+    const front = document.getElementById('flashcard-front');
+    const back = document.getElementById('flashcard-back');
+    // Simple reset to front with delight feedback
+    front.classList.remove('hidden');
+    back.classList.add('hidden');
+  }
+
+  // Pomodoro simple timer state simulation
+  let timerInterval = null;
+  let secondsRemaining = 1500;
+  const totalSeconds = 1500;
+
+  function formatTime(secs) {
+    const m = Math.floor(secs / 60).toString().padStart(2, '0');
+    const s = (secs % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  }
+
+  function toggleTimer() {
+    const btnIcon = document.getElementById('timer-icon');
+    const btnLabel = document.getElementById('timer-label');
+    const display = document.getElementById('timer-display');
+    const ring = document.getElementById('timer-progress-ring');
+
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      btnIcon.textContent = 'play_arrow';
+      btnLabel.textContent = 'Reanudar Zen';
+    } else {
+      btnIcon.textContent = 'pause';
+      btnLabel.textContent = 'Pausar Enfoque';
+      timerInterval = setInterval(() => {
+        if (secondsRemaining > 0) {
+          secondsRemaining--;
+          display.textContent = formatTime(secondsRemaining);
+          const offset = 440 - (440 * (totalSeconds - secondsRemaining)) / totalSeconds;
+          ring.style.strokeDashoffset = offset;
+        } else {
+          clearInterval(timerInterval);
+          timerInterval = null;
+          btnIcon.textContent = 'play_arrow';
+          btnLabel.textContent = 'Nuevo Ciclo';
+        }
+      }, 1000);
+    }
+  }
+
+  function resetTimer() {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+    secondsRemaining = 1500;
+    document.getElementById('timer-display').textContent = '25:00';
+    document.getElementById('timer-progress-ring').style.strokeDashoffset = 88;
+    document.getElementById('timer-icon').textContent = 'play_arrow';
+    document.getElementById('timer-label').textContent = 'Comenzar Zen';
+  }
+
+  function skipTimer() {
+    resetTimer();
+  }
+
+  function selectAmbient(button, type) {
+    const pills = document.querySelectorAll('.ambient-pill');
+    pills.forEach(p => {
+      p.className = 'ambient-pill flex flex-col items-center justify-center p-space-xs rounded-lg bg-surface-container text-on-surface-variant text-center transition-all';
+    });
+    button.className = 'ambient-pill flex flex-col items-center justify-center p-space-xs rounded-lg bg-surface-card text-primary shadow-sm text-center transition-all';
+  }
+</script></main><nav class="fixed bottom-0 inset-x-0 z-50 pb-safe bg-surface/90 backdrop-blur-xl shadow-[0_-4px_16px_rgba(15,23,42,0.05)]" data-active-classes="text-secondary font-semibold"><div class="h-20 max-w-[390px] mx-auto px-space-xs flex items-center justify-between relative"><a class="flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] py-1 text-on-surface-variant hover:text-on-surface transition-colors" data-path="mi-dia" href="index.html"><span class="material-symbols-outlined text-[24px] leading-none mb-0.5">wb_sunny</span><span class="font-label-sm text-label-sm leading-tight truncate">Mi Día</span></a><a class="flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] py-1 text-on-surface-variant hover:text-on-surface transition-colors" data-path="agenda" href="agenda.html"><span class="material-symbols-outlined text-[24px] leading-none mb-0.5">calendar_month</span><span class="font-label-sm text-label-sm leading-tight truncate">Agenda</span></a><div class="relative -top-5 flex-shrink-0 px-space-xs"><a href="camera-ocr.html" aria-label="Cámara OCR" class="w-14 h-14 rounded-full bg-primary-container text-on-primary flex items-center justify-center shadow-[0_8px_16px_rgba(15,23,42,0.18)] hover:bg-surface-sidebar active:scale-95 transition-all focus:outline-none"><span class="material-symbols-outlined text-[28px] leading-none">photo_camera</span></a></div><a class="flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] py-1 text-on-surface-variant hover:text-on-surface transition-colors" data-path="estudio" href="cuaderno-lm.html"><span class="material-symbols-outlined text-[24px] leading-none mb-0.5">psychology</span><span class="font-label-sm text-label-sm leading-tight truncate">Estudio</span></a><a class="flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] py-1 text-on-surface-variant hover:text-on-surface transition-colors" data-path="progreso" href="progreso-ebau.html"><span class="material-symbols-outlined text-[24px] leading-none mb-0.5">insert_chart</span><span class="font-label-sm text-label-sm leading-tight truncate">Progreso</span></a></div></nav></body></html>

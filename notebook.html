@@ -1,1085 +1,417 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>📚 Cuaderno LM - Estudio Inteligente Basado en tus Fuentes</title>
-  <meta name="description" content="Entorno de estudio inteligente estilo NotebookLM. Sube tus apuntes y pizarras para generar guías de estudio, podcasts educativos, exámenes de prueba y resolver dudas basadas en tus fuentes." />
-  <link rel="icon" href="./icon.svg" type="image/svg+xml" />
-  <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
-  <style>
-    :root {
-      --bg-app: #0f172a;
-      --bg-surface: #1e293b;
-      --bg-surface-elevated: #243248;
-      --bg-input: #0f172a;
-      --border-color: #334155;
-      --border-focus: #3b82f6;
-      --primary: #3b82f6;
-      --primary-hover: #2563eb;
-      --accent-purple: #8b5cf6;
-      --accent-emerald: #10b981;
-      --accent-amber: #f59e0b;
-      --accent-rose: #f43f5e;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --text-faint: #64748b;
-      --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 16px;
-      --radius-full: 9999px;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
-      --shadow-md: 0 4px 12px rgba(0,0,0,0.35);
-      --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.5);
-      --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: var(--font-main);
-      background-color: var(--bg-app);
-      color: var(--text-main);
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* BARRA SUPERIOR */
-    .nlm-header {
-      height: 60px;
-      background: var(--bg-surface);
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 18px;
-      flex-shrink: 0;
-      z-index: 20;
-    }
-
-    .nlm-header-left {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .btn-back-agenda {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      border-radius: var(--radius-full);
-      background: rgba(255, 255, 255, 0.06);
-      color: var(--text-muted);
-      border: 1px solid var(--border-color);
-      text-decoration: none;
-      font-size: 0.8rem;
-      font-weight: 600;
-      transition: all 0.2s ease;
-    }
-
-    .btn-back-agenda:hover {
-      background: rgba(255, 255, 255, 0.12);
-      color: #fff;
-    }
-
-    .nlm-brand {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .nlm-logo-badge {
-      width: 32px;
-      height: 32px;
-      border-radius: var(--radius-sm);
-      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.1rem;
-      box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
-    }
-
-    .nlm-title-group h1 {
-      font-size: 1.05rem;
-      font-weight: 800;
-      letter-spacing: -0.3px;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .nlm-tag-pro {
-      font-size: 0.65rem;
-      padding: 2px 6px;
-      border-radius: var(--radius-full);
-      background: rgba(139, 92, 246, 0.2);
-      color: #c4b5fd;
-      border: 1px solid rgba(139, 92, 246, 0.4);
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-
-    .nlm-header-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .btn-header-action {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
-      border-radius: var(--radius-full);
-      background: var(--bg-surface-elevated);
-      color: var(--text-main);
-      border: 1px solid var(--border-color);
-      font-size: 0.82rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .btn-header-action:hover {
-      background: var(--border-color);
-    }
-
-    .btn-key-setup {
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.25));
-      border-color: rgba(139, 92, 246, 0.4);
-      color: #c4b5fd;
-    }
-
-    .btn-key-setup:hover {
-      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-      color: #fff;
-    }
-
-    /* TABS MÓVILES (SOLO PANTALLAS PEQUEÑAS) */
-    .mobile-tab-nav {
-      display: none;
-      background: var(--bg-surface);
-      border-bottom: 1px solid var(--border-color);
-      padding: 6px 12px;
-      gap: 8px;
-    }
-
-    .mobile-tab-btn {
-      flex: 1;
-      padding: 8px 12px;
-      border-radius: var(--radius-md);
-      background: transparent;
-      color: var(--text-muted);
-      border: none;
-      font-size: 0.82rem;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: all 0.2s ease;
-    }
-
-    .mobile-tab-btn.active {
-      background: var(--bg-surface-elevated);
-      color: #fff;
-      border: 1px solid var(--border-color);
-    }
-
-    /* CONTENEDOR PRINCIPAL: 3 COLUMNAS */
-    .nlm-container {
-      display: grid;
-      grid-template-columns: 280px 1fr 380px;
-      height: calc(100vh - 60px);
-      overflow: hidden;
-    }
-
-    /* 1. COLUMNA IZQUIERDA: FUENTES */
-    .col-sources {
-      background: var(--bg-surface);
-      border-right: 1px solid var(--border-color);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .panel-header {
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-shrink: 0;
-    }
-
-    .panel-title {
-      font-size: 0.88rem;
-      font-weight: 700;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .badge-count {
-      font-size: 0.72rem;
-      padding: 2px 7px;
-      border-radius: var(--radius-full);
-      background: var(--bg-surface-elevated);
-      color: var(--text-muted);
-      font-weight: 700;
-    }
-
-    .btn-add-source {
-      padding: 6px 12px;
-      border-radius: var(--radius-full);
-      background: var(--primary);
-      color: #fff;
-      border: none;
-      font-size: 0.78rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .btn-add-source:hover {
-      background: var(--primary-hover);
-    }
-
-    .sources-list {
-      flex: 1;
-      overflow-y: auto;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .source-card {
-      background: var(--bg-surface-elevated);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      position: relative;
-    }
-
-    .source-card:hover {
-      border-color: var(--primary);
-      transform: translateY(-1px);
-    }
-
-    .source-card.selected {
-      border-color: var(--primary);
-      background: rgba(59, 130, 246, 0.1);
-    }
-
-    .source-header {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-    }
-
-    .source-icon {
-      font-size: 1.1rem;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-
-    .source-info {
-      flex: 1;
-      overflow: hidden;
-    }
-
-    .source-title {
-      font-size: 0.84rem;
-      font-weight: 700;
-      color: var(--text-main);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .source-meta {
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-
-    .source-preview {
-      font-size: 0.76rem;
-      color: var(--text-faint);
-      line-height: 1.35;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .btn-delete-source {
-      background: transparent;
-      border: none;
-      color: var(--text-faint);
-      font-size: 0.85rem;
-      cursor: pointer;
-      padding: 2px;
-      border-radius: 4px;
-      transition: color 0.2s;
-    }
-
-    .btn-delete-source:hover {
-      color: var(--accent-rose);
-    }
-
-    .empty-sources {
-      text-align: center;
-      padding: 36px 16px;
-      color: var(--text-muted);
-      font-size: 0.82rem;
-      line-height: 1.5;
-    }
-
-    /* 2. COLUMNA CENTRAL: CENTRO DE ESTUDIO (STUDIO) */
-    .col-studio {
-      background: var(--bg-app);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      border-right: 1px solid var(--border-color);
-    }
-
-    .studio-header {
-      padding: 14px 20px;
-      background: var(--bg-surface);
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-shrink: 0;
-    }
-
-    /* Barra de Herramientas de Estudio (Studio Actions) */
-    .studio-toolbar {
-      display: flex;
-      gap: 8px;
-      padding: 12px 20px;
-      background: var(--bg-surface);
-      border-bottom: 1px solid var(--border-color);
-      overflow-x: auto;
-      scrollbar-width: none;
-      flex-shrink: 0;
-    }
-
-    .studio-toolbar::-webkit-scrollbar {
-      display: none;
-    }
-
-    .btn-tool {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 14px;
-      border-radius: var(--radius-full);
-      background: var(--bg-surface-elevated);
-      color: var(--text-main);
-      border: 1px solid var(--border-color);
-      font-size: 0.8rem;
-      font-weight: 700;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s ease;
-      flex-shrink: 0;
-    }
-
-    .btn-tool:hover {
-      background: rgba(59, 130, 246, 0.15);
-      border-color: var(--primary);
-      color: var(--primary);
-      transform: translateY(-1px);
-    }
-
-    .btn-tool-podcast {
-      background: linear-gradient(135deg, rgba(244, 63, 94, 0.15), rgba(139, 92, 246, 0.2));
-      border-color: rgba(244, 63, 94, 0.4);
-      color: #fda4af;
-    }
-
-    .btn-tool-podcast:hover {
-      background: linear-gradient(135deg, #f43f5e, #8b5cf6);
-      color: #fff;
-    }
-
-    /* Contenido del Studio */
-    .studio-content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    /* REPRODUCTOR DE PODCAST DE ESTUDIO */
-    .audio-overview-card {
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
-      border: 1px solid rgba(139, 92, 246, 0.35);
-      border-radius: var(--radius-lg);
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      box-shadow: 0 4px 20px rgba(139, 92, 246, 0.15);
-      animation: fadeIn 0.3s ease;
-    }
-
-    .audio-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .audio-title-group {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .audio-icon-pulse {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #f43f5e, #8b5cf6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.1rem;
-      color: #fff;
-    }
-
-    .audio-controls {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .btn-audio-play {
-      padding: 8px 18px;
-      border-radius: var(--radius-full);
-      background: linear-gradient(135deg, #f43f5e, #8b5cf6);
-      color: #fff;
-      border: none;
-      font-weight: 700;
-      font-size: 0.85rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: transform 0.2s;
-    }
-
-    .btn-audio-play:hover {
-      transform: scale(1.04);
-    }
-
-    .audio-speed-select {
-      background: var(--bg-input);
-      color: var(--text-muted);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-full);
-      padding: 4px 10px;
-      font-size: 0.76rem;
-      font-weight: 600;
-    }
-
-    /* DOCUMENTO GENERADO (GUÍA, FAQs, FICHAS) */
-    .generated-artifact-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      padding: 22px;
-      line-height: 1.6;
-      box-shadow: var(--shadow-sm);
-      animation: fadeIn 0.3s ease;
-    }
-
-    .artifact-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .artifact-header h3 {
-      font-size: 1.05rem;
-      font-weight: 800;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .artifact-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .artifact-body h1, .artifact-body h2, .artifact-body h3 {
-      margin: 16px 0 8px 0;
-      color: #fff;
-    }
-
-    .artifact-body p {
-      margin-bottom: 12px;
-      color: var(--text-main);
-    }
-
-    .artifact-body ul, .artifact-body ol {
-      margin: 8px 0 14px 22px;
-    }
-
-    .artifact-body li {
-      margin-bottom: 6px;
-    }
-
-    .artifact-body blockquote {
-      border-left: 3px solid var(--primary);
-      padding-left: 14px;
-      margin: 14px 0;
-      color: var(--text-muted);
-      font-style: italic;
-    }
-
-    /* 3. COLUMNA DERECHA: CHAT CON TUS FUENTES */
-    .col-chat {
-      background: var(--bg-surface);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .chat-messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .chat-bubble {
-      max-width: 90%;
-      line-height: 1.45;
-      font-size: 0.88rem;
-      animation: fadeIn 0.2s ease;
-    }
-
-    .chat-bubble-user {
-      align-self: flex-end;
-      background: var(--primary);
-      color: #fff;
-      padding: 10px 14px;
-      border-radius: 16px 16px 4px 16px;
-    }
-
-    .chat-bubble-bot {
-      align-self: flex-start;
-      background: var(--bg-surface-elevated);
-      color: var(--text-main);
-      border: 1px solid var(--border-color);
-      padding: 12px 16px;
-      border-radius: 16px 16px 16px 4px;
-    }
-
-    .chat-citation {
-      display: inline-block;
-      padding: 2px 6px;
-      background: rgba(59, 130, 246, 0.2);
-      color: #93c5fd;
-      border-radius: 4px;
-      font-size: 0.72rem;
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 600;
-      margin: 0 2px;
-      cursor: pointer;
-    }
-
-    .chat-citation:hover {
-      background: var(--primary);
-      color: #fff;
-    }
-
-    .chat-input-container {
-      padding: 14px 16px;
-      background: var(--bg-surface);
-      border-top: 1px solid var(--border-color);
-    }
-
-    .chat-form {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .chat-input {
-      flex: 1;
-      padding: 10px 14px;
-      border-radius: var(--radius-full);
-      background: var(--bg-input);
-      color: #fff;
-      border: 1px solid var(--border-color);
-      outline: none;
-      font-family: inherit;
-      font-size: 0.88rem;
-    }
-
-    .chat-input:focus {
-      border-color: var(--primary);
-    }
-
-    .btn-chat-send {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: var(--primary);
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-      transition: transform 0.2s;
-      flex-shrink: 0;
-    }
-
-    .btn-chat-send:hover {
-      transform: scale(1.06);
-    }
-
-    /* MODAL GENERAL */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(4px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-      padding: 16px;
-    }
-
-    .modal-overlay.hidden {
-      display: none;
-    }
-
-    .modal-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      width: 100%;
-      max-width: 600px;
-      padding: 24px;
-      box-shadow: var(--shadow-lg);
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .modal-title {
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: #fff;
-    }
-
-    .btn-close-modal {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      font-size: 1.3rem;
-      cursor: pointer;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .form-label {
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .form-input, .form-textarea {
-      background: var(--bg-input);
-      color: #fff;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      padding: 10px 14px;
-      font-family: inherit;
-      font-size: 0.9rem;
-      outline: none;
-    }
-
-    .form-input:focus, .form-textarea:focus {
-      border-color: var(--primary);
-    }
-
-    .form-textarea {
-      resize: vertical;
-      min-height: 140px;
-    }
-
-    /* RESPONSIVE MÓVIL */
-    @media (max-width: 900px) {
-      .mobile-tab-nav {
-        display: flex;
-      }
-
-      .nlm-container {
-        grid-template-columns: 1fr;
-        height: calc(100vh - 105px);
-      }
-
-      .col-sources, .col-studio, .col-chat {
-        display: none;
-      }
-
-      .col-sources.active-mobile-view,
-      .col-studio.active-mobile-view,
-      .col-chat.active-mobile-view {
-        display: flex;
-      }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
-</head>
-<body>
-
-  <!-- BARRA SUPERIOR -->
-  <header class="nlm-header">
-    <div class="nlm-header-left">
-      <a href="./index.html" class="btn-back-agenda" title="Regresar a la Agenda Escolar">
-        ← Volver a la Agenda
-      </a>
-      <div class="nlm-brand">
-        <div class="nlm-logo-badge">📚</div>
-        <div class="nlm-title-group">
-          <h1>Cuaderno LM <span class="nlm-tag-pro">Estudio</span></h1>
-        </div>
-      </div>
-    </div>
-
-    <div class="nlm-header-right">
-      <button type="button" id="btn-config-key" class="btn-header-action btn-key-setup" title="Configurar clave de Gemini">
-        ⚙️ Clave IA
-      </button>
-      <button type="button" id="btn-new-notebook" class="btn-header-action" title="Nuevo cuaderno de estudio">
-        ➕ Nuevo Cuaderno
-      </button>
-    </div>
-  </header>
-
-  <!-- NAVEGACIÓN EN PESTAÑAS PARA MÓVILES -->
-  <nav class="mobile-tab-nav">
-    <button type="button" class="mobile-tab-btn active" data-mobile-view="col-sources">
-      📁 Fuentes (<span id="mobile-sources-count">0</span>)
-    </button>
-    <button type="button" class="mobile-tab-btn" data-mobile-view="col-studio">
-      📖 Estudio Activo
-    </button>
-    <button type="button" class="mobile-tab-btn" data-mobile-view="col-chat">
-      💬 Preguntar a las Fuentes
-    </button>
-  </nav>
-
-  <!-- CONTENEDOR PRINCIPAL: 3 COLUMNAS -->
-  <main class="nlm-container">
-
-    <!-- COLUMNA 1: FUENTES DE ESTUDIO -->
-    <section class="col-sources active-mobile-view" id="col-sources">
-      <div class="panel-header">
-        <div class="panel-title">
-          <span>📁 Fuentes Activas</span>
-          <span id="sources-count-badge" class="badge-count">0</span>
-        </div>
-        <button type="button" id="btn-open-add-source" class="btn-add-source">
-          ➕ Añadir Fuente
-        </button>
-      </div>
-
-      <div class="sources-list" id="sources-list-container">
-        <!-- Tarjetas de fuentes añadidas -->
-      </div>
-    </section>
-
-    <!-- COLUMNA 2: CENTRO DE ESTUDIO (STUDIO & HERRAMIENTAS) -->
-    <section class="col-studio" id="col-studio">
-      <div class="studio-header">
-        <div class="panel-title">
-          <span>📖 Centro de Estudio y Generación</span>
-        </div>
-        <span id="studio-status" style="font-size: 0.78rem; color: var(--text-muted);">
-          Selecciona una herramienta para estudiar tus fuentes
-        </span>
-      </div>
-
-      <!-- Barra de herramientas tipo NotebookLM -->
-      <div class="studio-toolbar">
-        <button type="button" class="btn-tool btn-tool-podcast" id="btn-tool-podcast" title="Generar un debate de audio explicativo">
-          🎙️ Audio Resumen / Podcast
-        </button>
-        <button type="button" class="btn-tool" id="btn-tool-guide" title="Crear guía estructurada con ideas y definiciones clave">
-          📖 Guía de Estudio
-        </button>
-        <button type="button" class="btn-tool" id="btn-tool-quiz" title="Generar preguntas tipo examen y test">
-          ❓ Preguntas de Examen
-        </button>
-        <button type="button" class="btn-tool" id="btn-tool-flashcards" title="Generar fichas para el sistema Leitner">
-          🎴 Fichas de Estudio
-        </button>
-        <button type="button" class="btn-tool" id="btn-tool-summary" title="Resumen ejecutivo rápido">
-          ⚡ Resumen
-        </button>
-        <button type="button" class="btn-tool" id="btn-tool-scratchpad" title="Abrir mi Bloc de Notas personal">
-          📝 Bloc de Notas
-        </button>
-      </div>
-
-      <!-- Contenedor del contenido generado -->
-      <div class="studio-content" id="studio-content">
-        <!-- Tarjeta de bienvenida cuando no hay artefactos -->
-        <div class="generated-artifact-card" id="studio-welcome-card">
-          <div class="artifact-header">
-            <h3>✨ Bienvenido a tu Cuaderno de Estudio LM</h3>
-          </div>
-          <div class="artifact-body">
-            <p>Este espacio transforma tus apuntes desordenados, fotos de la pizarra y textos del libro en <strong>herramientas de memorización y aprendizaje activo</strong>:</p>
-            <ul>
-              <li><strong>Paso 1:</strong> Añade una o más fuentes en el panel izquierdo (pega apuntes de clase, resúmenes o fotografías).</li>
-              <li><strong>Paso 2:</strong> Pulsa en <strong>🎙️ Audio Resumen</strong> para escuchar un podcast explicativo de tus fuentes, o en <strong>📖 Guía de Estudio</strong> para resumirlo todo.</li>
-              <li><strong>Paso 3:</strong> Pregúntale dudas en el chat derecho; la IA solo responderá basándose estrictamente en lo que dicen tus documentos.</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Reproductor de Audio / Podcast (Oculto al inicio) -->
-        <div class="audio-overview-card hidden" id="audio-overview-container">
-          <div class="audio-header">
-            <div class="audio-title-group">
-              <div class="audio-icon-pulse">🎙️</div>
-              <div>
-                <h4 style="font-size: 0.95rem; font-weight: 800; color: #fff;">Podcast de Estudio Escolar</h4>
-                <p style="font-size: 0.74rem; color: var(--text-muted);">Explicación guiada en voz alta de tus fuentes</p>
-              </div>
-            </div>
-            <div class="audio-controls">
-              <select id="audio-speed-select" class="audio-speed-select">
-                <option value="1">1.0x</option>
-                <option value="1.2">1.2x</option>
-                <option value="1.4">1.4x</option>
-              </select>
-              <button type="button" id="btn-audio-play-pause" class="btn-audio-play">
-                ▶️ Reproducir
-              </button>
-            </div>
-          </div>
-          <p id="audio-transcript-snippet" style="font-size: 0.8rem; color: var(--text-muted); font-style: italic; line-height: 1.4;"></p>
-        </div>
-
-        <!-- Bloc de Notas Personal (Scratchpad) -->
-        <div class="generated-artifact-card hidden" id="studio-scratchpad-card">
-          <div class="artifact-header">
-            <h3>📝 Bloc de Notas Personal (Scratchpad)</h3>
-            <div class="artifact-actions">
-              <button type="button" class="btn-header-action" id="btn-copy-scratchpad">📋 Copiar</button>
-              <button type="button" class="btn-header-action" id="btn-clear-scratchpad" style="color: var(--accent-rose);">🗑️ Limpiar</button>
-            </div>
-          </div>
-          <div class="artifact-body">
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px;">
-              Guarda tus notas, resúmenes o fragmentos del chat. Se guardan automáticamente en tu dispositivo.
+<html lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><title>Agenda Escolar PWA</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "border-subtle": "#E2E8F0", "surface-container-high": "#dce9ff", "secondary": "#4648d4", "error": "#ba1a1a", "on-surface": "#0b1c30", "primary-fixed-dim": "#bcc7de", "on-background": "#0b1c30", "surface-dim": "#cbdbf5", "on-error": "#ffffff", "surface-container-lowest": "#ffffff", "tertiary": "#201100", "on-primary": "#ffffff", "surface-sidebar": "#0F172A", "outline-variant": "#c5c6cd", "indigo-ai": "#8B5CF6", "on-primary-container": "#8590a6", "surface-bright": "#f8f9ff", "on-primary-fixed-variant": "#3c475a", "outline": "#75777d", "primary-fixed": "#d8e3fb", "on-primary-fixed": "#111c2d", "on-secondary-fixed": "#07006c", "primary-container": "#1e293b", "on-tertiary-fixed": "#2a1700", "surface-card": "#FFFFFF", "error-container": "#ffdad6", "tertiary-container": "#3c2300", "inverse-surface": "#213145", "surface-container-low": "#eff4ff", "on-tertiary-container": "#c88000", "coral-urgent": "#F43F5E", "on-tertiary-fixed-variant": "#653e00", "secondary-fixed-dim": "#c0c1ff", "inverse-on-surface": "#eaf1ff", "emerald-streak": "#10B981", "on-surface-variant": "#45474c", "surface-container": "#e5eeff", "background": "#f8f9ff", "inverse-primary": "#bcc7de", "surface-container-highest": "#d3e4fe", "primary": "#091426", "border-dark": "#1E293B", "surface-tint": "#545f73", "on-error-container": "#93000a", "tertiary-fixed-dim": "#ffb95f", "on-secondary-container": "#fffbff", "surface-variant": "#d3e4fe", "surface": "#f8f9ff", "tertiary-fixed": "#ffddb8", "secondary-fixed": "#e1e0ff", "on-tertiary": "#ffffff", "on-secondary-fixed-variant": "#2f2ebe", "canvas-bg": "#F8FAFC", "on-secondary": "#ffffff", "secondary-container": "#6063ee" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-2xs": "0.125rem", "sidebar-collapsed": "68px", "space-xl": "2rem", "space-xs": "0.25rem", "max-content-width": "1440px", "space-base": "1rem", "space-2xl": "3rem", "space-lg": "1.5rem", "space-sm": "0.5rem", "space-md": "0.75rem", "sidebar-width": "240px" }, "fontFamily": { "headline-lg": ["Plus Jakarta Sans"], "code-sm": ["JetBrains Mono"], "label-md": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "display": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"] }, "fontSize": { "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "700" }], "code-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" }], "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "display": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-md": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased selection:bg-secondary-fixed selection:text-on-secondary-fixed"><aside class="fixed left-0 top-0 h-screen w-sidebar-width bg-surface-sidebar z-50 flex flex-col justify-between select-none shadow-[0_1px_8px_rgba(0,0,0,0.08)]"><div class="flex flex-col flex-1 overflow-y-auto"><div class="h-16 px-space-base flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="Agenda Escolar Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1W7YUEss6DP9Xx1z841d_qHcSCOIN-l-FhxrtKUiT5-W3ctujb3E695E4JvcFlKOwJoERFlgw34EvmYFS36M3HrArIc3x400fLH1AoZYEucmEe1aIVkLAPCvwhq3kxd6fab9Elr7U6Vimt0zw1SCEgHXBCvXV-69uslhDkvNzZHvwJb9BJ1ZyZmF7mq6CqnuAvZ-6FjV6pKE_YyNJsRUW5hB1n4jcwnfaEzeGa5lhXOLCkde7_yj2x0cFE"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-surface-card leading-none tracking-tight">Agenda Escolar</span><span class="mt-space-2xs inline-flex items-center self-start px-space-xs py-0.5 rounded bg-primary-container text-primary-fixed text-[10px] font-code-sm font-semibold uppercase tracking-wider">v3.5 PWA</span></div></div><button aria-label="Colapsar menú lateral" class="text-outline-variant hover:text-surface-card p-1 rounded transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">keyboard_double_arrow_left</span></button></div><div class="px-space-base py-space-xs"><div class="flex items-center justify-between px-space-sm py-space-xs rounded bg-border-dark/60 text-emerald-streak"><div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-streak animate-pulse"></span><span class="font-label-sm text-label-sm">100% Offline Listo</span></div><span class="font-code-sm text-code-sm text-surface-variant/80 text-[10px]">PWA ACTIVE</span></div></div><nav class="flex-1 px-space-sm py-space-xs space-y-space-2xs" data-active-classes="bg-primary-container text-surface-card font-semibold shadow-inner"><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="mi-dia" href="index.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-tertiary-fixed-dim">light_mode</span><span class="font-body-md text-body-md">Mi Día</span></div><span class="px-1.5 py-0.5 rounded-full bg-border-dark text-surface-card font-code-sm text-[11px]">8</span></a><div class="space-y-0.5"><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="agenda" href="deberes-examenes.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">calendar_month</span><span class="font-body-md text-body-md">Agenda</span></div><span class="material-symbols-outlined text-[16px] text-outline-variant group-hover:text-surface-card">expand_more</span></a><div class="pl-8 pr-space-xs space-y-0.5"><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="deberes" href="deberes-examenes.html"><span>Deberes</span><span class="w-1.5 h-1.5 rounded-full bg-coral-urgent"></span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="examenes" href="deberes-examenes.html"><span>Exámenes</span><span class="font-code-sm text-[10px] text-tertiary-fixed-dim font-bold">PROX</span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="horario" href="horario-mochila.html"><span>Horario</span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="mochila" href="horario-mochila.html"><span>Mochila</span><span class="material-symbols-outlined text-[13px] text-outline-variant">backpack</span></a></div></div><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="cuaderno-lm" href="notebook.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-indigo-ai">neurology</span><span class="font-body-md text-body-md">Cuaderno LM</span></div><span class="px-1.5 py-0.2 rounded bg-indigo-ai/20 text-indigo-ai font-label-sm text-[10px]">Studio</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="pomodoro-concentracion" href="pomodoro-flashcards.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">timer</span><span class="font-body-md text-body-md">Pomodoro</span></div><span class="font-code-sm text-code-sm text-tertiary-fixed-dim">25:00</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="progreso-notas" href="progreso-ebau.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">insights</span><span class="font-body-md text-body-md">Progreso &amp; Notas</span></div><span class="font-code-sm text-code-sm text-emerald-streak">9.4</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="copiloto-ia" href="english-coach.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-secondary-fixed-dim">smart_toy</span><span class="font-body-md text-body-md">Copiloto IA</span></div><span class="flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-streak opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-streak"></span></span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="ajustes-drive-sync" href="ajustes-nube.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">sync_saved_locally</span><span class="font-body-md text-body-md">Ajustes &amp; Drive</span></div><span class="material-symbols-outlined text-[16px] text-emerald-streak">cloud_done</span></a></nav></div><div class="p-space-sm bg-border-dark/40 m-space-sm rounded-xl"><div class="flex items-center gap-space-sm"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfmw-gtx0XEK7h8QkzkqF3FppIOTbex1jLhq0ocROUjmLodXPHUohFwpnJvNVkN0ISjq214XEmWTpaUMw3YSio12W-RjtGFeU0sE1SjasnJqTB-yV8QlgvtQlUWVMlziMiyc-kapJhBGjqEArrPwnzz5DrLEfaywd6KV0lCZ0M5ZzcT3XTNGdqZUTS-wEp6J9RCq0b-FMAAjueo_cX1syzKCEK_bQTcBHe-z8fv9oRHSz-6bu4IvxX"/><div class="flex-1 min-w-0"><div class="flex items-center justify-between gap-1"><p class="font-headline-sm text-body-md font-semibold text-surface-card truncate leading-snug">Lucía Fernández</p><span class="inline-flex items-center px-1.5 py-0.5 rounded bg-tertiary-container text-tertiary-fixed font-code-sm text-[10px] font-bold shrink-0">🔥 14</span></div><p class="font-label-sm text-label-sm text-outline-variant truncate">2º Bachillerato • Ciencias</p></div></div></div></aside><div class="pl-sidebar-width"><header class="fixed top-0 left-sidebar-width right-0 h-16 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg"><div class="flex-1 max-w-xl pr-space-base"><div class="relative flex items-center w-full"><span class="material-symbols-outlined absolute left-3 text-[18px] text-on-surface-variant pointer-events-none">search</span><input class="w-full h-10 pl-9 pr-20 bg-surface-container-lowest rounded-lg font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none focus:bg-surface-container-lowest transition-all shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" placeholder="Buscar asignaturas, tareas, notas o fechas..." type="text"/><div class="absolute right-2 flex items-center gap-1"><kbd class="px-1.5 py-0.5 text-[11px] font-code-sm text-on-surface-variant bg-surface-container-high rounded">⌘K</kbd></div></div></div><div class="flex items-center gap-space-sm"><div class="flex items-center gap-1 bg-surface-container-lowest px-space-sm py-1.5 rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]"><span class="material-symbols-outlined text-[17px] text-tertiary-container">hourglass_top</span><span class="font-code-sm text-code-sm font-semibold text-on-surface">25:00</span><button class="text-on-surface-variant hover:text-on-surface ml-1" title="Iniciar Pomodoro" type="button"><span class="material-symbols-outlined text-[17px]">play_arrow</span></button></div><button class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[17px] text-secondary">document_scanner</span><span>OCR</span></button><button class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[17px] text-coral-urgent">mic</span><span>Dictar</span></button><button class="inline-flex items-center gap-1.5 px-space-md py-1.5 rounded-lg bg-primary-container text-surface-card font-label-md text-label-md hover:bg-primary hover:text-surface-card transition-colors shadow-sm" type="button"><span class="material-symbols-outlined text-[18px]">add</span><span>Nueva Tarea</span></button><div class="h-6 w-px bg-border-subtle mx-space-2xs"></div><button aria-label="Notificaciones" class="relative p-2 rounded-lg bg-surface-container-lowest text-on-surface-variant hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-coral-urgent ring-2 ring-surface-card"></span></button></div></header><main class="w-full pt-16 bg-surface min-h-screen"><div class="max-w-max-content-width mx-auto p-space-lg"><div class="flex flex-col w-full">
+<!-- Sub-Header / Workspace Control Ribbon -->
+<div class="w-full bg-surface-container-lowest rounded-xl shadow-sm p-space-base mb-space-base flex flex-col xl:flex-row xl:items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md min-w-0">
+<div class="w-10 h-10 rounded-xl bg-indigo-ai/10 flex items-center justify-center text-indigo-ai shrink-0">
+<span class="material-symbols-outlined text-[24px]">neurology</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-sm flex-wrap">
+<div class="relative inline-flex items-center">
+<select class="appearance-none bg-surface-container-low text-on-surface font-headline-sm text-body-lg font-bold pl-space-sm pr-7 py-1 rounded-lg cursor-pointer focus:outline-none focus:bg-surface-container-high transition-colors">
+<option selected="">Historia de España • Bloque 3: Crisis del Antiguo Régimen</option>
+<option>Matemáticas II • Matrices y Determinantes</option>
+<option>Física • Campo Electromagnético y Ondas</option>
+<option>Lengua Castellana • Sintaxis y Literatura S. XX</option>
+<option>Química • Equilibrio Químico y pH</option>
+</select>
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant pointer-events-none absolute right-1.5">arrow_drop_down</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-code-sm text-[11px] flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-streak"></span>
+            3 fuentes activas / 48 KB
+          </span>
+</div>
+<div class="flex items-center gap-space-sm text-outline-variant font-body-sm text-body-sm mt-0.5">
+<span class="flex items-center gap-1 text-emerald-streak font-medium text-[12px]">
+<span class="material-symbols-outlined text-[14px]">cloud_done</span>
+            Guardado en local &amp; Drive
+          </span>
+<span class="text-outline-variant">•</span>
+<span class="font-code-sm text-[11px]">EBAU 2025 Prioridad Alta</span>
+</div>
+</div>
+</div>
+<!-- Quick Action Launchers -->
+<div class="flex items-center gap-space-xs flex-wrap">
+<button class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-indigo-ai/10 hover:bg-indigo-ai/20 text-indigo-ai font-label-md text-label-md transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px]">podcasts</span>
+<span>Audio Resumen</span>
+</button>
+<button class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px] text-tertiary-fixed-dim">bolt</span>
+<span>Resumen Ejecutivo</span>
+</button>
+<button class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px] text-secondary">quiz</span>
+<span>Quiz EBAU</span>
+</button>
+<button class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px] text-emerald-streak">style</span>
+<span>Flashcards</span>
+</button>
+<button class="p-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface-variant transition-colors" title="Modo Pantalla Completa / Zen" type="button">
+<span class="material-symbols-outlined text-[18px]">fullscreen</span>
+</button>
+</div>
+</div>
+<!-- 3-Column Modern Workspace Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-base items-start">
+<!-- LEFT PANEL: Fuentes & Materiales Indexados (Col 1-3: ~25%) -->
+<section class="lg:col-span-3 flex flex-col gap-space-base">
+<!-- Sources Card -->
+<div class="bg-surface-card rounded-xl p-space-base shadow-sm">
+<div class="flex items-center justify-between mb-space-sm">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-secondary">folder_supervised</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Fuentes</h3>
+</div>
+<span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant">3/10</span>
+</div>
+<!-- Add Source Button -->
+<button class="w-full flex items-center justify-center gap-2 py-2 px-space-sm mb-space-md rounded-lg bg-primary-container text-surface-card hover:bg-primary font-label-md text-label-md transition-all shadow-sm" type="button">
+<span class="material-symbols-outlined text-[18px]">add_circle</span>
+<span>Añadir Fuente (PDF, Audio, OCR)</span>
+</button>
+<!-- Sources Index List -->
+<div class="space-y-space-sm">
+<!-- Source Item 1 -->
+<div class="group p-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container transition-all">
+<div class="flex items-start gap-space-xs">
+<input checked="" class="mt-1 w-4 h-4 rounded text-secondary focus:ring-0 cursor-pointer accent-secondary" type="checkbox"/>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded text-[10px] font-code-sm font-bold bg-coral-urgent/15 text-coral-urgent uppercase">PDF</span>
+<span class="font-label-sm text-[10px] text-emerald-streak font-medium">Indexado 100%</span>
+</div>
+<p class="font-body-sm text-body-sm font-semibold text-on-surface truncate mt-0.5" title="Tema 3 - Apuntes Morales.pdf">Tema 3 - Apuntes Morales.pdf</p>
+<p class="font-code-sm text-[11px] text-on-surface-variant">24 págs. • 142 fragmentos</p>
+</div>
+<button class="opacity-0 group-hover:opacity-100 text-on-surface-variant hover:text-on-surface transition-opacity" type="button">
+<span class="material-symbols-outlined text-[16px]">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Source Item 2: OCR Pizarra -->
+<div class="group p-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container transition-all">
+<div class="flex items-start gap-space-xs">
+<input checked="" class="mt-1 w-4 h-4 rounded text-secondary focus:ring-0 cursor-pointer accent-secondary" type="checkbox"/>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded text-[10px] font-code-sm font-bold bg-indigo-ai/15 text-indigo-ai uppercase">OCR</span>
+<span class="font-label-sm text-[10px] text-emerald-streak font-medium">Extraído</span>
+</div>
+<p class="font-body-sm text-body-sm font-semibold text-on-surface truncate mt-0.5">Esquema Cortes de Cádiz 1812</p>
+<div class="mt-1.5 flex items-center gap-2">
+<img class="w-10 h-10 rounded object-cover shadow-inner shrink-0" data-alt="High-contrast chalkboard sketch diagram of 1812 Spanish Constitution structure with clean chalk handwriting and lecture diagram arrows in a slate classroom background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBldMJfjis3BIZZsvkkyX6U4zBhjH8U3y0MSIGxYdepyniFYdcg6kz3fe3xy90eHEmhvMZRi3iEVXTXpYmS3rbfNQSsYAPY_k7HnALa-Bg3pMCpWBhOyDaZ8k07ZLTlRYEy-OwMXNusAlIT-a3AUOu0YfJpQfaXS_oXFxYczvlcNIpsLBNfnfouFZgGuiI8uqUTvlUDzPccUf3N_kIq2os4FjyP7jWXPAr9Ca2iIhZ5hq2tQwRF5tMj"/>
+<p class="font-code-sm text-[10px] text-on-surface-variant line-clamp-2">Pizarra 22 Oct: Soberanía nacional, Fernando VII, fueros y religión católica única.</p>
+</div>
+</div>
+<button class="opacity-0 group-hover:opacity-100 text-on-surface-variant hover:text-on-surface transition-opacity" type="button">
+<span class="material-symbols-outlined text-[16px]">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Source Item 3: Transcripción de Audio -->
+<div class="group p-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container transition-all">
+<div class="flex items-start gap-space-xs">
+<input checked="" class="mt-1 w-4 h-4 rounded text-secondary focus:ring-0 cursor-pointer accent-secondary" type="checkbox"/>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded text-[10px] font-code-sm font-bold bg-secondary/15 text-secondary uppercase">AUDIO</span>
+<span class="font-label-sm text-[10px] text-emerald-streak font-medium">Whisper IA</span>
+</div>
+<p class="font-body-sm text-body-sm font-semibold text-on-surface truncate mt-0.5">Clase 21 Oct - Guerra Independencia</p>
+<p class="font-code-sm text-[11px] text-on-surface-variant">45:12 min • 6.420 palabras</p>
+</div>
+<button class="opacity-0 group-hover:opacity-100 text-on-surface-variant hover:text-on-surface transition-opacity" type="button">
+<span class="material-symbols-outlined text-[16px]">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Quick Extract Snippets -->
+<div class="mt-space-md pt-space-sm bg-surface-container-low/60 rounded-lg p-space-sm">
+<p class="font-label-sm text-[11px] text-on-surface-variant uppercase tracking-wider mb-1.5 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">format_quote</span>
+            Citas Recuperadas (RAG)
+          </p>
+<div class="p-2 rounded bg-surface-card text-on-surface text-body-sm font-body-sm shadow-sm space-y-1">
+<p class="text-[12px] italic text-on-surface-variant line-clamp-3">«El 19 de marzo de 1808 el motín de Aranjuez provocó la caída de Godoy y la abdicación de Carlos IV en su hijo Fernando VII...»</p>
+<div class="flex items-center justify-between text-[10px] font-code-sm text-secondary">
+<span>Tema 3 • Pág. 3</span>
+<button class="hover:underline font-semibold">Insertar en nota</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Syllabus Progress Card -->
+<div class="bg-surface-card rounded-xl p-space-base shadow-sm">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Dominio del Tema</span>
+<span class="font-code-sm text-code-sm font-bold text-emerald-streak">82%</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-emerald-streak rounded-full transition-all" style="width: 82%;"></div>
+</div>
+<p class="text-[11px] font-body-sm text-on-surface-variant mt-2">Revisión de 12 conceptos clave completada. Próxima prueba: 28 Octubre.</p>
+</div>
+</section>
+<!-- CENTER PANEL: Documento Sintetizado & Notas del Alumno (Col 4-8: ~45%) -->
+<main class="lg:col-span-5 flex flex-col gap-space-base">
+<div class="bg-surface-card rounded-xl shadow-sm overflow-hidden">
+<!-- Document Tabs -->
+<div class="flex items-center justify-between bg-surface-container-low px-space-base pt-2">
+<div class="flex items-center gap-1">
+<button class="px-space-md py-2.5 rounded-t-lg bg-surface-card text-on-surface font-label-md text-label-md font-semibold shadow-[0_-2px_4px_rgba(0,0,0,0.02)] flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px] text-secondary">auto_stories</span>
+<span>Guía de Estudio Sintetizada</span>
+</button>
+<button class="px-space-md py-2.5 rounded-t-lg text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px]">edit_note</span>
+<span>Mis Apuntes (Scratchpad)</span>
+</button>
+<button class="px-space-md py-2.5 rounded-t-lg text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+<span>Cronología</span>
+</button>
+</div>
+<div class="flex items-center gap-1 pb-1">
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container" title="Descargar PDF" type="button">
+<span class="material-symbols-outlined text-[18px]">download</span>
+</button>
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container" title="Fijar nota" type="button">
+<span class="material-symbols-outlined text-[18px]">push_pin</span>
+</button>
+</div>
+</div>
+<!-- Academic Content Area -->
+<div class="p-space-xl space-y-space-lg text-on-surface leading-relaxed">
+<!-- Document Header -->
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-secondary/10 text-secondary font-label-sm text-[11px] uppercase tracking-wider font-semibold">Síntesis EBAU 2025</span>
+<span class="text-outline-variant font-code-sm text-[11px]">Generado a partir de 3 fuentes verificadas</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg font-bold text-on-surface tracking-tight">1. La Crisis de 1808 y la Guerra de la Independencia</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Marco cronológico: 1808 - 1814 • De las abdicaciones de Bayona al Tratado de Valençay.</p>
+</div>
+<!-- Section 1.1 -->
+<div class="space-y-space-sm">
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold flex items-center gap-2">
+<span>1.1 El Tratado de Fontainebleau y el Motín de Aranjuez</span>
+<span class="text-secondary font-code-sm text-[12px] bg-secondary-fixed/50 px-1.5 py-0.5 rounded cursor-pointer hover:bg-secondary-fixed" title="Ver cita original">[Fuente 1: pág. 2]</span>
+</h2>
+<p class="font-body-md text-body-md text-on-surface">
+              En octubre de 1807, el valido <strong>Manuel Godoy</strong> suscribe con Napoleón el <span class="bg-surface-container-high px-1 rounded font-medium">Tratado de Fontainebleau</span>, autorizando el paso del ejército francés por territorio español con el objetivo formal de invadir Portugal. La ocupación encubierta de plazas estratégicas españolas despierta una profunda hostilidad popular.
             </p>
-            <textarea id="notebook-scratchpad-input" style="width: 100%; height: 320px; background: rgba(0,0,0,0.25); color: #fff; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; font-family: inherit; font-size: 0.88rem; line-height: 1.5; resize: vertical;" placeholder="Escribe aquí tus conclusiones o pulsa '📌 En mis Notas' en las respuestas del chat..."></textarea>
-          </div>
-        </div>
-
-        <!-- Contenedor dinámico para la Guía / Examen / Fichas generadas -->
-        <div id="artifact-dynamic-container"></div>
-      </div>
-    </section>
-
-    <!-- COLUMNA 3: CHAT BASADO EN TUS FUENTES -->
-    <section class="col-chat" id="col-chat">
-      <div class="panel-header">
-        <div class="panel-title">
-          <span>💬 Preguntar a las Fuentes</span>
-        </div>
-        <button type="button" id="btn-clear-chat" class="btn-header-action" style="padding: 4px 8px; font-size: 0.72rem;" title="Limpiar conversación">
-          🗑️
-        </button>
-      </div>
-
-      <div class="chat-messages" id="chat-messages">
-        <div class="chat-bubble chat-bubble-bot">
-          👋 ¡Hola! Hazme cualquier pregunta sobre tus fuentes cargadas. Te responderé basándome exactamente en lo que dicen tus apuntes y citando la fuente.
-        </div>
-      </div>
-
-      <div class="chat-input-container">
-        <form id="chat-form" class="chat-form">
-          <input type="text" id="chat-input" class="chat-input" placeholder="Pregunta sobre tus fuentes..." autocomplete="off" />
-          <button type="submit" id="btn-chat-send" class="btn-chat-send" title="Enviar pregunta">
-            ➤
-          </button>
-        </form>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- MODAL: AÑADIR FUENTE -->
-  <div id="modal-add-source" class="modal-overlay hidden">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h3 class="modal-title">➕ Añadir Fuente de Estudio</h3>
-        <button type="button" class="btn-close-modal" id="btn-close-source-modal">&times;</button>
-      </div>
-
-      <form id="form-add-source">
-        <div class="form-group">
-          <label class="form-label">Título de la Fuente *</label>
-          <input type="text" id="source-title-input" class="form-input" placeholder="Ej: Pizarra de Historia Tema 3, Apuntes de Biología Celular..." required />
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Tipo de Contenido</label>
-          <select id="source-type-select" class="form-input">
-            <option value="text">📝 Texto / Apuntes Escritos</option>
-            <option value="image">📸 Imagen / Pizarra / Foto</option>
-          </select>
-        </div>
-
-        <div class="form-group" id="group-source-text">
-          <label class="form-label">Texto o Contenido de la Lección *</label>
-          <textarea id="source-content-input" class="form-textarea" placeholder="Pega aquí el contenido de tus apuntes, resumen del libro, fotocopia o lección del profesor..."></textarea>
-        </div>
-
-        <div class="form-group hidden" id="group-source-file">
-          <label class="form-label">Subir Fotografía o Pizarra</label>
-          <input type="file" id="source-file-input" accept="image/*" class="form-input" />
-        </div>
-
-        <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px;">
-          <button type="button" id="btn-cancel-add-source" class="btn-header-action">
-            Cancelar
-          </button>
-          <button type="submit" class="btn-add-source" style="padding: 8px 18px; font-size: 0.85rem;">
-            💾 Guardar Fuente
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- MODAL: CONFIGURAR CLAVE IA (GOOGLE GEMINI) -->
-  <div id="modal-config-ai" class="modal-overlay hidden">
-    <div class="modal-card" style="max-width: 540px;">
-      <div class="modal-header">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <span style="font-size: 1.4rem;">✨</span>
-          <div>
-            <h3 class="modal-title" style="margin: 0;">Clave IA (Google Gemini)</h3>
-            <p id="nlm-key-status" style="margin: 0; font-size: 0.76rem; color: var(--text-muted);">Comprobando...</p>
-          </div>
-        </div>
-        <button type="button" class="btn-close-modal" id="btn-close-ai-modal">&times;</button>
-      </div>
-
-      <div style="background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: var(--radius-md); padding: 14px; display: flex; flex-direction: column; gap: 10px;">
-        <div style="font-size: 0.85rem; color: var(--text-main); line-height: 1.4;">
-          <strong>🎁 Acceso 100% Gratuito y Oficial de Google</strong><br />
-          Para crear Guías de Estudio, Quizzes, Podcasts narrativos y chatear con tus fuentes, introduce tu clave gratuita de Google Gemini.
-        </div>
-        <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 16px; background: #2563eb; color: #fff; border-radius: var(--radius-md); font-size: 0.85rem; font-weight: 700; text-decoration: none;">
-          <span>🔗</span> Obtener mi Clave Gratis en Google AI Studio ↗
-        </a>
-        <div style="font-size: 0.78rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 4px;">
-          <div>1. Inicia sesión con tu cuenta de Google (Gmail).</div>
-          <div>2. Pulsa en el botón azul <strong>"Create API key"</strong>.</div>
-          <div>3. Copia tu clave (empieza por <code>AIzaSy...</code>) y pégala aquí:</div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Clave API de Gemini:</label>
-        <div style="display: flex; gap: 8px;">
-          <input type="password" id="nlm-api-key-input" class="form-input" style="flex: 1; font-family: monospace;" placeholder="AIzaSy..." autocomplete="off" />
-          <button type="button" id="btn-nlm-toggle-visibility" class="btn-header-action" title="Mostrar/Ocultar clave" style="padding: 0 12px;">👁️</button>
-          <button type="button" id="btn-nlm-paste-key" class="btn-header-action" style="padding: 0 12px;">📋 Pegar</button>
-        </div>
-      </div>
-
-      <div id="nlm-key-test-result" class="hidden" style="padding: 10px 14px; border-radius: var(--radius-md); font-size: 0.82rem; line-height: 1.4;"></div>
-
-      <div style="display: flex; gap: 8px; justify-content: space-between; margin-top: 6px;">
-        <button type="button" id="btn-nlm-test-key" class="btn-header-action">
-          🧪 Probar Conexión
-        </button>
-        <div style="display: flex; gap: 8px;">
-          <button type="button" id="btn-nlm-delete-key" class="btn-header-action" style="color: #f43f5e; border-color: rgba(244,63,94,0.3);">
-            🗑️ Eliminar
-          </button>
-          <button type="button" id="btn-nlm-save-key" class="btn-add-source" style="padding: 8px 18px;">
-            💾 Guardar Clave
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SCRIPT PRINCIPAL DEL CUADERNO LM -->
-  <script type="module" src="./notebook.js"></script>
-</body>
-</html>
+<p class="font-body-md text-body-md text-on-surface">
+              El descontento cristaliza la noche del <strong>17 al 19 de marzo de 1808</strong> en el <span class="bg-surface-container-high px-1 rounded font-medium">Motín de Aranjuez</span>, organizado por partidarios del príncipe de Asturias. Este acontecimiento fuerza la destitución fulminante de Godoy y la dimisión de Carlos IV a favor de <strong>Fernando VII</strong>.
+            </p>
+</div>
+<!-- Academic Callout: EBAU Exam Key Concept -->
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-sm space-y-2">
+<div class="flex items-center gap-2 text-tertiary-container">
+<span class="material-symbols-outlined text-[20px] text-tertiary-fixed-dim">verified</span>
+<span class="font-headline-sm text-body-md font-bold uppercase tracking-wider">Concepto Esencial de Examen (Causa / Consecuencia)</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface">
+              En la prueba de Selectividad es indispensable subrayar que las <strong>Abdicaciones de Bayona (mayo de 1808)</strong> supusieron un vacío institucional inédito: la entrega pacífica de la corona a Napoleón Bonaparte (quien nombra rey a su hermano <em>José I</em>) provocó el colapso del aparato borbónico y legitimó la aparición espontánea de las <strong>Juntas Locales y Provinciales</strong>.
+            </p>
+<div class="flex items-center gap-2 pt-1 text-[11px] font-code-sm text-on-surface-variant">
+<span class="inline-block w-2 h-2 rounded-full bg-tertiary-fixed-dim"></span>
+              Fórmula de respuesta: Contexto diplomático → Vacío de poder → Doble legitimidad.
+            </div>
+</div>
+<!-- Section 1.2: Cortes de Cádiz -->
+<div class="space-y-space-sm">
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold flex items-center gap-2">
+<span>1.2 La Constitución de 1812: Fundamento Liberal</span>
+<span class="text-indigo-ai font-code-sm text-[12px] bg-indigo-ai/10 px-1.5 py-0.5 rounded cursor-pointer hover:bg-indigo-ai/20" title="Ver pizarra OCR">[Fuente 2: Pizarra]</span>
+</h2>
+<p class="font-body-md text-body-md text-on-surface">
+              Reunidas en Cádiz en septiembre de 1810, las Cortes proclamaron el 19 de marzo de 1812 la célebre <span class="italic">«Pepa»</span>, primer texto constitucional español. Sus principios vertebradores articulan:
+            </p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-sm pt-1">
+<div class="p-space-sm rounded-lg bg-surface-container">
+<p class="font-label-md text-label-md text-on-surface font-bold">1. Soberanía Nacional</p>
+<p class="font-body-sm text-[12px] text-on-surface-variant mt-1">El poder reside en la nación, no en el monarca, representada por las Cortes.</p>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container">
+<p class="font-label-md text-label-md text-on-surface font-bold">2. División de Poderes</p>
+<p class="font-body-sm text-[12px] text-on-surface-variant mt-1">Legislativo (Cortes con el Rey), Ejecutivo (Rey) y Judicial (Tribunales).</p>
+</div>
+</div>
+</div>
+<!-- Active Study Toolbar -->
+<div class="sticky bottom-4 bg-surface-sidebar text-surface-card rounded-xl p-space-sm shadow-xl flex items-center justify-between gap-space-sm">
+<div class="flex items-center gap-1">
+<button class="p-1.5 rounded hover:bg-border-dark text-surface-card transition-colors" title="Negrita">
+<span class="material-symbols-outlined text-[18px]">format_bold</span>
+</button>
+<button class="p-1.5 rounded hover:bg-border-dark text-surface-card transition-colors" title="Resaltar">
+<span class="material-symbols-outlined text-[18px]">ink_highlighter</span>
+</button>
+<button class="p-1.5 rounded hover:bg-border-dark text-surface-card transition-colors" title="Añadir comentario socrático">
+<span class="material-symbols-outlined text-[18px]">add_comment</span>
+</button>
+<div class="h-4 w-px bg-border-dark mx-1"></div>
+<span class="font-code-sm text-[11px] text-outline-variant">984 palabras</span>
+</div>
+<button class="inline-flex items-center gap-1.5 px-space-sm py-1 rounded bg-indigo-ai hover:bg-secondary text-surface-card font-label-md text-[12px] transition-colors" type="button">
+<span class="material-symbols-outlined text-[15px]">neurology</span>
+<span>Consultar al Copiloto</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- RIGHT PANEL: Copiloto Socrático Gemini & Audio Podcast (Col 9-12: ~30%) -->
+<aside class="lg:col-span-4 flex flex-col gap-space-base">
+<!-- Audio Podcast Player Widget -->
+<div class="bg-surface-card rounded-xl p-space-base shadow-sm space-y-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-indigo-ai animate-pulse"></span>
+<span class="font-label-sm text-label-sm font-semibold uppercase tracking-wider text-on-surface">Podcast a Dos Voces</span>
+</div>
+<span class="font-code-sm text-[11px] px-1.5 py-0.5 rounded bg-indigo-ai/10 text-indigo-ai">Lucía &amp; Mateo</span>
+</div>
+<div class="p-space-sm rounded-xl bg-surface-container-low space-y-space-xs">
+<div class="flex items-center justify-between">
+<div>
+<p class="font-label-md text-label-md text-on-surface font-bold">Episodio 3: Madrid en Llamas y la Pepa</p>
+<p class="font-body-sm text-[12px] text-on-surface-variant">Debate explicativo con analogías cotidianas</p>
+</div>
+<span class="font-code-sm text-code-sm font-bold text-on-surface">01:42 / 04:15</span>
+</div>
+<!-- Waveform / Progress Bar -->
+<div class="relative w-full h-8 flex items-center gap-0.5 px-1 bg-surface-container rounded-lg overflow-hidden">
+<div class="h-3 w-1 bg-indigo-ai rounded-full"></div>
+<div class="h-5 w-1 bg-indigo-ai rounded-full"></div>
+<div class="h-4 w-1 bg-indigo-ai rounded-full"></div>
+<div class="h-6 w-1 bg-indigo-ai rounded-full"></div>
+<div class="h-7 w-1 bg-indigo-ai rounded-full"></div>
+<div class="h-5 w-1 bg-indigo-ai rounded-full"></div>
+<div class="h-6 w-1 bg-indigo-ai rounded-full"></div>
+<div class="h-8 w-1 bg-indigo-ai rounded-full"></div>
+<div class="h-6 w-1 bg-indigo-ai rounded-full"></div>
+<div class="h-4 w-1 bg-indigo-ai rounded-full"></div>
+<div class="h-5 w-1 bg-outline-variant/50 rounded-full"></div>
+<div class="h-3 w-1 bg-outline-variant/50 rounded-full"></div>
+<div class="h-6 w-1 bg-outline-variant/50 rounded-full"></div>
+<div class="h-4 w-1 bg-outline-variant/50 rounded-full"></div>
+<div class="h-5 w-1 bg-outline-variant/50 rounded-full"></div>
+<div class="h-7 w-1 bg-outline-variant/50 rounded-full"></div>
+<div class="h-4 w-1 bg-outline-variant/50 rounded-full"></div>
+<div class="h-3 w-1 bg-outline-variant/50 rounded-full"></div>
+<div class="h-5 w-1 bg-outline-variant/50 rounded-full"></div>
+<div class="h-6 w-1 bg-outline-variant/50 rounded-full"></div>
+<div class="h-4 w-1 bg-outline-variant/50 rounded-full"></div>
+<div class="h-2 w-1 bg-outline-variant/50 rounded-full"></div>
+</div>
+<!-- Controls Bar -->
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center gap-2">
+<button class="text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined text-[20px]">replay_10</span>
+</button>
+<button class="w-8 h-8 rounded-full bg-indigo-ai text-surface-card flex items-center justify-center shadow-md hover:bg-secondary transition-colors">
+<span class="material-symbols-outlined text-[20px]">pause</span>
+</button>
+<button class="text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined text-[20px]">forward_10</span>
+</button>
+</div>
+<!-- Speed Toggles -->
+<div class="flex items-center gap-1 bg-surface-card px-1.5 py-0.5 rounded-lg">
+<button class="text-[11px] font-code-sm font-bold text-on-surface-variant px-1 hover:text-on-surface">1.0x</button>
+<button class="text-[11px] font-code-sm font-bold text-secondary bg-surface-container px-1 rounded">1.2x</button>
+<button class="text-[11px] font-code-sm font-bold text-on-surface-variant px-1 hover:text-on-surface">1.5x</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Socratic AI Tutor Workspace -->
+<div class="bg-surface-card rounded-xl p-space-base shadow-sm flex flex-col h-[560px]">
+<!-- AI Header -->
+<div class="flex items-center justify-between pb-space-sm mb-space-sm bg-surface-card">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-lg bg-indigo-ai/10 flex items-center justify-center text-indigo-ai">
+<span class="material-symbols-outlined text-[18px]">smart_toy</span>
+</div>
+<div>
+<p class="font-headline-sm text-body-md font-semibold text-on-surface leading-none">Tutor Gemini 1.5</p>
+<span class="font-label-sm text-[10px] text-secondary font-medium">Modo Socrático EBAU</span>
+</div>
+</div>
+<button class="text-outline-variant hover:text-on-surface" title="Limpiar hilo" type="button">
+<span class="material-symbols-outlined text-[18px]">restart_alt</span>
+</button>
+</div>
+<!-- Chat Conversation Stream -->
+<div class="flex-1 overflow-y-auto space-y-space-md pr-1">
+<!-- Student Prompt -->
+<div class="flex flex-col items-end">
+<div class="bg-primary-container text-surface-card p-space-sm rounded-xl rounded-tr-xs max-w-[85%] font-body-sm text-body-sm shadow-sm">
+              ¿Cuáles fueron las causas inmediatas del levantamiento del 2 de mayo en Madrid?
+            </div>
+<span class="font-code-sm text-[10px] text-outline-variant mt-1">10:41 • Lucía</span>
+</div>
+<!-- AI Response grounded in notes -->
+<div class="flex flex-col items-start">
+<div class="bg-surface-container-low text-on-surface p-space-md rounded-xl rounded-tl-xs max-w-[95%] font-body-sm text-body-sm space-y-space-xs shadow-sm">
+<p class="leading-relaxed">
+                Según el <span class="bg-secondary-fixed/50 font-medium px-1 rounded cursor-pointer">[Tema 3, pág. 4]</span> y la transcripción de la clase del profesor Morales, se identifican <strong>tres detonantes directos</strong>:
+              </p>
+<ul class="list-disc pl-4 space-y-1 text-on-surface text-[12.5px]">
+<li>La sospecha generalizada de que Napoleón retenía secuestrada a la familia real en Bayona.</li>
+<li>La orden dada al general Murat de trasladar al infante <strong>Francisco de Paula</strong> a Francia la mañana del 2 de mayo.</li>
+<li>El grito de alarma del cerrajero Blas Molina: <em>«¡Traición! ¡Nos los llevan!»</em> frente al Palacio Real.</li>
+</ul>
+<div class="p-2 rounded bg-surface-card mt-2 space-y-1">
+<p class="font-label-sm text-[11px] font-semibold text-secondary flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">psychology_alt</span>
+                  Pregunta de razonamiento para ti:
+                </p>
+<p class="text-[12px] italic text-on-surface-variant">
+                  ¿Por qué crees que el ejército regular español en Madrid permaneció acuartelado salvo los capitanes Daoíz y Velarde?
+                </p>
+</div>
+<!-- Quick action chips -->
+<div class="flex items-center gap-1.5 pt-1 flex-wrap">
+<button class="px-2 py-0.5 rounded-full bg-surface-card text-on-surface font-code-sm text-[10px] hover:bg-surface-container transition-colors">Ver Daoíz y Velarde</button>
+<button class="px-2 py-0.5 rounded-full bg-surface-card text-on-surface font-code-sm text-[10px] hover:bg-surface-container transition-colors">Bando de Móstoles</button>
+</div>
+</div>
+<div class="flex items-center gap-2 mt-1">
+<span class="font-code-sm text-[10px] text-emerald-streak font-medium">100% Fundamentado en fuentes</span>
+<button class="text-outline-variant hover:text-secondary text-[10px] font-label-sm">Copiar respuesta</button>
+</div>
+</div>
+</div>
+<!-- Chat Input Form -->
+<div class="pt-space-sm mt-space-xs">
+<form class="relative flex items-center bg-surface-container-low rounded-xl focus-within:bg-surface-container-lowest transition-all p-1">
+<input class="w-full h-10 pl-3 pr-20 bg-transparent font-body-sm text-body-sm text-on-surface placeholder:text-on-surface-variant focus:outline-none" placeholder="Pregunta a tus apuntes..." type="text"/>
+<div class="absolute right-2 flex items-center gap-1">
+<button class="p-1 rounded text-coral-urgent hover:bg-surface-card transition-colors" title="Dictado por voz" type="button">
+<span class="material-symbols-outlined text-[18px]">mic</span>
+</button>
+<button class="w-7 h-7 rounded-lg bg-indigo-ai text-surface-card flex items-center justify-center hover:bg-secondary transition-colors shadow-sm" title="Enviar pregunta" type="submit">
+<span class="material-symbols-outlined text-[16px]">send</span>
+</button>
+</div>
+</form>
+<div class="flex items-center justify-between text-[10px] font-code-sm text-on-surface-variant mt-1.5 px-1">
+<span>RAG Contextual Activo</span>
+<span class="text-indigo-ai font-semibold">Gemini 1.5 Flash</span>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</div></div></main></div></body></html>

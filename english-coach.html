@@ -1,21 +1,548 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agenda Escolar - English Coach & Tutor</title>
-  <meta http-equiv="refresh" content="0; url=./index.html?action=copilot" />
-  <script>window.location.replace("./index.html?action=copilot");</script>
-  <style>
-    body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; text-align: center; }
-    .spinner { width: 40px; height: 40px; border: 3px solid rgba(59, 130, 246, 0.2); border-top-color: #3b82f6; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 16px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    a { color: #60a5fa; text-decoration: none; font-weight: 500; }
-  </style>
-</head>
-<body>
-  <div class="spinner"></div>
-  <h2>Cargando English Coach & Tutor...</h2>
-  <p><a href="./index.html?action=copilot">Haz clic aquí si no redirige automáticamente</a></p>
-</body>
-</html>
+
+<html lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><title>Agenda Escolar PWA</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "border-subtle": "#E2E8F0", "surface-container-high": "#dce9ff", "secondary": "#4648d4", "error": "#ba1a1a", "on-surface": "#0b1c30", "primary-fixed-dim": "#bcc7de", "on-background": "#0b1c30", "surface-dim": "#cbdbf5", "on-error": "#ffffff", "surface-container-lowest": "#ffffff", "tertiary": "#201100", "on-primary": "#ffffff", "surface-sidebar": "#0F172A", "outline-variant": "#c5c6cd", "indigo-ai": "#8B5CF6", "on-primary-container": "#8590a6", "surface-bright": "#f8f9ff", "on-primary-fixed-variant": "#3c475a", "outline": "#75777d", "primary-fixed": "#d8e3fb", "on-primary-fixed": "#111c2d", "on-secondary-fixed": "#07006c", "primary-container": "#1e293b", "on-tertiary-fixed": "#2a1700", "surface-card": "#FFFFFF", "error-container": "#ffdad6", "tertiary-container": "#3c2300", "inverse-surface": "#213145", "surface-container-low": "#eff4ff", "on-tertiary-container": "#c88000", "coral-urgent": "#F43F5E", "on-tertiary-fixed-variant": "#653e00", "secondary-fixed-dim": "#c0c1ff", "inverse-on-surface": "#eaf1ff", "emerald-streak": "#10B981", "on-surface-variant": "#45474c", "surface-container": "#e5eeff", "background": "#f8f9ff", "inverse-primary": "#bcc7de", "surface-container-highest": "#d3e4fe", "primary": "#091426", "border-dark": "#1E293B", "surface-tint": "#545f73", "on-error-container": "#93000a", "tertiary-fixed-dim": "#ffb95f", "on-secondary-container": "#fffbff", "surface-variant": "#d3e4fe", "surface": "#f8f9ff", "tertiary-fixed": "#ffddb8", "secondary-fixed": "#e1e0ff", "on-tertiary": "#ffffff", "on-secondary-fixed-variant": "#2f2ebe", "canvas-bg": "#F8FAFC", "on-secondary": "#ffffff", "secondary-container": "#6063ee" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-2xs": "0.125rem", "sidebar-collapsed": "68px", "space-xl": "2rem", "space-xs": "0.25rem", "max-content-width": "1440px", "space-base": "1rem", "space-2xl": "3rem", "space-lg": "1.5rem", "space-sm": "0.5rem", "space-md": "0.75rem", "sidebar-width": "240px" }, "fontFamily": { "headline-lg": ["Plus Jakarta Sans"], "code-sm": ["JetBrains Mono"], "label-md": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "display": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"] }, "fontSize": { "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "700" }], "code-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" }], "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "display": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-md": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased selection:bg-secondary-fixed selection:text-on-secondary-fixed"><aside class="fixed left-0 top-0 h-screen w-sidebar-width bg-surface-sidebar z-50 flex flex-col justify-between select-none shadow-[0_1px_8px_rgba(0,0,0,0.08)]"><div class="flex flex-col flex-1 overflow-y-auto"><div class="h-16 px-space-base flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="Agenda Escolar Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1W7YUEss6DP9Xx1z841d_qHcSCOIN-l-FhxrtKUiT5-W3ctujb3E695E4JvcFlKOwJoERFlgw34EvmYFS36M3HrArIc3x400fLH1AoZYEucmEe1aIVkLAPCvwhq3kxd6fab9Elr7U6Vimt0zw1SCEgHXBCvXV-69uslhDkvNzZHvwJb9BJ1ZyZmF7mq6CqnuAvZ-6FjV6pKE_YyNJsRUW5hB1n4jcwnfaEzeGa5lhXOLCkde7_yj2x0cFE"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-surface-card leading-none tracking-tight">Agenda Escolar</span><span class="mt-space-2xs inline-flex items-center self-start px-space-xs py-0.5 rounded bg-primary-container text-primary-fixed text-[10px] font-code-sm font-semibold uppercase tracking-wider">v3.5 PWA</span></div></div><button aria-label="Colapsar menú lateral" class="text-outline-variant hover:text-surface-card p-1 rounded transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">keyboard_double_arrow_left</span></button></div><div class="px-space-base py-space-xs"><div class="flex items-center justify-between px-space-sm py-space-xs rounded bg-border-dark/60 text-emerald-streak"><div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-streak animate-pulse"></span><span class="font-label-sm text-label-sm">100% Offline Listo</span></div><span class="font-code-sm text-code-sm text-surface-variant/80 text-[10px]">PWA ACTIVE</span></div></div><nav class="flex-1 px-space-sm py-space-xs space-y-space-2xs" data-active-classes="bg-primary-container text-surface-card font-semibold shadow-inner"><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="mi-dia" href="index.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-tertiary-fixed-dim">light_mode</span><span class="font-body-md text-body-md">Mi Día</span></div><span class="px-1.5 py-0.5 rounded-full bg-border-dark text-surface-card font-code-sm text-[11px]">8</span></a><div class="space-y-0.5"><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="agenda" href="deberes-examenes.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">calendar_month</span><span class="font-body-md text-body-md">Agenda</span></div><span class="material-symbols-outlined text-[16px] text-outline-variant group-hover:text-surface-card">expand_more</span></a><div class="pl-8 pr-space-xs space-y-0.5"><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="deberes" href="deberes-examenes.html"><span>Deberes</span><span class="w-1.5 h-1.5 rounded-full bg-coral-urgent"></span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="examenes" href="deberes-examenes.html"><span>Exámenes</span><span class="font-code-sm text-[10px] text-tertiary-fixed-dim font-bold">PROX</span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="horario" href="horario-mochila.html"><span>Horario</span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="mochila" href="horario-mochila.html"><span>Mochila</span><span class="material-symbols-outlined text-[13px] text-outline-variant">backpack</span></a></div></div><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="cuaderno-lm" href="notebook.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-indigo-ai">neurology</span><span class="font-body-md text-body-md">Cuaderno LM</span></div><span class="px-1.5 py-0.2 rounded bg-indigo-ai/20 text-indigo-ai font-label-sm text-[10px]">Studio</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="pomodoro-concentracion" href="pomodoro-flashcards.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">timer</span><span class="font-body-md text-body-md">Pomodoro</span></div><span class="font-code-sm text-code-sm text-tertiary-fixed-dim">25:00</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="progreso-notas" href="progreso-ebau.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">insights</span><span class="font-body-md text-body-md">Progreso &amp; Notas</span></div><span class="font-code-sm text-code-sm text-emerald-streak">9.4</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="copiloto-ia" href="english-coach.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-secondary-fixed-dim">smart_toy</span><span class="font-body-md text-body-md">Copiloto IA</span></div><span class="flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-streak opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-streak"></span></span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="ajustes-drive-sync" href="ajustes-nube.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">sync_saved_locally</span><span class="font-body-md text-body-md">Ajustes &amp; Drive</span></div><span class="material-symbols-outlined text-[16px] text-emerald-streak">cloud_done</span></a></nav></div><div class="p-space-sm bg-border-dark/40 m-space-sm rounded-xl"><div class="flex items-center gap-space-sm"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfmw-gtx0XEK7h8QkzkqF3FppIOTbex1jLhq0ocROUjmLodXPHUohFwpnJvNVkN0ISjq214XEmWTpaUMw3YSio12W-RjtGFeU0sE1SjasnJqTB-yV8QlgvtQlUWVMlziMiyc-kapJhBGjqEArrPwnzz5DrLEfaywd6KV0lCZ0M5ZzcT3XTNGdqZUTS-wEp6J9RCq0b-FMAAjueo_cX1syzKCEK_bQTcBHe-z8fv9oRHSz-6bu4IvxX"/><div class="flex-1 min-w-0"><div class="flex items-center justify-between gap-1"><p class="font-headline-sm text-body-md font-semibold text-surface-card truncate leading-snug">Lucía Fernández</p><span class="inline-flex items-center px-1.5 py-0.5 rounded bg-tertiary-container text-tertiary-fixed font-code-sm text-[10px] font-bold shrink-0">🔥 14</span></div><p class="font-label-sm text-label-sm text-outline-variant truncate">2º Bachillerato • Ciencias</p></div></div></div></aside><div class="pl-sidebar-width"><header class="fixed top-0 left-sidebar-width right-0 h-16 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg"><div class="flex-1 max-w-xl pr-space-base"><div class="relative flex items-center w-full"><span class="material-symbols-outlined absolute left-3 text-[18px] text-on-surface-variant pointer-events-none">search</span><input class="w-full h-10 pl-9 pr-20 bg-surface-container-lowest rounded-lg font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none focus:bg-surface-container-lowest transition-all shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" placeholder="Buscar asignaturas, tareas, notas o fechas..." type="text"/><div class="absolute right-2 flex items-center gap-1"><kbd class="px-1.5 py-0.5 text-[11px] font-code-sm text-on-surface-variant bg-surface-container-high rounded">⌘K</kbd></div></div></div><div class="flex items-center gap-space-sm"><div class="flex items-center gap-1 bg-surface-container-lowest px-space-sm py-1.5 rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]"><span class="material-symbols-outlined text-[17px] text-tertiary-container">hourglass_top</span><span class="font-code-sm text-code-sm font-semibold text-on-surface">25:00</span><button class="text-on-surface-variant hover:text-on-surface ml-1" title="Iniciar Pomodoro" type="button"><span class="material-symbols-outlined text-[17px]">play_arrow</span></button></div><button class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[17px] text-secondary">document_scanner</span><span>OCR</span></button><button class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[17px] text-coral-urgent">mic</span><span>Dictar</span></button><button class="inline-flex items-center gap-1.5 px-space-md py-1.5 rounded-lg bg-primary-container text-surface-card font-label-md text-label-md hover:bg-primary hover:text-surface-card transition-colors shadow-sm" type="button"><span class="material-symbols-outlined text-[18px]">add</span><span>Nueva Tarea</span></button><div class="h-6 w-px bg-border-subtle mx-space-2xs"></div><button aria-label="Notificaciones" class="relative p-2 rounded-lg bg-surface-container-lowest text-on-surface-variant hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-coral-urgent ring-2 ring-surface-card"></span></button></div></header><main class="w-full pt-16 bg-surface min-h-screen"><div class="max-w-max-content-width mx-auto p-space-lg"><div class="flex flex-col w-full gap-space-lg">
+<!-- TOP HERO / HEADER BAR -->
+<section class="bg-surface-card rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-base">
+<div class="space-y-1">
+<div class="flex items-center gap-space-sm flex-wrap">
+<span class="inline-flex items-center gap-1.5 px-space-xs py-0.5 rounded-full bg-indigo-ai/15 text-indigo-ai font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">psychology</span>
+            Módulo 11 • Socratic Language Coach
+          </span>
+<span class="inline-flex items-center gap-1 px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-code-sm text-code-sm">
+<span class="w-2 h-2 rounded-full bg-emerald-streak"></span>
+            CEFR C1 Advanced • PAU &amp; Cambridge
+          </span>
+<span class="px-space-xs py-0.5 rounded bg-tertiary-container text-tertiary-fixed font-code-sm text-[11px] font-bold">
+            Audio HD Dual (UK/US)
+          </span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">
+          English Coach &amp; Tutor Socrático de Idiomas
+        </h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-3xl">
+          Entrenamiento interactivo de Speaking, Writing y corrección gramatical pedagógica en tiempo real • Nivel B2/C1 &amp; Selectividad (PAU / Cambridge CAE).
+        </p>
+</div>
+<div class="flex items-center gap-space-xs shrink-0 flex-wrap">
+<button class="inline-flex items-center gap-1.5 px-space-md py-2 rounded-lg bg-surface-container-low text-on-surface hover:bg-surface-container hover:text-primary transition-colors font-label-md text-label-md shadow-sm" type="button">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+<span>Exportar Informe PDF</span>
+</button>
+<button class="inline-flex items-center gap-1.5 px-space-md py-2 rounded-lg bg-primary-container text-surface-card hover:bg-primary transition-colors font-label-md text-label-md shadow-sm" type="button">
+<span class="material-symbols-outlined text-[18px]">add_circle</span>
+<span>+ Nuevo Diálogo o Redacción</span>
+</button>
+</div>
+</div>
+<!-- Mode Selector Tab Pills -->
+<div class="flex items-center justify-between gap-space-sm pt-space-xs border-t-0 flex-wrap">
+<div class="flex items-center gap-1 bg-surface-container-low p-1 rounded-lg">
+<button class="px-space-sm py-1 rounded font-label-md text-label-md bg-surface-card text-on-surface shadow-sm font-semibold flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px] text-secondary">forum</span>
+<span>Conversación Libre</span>
+</button>
+<button class="px-space-sm py-1 rounded font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-card/60 transition-colors flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px] text-coral-urgent">record_voice_over</span>
+<span>Simulacro Oral EBAU/PAU</span>
+</button>
+<button class="px-space-sm py-1 rounded font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-card/60 transition-colors flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px] text-indigo-ai">edit_note</span>
+<span>Corrector de Essay/Writing</span>
+</button>
+<button class="px-space-sm py-1 rounded font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-card/60 transition-colors flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px] text-tertiary-fixed-variant">groups</span>
+<span>Roleplay Cambridge B2/C1</span>
+</button>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="font-label-sm text-label-sm uppercase tracking-wider">Coach Activo:</span>
+<span class="font-code-sm text-code-sm text-secondary font-semibold bg-secondary-fixed px-2 py-0.5 rounded">Dr. Julian Vance (Oxford Scholar Persona)</span>
+</div>
+</div>
+</section>
+<!-- METRICS & PROGRESS PANEL (4 KPI CARDS) -->
+<section class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-space-md">
+<!-- Fluidez & Speaking -->
+<div class="bg-surface-card p-space-base rounded-xl shadow-sm flex flex-col justify-between relative overflow-hidden">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Speaking &amp; Fluidez</span>
+<h3 class="font-display text-display text-on-surface mt-1">88%</h3>
+</div>
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[24px]">mic</span>
+</div>
+</div>
+<div class="mt-space-sm">
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 88%"></div>
+</div>
+<div class="flex items-center justify-between mt-2 font-code-sm text-code-sm text-on-surface-variant">
+<span>Cadencia: 134 wpm</span>
+<span class="text-emerald-streak font-semibold">+4.2% esta sem.</span>
+</div>
+</div>
+</div>
+<!-- Lexical Range -->
+<div class="bg-surface-card p-space-base rounded-xl shadow-sm flex flex-col justify-between relative overflow-hidden">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Lexical Range (C1/C2)</span>
+<h3 class="font-display text-display text-on-surface mt-1">9.2<span class="font-body-md text-on-surface-variant">/10</span></h3>
+</div>
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-indigo-ai">
+<span class="material-symbols-outlined text-[24px]">auto_stories</span>
+</div>
+</div>
+<div class="mt-space-sm">
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+<div class="bg-indigo-ai h-full rounded-full" style="width: 92%"></div>
+</div>
+<div class="flex items-center justify-between mt-2 font-code-sm text-code-sm text-on-surface-variant">
+<span>14 Phrasal Verbs • 8 Inversiones</span>
+<span class="text-indigo-ai font-semibold">Tier C1 Elite</span>
+</div>
+</div>
+</div>
+<!-- Precisión Gramatical -->
+<div class="bg-surface-card p-space-base rounded-xl shadow-sm flex flex-col justify-between relative overflow-hidden">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Precisión Gramatical</span>
+<h3 class="font-display text-display text-on-surface mt-1">94%</h3>
+</div>
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-emerald-streak">
+<span class="material-symbols-outlined text-[24px]">spellcheck</span>
+</div>
+</div>
+<div class="mt-space-sm">
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+<div class="bg-emerald-streak h-full rounded-full" style="width: 94%"></div>
+</div>
+<div class="flex items-center justify-between mt-2 font-code-sm text-code-sm text-on-surface-variant">
+<span>Errores fósiles controlados</span>
+<span class="text-emerald-streak font-semibold">−1.2% penaliz.</span>
+</div>
+</div>
+</div>
+<!-- Fichas Leitner -->
+<div class="bg-surface-card p-space-base rounded-xl shadow-sm flex flex-col justify-between relative overflow-hidden">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Tarjetas a Repaso</span>
+<h3 class="font-display text-display text-on-surface mt-1">16 <span class="font-headline-sm text-on-surface-variant font-normal">cards</span></h3>
+</div>
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-coral-urgent">
+<span class="material-symbols-outlined text-[24px]">style</span>
+</div>
+</div>
+<div class="mt-space-sm">
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+<div class="bg-coral-urgent h-full rounded-full" style="width: 65%"></div>
+</div>
+<div class="flex items-center justify-between mt-2 font-code-sm text-code-sm text-on-surface-variant">
+<span>Mazo Spaced-Repetition</span>
+<span class="text-coral-urgent font-semibold">Repasar Hoy (6)</span>
+</div>
+</div>
+</div>
+</section>
+<!-- MAIN SPLIT WORKSPACE -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- LEFT PANEL: CHAT & ORAL PRACTICE (7 COLS) -->
+<div class="lg:col-span-7 flex flex-col gap-space-md">
+<!-- Current Topic Banner -->
+<div class="bg-surface-card p-space-base rounded-xl shadow-sm flex items-center justify-between gap-space-base">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-9 h-9 rounded-lg bg-secondary-fixed flex items-center justify-center text-secondary shrink-0">
+<span class="material-symbols-outlined text-[20px]">topic</span>
+</div>
+<div class="min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm uppercase tracking-wide text-secondary font-bold">Oral &amp; Essay Topic #08</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-code-sm text-[10px]">PAU Madrid / Cambridge CAE</span>
+</div>
+<p class="font-headline-sm text-body-lg font-semibold text-on-surface truncate">
+              The Impact of Artificial Intelligence on Climate Change Mitigation
+            </p>
+</div>
+</div>
+<div class="flex items-center gap-1 shrink-0">
+<button class="p-1.5 rounded-lg hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors" title="Cambiar Tema de Examen" type="button">
+<span class="material-symbols-outlined text-[20px]">swap_horiz</span>
+</button>
+<button class="p-1.5 rounded-lg hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors" title="Configurar Rubric" type="button">
+<span class="material-symbols-outlined text-[20px]">tune</span>
+</button>
+</div>
+</div>
+<!-- Dialogue History Canvas -->
+<div class="bg-surface-card rounded-xl shadow-sm p-space-base flex flex-col gap-space-base min-h-[460px] justify-between">
+<div class="flex flex-col gap-space-base overflow-y-auto pr-1">
+<!-- Time Marker -->
+<div class="flex items-center justify-center">
+<span class="px-space-sm py-0.5 rounded-full bg-surface-container text-on-surface-variant font-code-sm text-[11px]">
+              Sesión Iniciada Hoy • 17:42 CEST • Modo Socrático Activado
+            </span>
+</div>
+<!-- Tutor Message 1 -->
+<div class="flex items-start gap-space-sm max-w-xl">
+<div class="w-8 h-8 rounded-full bg-primary-container text-surface-card flex items-center justify-center text-xs font-bold shrink-0 shadow-sm">
+              AI
+            </div>
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm font-bold text-on-surface">Dr. Vance (Coach)</span>
+<span class="font-code-sm text-[10px] text-on-surface-variant">17:43</span>
+<span class="px-1.5 py-0.2 rounded bg-surface-container-high text-secondary font-code-sm text-[10px]">RP Native Accent</span>
+</div>
+<div class="bg-surface-container-low p-space-base rounded-xl rounded-tl-none shadow-sm text-on-surface font-body-md text-body-md leading-relaxed">
+<p>
+                  That's an insightful point about renewable energy grids! However, to score in the higher band for <strong>C1 Lexical Range</strong>, how could you express <em class="text-coral-urgent not-italic font-semibold">“it makes things better”</em> using a more sophisticated academic collocation?
+                </p>
+<div class="mt-3 flex items-center gap-space-sm">
+<button class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-surface-card text-on-surface font-label-sm text-label-sm shadow-sm hover:bg-surface-container-high transition-colors" type="button">
+<span class="material-symbols-outlined text-[15px] text-secondary">volume_up</span>
+<span>Escuchar Audio (UK)</span>
+</button>
+<button class="inline-flex items-center gap-1 px-2.5 py-1 rounded text-on-surface-variant font-label-sm text-label-sm hover:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-[15px]">lightbulb</span>
+<span>Pedir Pista Socrática</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Student Message (Lucía) -->
+<div class="flex items-start gap-space-sm max-w-xl self-end flex-row-reverse">
+<img alt="Lucía" class="w-8 h-8 rounded-full object-cover shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfmw-gtx0XEK7h8QkzkqF3FppIOTbex1jLhq0ocROUjmLodXPHUohFwpnJvNVkN0ISjq214XEmWTpaUMw3YSio12W-RjtGFeU0sE1SjasnJqTB-yV8QlgvtQlUWVMlziMiyc-kapJhBGjqEArrPwnzz5DrLEfaywd6KV0lCZ0M5ZzcT3XTNGdqZUTS-wEp6J9RCq0b-FMAAjueo_cX1syzKCEK_bQTcBHe-z8fv9oRHSz-6bu4IvxX"/>
+<div class="flex flex-col gap-1.5 items-end">
+<div class="flex items-center gap-2">
+<span class="px-1.5 py-0.2 rounded bg-emerald-streak/15 text-emerald-streak font-code-sm text-[10px] font-semibold">Speaking Input Validado</span>
+<span class="font-code-sm text-[10px] text-on-surface-variant">17:45</span>
+<span class="font-label-sm text-label-sm font-bold text-on-surface">Lucía (Tú)</span>
+</div>
+<div class="bg-primary-container text-surface-card p-space-base rounded-xl rounded-tr-none shadow-sm font-body-md text-body-md leading-relaxed text-left">
+<p>
+                  “I think AI can really <span class="text-emerald-streak font-semibold underline decoration-dotted underline-offset-4">enhance the efficiency</span> of distribution networks, although we must <span class="text-emerald-streak font-semibold underline decoration-dotted underline-offset-4">take into consideration</span> the high energy consumption of data centers.”
+                </p>
+<div class="mt-2 pt-2 border-t-0 flex items-center justify-between text-on-primary-container font-code-sm text-[11px]">
+<span>Grabación oral: 11.4 seg</span>
+<span class="text-surface-card font-semibold">Pronunciación: 9.1/10</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Tutor Feedback Response (Socratic Challenge) -->
+<div class="flex items-start gap-space-sm max-w-xl">
+<div class="w-8 h-8 rounded-full bg-primary-container text-surface-card flex items-center justify-center text-xs font-bold shrink-0 shadow-sm">
+              AI
+            </div>
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm font-bold text-on-surface">Dr. Vance</span>
+<span class="inline-flex items-center gap-1 px-1.5 py-0.2 rounded bg-emerald-streak/15 text-emerald-streak font-label-sm text-[10px]">
+<span class="material-symbols-outlined text-[12px]">verified</span> Native Feedback
+                </span>
+<span class="font-code-sm text-[10px] text-on-surface-variant">17:46</span>
+</div>
+<div class="bg-surface-container-low p-space-base rounded-xl rounded-tl-none shadow-sm text-on-surface font-body-md text-body-md leading-relaxed">
+<p class="font-semibold text-secondary mb-1">
+                  Spot on! “Enhance the efficiency” and “take into consideration” are excellent advanced structures!
+                </p>
+<p>
+                  Here is your next challenge: <em>How would you link this thought to public policy using an <strong>inversion structure</strong> (e.g., “Not only does AI...” or “Seldom have we witnessed...”)?</em>
+</p>
+<div class="mt-3 flex items-center gap-space-sm">
+<button class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-surface-card text-on-surface font-label-sm text-label-sm shadow-sm hover:bg-surface-container-high transition-colors" type="button">
+<span class="material-symbols-outlined text-[15px] text-secondary">play_arrow</span>
+<span>Reproducir Respuesta</span>
+</button>
+<span class="font-code-sm text-code-sm text-on-surface-variant">+15 XP Inversión Gramatical</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Conversational Input Zone & Speaking Trigger -->
+<div class="mt-space-base bg-surface-container-low rounded-xl p-space-sm flex flex-col gap-space-sm">
+<!-- Audio Waveform Live Preview -->
+<div class="bg-surface-card px-space-base py-2 rounded-lg flex items-center justify-between gap-space-base shadow-sm">
+<div class="flex items-center gap-space-sm">
+<span class="w-2.5 h-2.5 rounded-full bg-coral-urgent animate-pulse"></span>
+<span class="font-label-sm text-label-sm font-semibold text-on-surface">Speaking Mic Standby</span>
+<span class="font-code-sm text-[11px] text-on-surface-variant">(Detección fonética fonema por fonema)</span>
+</div>
+<!-- Simulated Minimal SVG Waveform -->
+<div class="hidden sm:flex items-center gap-1 h-5">
+<span class="w-1 h-2 bg-secondary rounded-full"></span>
+<span class="w-1 h-4 bg-secondary rounded-full"></span>
+<span class="w-1 h-5 bg-indigo-ai rounded-full"></span>
+<span class="w-1 h-3 bg-secondary rounded-full"></span>
+<span class="w-1 h-4 bg-indigo-ai rounded-full"></span>
+<span class="w-1 h-2 bg-secondary rounded-full"></span>
+<span class="w-1 h-5 bg-secondary rounded-full"></span>
+<span class="w-1 h-3 bg-indigo-ai rounded-full"></span>
+<span class="w-1 h-1 bg-secondary rounded-full"></span>
+</div>
+<span class="font-code-sm text-code-sm text-secondary font-bold">0.02s Latency</span>
+</div>
+<!-- Textarea / Speech Input -->
+<div class="relative">
+<textarea class="w-full bg-surface-card rounded-lg p-space-sm text-on-surface font-body-md text-body-md placeholder:text-on-surface-variant/60 focus:outline-none shadow-sm resize-none" placeholder="Escribe tu respuesta o haz clic en Hablar por Micrófono para practicar oralmente..." rows="2"></textarea>
+</div>
+<!-- Action Buttons Bar -->
+<div class="flex items-center justify-between flex-wrap gap-space-sm">
+<div class="flex items-center gap-space-xs">
+<button class="inline-flex items-center gap-1.5 px-space-md py-2 rounded-lg bg-coral-urgent text-surface-card font-label-md text-label-md shadow-sm hover:opacity-95 transition-opacity" type="button">
+<span class="material-symbols-outlined text-[18px]">mic</span>
+<span>Hablar por Micrófono (Speaking Mode)</span>
+</button>
+<button class="inline-flex items-center gap-1 px-space-sm py-2 rounded-lg bg-surface-card text-on-surface font-label-md text-label-md hover:bg-surface-container-high transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-[17px] text-indigo-ai">auto_fix_high</span>
+<span>Analizar Gramática</span>
+</button>
+</div>
+<div class="flex items-center gap-space-sm">
+<span class="font-code-sm text-[11px] text-on-surface-variant hidden md:inline">Presiona <kbd class="px-1.5 py-0.5 rounded bg-surface-card text-on-surface font-semibold shadow-sm">Enter ↵</kbd> para enviar</span>
+<button class="inline-flex items-center gap-1 px-space-md py-2 rounded-lg bg-primary-container text-surface-card font-label-md text-label-md hover:bg-primary transition-colors shadow-sm" type="button">
+<span>Enviar</span>
+<span class="material-symbols-outlined text-[16px]">send</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- RIGHT PANEL: PEDAGOGICAL INSPECTOR & REAL-TIME FEEDBACK (5 COLS) -->
+<div class="lg:col-span-5 flex flex-col gap-space-md">
+<!-- Panel Header Tabs -->
+<div class="bg-surface-card p-1 rounded-xl shadow-sm flex items-center justify-between">
+<button class="flex-1 py-2 px-space-xs rounded-lg font-label-md text-label-md bg-secondary text-on-secondary font-semibold text-center transition-colors" type="button">
+          Feedback Box
+        </button>
+<button class="flex-1 py-2 px-space-xs rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-on-surface text-center transition-colors" type="button">
+          Writing Checker
+        </button>
+<button class="flex-1 py-2 px-space-xs rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-on-surface text-center transition-colors" type="button">
+          Flashcards (16)
+        </button>
+</div>
+<!-- Real-Time Feedback Box -->
+<div class="bg-surface-card rounded-xl p-space-base shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-streak"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface font-bold">Análisis de la última frase</span>
+</div>
+<span class="px-2 py-0.5 rounded bg-emerald-streak/15 text-emerald-streak font-code-sm text-code-sm font-bold">
+            9.6/10 Excelente
+          </span>
+</div>
+<!-- Diff Card: Original vs C1/C2 Alternative -->
+<div class="bg-surface-container-low rounded-xl p-space-base flex flex-col gap-space-sm">
+<div>
+<span class="font-code-sm text-[11px] uppercase tracking-wider text-on-surface-variant font-semibold">Frase Original Alumna:</span>
+<p class="font-body-md text-body-md text-on-surface mt-0.5 italic">
+              “AI can really enhance the efficiency...”
+            </p>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-card shadow-sm">
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px]">trending_up</span> Alternativa C1/C2 Recomendada:
+              </span>
+<span class="font-code-sm text-[10px] bg-secondary-fixed text-secondary px-1.5 py-0.2 rounded font-bold">PAU 10 Band</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface font-medium">
+              “AI holds the potential to <strong class="text-secondary font-bold">substantially streamline</strong> distribution networks...”
+            </p>
+</div>
+<!-- Pedagogical Rule Explanation -->
+<div class="flex items-start gap-2 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[18px] text-tertiary-fixed-variant shrink-0 mt-0.5">info</span>
+<p>
+              El verbo <strong>‘streamline’</strong> y el modificador <strong>‘substantially’</strong> elevan el registro formal y otorgan precisión milimétrica indispensable para la máxima calificación en la prueba escrita de la PAU.
+            </p>
+</div>
+<!-- Flashcard Action Button -->
+<button class="w-full mt-1 py-2 px-space-base rounded-lg bg-surface-card text-on-surface hover:bg-surface-container font-label-md text-label-md shadow-sm transition-colors flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined text-[18px] text-tertiary-fixed-dim">style</span>
+<span>Guardar “streamline” en Flashcards con 1 Clic</span>
+</button>
+</div>
+<!-- Connectors & Collocations Section -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface font-bold">Conectores &amp; Collocations Recomendados</span>
+<span class="font-code-sm text-[11px] text-on-surface-variant">4 sugeridos</span>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<div class="p-2.5 rounded-lg bg-surface-container-low flex flex-col justify-between gap-1 group hover:bg-surface-container transition-colors cursor-pointer">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-bold text-secondary">Notwithstanding</span>
+<span class="font-code-sm text-[10px] text-on-surface-variant">Concesión</span>
+</div>
+<p class="font-body-sm text-[11px] text-on-surface-variant line-clamp-2">
+                “Notwithstanding the initial costs, benefits persist.”
+              </p>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low flex flex-col justify-between gap-1 group hover:bg-surface-container transition-colors cursor-pointer">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-bold text-secondary">In stark contrast to</span>
+<span class="font-code-sm text-[10px] text-on-surface-variant">Contraste</span>
+</div>
+<p class="font-body-sm text-[11px] text-on-surface-variant line-clamp-2">
+                “In stark contrast to fossil fuel grids...”
+              </p>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low flex flex-col justify-between gap-1 group hover:bg-surface-container transition-colors cursor-pointer">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-bold text-secondary">Pave the way for</span>
+<span class="font-code-sm text-[10px] text-on-surface-variant">Collocation</span>
+</div>
+<p class="font-body-sm text-[11px] text-on-surface-variant line-clamp-2">
+                “Will pave the way for smarter sustainable agriculture.”
+              </p>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low flex flex-col justify-between gap-1 group hover:bg-surface-container transition-colors cursor-pointer">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-bold text-secondary">Furthermore</span>
+<span class="font-code-sm text-[10px] text-on-surface-variant">Adición C1</span>
+</div>
+<p class="font-body-sm text-[11px] text-on-surface-variant line-clamp-2">
+                “Furthermore, algorithmic allocation optimizes energy.”
+              </p>
+</div>
+</div>
+</div>
+<!-- Speaking Rubric Evaluation (Cambridge & PAU Criteria) -->
+<div class="bg-surface-container-low rounded-xl p-space-base flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface font-bold">Rúbrica Examen Oral (Speaking CAE/PAU)</span>
+<span class="material-symbols-outlined text-[18px] text-secondary">school</span>
+</div>
+<div class="space-y-2">
+<div>
+<div class="flex justify-between font-label-sm text-label-sm mb-1 text-on-surface">
+<span>Pronunciation &amp; Phonological Control</span>
+<span class="font-code-sm font-bold">9.0/10</span>
+</div>
+<div class="w-full bg-surface-card h-2 rounded-full overflow-hidden">
+<div class="bg-emerald-streak h-full rounded-full" style="width: 90%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between font-label-sm text-label-sm mb-1 text-on-surface">
+<span>Discourse Management &amp; Cohesion</span>
+<span class="font-code-sm font-bold">8.5/10</span>
+</div>
+<div class="w-full bg-surface-card h-2 rounded-full overflow-hidden">
+<div class="bg-indigo-ai h-full rounded-full" style="width: 85%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between font-label-sm text-label-sm mb-1 text-on-surface">
+<span>Interactive Communication</span>
+<span class="font-code-sm font-bold">9.5/10</span>
+</div>
+<div class="w-full bg-surface-card h-2 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 95%"></div>
+</div>
+</div>
+</div>
+<button class="mt-2 w-full py-2.5 px-space-base rounded-lg bg-primary-container text-surface-card hover:bg-primary font-label-md text-label-md shadow-sm transition-colors flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined text-[18px] text-tertiary-fixed-dim">timer</span>
+<span>Iniciar Ronda de Preguntas Rápidas (3 min)</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- BOTTOM PEDAGOGICAL WORKSHOP: QUICK DRILLS & ESSAY BLUEPRINTS -->
+<section class="bg-surface-card rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-base">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface tracking-tight">
+          Banco de Práctica Guiada • Estructuras Clave de Selectividad
+        </h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+          Estructuras avanzadas requeridas para obtener el punto completo en la sección de Transformación Gramatical y Redacción Formal.
+        </p>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="px-space-sm py-1.5 rounded-lg bg-surface-container-low text-on-surface font-label-sm text-label-sm hover:bg-surface-container transition-colors" type="button">
+          Filtro: Inversions (4)
+        </button>
+<button class="px-space-sm py-1.5 rounded-lg bg-surface-container-low text-on-surface font-label-sm text-label-sm hover:bg-surface-container transition-colors" type="button">
+          Conditionals Mix (3)
+        </button>
+<button class="px-space-sm py-1.5 rounded-lg bg-surface-container text-secondary font-label-sm text-label-sm font-semibold" type="button">
+          Ver Todo
+        </button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-base">
+<!-- Drill 1 -->
+<div class="bg-surface-container-low p-space-base rounded-xl flex flex-col justify-between gap-space-sm">
+<div class="space-y-1">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded bg-surface-card text-secondary font-code-sm text-[10px] font-bold">INVERSION 01</span>
+<span class="font-code-sm text-[11px] text-emerald-streak font-semibold">Dominado</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface font-bold">
+            Negative Adverb Inversion
+          </p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            “Seldom <strong>have we observed</strong> such rapid ecological transformation...”
+          </p>
+</div>
+<button class="w-full py-1.5 rounded bg-surface-card text-on-surface font-label-sm text-label-sm hover:bg-surface-container transition-colors shadow-sm flex items-center justify-center gap-1" type="button">
+<span class="material-symbols-outlined text-[15px] text-secondary">play_circle</span>
+<span>Practicar en Speaking</span>
+</button>
+</div>
+<!-- Drill 2 -->
+<div class="bg-surface-container-low p-space-base rounded-xl flex flex-col justify-between gap-space-sm">
+<div class="space-y-1">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded bg-surface-card text-indigo-ai font-code-sm text-[10px] font-bold">CLEFT SENTENCES</span>
+<span class="font-code-sm text-[11px] text-tertiary-fixed-variant font-semibold">En progreso</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface font-bold">
+            Emphasis with ‘What’ &amp; ‘It’
+          </p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            “What researchers are primarily concerned with <strong>is the scalable adoption</strong>...”
+          </p>
+</div>
+<button class="w-full py-1.5 rounded bg-surface-card text-on-surface font-label-sm text-label-sm hover:bg-surface-container transition-colors shadow-sm flex items-center justify-center gap-1" type="button">
+<span class="material-symbols-outlined text-[15px] text-indigo-ai">play_circle</span>
+<span>Practicar en Speaking</span>
+</button>
+</div>
+<!-- Drill 3 -->
+<div class="bg-surface-container-low p-space-base rounded-xl flex flex-col justify-between gap-space-sm">
+<div class="space-y-1">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded bg-surface-card text-coral-urgent font-code-sm text-[10px] font-bold">PASSIVE CAUSATIVE</span>
+<span class="font-code-sm text-[11px] text-coral-urgent font-semibold">Repaso prioritario</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface font-bold">
+            Academic Impersonal Passive
+          </p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            “It is widely believed that regulatory frameworks <strong>should have been instituted</strong> earlier.”
+          </p>
+</div>
+<button class="w-full py-1.5 rounded bg-surface-card text-on-surface font-label-sm text-label-sm hover:bg-surface-container transition-colors shadow-sm flex items-center justify-center gap-1" type="button">
+<span class="material-symbols-outlined text-[15px] text-coral-urgent">play_circle</span>
+<span>Practicar en Speaking</span>
+</button>
+</div>
+</div>
+</section>
+</div></div></main></div></body></html>

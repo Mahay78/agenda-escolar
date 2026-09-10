@@ -1,150 +1,861 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Cuaderno LM - Suite Tablet</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>body { padding-bottom: 96px; }</style>
-</head>
-<body class="bg-[#f8f9ff] text-slate-800 font-['Plus_Jakarta_Sans',sans-serif] antialiased min-h-screen flex flex-col">
-  <!-- Cabecera Tablet -->
-  <header class="px-6 py-4 bg-white sticky top-0 z-20 border-b border-slate-100 flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      <a href="index.html" class="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-sm font-bold hover:bg-slate-200">‹</a>
-      <div>
-        <span class="text-[10px] font-bold uppercase tracking-wider text-purple-600">Física II • Electromagnetismo & Inducción</span>
-        <h1 class="text-base font-black text-slate-900">Cuaderno LM (Modo 3 Columnas)</h1>
-      </div>
-    </div>
-    <div class="flex items-center gap-2">
-      <span class="px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-xs font-bold border border-purple-200 flex items-center gap-1.5">
-        <span class="w-2 h-2 rounded-full bg-purple-600 animate-pulse"></span> RAG Local Activo
-      </span>
-      <button class="px-3 py-1 rounded-xl bg-slate-900 text-white font-bold text-xs shadow-sm">+ Fuente PDF / Foto</button>
-    </div>
-  </header>
 
-  <!-- Rejilla 3 Columnas Tablet -->
-  <main class="max-w-7xl w-full mx-auto p-6 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6">
-    <!-- Columna 1: Podcast de Estudio & Fuentes (3 cols) -->
-    <div class="lg:col-span-4 space-y-4">
-      <div class="bg-gradient-to-br from-indigo-950 to-slate-900 text-white p-5 rounded-3xl shadow-sm space-y-3">
-        <div class="flex justify-between items-center text-xs">
-          <span class="text-purple-300 font-bold uppercase tracking-wider">🎙 Podcast a 2 Voces</span>
-          <span class="font-mono text-[11px] bg-white/10 px-2 py-0.5 rounded">14:15 min</span>
-        </div>
-        <p class="text-xs text-slate-300">Lucía & Mateo debaten la ley de inducción de Faraday, la regla de Lenz y su aplicación en transformadores.</p>
-        <div class="flex items-center justify-between pt-3 border-t border-slate-800">
-          <button class="w-10 h-10 rounded-full bg-white text-slate-900 font-bold flex items-center justify-center shadow-lg hover:scale-105 transition">▶</button>
-          <div class="flex gap-1.5 text-xs font-mono">
-            <button class="px-2.5 py-1 bg-white/10 hover:bg-white/20 rounded-lg">1.0x</button>
-            <button class="px-2.5 py-1 bg-white/25 rounded-lg font-bold">1.2x</button>
-            <button class="px-2.5 py-1 bg-white/10 hover:bg-white/20 rounded-lg">1.5x</button>
+<html lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><title>Agenda Escolar PWA</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "border-subtle": "#E2E8F0", "surface-container-high": "#dce9ff", "secondary": "#4648d4", "error": "#ba1a1a", "on-surface": "#0b1c30", "primary-fixed-dim": "#bcc7de", "on-background": "#0b1c30", "surface-dim": "#cbdbf5", "on-error": "#ffffff", "surface-container-lowest": "#ffffff", "tertiary": "#201100", "on-primary": "#ffffff", "surface-sidebar": "#0F172A", "outline-variant": "#c5c6cd", "indigo-ai": "#8B5CF6", "on-primary-container": "#8590a6", "surface-bright": "#f8f9ff", "on-primary-fixed-variant": "#3c475a", "outline": "#75777d", "primary-fixed": "#d8e3fb", "on-primary-fixed": "#111c2d", "on-secondary-fixed": "#07006c", "primary-container": "#1e293b", "on-tertiary-fixed": "#2a1700", "surface-card": "#FFFFFF", "error-container": "#ffdad6", "tertiary-container": "#3c2300", "inverse-surface": "#213145", "surface-container-low": "#eff4ff", "on-tertiary-container": "#c88000", "coral-urgent": "#F43F5E", "on-tertiary-fixed-variant": "#653e00", "secondary-fixed-dim": "#c0c1ff", "inverse-on-surface": "#eaf1ff", "emerald-streak": "#10B981", "on-surface-variant": "#45474c", "surface-container": "#e5eeff", "background": "#f8f9ff", "inverse-primary": "#bcc7de", "surface-container-highest": "#d3e4fe", "primary": "#091426", "border-dark": "#1E293B", "surface-tint": "#545f73", "on-error-container": "#93000a", "tertiary-fixed-dim": "#ffb95f", "on-secondary-container": "#fffbff", "surface-variant": "#d3e4fe", "surface": "#f8f9ff", "tertiary-fixed": "#ffddb8", "secondary-fixed": "#e1e0ff", "on-tertiary": "#ffffff", "on-secondary-fixed-variant": "#2f2ebe", "canvas-bg": "#F8FAFC", "on-secondary": "#ffffff", "secondary-container": "#6063ee" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-2xs": "0.125rem", "sidebar-collapsed": "68px", "space-xl": "2rem", "space-xs": "0.25rem", "max-content-width": "1440px", "space-base": "1rem", "space-2xl": "3rem", "space-lg": "1.5rem", "space-sm": "0.5rem", "space-md": "0.75rem", "sidebar-width": "240px" }, "fontFamily": { "headline-lg": ["Plus Jakarta Sans"], "code-sm": ["JetBrains Mono"], "label-md": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "display": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"] }, "fontSize": { "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "700" }], "code-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" }], "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "display": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-md": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased selection:bg-secondary-fixed selection:text-on-secondary-fixed"><aside class="fixed left-0 top-0 h-screen w-sidebar-width bg-surface-sidebar z-50 flex flex-col justify-between select-none shadow-[0_1px_8px_rgba(0,0,0,0.08)]"><div class="flex flex-col flex-1 overflow-y-auto"><div class="h-16 px-space-base flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="Agenda Escolar Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1W7YUEss6DP9Xx1z841d_qHcSCOIN-l-FhxrtKUiT5-W3ctujb3E695E4JvcFlKOwJoERFlgw34EvmYFS36M3HrArIc3x400fLH1AoZYEucmEe1aIVkLAPCvwhq3kxd6fab9Elr7U6Vimt0zw1SCEgHXBCvXV-69uslhDkvNzZHvwJb9BJ1ZyZmF7mq6CqnuAvZ-6FjV6pKE_YyNJsRUW5hB1n4jcwnfaEzeGa5lhXOLCkde7_yj2x0cFE"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-surface-card leading-none tracking-tight">Agenda Escolar</span><span class="mt-space-2xs inline-flex items-center self-start px-space-xs py-0.5 rounded bg-primary-container text-primary-fixed text-[10px] font-code-sm font-semibold uppercase tracking-wider">v3.5 PWA</span></div></div><button aria-label="Colapsar menú lateral" class="text-outline-variant hover:text-surface-card p-1 rounded transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">keyboard_double_arrow_left</span></button></div><div class="px-space-base py-space-xs"><div class="flex items-center justify-between px-space-sm py-space-xs rounded bg-border-dark/60 text-emerald-streak"><div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-streak animate-pulse"></span><span class="font-label-sm text-label-sm">100% Offline Listo</span></div><span class="font-code-sm text-code-sm text-surface-variant/80 text-[10px]">PWA ACTIVE</span></div></div><nav class="flex-1 px-space-sm py-space-xs space-y-space-2xs" data-active-classes="bg-primary-container text-surface-card font-semibold shadow-inner"><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="mi-dia" href="index.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-tertiary-fixed-dim">light_mode</span><span class="font-body-md text-body-md">Mi Día</span></div><span class="px-1.5 py-0.5 rounded-full bg-border-dark text-surface-card font-code-sm text-[11px]">8</span></a><div class="space-y-0.5"><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="agenda" href="deberes-examenes.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">calendar_month</span><span class="font-body-md text-body-md">Agenda</span></div><span class="material-symbols-outlined text-[16px] text-outline-variant group-hover:text-surface-card">expand_more</span></a><div class="pl-8 pr-space-xs space-y-0.5"><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="deberes" href="deberes-examenes.html"><span>Deberes</span><span class="w-1.5 h-1.5 rounded-full bg-coral-urgent"></span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="examenes" href="deberes-examenes.html"><span>Exámenes</span><span class="font-code-sm text-[10px] text-tertiary-fixed-dim font-bold">PROX</span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="horario" href="horario-mochila.html"><span>Horario</span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="mochila" href="horario-mochila.html"><span>Mochila</span><span class="material-symbols-outlined text-[13px] text-outline-variant">backpack</span></a></div></div><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="cuaderno-lm" href="cuaderno-lm.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-indigo-ai">neurology</span><span class="font-body-md text-body-md">Cuaderno LM</span></div><span class="px-1.5 py-0.2 rounded bg-indigo-ai/20 text-indigo-ai font-label-sm text-[10px]">Studio</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="pomodoro-concentracion" href="pomodoro-flashcards.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">timer</span><span class="font-body-md text-body-md">Pomodoro</span></div><span class="font-code-sm text-code-sm text-tertiary-fixed-dim">25:00</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="progreso-notas" href="progreso-ebau.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">insights</span><span class="font-body-md text-body-md">Progreso &amp; Notas</span></div><span class="font-code-sm text-code-sm text-emerald-streak">9.4</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="copiloto-ia" href="english-coach.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-secondary-fixed-dim">smart_toy</span><span class="font-body-md text-body-md">Copiloto IA</span></div><span class="flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-streak opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-streak"></span></span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="ajustes-drive-sync" href="ajustes-nube.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">sync_saved_locally</span><span class="font-body-md text-body-md">Ajustes &amp; Drive</span></div><span class="material-symbols-outlined text-[16px] text-emerald-streak">cloud_done</span></a></nav></div><div class="p-space-sm bg-border-dark/40 m-space-sm rounded-xl"><div class="flex items-center gap-space-sm"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfmw-gtx0XEK7h8QkzkqF3FppIOTbex1jLhq0ocROUjmLodXPHUohFwpnJvNVkN0ISjq214XEmWTpaUMw3YSio12W-RjtGFeU0sE1SjasnJqTB-yV8QlgvtQlUWVMlziMiyc-kapJhBGjqEArrPwnzz5DrLEfaywd6KV0lCZ0M5ZzcT3XTNGdqZUTS-wEp6J9RCq0b-FMAAjueo_cX1syzKCEK_bQTcBHe-z8fv9oRHSz-6bu4IvxX"/><div class="flex-1 min-w-0"><div class="flex items-center justify-between gap-1"><p class="font-headline-sm text-body-md font-semibold text-surface-card truncate leading-snug">Lucía Fernández</p><span class="inline-flex items-center px-1.5 py-0.5 rounded bg-tertiary-container text-tertiary-fixed font-code-sm text-[10px] font-bold shrink-0">🔥 14</span></div><p class="font-label-sm text-label-sm text-outline-variant truncate">2º Bachillerato • Ciencias</p></div></div></div></aside><div class="pl-sidebar-width"><header class="fixed top-0 left-sidebar-width right-0 h-16 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg"><div class="flex-1 max-w-xl pr-space-base"><div class="relative flex items-center w-full"><span class="material-symbols-outlined absolute left-3 text-[18px] text-on-surface-variant pointer-events-none">search</span><input class="w-full h-10 pl-9 pr-20 bg-surface-container-lowest rounded-lg font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none focus:bg-surface-container-lowest transition-all shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" placeholder="Buscar asignaturas, tareas, notas o fechas..." type="text"/><div class="absolute right-2 flex items-center gap-1"><kbd class="px-1.5 py-0.5 text-[11px] font-code-sm text-on-surface-variant bg-surface-container-high rounded">⌘K</kbd></div></div></div><div class="flex items-center gap-space-sm"><div class="flex items-center gap-1 bg-surface-container-lowest px-space-sm py-1.5 rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]"><span class="material-symbols-outlined text-[17px] text-tertiary-container">hourglass_top</span><span class="font-code-sm text-code-sm font-semibold text-on-surface">25:00</span><button class="text-on-surface-variant hover:text-on-surface ml-1" title="Iniciar Pomodoro" type="button"><span class="material-symbols-outlined text-[17px]">play_arrow</span></button></div><button class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[17px] text-secondary">document_scanner</span><span>OCR</span></button><button class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[17px] text-coral-urgent">mic</span><span>Dictar</span></button><button class="inline-flex items-center gap-1.5 px-space-md py-1.5 rounded-lg bg-primary-container text-surface-card font-label-md text-label-md hover:bg-primary hover:text-surface-card transition-colors shadow-sm" type="button"><span class="material-symbols-outlined text-[18px]">add</span><span>Nueva Tarea</span></button><div class="h-6 w-px bg-border-subtle mx-space-2xs"></div><button aria-label="Notificaciones" class="relative p-2 rounded-lg bg-surface-container-lowest text-on-surface-variant hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-coral-urgent ring-2 ring-surface-card"></span></button></div></header><main class="w-full pt-16 bg-surface min-h-screen"><div class="max-w-max-content-width mx-auto p-space-lg"><div class="flex flex-col w-full">
+<!-- Tablet Stylus Context Bar (Header Action Strip) -->
+<div class="flex flex-wrap items-center justify-between gap-space-sm bg-surface-container-lowest p-space-sm rounded-xl shadow-sm mb-space-base select-none">
+<!-- Left: Document Context & Mode Switcher -->
+<div class="flex items-center gap-space-sm">
+<div class="flex items-center gap-1.5 bg-surface-container-high/60 px-space-sm py-1.5 rounded-lg text-on-surface">
+<span class="material-symbols-outlined text-secondary text-[20px]">auto_stories</span>
+<span class="font-headline-sm text-body-md font-bold tracking-tight">Física 2º Bach: Campo Eléctrico &amp; Coulomb</span>
+</div>
+<div class="flex items-center bg-surface-container-low p-1 rounded-lg gap-1">
+<button class="flex items-center gap-1.5 px-space-sm py-1.5 rounded-md font-label-md text-label-md transition-all text-on-surface-variant hover:text-on-surface" id="btnReadMode" onclick="setDocMode('read')">
+<span class="material-symbols-outlined text-[18px]">menu_book</span>
+<span>Lectura</span>
+</button>
+<button class="flex items-center gap-1.5 px-space-sm py-1.5 rounded-md font-label-md text-label-md transition-all bg-surface-card text-secondary font-bold shadow-sm" id="btnStylusMode" onclick="setDocMode('stylus')">
+<span class="material-symbols-outlined text-[18px]">draw</span>
+<span>Tinta Stylus</span>
+</button>
+</div>
+</div>
+<!-- Center: Floating Stylus Pen Palette -->
+<div class="flex items-center gap-1.5 bg-surface-container-low p-1 rounded-xl">
+<button class="w-10 h-10 rounded-lg flex items-center justify-center bg-primary-container text-surface-card transition-all" id="toolPen" onclick="selectPenTool('pen', '#0b1c30')" title="Pluma de Tinta">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="w-10 h-10 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-all" id="toolMarker" onclick="selectPenTool('marker', 'rgba(253, 224, 71, 0.45)')" title="Rotulador Fluorescente">
+<span class="material-symbols-outlined text-[20px]">border_color</span>
+</button>
+<button class="w-10 h-10 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-all" id="toolPencil" onclick="selectPenTool('pencil', '#64748b')" title="Grafito HB">
+<span class="material-symbols-outlined text-[20px]">brush</span>
+</button>
+<button class="w-10 h-10 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-all" id="toolEraser" onclick="selectPenTool('eraser', null)" title="Goma de Borrar">
+<span class="material-symbols-outlined text-[20px]">ink_eraser</span>
+</button>
+<div class="w-px h-6 bg-surface-dim mx-1"></div>
+<!-- Color Dots (Tactile 44px hitboxes) -->
+<div class="flex items-center gap-1 px-1">
+<button aria-label="Negro tinta" class="w-6 h-6 rounded-full bg-primary shadow-sm hover:scale-110 transition-transform" onclick="setInkColor('#091426')"></button>
+<button aria-label="Azul secundario" class="w-6 h-6 rounded-full bg-secondary shadow-sm hover:scale-110 transition-transform" onclick="setInkColor('#4648d4')"></button>
+<button aria-label="Rojo corrección" class="w-6 h-6 rounded-full bg-error shadow-sm hover:scale-110 transition-transform" onclick="setInkColor('#ba1a1a')"></button>
+<button aria-label="Amarillo resaltador" class="w-6 h-6 rounded-full bg-yellow-400 shadow-sm hover:scale-110 transition-transform" onclick="setInkColor('#eab308')"></button>
+</div>
+<div class="w-px h-6 bg-surface-dim mx-1"></div>
+<!-- Stroke Width Selector -->
+<div class="flex items-center gap-1 px-1">
+<button class="w-7 h-7 rounded-md flex items-center justify-center hover:bg-surface-container-high text-on-surface font-code-sm text-[11px] font-bold" onclick="setStrokeWidth(2)">1x</button>
+<button class="w-7 h-7 rounded-md flex items-center justify-center bg-surface-container-high text-on-surface font-code-sm text-[11px] font-bold" onclick="setStrokeWidth(4)">2x</button>
+<button class="w-7 h-7 rounded-md flex items-center justify-center hover:bg-surface-container-high text-on-surface font-code-sm text-[11px] font-bold" onclick="setStrokeWidth(8)">3x</button>
+</div>
+</div>
+<!-- Right: Stylus Hardware Telemetry & Fullscreen -->
+<div class="flex items-center gap-space-sm">
+<!-- Palm Rejection Pill -->
+<button class="flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-emerald-streak/10 text-emerald-streak font-label-sm text-label-sm font-bold" id="palmBtn" onclick="togglePalmRejection()">
+<span class="material-symbols-outlined text-[16px]">touch_app</span>
+<span id="palmLabel">Palm Rejection: ON</span>
+</button>
+<!-- Apple Pencil / S-Pen Status -->
+<div class="flex items-center gap-1.5 bg-surface-container-low px-space-sm py-1.5 rounded-lg text-on-surface font-code-sm text-code-sm">
+<span class="material-symbols-outlined text-[17px] text-emerald-streak">stylus</span>
+<span class="font-bold">92%</span>
+</div>
+<!-- Fullscreen / Zen mode -->
+<button class="p-2 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface transition-colors" onclick="toggleCanvasZen()" title="Pantalla completa lienzo">
+<span class="material-symbols-outlined text-[20px]">fullscreen</span>
+</button>
+</div>
+</div>
+<!-- Adaptive 3-Column Studio Grid -->
+<div class="grid grid-cols-12 gap-space-md items-start w-full">
+<!-- ============================================== -->
+<!-- COLUMN 1: Sources & Grounding Shelf (3 Cols) -->
+<!-- ============================================== -->
+<section class="col-span-12 lg:col-span-3 flex flex-col gap-space-sm" id="panelSources">
+<!-- Section Card -->
+<div class="bg-surface-container-lowest p-space-base rounded-2xl shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[22px]">database</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-bold">Fuentes (5)</h2>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-code-sm text-[11px] font-bold">Grounding LM</span>
+</div>
+<!-- Subject Switcher Pills (Horizontal Scroll Touch) -->
+<div class="flex items-center gap-1.5 overflow-x-auto pb-1">
+<button class="px-3 py-1.5 rounded-lg bg-primary-container text-surface-card font-label-sm text-label-sm whitespace-nowrap font-bold shadow-sm">Física y Química</button>
+<button class="px-3 py-1.5 rounded-lg bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high font-label-sm text-label-sm whitespace-nowrap transition-colors">Historia de España</button>
+<button class="px-3 py-1.5 rounded-lg bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high font-label-sm text-label-sm whitespace-nowrap transition-colors">Biología</button>
+</div>
+<!-- Big Touch Action Button: Add Source -->
+<button class="w-full min-h-[48px] flex items-center justify-center gap-2 rounded-xl bg-secondary-fixed text-on-secondary-fixed font-label-md text-label-md font-bold hover:bg-secondary-fixed-dim transition-all shadow-sm active:scale-[0.98]">
+<span class="material-symbols-outlined text-[20px]">add_circle</span>
+<span>+ Añadir Fuente (PDF / Foto / Voz)</span>
+</button>
+<!-- Document Source List -->
+<div class="flex flex-col gap-space-xs pt-1">
+<!-- Source Item 1: OCR Whiteboard (Verified) -->
+<div class="group p-space-sm rounded-xl bg-surface-bright hover:bg-surface-container-low transition-all cursor-pointer shadow-xs" onclick="jumpToCitation('coulomb-chalkboard')">
+<div class="flex items-start gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container overflow-hidden shrink-0 relative">
+<img class="w-full h-full object-cover" data-alt="High school classroom chalkboard with white and yellow handwritten physics formulas for Coulomb Law vectors and force diagrams under warm classroom lights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSwHsKhbgUiz2GVPitX_XP-AOZ2-hvqXwN0Nf_nj2GONiEIam3dxer21FOLkgX1SkwIdDCbHJwh4upEoMjrhteZ3zYnaukkSWkq3r8SLTcbq9GJYQ6NHlf_-7XcRms_tuCQaajRb-ag_v2eBemiqbC10CW705BhvrVJQdPQnwZ4gUYmZ9sDu7r20YefmelmfsIBNe7s1WpF2kCdcVsG-eRfksj3OP-ZamBSV9qBiKfRv6U0owX3LoG"/>
+<span class="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-streak flex items-center justify-center text-surface-card">
+<span class="material-symbols-outlined text-[10px]">check</span>
+</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-1">
+<h3 class="font-label-md text-label-md text-on-surface font-bold truncate">Pizarra: Ley de Coulomb</h3>
+<span class="px-1.5 py-0.5 rounded bg-emerald-streak/15 text-emerald-streak font-code-sm text-[10px] font-bold shrink-0">Verificado OCR</span>
+</div>
+<p class="font-body-sm text-[12px] text-on-surface-variant truncate mt-0.5">Captura aula B-204 • Vector unitario ur</p>
+<div class="flex items-center gap-2 mt-1 font-code-sm text-[11px] text-outline">
+<span>94% confianza</span>
+<span>•</span>
+<span>14 citas</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Source Item 2: Class PDF -->
+<div class="group p-space-sm rounded-xl bg-surface-bright hover:bg-surface-container-low transition-all cursor-pointer shadow-xs" onclick="jumpToCitation('pdf-apuntes')">
+<div class="flex items-start gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-coral-urgent/10 flex items-center justify-center shrink-0 text-coral-urgent">
+<span class="material-symbols-outlined text-[22px]">picture_as_pdf</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-1">
+<h3 class="font-label-md text-label-md text-on-surface font-bold truncate">Tema 4_Electrostatica_Oficial.pdf</h3>
+</div>
+<p class="font-body-sm text-[12px] text-on-surface-variant truncate mt-0.5">38 páginas • Anotado 24 may</p>
+<div class="flex items-center gap-2 mt-1 font-code-sm text-[11px] text-outline">
+<span class="text-secondary font-semibold">Pág. 12 activa</span>
+<span>•</span>
+<span>4.2 MB</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Source Item 3: Voice Lecture with Audio Transcript -->
+<div class="group p-space-sm rounded-xl bg-surface-bright hover:bg-surface-container-low transition-all cursor-pointer shadow-xs" onclick="jumpToCitation('voice-clase')">
+<div class="flex items-start gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-indigo-ai/10 flex items-center justify-center shrink-0 text-indigo-ai">
+<span class="material-symbols-outlined text-[22px]">mic</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-1">
+<h3 class="font-label-md text-label-md text-on-surface font-bold truncate">Explicación Prof. Arjona (Audio)</h3>
+<span class="px-1.5 py-0.5 rounded bg-indigo-ai/15 text-indigo-ai font-code-sm text-[10px] font-bold shrink-0">Whisper TXT</span>
+</div>
+<p class="font-body-sm text-[12px] text-on-surface-variant truncate mt-0.5">"Recordad que la constante K depende del medio dieléctrico..."</p>
+<div class="flex items-center gap-2 mt-1 font-code-sm text-[11px] text-outline">
+<span>34:12 min</span>
+<span>•</span>
+<span>100% Indexado</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Source Item 4: Handwritten digitized notes -->
+<div class="group p-space-sm rounded-xl bg-surface-bright hover:bg-surface-container-low transition-all cursor-pointer shadow-xs" onclick="jumpToCitation('cuaderno-lucia')">
+<div class="flex items-start gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center shrink-0 text-secondary">
+<span class="material-symbols-outlined text-[22px]">history_edu</span>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="font-label-md text-label-md text-on-surface font-bold truncate">Mis Apuntes Grafito_Cap4.note</h3>
+<p class="font-body-sm text-[12px] text-on-surface-variant truncate mt-0.5">Escaneados con S-Pen • 6 láminas</p>
+<div class="flex items-center gap-2 mt-1 font-code-sm text-[11px] text-outline">
+<span>Modificado hoy</span>
+<span>•</span>
+<span>Tinta vectorial</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Storage Status Info -->
+<div class="p-space-sm rounded-xl bg-surface-container-low flex items-center justify-between text-on-surface-variant font-code-sm text-[11px]">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-emerald-streak">offline_pin</span>
+            Sincronizado Offline
+          </span>
+<span class="font-bold">142 MB / PWA Storage</span>
+</div>
+</div>
+</section>
+<!-- ============================================== -->
+<!-- COLUMN 2: Central Stylus Canvas & Document Area (5 Cols) -->
+<!-- ============================================== -->
+<section class="col-span-12 lg:col-span-5 flex flex-col gap-space-sm" id="panelCanvas">
+<div class="bg-surface-container-lowest rounded-2xl shadow-sm p-space-base flex flex-col relative overflow-hidden">
+<!-- Canvas Top Nav: Document Pagination & Quick Citations -->
+<div class="flex items-center justify-between pb-space-sm border-b-0">
+<div class="flex items-center gap-2">
+<span class="px-2.5 py-1 rounded-lg bg-surface-container-high text-on-surface font-code-sm text-code-sm font-bold">
+              Página 12 / 38
+            </span>
+<div class="flex items-center gap-1">
+<button class="w-8 h-8 rounded-lg flex items-center justify-center bg-surface-container-low hover:bg-surface-container-high text-on-surface transition-colors" title="Página anterior">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center bg-surface-container-low hover:bg-surface-container-high text-on-surface transition-colors" title="Página siguiente">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm text-outline">Zoom:</span>
+<button class="px-2 py-1 rounded bg-surface-container-low font-code-sm text-[11px] text-on-surface font-semibold">125%</button>
+<button class="p-1.5 rounded-lg text-outline-variant hover:text-error hover:bg-error-container/20 transition-colors" onclick="clearCanvasStrokes()" title="Limpiar trazos">
+<span class="material-symbols-outlined text-[18px]">delete_sweep</span>
+</button>
+</div>
+</div>
+<!-- Document Viewer Layer with Live Drawing Overlay -->
+<div class="relative w-full rounded-xl bg-canvas-bg p-space-md shadow-inner overflow-hidden select-none min-h-[640px]" id="canvasContainer">
+<!-- Document Content (Interactive Syllabus / Text) -->
+<div class="space-y-space-md text-on-surface relative z-10 pointer-events-auto">
+<!-- Chapter Tag -->
+<div class="flex items-center justify-between">
+<span class="font-code-sm text-[11px] uppercase tracking-wider text-secondary font-bold">Capítulo 4.2 • Interacción Electrostática</span>
+<span class="font-code-sm text-[10px] text-outline">Bachillerato Internacional / EBAU</span>
+</div>
+<h1 class="font-headline-lg text-headline-md text-on-surface font-extrabold tracking-tight leading-snug">
+              Principio de Superposición y Ley de Coulomb en Medios Materiales
+            </h1>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+              La fuerza electrostática total que actúa sobre una carga testigo puntual <span class="font-code-sm font-semibold text-primary">q₀</span> debido a un conjunto de cargas discretas <span class="font-code-sm text-primary">q₁, q₂, ..., qₙ</span> es la suma vectorial directa de todas las fuerzas individuales calculadas por la Ley de Coulomb:
+            </p>
+<!-- Coulomb Formula Callout Box with NotebookLM Citation -->
+<div class="p-space-base rounded-xl bg-surface-container-low shadow-sm transition-all duration-300" id="coulombCitationCard">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-sm text-label-sm font-bold uppercase tracking-wider text-secondary">Ecuación Fundamental (Vectorial)</span>
+<!-- Interactive NotebookLM Citation Pill -->
+<button class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-code-sm text-[11px] font-bold hover:bg-secondary transition-colors hover:text-on-secondary shadow-xs" onclick="highlightSourceCitation('pizarra')">
+<span class="material-symbols-outlined text-[12px]">link</span>
+<span>[Fuente 1: Pizarra Ley de Coulomb]</span>
+</button>
+</div>
+<!-- Mathematical Formula Display -->
+<div class="py-space-xs px-space-sm bg-surface-card rounded-lg flex items-center justify-center font-code-sm text-[16px] text-primary shadow-xs tracking-wide">
+<span class="font-bold">F⃗ = K · (|q₁ · q₂| / r²) · u⃗ᵣ</span>
+</div>
+<div class="flex items-center justify-between mt-2 pt-2 text-[12px] font-body-sm text-on-surface-variant">
+<span>Constante dieléctrica en el vacío: <span class="font-code-sm font-bold text-on-surface">K₀ ≈ 8.99 × 10⁹ N·m²/C²</span></span>
+<!-- Second Citation -->
+<button class="text-secondary font-code-sm text-[11px] hover:underline flex items-center gap-0.5" onclick="highlightSourceCitation('audio')">
+<span class="material-symbols-outlined text-[13px]">volume_up</span>
+<span>[Ref 3: Audio 14:20]</span>
+</button>
+</div>
+</div>
+<!-- Annotated Diagram & Photo OCR Fragment -->
+<div class="p-space-sm rounded-xl bg-surface-card shadow-xs">
+<div class="flex items-center justify-between pb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-emerald-streak text-[18px]">document_scanner</span>
+<span class="font-label-sm text-label-sm font-bold text-on-surface">Cálculo de Líneas de Fuerza Vectoriales</span>
+</div>
+<span class="font-code-sm text-[10px] text-outline">Digitalizado a 600 DPI</span>
+</div>
+<div class="h-32 rounded-lg bg-surface-container-high/40 flex items-center justify-center relative overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Technical clean physics schematic diagram representing two point charges positive and negative with curved electric field lines and vector tangent arrows in technical slate blue line art" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWyK2e_DyRfs53sESdRnYwg6f5mfwL6ULzU2SVqiAssP_0OjvaDhN_OC749-RylGnFu547M-3V-qanQ4OhsczuKnf8vQh8fgvEp2aq0tcjWlcgEeyPciMzw-Mt15vNHQI2P75kGtns2EeO9mJBk_ueCiMPk-m8Gx5oioWN0rBvSXCXtb08yLn3bUISJ5KM2ANGmOCfFA9YUKW-ZYzgRozwCT-a0AqM9hqUcB94dpqJIo3zo6Ur4jPU"/>
+<!-- Floating stylus pin flag -->
+<div class="absolute top-2 right-2 bg-primary-container text-surface-card px-2 py-0.5 rounded text-[10px] font-code-sm flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[12px] text-tertiary-fixed-dim">push_pin</span>
+<span>Pregunta examen EBAU 2023</span>
+</div>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+              En presencia de un medio dieléctrico con permitividad relativa <span class="font-code-sm font-semibold">εᵣ &gt; 1</span>, el módulo de la fuerza se reduce de manera inversamente proporcional al coeficiente, afectando el campo eléctrico resultante medido en Newtons por Culombio (N/C).
+            </p>
+</div>
+<!-- HTML5 Canvas Overlay for Live Apple Pencil / Stylus Drawing -->
+<canvas class="absolute inset-0 z-20 w-full h-full cursor-crosshair touch-none" id="stylusCanvas"></canvas>
+<!-- Pre-rendered Stylus Ink Samples (Simulated Vector Strokes) -->
+<svg class="absolute inset-0 z-15 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+<!-- Simulated Fluorescent Marker Stroke over Formula -->
+<path d="M 60 215 L 380 215" fill="none" stroke="rgba(253, 224, 71, 0.45)" stroke-linecap="round" stroke-width="16"></path>
+<!-- Handwritten Stylus Ink Note in Margins -->
+<path d="M 320 270 Q 340 260 360 275 T 390 265" fill="none" stroke="#4648d4" stroke-linecap="round" stroke-width="2.5"></path>
+<text fill="#4648d4" font-family="'Plus Jakarta Sans', sans-serif" font-size="12" font-weight="600" transform="rotate(-3, 310, 295)" x="310" y="295">¡Ojo signo r² en denominador!</text>
+<!-- Stylus Arrow -->
+<path d="M 305 290 Q 285 280 275 255" fill="none" marker-end="url(#stylusArrow)" stroke="#4648d4" stroke-linecap="round" stroke-width="2"></path>
+</svg>
+</div>
+<!-- Canvas Footer: Quick Note Taking Scratchpad -->
+<div class="flex items-center justify-between pt-space-sm mt-space-xs font-label-sm text-label-sm text-on-surface-variant">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-emerald-streak"></span>
+<span>Trazos vectoriales sincronizados en tiempo real</span>
+</div>
+<div class="flex items-center gap-1 font-code-sm text-[11px]">
+<span>Sensibilidad de presión:</span>
+<span class="text-secondary font-bold">4096 niveles</span>
+</div>
+</div>
+</div>
+</section>
+<!-- ============================================== -->
+<!-- COLUMN 3: Socratic Copilot & Dual-Voice Podcast (4 Cols) -->
+<!-- ============================================== -->
+<section class="col-span-12 lg:col-span-4 flex flex-col gap-space-sm" id="panelCopilot">
+<!-- Studio AI One-Touch Fast Action Hub -->
+<div class="bg-surface-container-lowest p-space-base rounded-2xl shadow-sm flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-indigo-ai text-[22px]">bolt</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-bold">Studio AI Acciones</h2>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-indigo-ai/10 text-indigo-ai font-label-sm text-label-sm font-semibold">1 Toque</span>
+</div>
+<!-- 4 Tactile Quick Grid Buttons (44px min height for tablets) -->
+<div class="grid grid-cols-2 gap-2">
+<button class="min-h-[46px] p-2.5 rounded-xl bg-surface-bright hover:bg-surface-container-high transition-colors flex items-center gap-2 text-left group" onclick="triggerStudioAction('guia')">
+<span class="material-symbols-outlined text-secondary text-[20px] group-hover:scale-110 transition-transform">menu_book</span>
+<div class="min-w-0">
+<span class="font-label-md text-label-md text-on-surface font-bold block truncate">Guía de Estudio</span>
+<span class="font-body-sm text-[11px] text-outline block truncate">Syllabus completo</span>
+</div>
+</button>
+<button class="min-h-[46px] p-2.5 rounded-xl bg-surface-bright hover:bg-surface-container-high transition-colors flex items-center gap-2 text-left group" onclick="triggerStudioAction('quiz')">
+<span class="material-symbols-outlined text-coral-urgent text-[20px] group-hover:scale-110 transition-transform">quiz</span>
+<div class="min-w-0">
+<span class="font-label-md text-label-md text-on-surface font-bold block truncate">Quiz Autoev.</span>
+<span class="font-body-sm text-[11px] text-outline block truncate">10 Preguntas EBAU</span>
+</div>
+</button>
+<button class="min-h-[46px] p-2.5 rounded-xl bg-surface-bright hover:bg-surface-container-high transition-colors flex items-center gap-2 text-left group" onclick="triggerStudioAction('flashcards')">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-[20px] group-hover:scale-110 transition-transform">style</span>
+<div class="min-w-0">
+<span class="font-label-md text-label-md text-on-surface font-bold block truncate">Flashcards</span>
+<span class="font-body-sm text-[11px] text-outline block truncate">Cajas Leitner (24)</span>
+</div>
+</button>
+<button class="min-h-[46px] p-2.5 rounded-xl bg-surface-bright hover:bg-surface-container-high transition-colors flex items-center gap-2 text-left group" onclick="triggerStudioAction('resumen')">
+<span class="material-symbols-outlined text-emerald-streak text-[20px] group-hover:scale-110 transition-transform">summarize</span>
+<div class="min-w-0">
+<span class="font-label-md text-label-md text-on-surface font-bold block truncate">Resumen</span>
+<span class="font-body-sm text-[11px] text-outline block truncate">Executive 2 min</span>
+</div>
+</button>
+</div>
+</div>
+<!-- Dual-Voice Interactive Audio Podcast Player -->
+<div class="bg-surface-container-lowest p-space-base rounded-2xl shadow-sm flex flex-col gap-space-sm relative overflow-hidden">
+<!-- Header: Dual Voice Persona -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="flex -space-x-2">
+<div class="w-7 h-7 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-bold text-[11px] shadow-sm">L</div>
+<div class="w-7 h-7 rounded-full bg-primary-container text-surface-card flex items-center justify-center font-bold text-[11px] shadow-sm">M</div>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface font-bold leading-none">Podcast de Estudio a Dos Voces</h3>
+<span class="font-body-sm text-[11px] text-on-surface-variant">Lucía &amp; Mateo • Debate Socrático</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-md bg-secondary-fixed text-on-secondary-fixed font-code-sm text-[10px] font-bold">IA Generada</span>
+</div>
+<!-- Audio Interactive Waveform Visualization (SVG) -->
+<div class="p-space-sm bg-surface-bright rounded-xl flex flex-col gap-2">
+<div class="flex items-center justify-between font-code-sm text-[11px] text-on-surface-variant">
+<span class="font-semibold text-secondary" id="audioCurrentTime">06:42</span>
+<span class="text-outline">14:15 Total</span>
+</div>
+<!-- Waveform SVG with scrub progress -->
+<div class="relative h-12 w-full flex items-center cursor-pointer" onclick="scrubAudioWave(event)">
+<svg class="w-full h-10" preserveaspectratio="none" viewbox="0 0 320 40">
+<!-- Background wave bars -->
+<g fill="#d8e3fb">
+<rect height="8" rx="1.5" width="3" x="0" y="16"></rect>
+<rect height="20" rx="1.5" width="3" x="6" y="10"></rect>
+<rect height="30" rx="1.5" width="3" x="12" y="5"></rect>
+<rect height="16" rx="1.5" width="3" x="18" y="12"></rect>
+<rect height="24" rx="1.5" width="3" x="24" y="8"></rect>
+<rect height="12" rx="1.5" width="3" x="30" y="14"></rect>
+<rect height="32" rx="1.5" width="3" x="36" y="4"></rect>
+<rect height="20" rx="1.5" width="3" x="42" y="10"></rect>
+<rect height="10" rx="1.5" width="3" x="48" y="15"></rect>
+<rect height="36" rx="1.5" width="3" x="54" y="2"></rect>
+<rect height="24" rx="1.5" width="3" x="60" y="8"></rect>
+<rect height="16" rx="1.5" width="3" x="66" y="12"></rect>
+<rect height="28" rx="1.5" width="3" x="72" y="6"></rect>
+<rect height="12" rx="1.5" width="3" x="78" y="14"></rect>
+<rect height="8" rx="1.5" width="3" x="84" y="16"></rect>
+<rect height="22" rx="1.5" width="3" x="90" y="9"></rect>
+<rect height="34" rx="1.5" width="3" x="96" y="3"></rect>
+<rect height="18" rx="1.5" width="3" x="102" y="11"></rect>
+<rect height="10" rx="1.5" width="3" x="108" y="15"></rect>
+<rect height="26" rx="1.5" width="3" x="114" y="7"></rect>
+<rect height="16" rx="1.5" width="3" x="120" y="12"></rect>
+<rect height="32" rx="1.5" width="3" x="126" y="4"></rect>
+<rect height="20" rx="1.5" width="3" x="132" y="10"></rect>
+<rect height="12" rx="1.5" width="3" x="138" y="14"></rect>
+<rect height="28" rx="1.5" width="3" x="144" y="6"></rect>
+<rect height="14" rx="1.5" width="3" x="150" y="13"></rect>
+<rect height="24" rx="1.5" width="3" x="156" y="8"></rect>
+<rect height="10" rx="1.5" width="3" x="162" y="15"></rect>
+<rect height="30" rx="1.5" width="3" x="168" y="5"></rect>
+<rect height="20" rx="1.5" width="3" x="174" y="10"></rect>
+<rect height="12" rx="1.5" width="3" x="180" y="14"></rect>
+<rect height="36" rx="1.5" width="3" x="186" y="2"></rect>
+<rect height="22" rx="1.5" width="3" x="192" y="9"></rect>
+<rect height="14" rx="1.5" width="3" x="198" y="13"></rect>
+<rect height="26" rx="1.5" width="3" x="204" y="7"></rect>
+<rect height="8" rx="1.5" width="3" x="210" y="16"></rect>
+<rect height="32" rx="1.5" width="3" x="216" y="4"></rect>
+<rect height="18" rx="1.5" width="3" x="222" y="11"></rect>
+<rect height="12" rx="1.5" width="3" x="228" y="14"></rect>
+<rect height="24" rx="1.5" width="3" x="234" y="8"></rect>
+<rect height="16" rx="1.5" width="3" x="240" y="12"></rect>
+<rect height="34" rx="1.5" width="3" x="246" y="3"></rect>
+<rect height="20" rx="1.5" width="3" x="252" y="10"></rect>
+<rect height="10" rx="1.5" width="3" x="258" y="15"></rect>
+<rect height="28" rx="1.5" width="3" x="264" y="6"></rect>
+<rect height="16" rx="1.5" width="3" x="270" y="12"></rect>
+<rect height="22" rx="1.5" width="3" x="276" y="9"></rect>
+<rect height="12" rx="1.5" width="3" x="282" y="14"></rect>
+<rect height="30" rx="1.5" width="3" x="288" y="5"></rect>
+<rect height="18" rx="1.5" width="3" x="294" y="11"></rect>
+<rect height="8" rx="1.5" width="3" x="300" y="16"></rect>
+<rect height="24" rx="1.5" width="3" x="306" y="8"></rect>
+<rect height="14" rx="1.5" width="3" x="312" y="13"></rect>
+<rect height="8" rx="1.5" width="3" x="318" y="16"></rect>
+</g>
+<!-- Active played progress overlay wave bars -->
+<g fill="#4648d4" id="playedWaveProgress">
+<rect height="8" rx="1.5" width="3" x="0" y="16"></rect>
+<rect height="20" rx="1.5" width="3" x="6" y="10"></rect>
+<rect height="30" rx="1.5" width="3" x="12" y="5"></rect>
+<rect height="16" rx="1.5" width="3" x="18" y="12"></rect>
+<rect height="24" rx="1.5" width="3" x="24" y="8"></rect>
+<rect height="12" rx="1.5" width="3" x="30" y="14"></rect>
+<rect height="32" rx="1.5" width="3" x="36" y="4"></rect>
+<rect height="20" rx="1.5" width="3" x="42" y="10"></rect>
+<rect height="10" rx="1.5" width="3" x="48" y="15"></rect>
+<rect height="36" rx="1.5" width="3" x="54" y="2"></rect>
+<rect height="24" rx="1.5" width="3" x="60" y="8"></rect>
+<rect height="16" rx="1.5" width="3" x="66" y="12"></rect>
+<rect height="28" rx="1.5" width="3" x="72" y="6"></rect>
+<rect height="12" rx="1.5" width="3" x="78" y="14"></rect>
+<rect height="8" rx="1.5" width="3" x="84" y="16"></rect>
+<rect height="22" rx="1.5" width="3" x="90" y="9"></rect>
+<rect height="34" rx="1.5" width="3" x="96" y="3"></rect>
+<rect height="18" rx="1.5" width="3" x="102" y="11"></rect>
+<rect height="10" rx="1.5" width="3" x="108" y="15"></rect>
+<rect height="26" rx="1.5" width="3" x="114" y="7"></rect>
+<rect height="16" rx="1.5" width="3" x="120" y="12"></rect>
+<rect height="32" rx="1.5" width="3" x="126" y="4"></rect>
+</g>
+</svg>
+</div>
+<!-- Current Speaker Transcript Bubble -->
+<div class="p-space-xs rounded-lg bg-surface-card text-[12px] font-body-sm text-on-surface">
+<span class="font-bold text-secondary">Lucía:</span> "Exacto Mateo, pero fíjate que la constante K cambia si estás en agua o en el aire..."
           </div>
-        </div>
+<!-- Playback Controls (Min 44px hit targets) -->
+<div class="flex items-center justify-between pt-1">
+<!-- Speed controls -->
+<div class="flex items-center gap-1 bg-surface-container-low p-1 rounded-lg">
+<button class="px-2 py-1 rounded font-code-sm text-[11px] font-bold bg-surface-card text-secondary shadow-xs" id="speed10" onclick="setSpeed(1.0)">1.0x</button>
+<button class="px-2 py-1 rounded font-code-sm text-[11px] font-bold text-on-surface-variant hover:text-on-surface" id="speed12" onclick="setSpeed(1.2)">1.2x</button>
+<button class="px-2 py-1 rounded font-code-sm text-[11px] font-bold text-on-surface-variant hover:text-on-surface" id="speed15" onclick="setSpeed(1.5)">1.5x</button>
+</div>
+<!-- Central Buttons -->
+<div class="flex items-center gap-2">
+<button class="w-9 h-9 rounded-full bg-surface-card flex items-center justify-center text-on-surface hover:bg-surface-container-high transition-colors" title="Retroceder 15s">
+<span class="material-symbols-outlined text-[18px]">export_notes</span>
+</button>
+<button class="w-12 h-12 rounded-full bg-primary-container text-surface-card flex items-center justify-center hover:bg-primary transition-all shadow-md active:scale-95" id="podcastPlayBtn" onclick="togglePodcastPlayback()" title="Reproducir">
+<span class="material-symbols-outlined text-[24px]" id="podcastPlayIcon">play_arrow</span>
+</button>
+<button class="w-9 h-9 rounded-full bg-surface-card flex items-center justify-center text-on-surface hover:bg-surface-container-high transition-colors" title="Adelantar 15s">
+<span class="material-symbols-outlined text-[18px]">apps</span>
+</button>
+</div>
+<!-- Offline Download Button -->
+<button class="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-surface-card text-on-surface font-label-sm text-label-sm font-semibold hover:bg-surface-container-high transition-colors shadow-xs" onclick="downloadPodcastOffline()" title="Descargar audio para escuchar sin conexión">
+<span class="material-symbols-outlined text-[16px] text-emerald-streak">download</span>
+<span class="hidden sm:inline">Offline</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Socratic AI Chat Pane -->
+<div class="bg-surface-container-lowest p-space-base rounded-2xl shadow-sm flex flex-col flex-1 gap-space-sm min-h-[380px]">
+<!-- Header -->
+<div class="flex items-center justify-between pb-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">psychology</span>
+<h3 class="font-headline-sm text-label-md text-on-surface font-bold">Tutor Socrático</h3>
+</div>
+<span class="font-code-sm text-[11px] text-emerald-streak font-semibold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-streak"></span>
+            Listo para razonar
+          </span>
+</div>
+<!-- Chat History Stream -->
+<div class="flex flex-col gap-space-sm overflow-y-auto max-h-[260px] pr-1" id="socraticStream">
+<!-- Socratic Prompt 1 -->
+<div class="p-space-sm rounded-xl bg-surface-bright text-on-surface flex flex-col gap-1 shadow-xs">
+<div class="flex items-center justify-between font-label-sm text-[11px] text-outline">
+<span class="font-bold text-secondary flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">smart_toy</span> Copiloto
+              </span>
+<span>10:41</span>
+</div>
+<p class="font-body-sm text-[13px] leading-relaxed">
+              Si duplicamos la distancia entre dos cargas puntuales y triplicamos una de las cargas, ¿cómo varía la fuerza electrostática neta según la fórmula de la pizarra?
+            </p>
+<div class="flex items-center gap-1.5 pt-1">
+<button class="px-2 py-0.5 rounded bg-surface-container-high font-code-sm text-[10px] text-secondary font-bold hover:bg-secondary hover:text-surface-card transition-colors" onclick="highlightSourceCitation('pizarra')">
+                [Ver Fuente: Pizarra Eq 4]
+              </button>
+</div>
+</div>
+<!-- Student Answer -->
+<div class="p-space-sm rounded-xl bg-primary-container text-surface-card flex flex-col gap-1 self-end max-w-[85%] shadow-xs">
+<span class="font-label-sm text-[10px] text-primary-fixed-dim">Tú (Lucía)</span>
+<p class="font-body-sm text-[13px] leading-relaxed">
+              Como r está al cuadrado en el denominador, pasa a ser 4. Y el numerador se multiplica por 3, así que la fuerza se reduce a 3/4 (0.75x).
+            </p>
+</div>
+<!-- Socratic Affirmation + Next Inquiry -->
+<div class="p-space-sm rounded-xl bg-surface-bright text-on-surface flex flex-col gap-1 shadow-xs">
+<div class="flex items-center justify-between font-label-sm text-[11px] text-outline">
+<span class="font-bold text-secondary flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">smart_toy</span> Copiloto
+              </span>
+<span>Justo ahora</span>
+</div>
+<p class="font-body-sm text-[13px] leading-relaxed">
+              ¡Impecable deducción! ¿Y qué ocurriría si introducimos un bloque de parafina (<span class="font-code-sm text-secondary font-bold">εᵣ = 2.2</span>) entre ambas cargas?
+            </p>
+<!-- Socratic suggestions pills -->
+<div class="flex flex-wrap gap-1 pt-1">
+<button class="px-2 py-1 rounded-lg bg-surface-card text-on-surface hover:bg-surface-container-high font-label-sm text-[11px] font-semibold transition-colors shadow-xs" onclick="sendQuickReply('La fuerza disminuye dividida por 2.2')">
+                Disminuye / 2.2
+              </button>
+<button class="px-2 py-1 rounded-lg bg-surface-card text-on-surface hover:bg-surface-container-high font-label-sm text-[11px] font-semibold transition-colors shadow-xs" onclick="sendQuickReply('No cambia porque no afecta al vacío')">
+                No cambia
+              </button>
+</div>
+</div>
+</div>
+<!-- Chat Input Field (44px target with stylus handwriting support) -->
+<div class="relative flex items-center pt-2">
+<input class="w-full h-11 pl-3 pr-20 bg-surface-container-low rounded-xl font-body-sm text-body-sm text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none focus:bg-surface-card transition-all shadow-inner" id="copilotInput" placeholder="Pregunta o escribe con Stylus..." type="text"/>
+<div class="absolute right-1.5 flex items-center gap-1">
+<button class="p-1.5 rounded-lg text-outline hover:text-secondary transition-colors" onclick="simulateStylusScribbleInput()" title="Reconocimiento de escritura">
+<span class="material-symbols-outlined text-[18px]">gesture</span>
+</button>
+<button class="w-8 h-8 rounded-lg bg-primary-container text-surface-card flex items-center justify-center hover:bg-primary transition-colors" onclick="sendCopilotMessage()">
+<span class="material-symbols-outlined text-[16px]">send</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+<script>
+  // Simple State Management for the Tablet Stylus Workspace
+  let currentTool = 'pen';
+  let inkColor = '#0b1c30';
+  let strokeWidth = 4;
+  let isPalmRejectionOn = true;
+  let isPlayingPodcast = false;
+  let docMode = 'stylus';
+
+  // Setup Canvas Interactive Scribbling
+  const canvas = document.getElementById('stylusCanvas');
+  const ctx = canvas ? canvas.getContext('2d') : null;
+  let isDrawing = false;
+  let lastX = 0;
+  let lastY = 0;
+
+  function resizeCanvas() {
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+  }
+
+  window.addEventListener('resize', resizeCanvas);
+  setTimeout(resizeCanvas, 50);
+
+  if (canvas && ctx) {
+    const startDraw = (e) => {
+      if (docMode === 'read') return;
+      isDrawing = true;
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      lastX = clientX - rect.left;
+      lastY = clientY - rect.top;
+    };
+
+    const draw = (e) => {
+      if (!isDrawing || docMode === 'read') return;
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(x, y);
+
+      if (currentTool === 'eraser') {
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.lineWidth = strokeWidth * 4;
+      } else {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.strokeStyle = inkColor;
+        ctx.lineWidth = currentTool === 'marker' ? strokeWidth * 3 : strokeWidth;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+      }
+
+      ctx.stroke();
+      lastX = x;
+      lastY = y;
+    };
+
+    const stopDraw = () => {
+      isDrawing = false;
+    };
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDraw);
+    canvas.addEventListener('mouseleave', stopDraw);
+
+    canvas.addEventListener('touchstart', startDraw, { passive: false });
+    canvas.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      draw(e);
+    }, { passive: false });
+    canvas.addEventListener('touchend', stopDraw);
+  }
+
+  // Tool Switching
+  function selectPenTool(tool, color) {
+    currentTool = tool;
+    if (color) inkColor = color;
+    
+    const tools = ['toolPen', 'toolMarker', 'toolPencil', 'toolEraser'];
+    tools.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.className = 'w-10 h-10 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-all';
+      }
+    });
+
+    const activeId = tool === 'pen' ? 'toolPen' : tool === 'marker' ? 'toolMarker' : tool === 'pencil' ? 'toolPencil' : 'toolEraser';
+    const activeEl = document.getElementById(activeId);
+    if (activeEl) {
+      activeEl.className = 'w-10 h-10 rounded-lg flex items-center justify-center bg-primary-container text-surface-card transition-all shadow-sm';
+    }
+  }
+
+  function setInkColor(c) {
+    inkColor = c;
+    if (currentTool === 'eraser') {
+      selectPenTool('pen', c);
+    }
+  }
+
+  function setStrokeWidth(w) {
+    strokeWidth = w;
+  }
+
+  function clearCanvasStrokes() {
+    if (ctx && canvas) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  }
+
+  function togglePalmRejection() {
+    isPalmRejectionOn = !isPalmRejectionOn;
+    const btn = document.getElementById('palmBtn');
+    const label = document.getElementById('palmLabel');
+    if (isPalmRejectionOn) {
+      btn.className = 'flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-emerald-streak/10 text-emerald-streak font-label-sm text-label-sm font-bold';
+      label.textContent = 'Palm Rejection: ON';
+    } else {
+      btn.className = 'flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-error/10 text-error font-label-sm text-label-sm font-bold';
+      label.textContent = 'Palm Rejection: OFF';
+    }
+  }
+
+  function setDocMode(mode) {
+    docMode = mode;
+    const btnRead = document.getElementById('btnReadMode');
+    const btnStylus = document.getElementById('btnStylusMode');
+    const canvasEl = document.getElementById('stylusCanvas');
+
+    if (mode === 'read') {
+      btnRead.className = 'flex items-center gap-1.5 px-space-sm py-1.5 rounded-md font-label-md text-label-md transition-all bg-surface-card text-on-surface font-bold shadow-sm';
+      btnStylus.className = 'flex items-center gap-1.5 px-space-sm py-1.5 rounded-md font-label-md text-label-md transition-all text-on-surface-variant hover:text-on-surface';
+      if (canvasEl) canvasEl.style.pointerEvents = 'none';
+    } else {
+      btnStylus.className = 'flex items-center gap-1.5 px-space-sm py-1.5 rounded-md font-label-md text-label-md transition-all bg-surface-card text-secondary font-bold shadow-sm';
+      btnRead.className = 'flex items-center gap-1.5 px-space-sm py-1.5 rounded-md font-label-md text-label-md transition-all text-on-surface-variant hover:text-on-surface';
+      if (canvasEl) canvasEl.style.pointerEvents = 'auto';
+    }
+  }
+
+  // NotebookLM Citation Linking: Visual Pulse on Document Card
+  function highlightSourceCitation(sourceKey) {
+    const card = document.getElementById('coulombCitationCard');
+    if (card) {
+      card.classList.add('ring-2', 'ring-secondary', 'bg-secondary-fixed/20');
+      setTimeout(() => {
+        card.classList.remove('ring-2', 'ring-secondary', 'bg-secondary-fixed/20');
+      }, 1600);
+    }
+  }
+
+  function jumpToCitation(citationId) {
+    highlightSourceCitation(citationId);
+  }
+
+  // Audio Podcast Player Logic
+  function togglePodcastPlayback() {
+    isPlayingPodcast = !isPlayingPodcast;
+    const icon = document.getElementById('podcastPlayIcon');
+    const btn = document.getElementById('podcastPlayBtn');
+    if (isPlayingPodcast) {
+      icon.textContent = 'pause';
+      btn.classList.add('bg-secondary');
+    } else {
+      icon.textContent = 'play_arrow';
+      btn.classList.remove('bg-secondary');
+    }
+  }
+
+  function setSpeed(speed) {
+    ['speed10', 'speed12', 'speed15'].forEach(id => {
+      const b = document.getElementById(id);
+      b.className = 'px-2 py-1 rounded font-code-sm text-[11px] font-bold text-on-surface-variant hover:text-on-surface';
+    });
+    const target = speed === 1.0 ? 'speed10' : speed === 1.2 ? 'speed12' : 'speed15';
+    document.getElementById(target).className = 'px-2 py-1 rounded font-code-sm text-[11px] font-bold bg-surface-card text-secondary shadow-xs';
+  }
+
+  function scrubAudioWave(e) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const percent = Math.min(Math.max((e.clientX - rect.left) / rect.width, 0), 1);
+    const totalSec = 14 * 60 + 15;
+    const current = Math.floor(totalSec * percent);
+    const mins = String(Math.floor(current / 60)).padStart(2, '0');
+    const secs = String(current % 60).padStart(2, '0');
+    document.getElementById('audioCurrentTime').textContent = `${mins}:${secs}`;
+  }
+
+  function downloadPodcastOffline() {
+    alert('Descargando Podcast "Tema 4: Coulomb & Campo Eléctrico" (12.4 MB) a la caché offline de la PWA.');
+  }
+
+  // Studio 1-Touch Action Dispatcher
+  function triggerStudioAction(action) {
+    const stream = document.getElementById('socraticStream');
+    const msg = document.createElement('div');
+    msg.className = 'p-space-sm rounded-xl bg-indigo-ai/10 text-on-surface flex flex-col gap-1 shadow-xs';
+    
+    let title = '';
+    let desc = '';
+    if (action === 'guia') {
+      title = '📖 Guía de Estudio Generada';
+      desc = 'Se han sintetizado los 5 documentos en un esquema jerárquico de 4 fases con fórmulas y términos clave.';
+    } else if (action === 'quiz') {
+      title = '🎯 Quiz EBAU Creado (10 Preguntas)';
+      desc = 'Preparadas 10 preguntas tipo test y 2 problemas con resolución paso a paso.';
+    } else if (action === 'flashcards') {
+      title = '🗂️ 24 Flashcards Exportadas';
+      desc = 'Añadidas al algoritmo de repetición espaciada Leitner para la sesión de repaso de hoy.';
+    } else {
+      title = '⚡ Resumen Ejecutivo';
+      desc = 'La Ley de Coulomb determina la fuerza entre cargas en el vacío y medios materiales dieléctricos reducida por εᵣ.';
+    }
+
+    msg.innerHTML = `
+      <div class="flex items-center justify-between font-label-sm text-[11px]">
+        <span class="font-bold text-indigo-ai">${title}</span>
+        <span class="font-code-sm text-outline">Nuevo</span>
       </div>
+      <p class="font-body-sm text-[13px] leading-relaxed mt-1">${desc}</p>
+    `;
+    stream.appendChild(msg);
+    stream.scrollTop = stream.scrollHeight;
+  }
 
-      <!-- Fuentes Documentales -->
-      <div class="bg-white border border-slate-200 rounded-3xl p-5 shadow-sm space-y-3">
-        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Fuentes de este Tema (2)</h3>
-        <div class="space-y-2 text-xs">
-          <div class="p-3 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="text-lg">📷</span>
-              <div>
-                <strong class="text-slate-900 block font-semibold">Pizarra Aula 204</strong>
-                <span class="text-[10px] text-slate-500">Foto OCR • 09:50h</span>
-              </div>
-            </div>
-            <span class="text-[10px] text-emerald-600 font-bold">Procesado</span>
-          </div>
+  // Socratic Chat Input Dispatcher
+  function sendCopilotMessage() {
+    const input = document.getElementById('copilotInput');
+    const text = input.value.trim();
+    if (!text) return;
+    
+    const stream = document.getElementById('socraticStream');
+    
+    // User message
+    const userMsg = document.createElement('div');
+    userMsg.className = 'p-space-sm rounded-xl bg-primary-container text-surface-card flex flex-col gap-1 self-end max-w-[85%] shadow-xs';
+    userMsg.innerHTML = `<span class="font-label-sm text-[10px] text-primary-fixed-dim">Tú (Lucía)</span><p class="font-body-sm text-[13px] leading-relaxed">${text}</p>`;
+    stream.appendChild(userMsg);
+    
+    input.value = '';
 
-          <div class="p-3 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="text-lg">📄</span>
-              <div>
-                <strong class="text-slate-900 block font-semibold">Tema 4 - Libro Física.pdf</strong>
-                <span class="text-[10px] text-slate-500">Páginas 82 - 96</span>
-              </div>
-            </div>
-            <span class="text-[10px] text-emerald-600 font-bold">Indexado</span>
-          </div>
+    // Simulated AI Socratic Response
+    setTimeout(() => {
+      const aiMsg = document.createElement('div');
+      aiMsg.className = 'p-space-sm rounded-xl bg-surface-bright text-on-surface flex flex-col gap-1 shadow-xs';
+      aiMsg.innerHTML = `
+        <div class="flex items-center justify-between font-label-sm text-[11px] text-outline">
+          <span class="font-bold text-secondary flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">smart_toy</span> Copiloto</span>
+          <span>Justo ahora</span>
         </div>
-      </div>
-    </div>
+        <p class="font-body-sm text-[13px] leading-relaxed">Excelente reflexión con fundamento en los apuntes de clase. Recuerda además verificar las unidades en el Sistema Internacional (Culombios y Newtons).</p>
+      `;
+      stream.appendChild(aiMsg);
+      stream.scrollTop = stream.scrollHeight;
+    }, 600);
+  }
 
-    <!-- Columna 2: Apuntes Sintetizados (5 cols) -->
-    <div class="lg:col-span-5 space-y-4">
-      <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4">
-        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-          <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Resumen Estructurado</span>
-          <span class="text-[11px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded-md font-semibold">[Fuente 1: Pizarra Aula]</span>
-        </div>
+  function sendQuickReply(replyText) {
+    document.getElementById('copilotInput').value = replyText;
+    sendCopilotMessage();
+  }
 
-        <h2 class="text-lg font-black text-slate-900">Ley de Faraday-Henry & Regla de Lenz</h2>
-        <p class="text-xs text-slate-600 leading-relaxed">
-          La fuerza electromotriz inducida en cualquier circuito cerrado es igual a la derivada temporal del flujo magnético a través del circuito cambiada de signo.
-        </p>
+  function simulateStylusScribbleInput() {
+    const input = document.getElementById('copilotInput');
+    input.value = "¿Cuál es el valor de ε₀ en el vacío?";
+    input.focus();
+  }
 
-        <!-- Fórmula -->
-        <div class="font-mono text-sm bg-slate-50 p-4 rounded-2xl border border-slate-200 text-center font-bold text-slate-900">
-          ε = - \frac{d\Phi_B}{dt}
-        </div>
+  // Zen full view toggle
+  function toggleCanvasZen() {
+    const leftPanel = document.getElementById('panelSources');
+    const rightPanel = document.getElementById('panelCopilot');
+    const centerPanel = document.getElementById('panelCanvas');
 
-        <div class="p-3 bg-purple-50/60 rounded-2xl border border-purple-100 text-xs space-y-1">
-          <strong class="text-purple-900">💡 Significado del Signo Negativo:</strong>
-          <p class="text-purple-700 text-[11px]">
-            La polaridad de la f.e.m. inducida genera una corriente cuyo campo magnético se opone siempre a la variación del flujo que la produce (Conservación de la energía).
-          </p>
-        </div>
-
-        <div class="flex gap-2 pt-2">
-          <button class="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl">Crear Ficha Leitner</button>
-          <button class="flex-1 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl shadow-sm">Examen Rápido (Test)</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Columna 3: Tutor IA & Bloc de Notas con Stylus (3 cols) -->
-    <div class="lg:col-span-3 space-y-4">
-      <div class="bg-white border border-slate-200 rounded-3xl p-5 shadow-sm space-y-3">
-        <div class="flex items-center justify-between">
-          <h3 class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-            <span>🤖</span> Tutor IA Socrático
-          </h3>
-          <span class="text-[10px] text-slate-400">Gemini Flash</span>
-        </div>
-        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 text-xs text-slate-700">
-          "¿Qué ocurriría con la f.e.m. inducida si duplicas la velocidad a la que mueves el imán hacia la bobina?"
-        </div>
-        <div class="relative">
-          <input type="text" placeholder="Escribe tu hipótesis..." class="w-full text-xs p-3 pr-8 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:border-blue-500">
-          <button class="absolute right-2.5 top-2.5 text-blue-600 font-bold text-xs">→</button>
-        </div>
-      </div>
-
-      <!-- Bloc de Notas Stylus -->
-      <div class="bg-amber-50/60 border border-amber-200 rounded-3xl p-5 space-y-2">
-        <div class="flex items-center justify-between text-xs">
-          <strong class="text-amber-900 flex items-center gap-1.5"><span>✏️</span> Notas Stylus</strong>
-          <span class="text-[10px] text-amber-700">Modo Lápiz</span>
-        </div>
-        <textarea rows="4" placeholder="Anotaciones rápidas en tablet..." class="w-full text-xs p-3 rounded-2xl border border-amber-200 bg-white/90 text-slate-800 focus:outline-none resize-none"></textarea>
-      </div>
-    </div>
-  </main>
-
-  <!-- Barra Navegación Isla Tablet -->
-  <nav class="fixed bottom-4 inset-x-0 mx-auto max-w-2xl bg-white/95 backdrop-blur border border-slate-200 z-30 px-6 py-2.5 rounded-full shadow-xl flex justify-around items-center text-xs font-bold text-slate-500">
-    <a href="index.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>🏠</span><span>Mi Día</span></a>
-    <a href="deberes-examenes.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>📅</span><span>Agenda</span></a>
-    <a href="cuaderno-lm.html" class="flex items-center gap-2 text-blue-600 px-3 py-1.5 rounded-full bg-blue-50"><span>📚</span><span>Cuaderno LM</span></a>
-    <a href="pomodoro-flashcards.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>🧠</span><span>Estudio</span></a>
-    <a href="progreso-ebau.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>📊</span><span>Progreso</span></a>
-  </nav>
-</body>
-</html>
+    if (leftPanel.classList.contains('hidden')) {
+      leftPanel.classList.remove('hidden');
+      rightPanel.classList.remove('hidden');
+      centerPanel.className = 'col-span-12 lg:col-span-5 flex flex-col gap-space-sm';
+    } else {
+      leftPanel.classList.add('hidden');
+      rightPanel.classList.add('hidden');
+      centerPanel.className = 'col-span-12 flex flex-col gap-space-sm';
+    }
+    setTimeout(resizeCanvas, 150);
+  }
+</script></div></main></div></body></html>

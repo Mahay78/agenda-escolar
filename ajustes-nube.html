@@ -1,21 +1,560 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agenda Escolar - Ajustes Google Drive / Firebase</title>
-  <meta http-equiv="refresh" content="0; url=./index.html?tab=tab-settings" />
-  <script>window.location.replace("./index.html?tab=tab-settings");</script>
-  <style>
-    body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; text-align: center; }
-    .spinner { width: 40px; height: 40px; border: 3px solid rgba(59, 130, 246, 0.2); border-top-color: #3b82f6; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 16px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    a { color: #60a5fa; text-decoration: none; font-weight: 500; }
-  </style>
-</head>
-<body>
-  <div class="spinner"></div>
-  <h2>Cargando Ajustes Google Drive / Firebase...</h2>
-  <p><a href="./index.html?tab=tab-settings">Haz clic aquí si no redirige automáticamente</a></p>
-</body>
-</html>
+
+<html lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><title>Agenda Escolar PWA</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "border-subtle": "#E2E8F0", "surface-container-high": "#dce9ff", "secondary": "#4648d4", "error": "#ba1a1a", "on-surface": "#0b1c30", "primary-fixed-dim": "#bcc7de", "on-background": "#0b1c30", "surface-dim": "#cbdbf5", "on-error": "#ffffff", "surface-container-lowest": "#ffffff", "tertiary": "#201100", "on-primary": "#ffffff", "surface-sidebar": "#0F172A", "outline-variant": "#c5c6cd", "indigo-ai": "#8B5CF6", "on-primary-container": "#8590a6", "surface-bright": "#f8f9ff", "on-primary-fixed-variant": "#3c475a", "outline": "#75777d", "primary-fixed": "#d8e3fb", "on-primary-fixed": "#111c2d", "on-secondary-fixed": "#07006c", "primary-container": "#1e293b", "on-tertiary-fixed": "#2a1700", "surface-card": "#FFFFFF", "error-container": "#ffdad6", "tertiary-container": "#3c2300", "inverse-surface": "#213145", "surface-container-low": "#eff4ff", "on-tertiary-container": "#c88000", "coral-urgent": "#F43F5E", "on-tertiary-fixed-variant": "#653e00", "secondary-fixed-dim": "#c0c1ff", "inverse-on-surface": "#eaf1ff", "emerald-streak": "#10B981", "on-surface-variant": "#45474c", "surface-container": "#e5eeff", "background": "#f8f9ff", "inverse-primary": "#bcc7de", "surface-container-highest": "#d3e4fe", "primary": "#091426", "border-dark": "#1E293B", "surface-tint": "#545f73", "on-error-container": "#93000a", "tertiary-fixed-dim": "#ffb95f", "on-secondary-container": "#fffbff", "surface-variant": "#d3e4fe", "surface": "#f8f9ff", "tertiary-fixed": "#ffddb8", "secondary-fixed": "#e1e0ff", "on-tertiary": "#ffffff", "on-secondary-fixed-variant": "#2f2ebe", "canvas-bg": "#F8FAFC", "on-secondary": "#ffffff", "secondary-container": "#6063ee" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-2xs": "0.125rem", "sidebar-collapsed": "68px", "space-xl": "2rem", "space-xs": "0.25rem", "max-content-width": "1440px", "space-base": "1rem", "space-2xl": "3rem", "space-lg": "1.5rem", "space-sm": "0.5rem", "space-md": "0.75rem", "sidebar-width": "240px" }, "fontFamily": { "headline-lg": ["Plus Jakarta Sans"], "code-sm": ["JetBrains Mono"], "label-md": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "display": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"] }, "fontSize": { "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "700" }], "code-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" }], "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "display": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-md": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased selection:bg-secondary-fixed selection:text-on-secondary-fixed"><aside class="fixed left-0 top-0 h-screen w-sidebar-width bg-surface-sidebar z-50 flex flex-col justify-between select-none shadow-[0_1px_8px_rgba(0,0,0,0.08)]"><div class="flex flex-col flex-1 overflow-y-auto"><div class="h-16 px-space-base flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="Agenda Escolar Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1W7YUEss6DP9Xx1z841d_qHcSCOIN-l-FhxrtKUiT5-W3ctujb3E695E4JvcFlKOwJoERFlgw34EvmYFS36M3HrArIc3x400fLH1AoZYEucmEe1aIVkLAPCvwhq3kxd6fab9Elr7U6Vimt0zw1SCEgHXBCvXV-69uslhDkvNzZHvwJb9BJ1ZyZmF7mq6CqnuAvZ-6FjV6pKE_YyNJsRUW5hB1n4jcwnfaEzeGa5lhXOLCkde7_yj2x0cFE"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-surface-card leading-none tracking-tight">Agenda Escolar</span><span class="mt-space-2xs inline-flex items-center self-start px-space-xs py-0.5 rounded bg-primary-container text-primary-fixed text-[10px] font-code-sm font-semibold uppercase tracking-wider">v3.5 PWA</span></div></div><button aria-label="Colapsar menú lateral" class="text-outline-variant hover:text-surface-card p-1 rounded transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">keyboard_double_arrow_left</span></button></div><div class="px-space-base py-space-xs"><div class="flex items-center justify-between px-space-sm py-space-xs rounded bg-border-dark/60 text-emerald-streak"><div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-streak animate-pulse"></span><span class="font-label-sm text-label-sm">100% Offline Listo</span></div><span class="font-code-sm text-code-sm text-surface-variant/80 text-[10px]">PWA ACTIVE</span></div></div><nav class="flex-1 px-space-sm py-space-xs space-y-space-2xs" data-active-classes="bg-primary-container text-surface-card font-semibold shadow-inner"><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="mi-dia" href="index.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-tertiary-fixed-dim">light_mode</span><span class="font-body-md text-body-md">Mi Día</span></div><span class="px-1.5 py-0.5 rounded-full bg-border-dark text-surface-card font-code-sm text-[11px]">8</span></a><div class="space-y-0.5"><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="agenda" href="deberes-examenes.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">calendar_month</span><span class="font-body-md text-body-md">Agenda</span></div><span class="material-symbols-outlined text-[16px] text-outline-variant group-hover:text-surface-card">expand_more</span></a><div class="pl-8 pr-space-xs space-y-0.5"><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="deberes" href="deberes-examenes.html"><span>Deberes</span><span class="w-1.5 h-1.5 rounded-full bg-coral-urgent"></span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="examenes" href="deberes-examenes.html"><span>Exámenes</span><span class="font-code-sm text-[10px] text-tertiary-fixed-dim font-bold">PROX</span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="horario" href="horario-mochila.html"><span>Horario</span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="mochila" href="horario-mochila.html"><span>Mochila</span><span class="material-symbols-outlined text-[13px] text-outline-variant">backpack</span></a></div></div><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="cuaderno-lm" href="notebook.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-indigo-ai">neurology</span><span class="font-body-md text-body-md">Cuaderno LM</span></div><span class="px-1.5 py-0.2 rounded bg-indigo-ai/20 text-indigo-ai font-label-sm text-[10px]">Studio</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="pomodoro-concentracion" href="pomodoro-flashcards.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">timer</span><span class="font-body-md text-body-md">Pomodoro</span></div><span class="font-code-sm text-code-sm text-tertiary-fixed-dim">25:00</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="progreso-notas" href="progreso-ebau.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">insights</span><span class="font-body-md text-body-md">Progreso &amp; Notas</span></div><span class="font-code-sm text-code-sm text-emerald-streak">9.4</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="copiloto-ia" href="english-coach.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-secondary-fixed-dim">smart_toy</span><span class="font-body-md text-body-md">Copiloto IA</span></div><span class="flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-streak opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-streak"></span></span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="ajustes-drive-sync" href="ajustes-nube.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">sync_saved_locally</span><span class="font-body-md text-body-md">Ajustes &amp; Drive</span></div><span class="material-symbols-outlined text-[16px] text-emerald-streak">cloud_done</span></a></nav></div><div class="p-space-sm bg-border-dark/40 m-space-sm rounded-xl"><div class="flex items-center gap-space-sm"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfmw-gtx0XEK7h8QkzkqF3FppIOTbex1jLhq0ocROUjmLodXPHUohFwpnJvNVkN0ISjq214XEmWTpaUMw3YSio12W-RjtGFeU0sE1SjasnJqTB-yV8QlgvtQlUWVMlziMiyc-kapJhBGjqEArrPwnzz5DrLEfaywd6KV0lCZ0M5ZzcT3XTNGdqZUTS-wEp6J9RCq0b-FMAAjueo_cX1syzKCEK_bQTcBHe-z8fv9oRHSz-6bu4IvxX"/><div class="flex-1 min-w-0"><div class="flex items-center justify-between gap-1"><p class="font-headline-sm text-body-md font-semibold text-surface-card truncate leading-snug">Lucía Fernández</p><span class="inline-flex items-center px-1.5 py-0.5 rounded bg-tertiary-container text-tertiary-fixed font-code-sm text-[10px] font-bold shrink-0">🔥 14</span></div><p class="font-label-sm text-label-sm text-outline-variant truncate">2º Bachillerato • Ciencias</p></div></div></div></aside><div class="pl-sidebar-width"><header class="fixed top-0 left-sidebar-width right-0 h-16 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg"><div class="flex-1 max-w-xl pr-space-base"><div class="relative flex items-center w-full"><span class="material-symbols-outlined absolute left-3 text-[18px] text-on-surface-variant pointer-events-none">search</span><input class="w-full h-10 pl-9 pr-20 bg-surface-container-lowest rounded-lg font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none focus:bg-surface-container-lowest transition-all shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" placeholder="Buscar asignaturas, tareas, notas o fechas..." type="text"/><div class="absolute right-2 flex items-center gap-1"><kbd class="px-1.5 py-0.5 text-[11px] font-code-sm text-on-surface-variant bg-surface-container-high rounded">⌘K</kbd></div></div></div><div class="flex items-center gap-space-sm"><div class="flex items-center gap-1 bg-surface-container-lowest px-space-sm py-1.5 rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]"><span class="material-symbols-outlined text-[17px] text-tertiary-container">hourglass_top</span><span class="font-code-sm text-code-sm font-semibold text-on-surface">25:00</span><button class="text-on-surface-variant hover:text-on-surface ml-1" title="Iniciar Pomodoro" type="button"><span class="material-symbols-outlined text-[17px]">play_arrow</span></button></div><button class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[17px] text-secondary">document_scanner</span><span>OCR</span></button><button class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[17px] text-coral-urgent">mic</span><span>Dictar</span></button><button class="inline-flex items-center gap-1.5 px-space-md py-1.5 rounded-lg bg-primary-container text-surface-card font-label-md text-label-md hover:bg-primary hover:text-surface-card transition-colors shadow-sm" type="button"><span class="material-symbols-outlined text-[18px]">add</span><span>Nueva Tarea</span></button><div class="h-6 w-px bg-border-subtle mx-space-2xs"></div><button aria-label="Notificaciones" class="relative p-2 rounded-lg bg-surface-container-lowest text-on-surface-variant hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-coral-urgent ring-2 ring-surface-card"></span></button></div></header><main class="w-full pt-16 bg-surface min-h-screen"><div class="max-w-max-content-width mx-auto p-space-lg"><div class="flex flex-col w-full space-y-space-lg">
+<!-- Cabecera de la Sección -->
+<header class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-space-base pb-space-sm">
+<div class="space-y-1">
+<div class="flex items-center gap-space-sm flex-wrap">
+<span class="px-space-xs py-0.5 rounded-full bg-emerald-streak/10 text-emerald-streak font-code-sm text-code-sm flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-emerald-streak animate-pulse"></span>
+          100% Sincronizado
+        </span>
+<span class="text-on-surface-variant font-code-sm text-code-sm">•</span>
+<span class="text-on-surface-variant font-code-sm text-code-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px] text-emerald-streak">cloud_done</span>
+          Último respaldo hace 12 min
+        </span>
+<span class="text-on-surface-variant font-code-sm text-code-sm">•</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-code-sm text-[11px] font-semibold">AES-256 GCM</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Ajustes, Copias de Seguridad &amp; Conexión Cloud</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-3xl">
+        Gestión de sincronización de datos, almacenamiento seguro en Google Drive y Firebase, claves de IA Gemini y preferencias de privacidad.
+      </p>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<button class="inline-flex items-center gap-2 px-space-md py-2 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md shadow-sm hover:bg-surface-container-high transition-all" id="btn-sync-now" type="button">
+<span class="material-symbols-outlined text-[18px] text-secondary">sync</span>
+<span>Forzar Sincronización Ahora</span>
+</button>
+<button class="inline-flex items-center gap-2 px-space-lg py-2 rounded-lg bg-primary-container text-surface-card font-label-md text-label-md shadow-md hover:bg-primary transition-all" id="btn-save-settings" type="button">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+<span>Guardar Cambios</span>
+</button>
+</div>
+</header>
+<!-- Tarjetas de Estado Rápido (KPIs Superiores) -->
+<section aria-label="Métricas de Estado del Sistema" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-space-base">
+<!-- KPI 1: Almacenamiento Local -->
+<div class="p-space-base bg-surface-container-lowest rounded-xl shadow-sm flex flex-col justify-between group hover:shadow-md transition-shadow">
+<div class="flex items-start justify-between">
+<div class="space-y-1">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Almacenamiento Local</span>
+<div class="font-headline-md text-headline-md text-on-surface font-semibold flex items-baseline gap-1">
+            42.8 <span class="font-body-sm text-body-sm text-on-surface-variant font-normal">MB / Ilimitado</span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-lg bg-secondary-fixed/40 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[22px]">database</span>
+</div>
+</div>
+<div class="mt-space-md space-y-1.5">
+<div class="w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 28%"></div>
+</div>
+<p class="font-code-sm text-[11px] text-on-surface-variant truncate">
+          324 apuntes • 85 audios y fotos de pizarra
+        </p>
+</div>
+</div>
+<!-- KPI 2: Google Drive Sync -->
+<div class="p-space-base bg-surface-container-lowest rounded-xl shadow-sm flex flex-col justify-between group hover:shadow-md transition-shadow">
+<div class="flex items-start justify-between">
+<div class="space-y-1">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Google Drive Sync</span>
+<div class="font-headline-sm text-headline-sm text-on-surface font-semibold flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-emerald-streak"></span>
+<span>Conectado</span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-lg bg-emerald-streak/10 flex items-center justify-center text-emerald-streak">
+<span class="material-symbols-outlined text-[22px]">cloud_sync</span>
+</div>
+</div>
+<div class="mt-space-md">
+<p class="font-code-sm text-[11px] text-on-surface font-medium truncate" title="lucia.fdez.estudiante@gmail.com">
+          lucia.fdez.estudiante@gmail.com
+        </p>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-[11px]">
+          Copia automática diaria: 22:00 h
+        </p>
+</div>
+</div>
+<!-- KPI 3: Motor de IA Activo -->
+<div class="p-space-base bg-surface-container-lowest rounded-xl shadow-sm flex flex-col justify-between group hover:shadow-md transition-shadow">
+<div class="flex items-start justify-between">
+<div class="space-y-1">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Motor de IA Activo</span>
+<div class="font-headline-sm text-headline-sm text-indigo-ai font-semibold flex items-center gap-1.5 truncate">
+<span>Gemini 1.5 Flash</span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-lg bg-indigo-ai/10 flex items-center justify-center text-indigo-ai">
+<span class="material-symbols-outlined text-[22px]">psychology</span>
+</div>
+</div>
+<div class="mt-space-md flex items-center justify-between">
+<span class="font-code-sm text-code-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-tertiary-fixed-dim">speed</span>
+          Latencia 0.28s
+        </span>
+<span class="px-1.5 py-0.5 rounded bg-indigo-ai/10 text-indigo-ai font-code-sm text-[10px] font-semibold">AI Studio OK</span>
+</div>
+</div>
+<!-- KPI 4: Modo Offline PWA -->
+<div class="p-space-base bg-surface-container-lowest rounded-xl shadow-sm flex flex-col justify-between group hover:shadow-md transition-shadow">
+<div class="flex items-start justify-between">
+<div class="space-y-1">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Modo Offline PWA</span>
+<div class="font-headline-sm text-headline-sm text-on-surface font-semibold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-emerald-streak">offline_pin</span>
+<span>Service Worker</span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[22px]">cell_tower</span>
+</div>
+</div>
+<div class="mt-space-md flex items-center justify-between">
+<p class="font-code-sm text-code-sm text-on-surface font-medium">
+          v3.5.2 (Build 890)
+        </p>
+<span class="font-code-sm text-[11px] text-emerald-streak font-semibold">100% Cacheado</span>
+</div>
+</div>
+</section>
+<!-- Notification Toast Demo (Sincronización simulada) -->
+<div class="hidden p-space-sm px-space-base bg-primary-container text-surface-card rounded-lg shadow-xl flex items-center justify-between transition-all" id="sync-toast">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-emerald-streak text-[20px] animate-spin">sync</span>
+<span class="font-body-md text-body-md">Sincronizando apuntes y base de datos con Google Drive...</span>
+</div>
+<span class="font-code-sm text-code-sm text-primary-fixed-dim">JSON cifrado 100% OK</span>
+</div>
+<!-- Grid Principal de Ajustes: 2 Columnas Estructuradas -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- ==================== COLUMNA IZQUIERDA (7 cols) ==================== -->
+<div class="lg:col-span-7 space-y-space-lg">
+<!-- BLOQUE A: Sincronización en la Nube y Respaldo -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg space-y-space-md">
+<div class="flex items-center justify-between pb-space-xs border-b border-border-subtle/40">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[20px]">cloud_sync</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Sincronización en la Nube y Respaldo</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Conecta tu cuenta personal para no perder deberes ni calendarios.</p>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded bg-emerald-streak/10 text-emerald-streak font-code-sm text-[11px] font-semibold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-streak"></span> En Línea
+          </span>
+</div>
+<!-- Google Drive API Card -->
+<div class="p-space-base bg-surface-container-low rounded-xl space-y-space-sm">
+<div class="flex items-start justify-between gap-4">
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-body-lg font-semibold text-on-surface">Google Drive API</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-highest text-on-surface font-code-sm text-[10px]">OAuth 2.0</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Respalda automáticamente tu archivo completo cifrado en tu unidad de Google Drive personal.
+              </p>
+</div>
+<!-- Switch Toggle -->
+<label class="relative inline-flex items-center cursor-pointer shrink-0">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+<div class="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-space-sm">
+<div class="space-y-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Carpeta de Destino en Drive</label>
+<div class="flex items-center gap-2 px-space-sm py-1.5 rounded-lg bg-surface-container-lowest shadow-sm">
+<span class="material-symbols-outlined text-[17px] text-tertiary-fixed-dim">folder</span>
+<input class="bg-transparent font-code-sm text-code-sm text-on-surface focus:outline-none w-full" type="text" value="/AgendaEscolar_Backups"/>
+</div>
+</div>
+<div class="space-y-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Frecuencia de Snapshot</label>
+<select class="w-full px-space-sm py-1.5 rounded-lg bg-surface-container-lowest font-body-sm text-body-sm text-on-surface shadow-sm focus:outline-none">
+<option selected="">Diaria (a las 22:00 horas)</option>
+<option>En cada cambio importante</option>
+<option>Solo manual</option>
+</select>
+</div>
+</div>
+</div>
+<!-- Firebase Realtime / Firestore -->
+<div class="p-space-base bg-surface-container-low rounded-xl flex items-center justify-between gap-4">
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-body-lg font-semibold text-on-surface">Firebase Realtime / Firestore</span>
+<span class="px-2 py-0.5 rounded-full bg-emerald-streak/15 text-emerald-streak font-code-sm text-[10px] font-bold">ACTIVO</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Sincronización instantánea de notas y tareas entre tu PC, tablet Android y teléfono móvil (PWA).
+            </p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer shrink-0">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+<!-- Exportación Manual -->
+<div class="space-y-space-xs pt-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Exportación Manual de Seguridad</label>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-sm">
+<button class="p-space-base rounded-xl bg-surface-container-low hover:bg-surface-container transition-all text-left flex items-start gap-space-sm group" type="button">
+<div class="w-9 h-9 rounded-lg bg-surface-container-lowest flex items-center justify-center text-secondary shrink-0 shadow-sm group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[20px]">download</span>
+</div>
+<div class="min-w-0">
+<span class="font-label-md text-label-md text-on-surface block font-semibold">Descargar Backup (.JSON)</span>
+<span class="font-body-sm text-[12px] text-on-surface-variant">Todos los apuntes, materias y registros</span>
+</div>
+</button>
+<button class="p-space-base rounded-xl bg-surface-container-low hover:bg-surface-container transition-all text-left flex items-start gap-space-sm group" type="button">
+<div class="w-9 h-9 rounded-lg bg-surface-container-lowest flex items-center justify-center text-indigo-ai shrink-0 shadow-sm group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[20px]">calendar_add_on</span>
+</div>
+<div class="min-w-0">
+<span class="font-label-md text-label-md text-on-surface block font-semibold">Exportar Calendario (.ICS)</span>
+<span class="font-body-sm text-[12px] text-on-surface-variant">Compatible con Google Calendar &amp; Apple</span>
+</div>
+</button>
+</div>
+</div>
+<!-- Importación y Restauración (Drag & Drop Zone) -->
+<div class="space-y-space-xs pt-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Importación y Restauración</label>
+<div class="p-space-lg rounded-xl bg-surface-container-low/60 flex flex-col items-center justify-center text-center group cursor-pointer hover:bg-surface-container-high/40 transition-colors">
+<div class="w-12 h-12 rounded-full bg-surface-container-lowest flex items-center justify-center text-secondary mb-2 shadow-sm group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[26px]">upload_file</span>
+</div>
+<p class="font-headline-sm text-body-md font-semibold text-on-surface">Arrastra aquí tu archivo .json de respaldo</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">o pulsa para explorar en tu disco local (Reemplazará la base actual)</p>
+<input accept=".json" class="hidden" type="file"/>
+<span class="mt-3 px-space-md py-1 rounded-lg bg-surface-container-lowest font-label-sm text-label-sm text-secondary shadow-sm">
+              Seleccionar archivo local
+            </span>
+</div>
+</div>
+</section>
+<!-- BLOQUE B: Inteligencia Artificial & Motores OCR -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg space-y-space-md">
+<div class="flex items-center justify-between pb-space-xs border-b border-border-subtle/40">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-lg bg-indigo-ai/10 flex items-center justify-center text-indigo-ai">
+<span class="material-symbols-outlined text-[20px]">neurology</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Inteligencia Artificial &amp; Motores OCR</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Configura tu clave de Google AI Studio para Cuaderno LM y Copiloto.</p>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded bg-indigo-ai/10 text-indigo-ai font-code-sm text-[11px] font-semibold">Gemini Nano / Cloud</span>
+</div>
+<!-- Selector de Proveedor IA -->
+<div class="space-y-1.5">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Proveedor de Inferencia</label>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-space-sm">
+<button class="p-space-sm rounded-xl bg-surface-container-high/80 text-left transition-all" type="button">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md font-semibold text-on-surface">Gemini 1.5 Flash</span>
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+</div>
+<span class="font-code-sm text-[11px] text-secondary font-medium block mt-1">Recomendado • Ultrarrápido</span>
+</button>
+<button class="p-space-sm rounded-xl bg-surface-container-low hover:bg-surface-container text-left transition-all" type="button">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md font-medium text-on-surface">Gemini 1.5 Pro</span>
+</div>
+<span class="font-code-sm text-[11px] text-on-surface-variant block mt-1">Razonamiento profundo</span>
+</button>
+<button class="p-space-sm rounded-xl bg-surface-container-low hover:bg-surface-container text-left transition-all" type="button">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md font-medium text-on-surface">Local Heurístico</span>
+</div>
+<span class="font-code-sm text-[11px] text-on-surface-variant block mt-1">100% Offline • Sin API</span>
+</button>
+</div>
+</div>
+<!-- Campo API Key con Ocultar / Mostrar y Test -->
+<div class="space-y-1.5">
+<div class="flex items-center justify-between">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Clave API Privada (Google AI Studio)</label>
+<a class="font-code-sm text-code-sm text-secondary hover:underline flex items-center gap-0.5" href="https://aistudio.google.com/app/apikey" target="_blank">
+              Obtener clave gratuita
+              <span class="material-symbols-outlined text-[13px]">open_in_new</span>
+</a>
+</div>
+<div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-space-sm">
+<div class="relative flex-1">
+<input class="w-full h-10 px-space-base pr-10 rounded-lg bg-surface-container-low font-code-sm text-code-sm text-on-surface focus:bg-surface-container-lowest focus:outline-none shadow-inner" id="api-key-input" type="password" value="AIzaSyB3910xKlaOpq93019xZkdM01-92kLqPq0"/>
+<button class="absolute right-2.5 top-2.5 text-on-surface-variant hover:text-on-surface" id="toggle-key-visibility" type="button">
+<span class="material-symbols-outlined text-[18px]">visibility_off</span>
+</button>
+</div>
+<button class="px-space-base py-2 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md hover:bg-surface-container-highest transition-colors flex items-center justify-center gap-1.5 shrink-0" type="button">
+<span class="material-symbols-outlined text-[16px] text-emerald-streak">check_circle</span>
+<span>Verificar Conexión</span>
+</button>
+</div>
+<div class="flex items-center gap-2 pt-0.5">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-streak"></span>
+<span class="font-code-sm text-[11px] text-emerald-streak">Estado: Clave Válida ✓ (Cuota de 1,500 peticiones diarias activas)</span>
+</div>
+</div>
+<!-- Motor OCR Predeterminado -->
+<div class="space-y-1.5 pt-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Motor de Reconocimiento OCR para Apuntes y Pizarra</label>
+<div class="flex flex-wrap gap-space-sm">
+<button class="px-space-md py-1.5 rounded-lg bg-secondary text-on-secondary font-label-sm text-label-sm flex items-center gap-1.5 shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+              Doble Motor (Local ML Kit + Gemini Flash)
+            </button>
+<button class="px-space-md py-1.5 rounded-lg bg-surface-container-low text-on-surface font-label-sm text-label-sm hover:bg-surface-container transition-colors" type="button">
+              Solo Local Offline
+            </button>
+<button class="px-space-md py-1.5 rounded-lg bg-surface-container-low text-on-surface font-label-sm text-label-sm hover:bg-surface-container transition-colors" type="button">
+              Tesseract WebAssembly
+            </button>
+</div>
+</div>
+</section>
+</div>
+<!-- ==================== COLUMNA DERECHA (5 cols) ==================== -->
+<div class="lg:col-span-5 space-y-space-lg">
+<!-- BLOQUE C: Preferencias de la Agenda & Interfaz -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg space-y-space-md">
+<div class="flex items-center gap-space-sm pb-space-xs border-b border-border-subtle/40">
+<div class="w-8 h-8 rounded-lg bg-tertiary-container/20 flex items-center justify-center text-on-tertiary-container">
+<span class="material-symbols-outlined text-[20px]">palette</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Preferencias de Interfaz</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Personaliza la legibilidad, temas y shortcuts.</p>
+</div>
+</div>
+<!-- Modo de Visualización -->
+<div class="space-y-1.5">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Modo de Color</label>
+<div class="grid grid-cols-3 gap-2">
+<button class="p-2 rounded-lg bg-surface-container-high text-center font-label-sm text-label-sm font-semibold text-on-surface flex flex-col items-center gap-1" type="button">
+<span class="material-symbols-outlined text-[20px] text-tertiary-fixed-dim">light_mode</span>
+              Tema Claro
+            </button>
+<button class="p-2 rounded-lg bg-surface-container-low hover:bg-surface-container text-center font-label-sm text-label-sm text-on-surface flex flex-col items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant">dark_mode</span>
+              Modo Oscuro
+            </button>
+<button class="p-2 rounded-lg bg-surface-container-low hover:bg-surface-container text-center font-label-sm text-label-sm text-on-surface flex flex-col items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant">brightness_auto</span>
+              Sistema
+            </button>
+</div>
+</div>
+<!-- Tipografía & Accesibilidad -->
+<div class="space-y-space-sm pt-1">
+<div class="flex items-start justify-between gap-3">
+<div class="space-y-0.5">
+<span class="font-label-md text-label-md font-semibold text-on-surface">Fuente OpenDyslexic</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Optimiza los trazos para personas con dislexia.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer shrink-0">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+<div class="flex items-center justify-between gap-3 pt-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Tamaño de Texto</span>
+<div class="flex items-center gap-1 bg-surface-container-low p-1 rounded-lg">
+<button class="px-2 py-0.5 rounded text-on-surface-variant hover:text-on-surface font-code-sm text-[12px]" type="button">A-</button>
+<span class="px-2 font-code-sm text-[12px] font-semibold text-on-surface">100%</span>
+<button class="px-2 py-0.5 rounded text-on-surface-variant hover:text-on-surface font-code-sm text-[12px]" type="button">A+</button>
+</div>
+</div>
+</div>
+<!-- Atajos de Teclado Globales -->
+<div class="space-y-2 pt-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Atajos de Teclado de Escritorio</label>
+<div class="space-y-1.5 font-code-sm text-[12px]">
+<div class="flex items-center justify-between p-1.5 rounded-lg bg-surface-container-low/70">
+<span class="text-on-surface">Buscador Global / Paleta</span>
+<kbd class="px-1.5 py-0.5 rounded bg-surface-container-lowest text-on-surface shadow-xs">⌘K / Ctrl+K</kbd>
+</div>
+<div class="flex items-center justify-between p-1.5 rounded-lg bg-surface-container-low/70">
+<span class="text-on-surface">Crear Nueva Tarea Rápida</span>
+<kbd class="px-1.5 py-0.5 rounded bg-surface-container-lowest text-on-surface shadow-xs">N</kbd>
+</div>
+<div class="flex items-center justify-between p-1.5 rounded-lg bg-surface-container-low/70">
+<span class="text-on-surface">Nuevo Examen en Agenda</span>
+<kbd class="px-1.5 py-0.5 rounded bg-surface-container-lowest text-on-surface shadow-xs">E</kbd>
+</div>
+<div class="flex items-center justify-between p-1.5 rounded-lg bg-surface-container-low/70">
+<span class="text-on-surface">Pausar / Iniciar Pomodoro</span>
+<kbd class="px-1.5 py-0.5 rounded bg-surface-container-lowest text-on-surface shadow-xs">Espacio</kbd>
+</div>
+<div class="flex items-center justify-between p-1.5 rounded-lg bg-surface-container-low/70">
+<span class="text-on-surface">Cambiar vista (Mi Día / Notas)</span>
+<kbd class="px-1.5 py-0.5 rounded bg-surface-container-lowest text-on-surface shadow-xs">1 — 5</kbd>
+</div>
+</div>
+</div>
+</section>
+<!-- BLOQUE D: Notificaciones & Alertas Académicas -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg space-y-space-md">
+<div class="flex items-center gap-space-sm pb-space-xs border-b border-border-subtle/40">
+<div class="w-8 h-8 rounded-lg bg-coral-urgent/10 flex items-center justify-center text-coral-urgent">
+<span class="material-symbols-outlined text-[20px]">notifications_active</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Notificaciones &amp; Alertas</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Avisos push locales basados en el horario de 2º Bach.</p>
+</div>
+</div>
+<div class="space-y-space-sm">
+<!-- Mochila vespertina -->
+<div class="flex items-start justify-between gap-3">
+<div class="space-y-0.5">
+<span class="font-label-md text-label-md font-semibold text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-tertiary-fixed-dim">backpack</span>
+                Recordatorio de Mochila (21:00)
+              </span>
+<p class="font-body-sm text-[12px] text-on-surface-variant">Notifica libros y calculadora requerida para mañana.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer shrink-0">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+<!-- Alertas de exámenes -->
+<div class="flex items-start justify-between gap-3">
+<div class="space-y-0.5">
+<span class="font-label-md text-label-md font-semibold text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-coral-urgent">alarm</span>
+                Alertas Escalonadas de Exámenes
+              </span>
+<p class="font-body-sm text-[12px] text-on-surface-variant">Avisos a los 7 días, 3 días y la tarde previa al examen.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer shrink-0">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+<!-- Sonido Pomodoro -->
+<div class="space-y-1 pt-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Sonido Campana Pomodoro</label>
+<div class="flex items-center gap-2">
+<select class="flex-1 px-space-sm py-1.5 rounded-lg bg-surface-container-low font-body-sm text-body-sm text-on-surface shadow-inner focus:outline-none">
+<option selected="">Cuenco Tibetano Relajante (432Hz)</option>
+<option>Campana Suave Zen</option>
+<option>Sintetizador Web Audio API (Sin latencia)</option>
+<option>Silencioso (Solo notificación visual)</option>
+</select>
+<button class="p-1.5 rounded-lg bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors" title="Probar sonido" type="button">
+<span class="material-symbols-outlined text-[18px]">volume_up</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- BLOQUE E: Privacidad, Seguridad y Papelera -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg space-y-space-md">
+<div class="flex items-center gap-space-sm pb-space-xs border-b border-border-subtle/40">
+<div class="w-8 h-8 rounded-lg bg-primary-container text-surface-card flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">security</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Privacidad &amp; Seguridad</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Control biométrico y gestión de datos borrados.</p>
+</div>
+</div>
+<!-- Biometría / PIN -->
+<div class="flex items-start justify-between gap-3">
+<div class="space-y-0.5">
+<span class="font-label-md text-label-md font-semibold text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-primary">fingerprint</span>
+              Bloqueo por PIN / WebAuthn
+            </span>
+<p class="font-body-sm text-[12px] text-on-surface-variant">Exigir huella o PIN al abrir la aplicación tras 15 min de inactividad.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer shrink-0">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+<!-- Papelera de Reciclaje -->
+<div class="p-space-sm rounded-xl bg-surface-container-low space-y-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md font-semibold text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">delete</span>
+              Papelera de Reciclaje
+            </span>
+<span class="font-code-sm text-[11px] text-on-surface-variant">4 elementos</span>
+</div>
+<p class="font-body-sm text-[12px] text-on-surface-variant">
+            Los elementos se destruyen automáticamente a los 30 días.
+          </p>
+<div class="flex items-center gap-2 pt-1">
+<button class="px-space-sm py-1 rounded bg-surface-container-lowest text-secondary font-label-sm text-label-sm shadow-xs hover:bg-surface-container-high transition-colors" type="button">
+              Ver y Restaurar
+            </button>
+<button class="px-space-sm py-1 rounded text-coral-urgent font-label-sm text-label-sm hover:bg-error-container/30 transition-colors" type="button">
+              Vaciar Papelera
+            </button>
+</div>
+</div>
+<!-- Zona de Peligro -->
+<div class="p-space-sm rounded-xl bg-error-container/40 space-y-2">
+<div class="flex items-center gap-1.5 text-error">
+<span class="material-symbols-outlined text-[17px]">warning</span>
+<span class="font-label-md text-label-md font-bold">Zona de Peligro</span>
+</div>
+<p class="font-body-sm text-[11px] text-on-error-container">
+            Borrará la base local IndexedDB de este navegador. Haz un backup previo para no perder tu historial.
+          </p>
+<button class="w-full py-1.5 px-space-sm rounded-lg bg-error text-on-error font-label-sm text-label-sm hover:opacity-90 transition-opacity" type="button">
+            Restablecer datos locales de fábrica
+          </button>
+</div>
+</section>
+</div>
+</div>
+</div>
+<script>
+  // Micro-interacción: toggle de visibilidad de la API key
+  const toggleKeyBtn = document.getElementById('toggle-key-visibility');
+  const apiKeyInput = document.getElementById('api-key-input');
+  if (toggleKeyBtn && apiKeyInput) {
+    toggleKeyBtn.addEventListener('click', () => {
+      const isPassword = apiKeyInput.type === 'password';
+      apiKeyInput.type = isPassword ? 'text' : 'password';
+      const icon = toggleKeyBtn.querySelector('.material-symbols-outlined');
+      if (icon) {
+        icon.textContent = isPassword ? 'visibility' : 'visibility_off';
+      }
+    });
+  }
+
+  // Micro-interacción: simulación de sincronización forzada
+  const btnSyncNow = document.getElementById('btn-sync-now');
+  const syncToast = document.getElementById('sync-toast');
+  if (btnSyncNow && syncToast) {
+    btnSyncNow.addEventListener('click', () => {
+      syncToast.classList.remove('hidden');
+      btnSyncNow.disabled = true;
+      btnSyncNow.classList.add('opacity-70');
+      
+      setTimeout(() => {
+        syncToast.classList.add('hidden');
+        btnSyncNow.disabled = false;
+        btnSyncNow.classList.remove('opacity-70');
+      }, 3200);
+    });
+  }
+</script></div></main></div></body></html>

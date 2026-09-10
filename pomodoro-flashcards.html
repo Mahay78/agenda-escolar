@@ -1,21 +1,498 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agenda Escolar - Pomodoro Zen & Fichas</title>
-  <meta http-equiv="refresh" content="0; url=./index.html?tab=tab-study" />
-  <script>window.location.replace("./index.html?tab=tab-study");</script>
-  <style>
-    body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; text-align: center; }
-    .spinner { width: 40px; height: 40px; border: 3px solid rgba(59, 130, 246, 0.2); border-top-color: #3b82f6; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 16px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    a { color: #60a5fa; text-decoration: none; font-weight: 500; }
-  </style>
-</head>
-<body>
-  <div class="spinner"></div>
-  <h2>Cargando Pomodoro Zen & Fichas...</h2>
-  <p><a href="./index.html?tab=tab-study">Haz clic aquí si no redirige automáticamente</a></p>
-</body>
-</html>
+
+<html lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><title>Agenda Escolar PWA</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "border-subtle": "#E2E8F0", "surface-container-high": "#dce9ff", "secondary": "#4648d4", "error": "#ba1a1a", "on-surface": "#0b1c30", "primary-fixed-dim": "#bcc7de", "on-background": "#0b1c30", "surface-dim": "#cbdbf5", "on-error": "#ffffff", "surface-container-lowest": "#ffffff", "tertiary": "#201100", "on-primary": "#ffffff", "surface-sidebar": "#0F172A", "outline-variant": "#c5c6cd", "indigo-ai": "#8B5CF6", "on-primary-container": "#8590a6", "surface-bright": "#f8f9ff", "on-primary-fixed-variant": "#3c475a", "outline": "#75777d", "primary-fixed": "#d8e3fb", "on-primary-fixed": "#111c2d", "on-secondary-fixed": "#07006c", "primary-container": "#1e293b", "on-tertiary-fixed": "#2a1700", "surface-card": "#FFFFFF", "error-container": "#ffdad6", "tertiary-container": "#3c2300", "inverse-surface": "#213145", "surface-container-low": "#eff4ff", "on-tertiary-container": "#c88000", "coral-urgent": "#F43F5E", "on-tertiary-fixed-variant": "#653e00", "secondary-fixed-dim": "#c0c1ff", "inverse-on-surface": "#eaf1ff", "emerald-streak": "#10B981", "on-surface-variant": "#45474c", "surface-container": "#e5eeff", "background": "#f8f9ff", "inverse-primary": "#bcc7de", "surface-container-highest": "#d3e4fe", "primary": "#091426", "border-dark": "#1E293B", "surface-tint": "#545f73", "on-error-container": "#93000a", "tertiary-fixed-dim": "#ffb95f", "on-secondary-container": "#fffbff", "surface-variant": "#d3e4fe", "surface": "#f8f9ff", "tertiary-fixed": "#ffddb8", "secondary-fixed": "#e1e0ff", "on-tertiary": "#ffffff", "on-secondary-fixed-variant": "#2f2ebe", "canvas-bg": "#F8FAFC", "on-secondary": "#ffffff", "secondary-container": "#6063ee" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-2xs": "0.125rem", "sidebar-collapsed": "68px", "space-xl": "2rem", "space-xs": "0.25rem", "max-content-width": "1440px", "space-base": "1rem", "space-2xl": "3rem", "space-lg": "1.5rem", "space-sm": "0.5rem", "space-md": "0.75rem", "sidebar-width": "240px" }, "fontFamily": { "headline-lg": ["Plus Jakarta Sans"], "code-sm": ["JetBrains Mono"], "label-md": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "display": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"] }, "fontSize": { "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "700" }], "code-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" }], "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "display": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-md": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased selection:bg-secondary-fixed selection:text-on-secondary-fixed"><aside class="fixed left-0 top-0 h-screen w-sidebar-width bg-surface-sidebar z-50 flex flex-col justify-between select-none shadow-[0_1px_8px_rgba(0,0,0,0.08)]"><div class="flex flex-col flex-1 overflow-y-auto"><div class="h-16 px-space-base flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="Agenda Escolar Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1W7YUEss6DP9Xx1z841d_qHcSCOIN-l-FhxrtKUiT5-W3ctujb3E695E4JvcFlKOwJoERFlgw34EvmYFS36M3HrArIc3x400fLH1AoZYEucmEe1aIVkLAPCvwhq3kxd6fab9Elr7U6Vimt0zw1SCEgHXBCvXV-69uslhDkvNzZHvwJb9BJ1ZyZmF7mq6CqnuAvZ-6FjV6pKE_YyNJsRUW5hB1n4jcwnfaEzeGa5lhXOLCkde7_yj2x0cFE"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-surface-card leading-none tracking-tight">Agenda Escolar</span><span class="mt-space-2xs inline-flex items-center self-start px-space-xs py-0.5 rounded bg-primary-container text-primary-fixed text-[10px] font-code-sm font-semibold uppercase tracking-wider">v3.5 PWA</span></div></div><button aria-label="Colapsar menú lateral" class="text-outline-variant hover:text-surface-card p-1 rounded transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">keyboard_double_arrow_left</span></button></div><div class="px-space-base py-space-xs"><div class="flex items-center justify-between px-space-sm py-space-xs rounded bg-border-dark/60 text-emerald-streak"><div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-streak animate-pulse"></span><span class="font-label-sm text-label-sm">100% Offline Listo</span></div><span class="font-code-sm text-code-sm text-surface-variant/80 text-[10px]">PWA ACTIVE</span></div></div><nav class="flex-1 px-space-sm py-space-xs space-y-space-2xs" data-active-classes="bg-primary-container text-surface-card font-semibold shadow-inner"><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="mi-dia" href="index.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-tertiary-fixed-dim">light_mode</span><span class="font-body-md text-body-md">Mi Día</span></div><span class="px-1.5 py-0.5 rounded-full bg-border-dark text-surface-card font-code-sm text-[11px]">8</span></a><div class="space-y-0.5"><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="agenda" href="deberes-examenes.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">calendar_month</span><span class="font-body-md text-body-md">Agenda</span></div><span class="material-symbols-outlined text-[16px] text-outline-variant group-hover:text-surface-card">expand_more</span></a><div class="pl-8 pr-space-xs space-y-0.5"><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="deberes" href="deberes-examenes.html"><span>Deberes</span><span class="w-1.5 h-1.5 rounded-full bg-coral-urgent"></span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="examenes" href="deberes-examenes.html"><span>Exámenes</span><span class="font-code-sm text-[10px] text-tertiary-fixed-dim font-bold">PROX</span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="horario" href="horario-mochila.html"><span>Horario</span></a><a class="flex items-center justify-between py-1 px-space-xs rounded text-outline-variant hover:text-surface-card font-body-sm text-body-sm transition-colors" data-path="mochila" href="horario-mochila.html"><span>Mochila</span><span class="material-symbols-outlined text-[13px] text-outline-variant">backpack</span></a></div></div><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="cuaderno-lm" href="notebook.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-indigo-ai">neurology</span><span class="font-body-md text-body-md">Cuaderno LM</span></div><span class="px-1.5 py-0.2 rounded bg-indigo-ai/20 text-indigo-ai font-label-sm text-[10px]">Studio</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="pomodoro-concentracion" href="pomodoro-flashcards.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">timer</span><span class="font-body-md text-body-md">Pomodoro</span></div><span class="font-code-sm text-code-sm text-tertiary-fixed-dim">25:00</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="progreso-notas" href="progreso-ebau.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">insights</span><span class="font-body-md text-body-md">Progreso &amp; Notas</span></div><span class="font-code-sm text-code-sm text-emerald-streak">9.4</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="copiloto-ia" href="english-coach.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px] text-secondary-fixed-dim">smart_toy</span><span class="font-body-md text-body-md">Copiloto IA</span></div><span class="flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-streak opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-streak"></span></span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-outline-variant hover:bg-border-dark hover:text-surface-card transition-all group" data-path="ajustes-drive-sync" href="ajustes-nube.html"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">sync_saved_locally</span><span class="font-body-md text-body-md">Ajustes &amp; Drive</span></div><span class="material-symbols-outlined text-[16px] text-emerald-streak">cloud_done</span></a></nav></div><div class="p-space-sm bg-border-dark/40 m-space-sm rounded-xl"><div class="flex items-center gap-space-sm"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfmw-gtx0XEK7h8QkzkqF3FppIOTbex1jLhq0ocROUjmLodXPHUohFwpnJvNVkN0ISjq214XEmWTpaUMw3YSio12W-RjtGFeU0sE1SjasnJqTB-yV8QlgvtQlUWVMlziMiyc-kapJhBGjqEArrPwnzz5DrLEfaywd6KV0lCZ0M5ZzcT3XTNGdqZUTS-wEp6J9RCq0b-FMAAjueo_cX1syzKCEK_bQTcBHe-z8fv9oRHSz-6bu4IvxX"/><div class="flex-1 min-w-0"><div class="flex items-center justify-between gap-1"><p class="font-headline-sm text-body-md font-semibold text-surface-card truncate leading-snug">Lucía Fernández</p><span class="inline-flex items-center px-1.5 py-0.5 rounded bg-tertiary-container text-tertiary-fixed font-code-sm text-[10px] font-bold shrink-0">🔥 14</span></div><p class="font-label-sm text-label-sm text-outline-variant truncate">2º Bachillerato • Ciencias</p></div></div></div></aside><div class="pl-sidebar-width"><header class="fixed top-0 left-sidebar-width right-0 h-16 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg"><div class="flex-1 max-w-xl pr-space-base"><div class="relative flex items-center w-full"><span class="material-symbols-outlined absolute left-3 text-[18px] text-on-surface-variant pointer-events-none">search</span><input class="w-full h-10 pl-9 pr-20 bg-surface-container-lowest rounded-lg font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none focus:bg-surface-container-lowest transition-all shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" placeholder="Buscar asignaturas, tareas, notas o fechas..." type="text"/><div class="absolute right-2 flex items-center gap-1"><kbd class="px-1.5 py-0.5 text-[11px] font-code-sm text-on-surface-variant bg-surface-container-high rounded">⌘K</kbd></div></div></div><div class="flex items-center gap-space-sm"><div class="flex items-center gap-1 bg-surface-container-lowest px-space-sm py-1.5 rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]"><span class="material-symbols-outlined text-[17px] text-tertiary-container">hourglass_top</span><span class="font-code-sm text-code-sm font-semibold text-on-surface">25:00</span><button class="text-on-surface-variant hover:text-on-surface ml-1" title="Iniciar Pomodoro" type="button"><span class="material-symbols-outlined text-[17px]">play_arrow</span></button></div><button class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[17px] text-secondary">document_scanner</span><span>OCR</span></button><button class="inline-flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[17px] text-coral-urgent">mic</span><span>Dictar</span></button><button class="inline-flex items-center gap-1.5 px-space-md py-1.5 rounded-lg bg-primary-container text-surface-card font-label-md text-label-md hover:bg-primary hover:text-surface-card transition-colors shadow-sm" type="button"><span class="material-symbols-outlined text-[18px]">add</span><span>Nueva Tarea</span></button><div class="h-6 w-px bg-border-subtle mx-space-2xs"></div><button aria-label="Notificaciones" class="relative p-2 rounded-lg bg-surface-container-lowest text-on-surface-variant hover:text-on-surface transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-coral-urgent ring-2 ring-surface-card"></span></button></div></header><main class="w-full pt-16 bg-surface min-h-screen"><div class="max-w-max-content-width mx-auto p-space-lg"><div class="flex flex-col w-full">
+<!-- Cabecera de Página & Selector de Mazos -->
+<section class="relative rounded-2xl bg-surface-container-low p-space-lg mb-space-lg overflow-hidden shadow-sm">
+<div class="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-secondary-fixed/35 blur-3xl pointer-events-none"></div>
+<div class="absolute right-1/4 -bottom-20 w-64 h-64 rounded-full bg-tertiary-fixed/30 blur-3xl pointer-events-none"></div>
+<div class="relative z-10 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-space-lg">
+<div class="space-y-1 max-w-2xl min-w-0">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary text-on-secondary font-code-sm text-[11px] tracking-wide uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-streak animate-pulse"></span>
+            Algoritmo SM-2 Activo
+          </span>
+<span class="font-code-sm text-code-sm text-on-surface-variant font-semibold">Espaciado Leitner 5 Niveles</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">
+          Repaso Activo Leitner &amp; Pomodoro Zen
+        </h1>
+<p class="font-body-md text-body-md text-on-surface-variant">
+          Optimización neurocognitiva con repetición espaciada • Frecuencias binaurales y enfoque sin distracciones
+        </p>
+</div>
+<!-- Selector y Acciones de Mazo -->
+<div class="flex flex-wrap items-center gap-space-sm">
+<div class="relative">
+<select class="appearance-none bg-surface-card text-on-surface font-label-md text-label-md pl-9 pr-10 py-2.5 rounded-xl shadow-sm focus:outline-none focus:bg-surface-container transition-all cursor-pointer" id="deck-selector">
+<option selected="">Historia de España (Bloque 3: Crisis Antiguo Régimen - 42 fichas)</option>
+<option>Biología y Geología (35 fichas)</option>
+<option>Inglés C1 Phrasal Verbs (50 fichas)</option>
+<option>Física: Dinámica y Gravitación (28 fichas)</option>
+</select>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-secondary pointer-events-none">style</span>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-[18px] text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+<button class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-card text-on-surface font-label-md text-label-md shadow-sm hover:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px] text-secondary">add</span>
+<span>Nueva Ficha</span>
+</button>
+<button class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-indigo-ai text-on-primary font-label-md text-label-md shadow-sm hover:opacity-90 transition-opacity" type="button">
+<span class="material-symbols-outlined text-[18px]">auto_awesome</span>
+<span>IA / OCR Cuaderno LM</span>
+</button>
+<button class="p-2 rounded-xl bg-surface-card text-on-surface-variant hover:text-on-surface shadow-sm hover:bg-surface-container transition-colors" title="Opciones del Mazo" type="button">
+<span class="material-symbols-outlined text-[20px]">tune</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Grid Principal 12 Columnas -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- Columna Principal: Leitner Flashcards (7 Cols) -->
+<div class="lg:col-span-7 flex flex-col gap-space-base">
+<!-- Cajas Leitner 5 Niveles -->
+<section class="bg-surface-card rounded-2xl p-space-base shadow-sm">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-on-surface">layers</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Cajas Leitner</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">174 Fichas totales en el mazo</span>
+</div>
+<div class="grid grid-cols-5 gap-2">
+<!-- Caja 1 -->
+<button class="flex flex-col items-center justify-between p-2.5 rounded-xl bg-error-container/60 hover:bg-error-container transition-colors text-center group" type="button">
+<span class="font-label-sm text-[10px] text-error uppercase font-bold tracking-wider">Caja 1</span>
+<span class="font-code-sm text-headline-sm font-bold text-on-error-container my-0.5">12</span>
+<span class="font-code-sm text-[10px] text-on-surface-variant">Diario</span>
+</button>
+<!-- Caja 2 (Activa) -->
+<button class="flex flex-col items-center justify-between p-2.5 rounded-xl bg-tertiary-fixed hover:bg-tertiary-fixed-dim transition-colors text-center shadow-inner ring-2 ring-tertiary-container/30" type="button">
+<span class="font-label-sm text-[10px] text-tertiary-container uppercase font-bold tracking-wider">Caja 2</span>
+<span class="font-code-sm text-headline-sm font-bold text-on-tertiary-fixed my-0.5">18</span>
+<span class="font-code-sm text-[10px] text-on-tertiary-fixed-variant">3 días</span>
+</button>
+<!-- Caja 3 -->
+<button class="flex flex-col items-center justify-between p-2.5 rounded-xl bg-surface-container-high hover:bg-surface-variant transition-colors text-center" type="button">
+<span class="font-label-sm text-[10px] text-secondary uppercase font-bold tracking-wider">Caja 3</span>
+<span class="font-code-sm text-headline-sm font-bold text-primary my-0.5">24</span>
+<span class="font-code-sm text-[10px] text-on-surface-variant">Semanal</span>
+</button>
+<!-- Caja 4 -->
+<button class="flex flex-col items-center justify-between p-2.5 rounded-xl bg-secondary-fixed hover:bg-secondary-fixed-dim transition-colors text-center" type="button">
+<span class="font-label-sm text-[10px] text-secondary-container uppercase font-bold tracking-wider">Caja 4</span>
+<span class="font-code-sm text-headline-sm font-bold text-on-secondary-fixed my-0.5">35</span>
+<span class="font-code-sm text-[10px] text-on-surface-variant">15 días</span>
+</button>
+<!-- Caja 5 -->
+<button class="flex flex-col items-center justify-between p-2.5 rounded-xl bg-emerald-streak/15 hover:bg-emerald-streak/25 transition-colors text-center" type="button">
+<span class="font-label-sm text-[10px] text-emerald-streak uppercase font-bold tracking-wider">Caja 5</span>
+<span class="font-code-sm text-headline-sm font-bold text-on-surface my-0.5">85</span>
+<span class="font-code-sm text-[10px] text-emerald-streak font-semibold">Retenido</span>
+</button>
+</div>
+</section>
+<!-- Tarjeta Flip 3D Interactiva -->
+<section class="relative bg-surface-card rounded-2xl p-space-lg shadow-sm min-h-[410px] flex flex-col justify-between overflow-hidden group">
+<!-- Indicador de Paginación y Nivel de Caja -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm">
+              Historia de España • EBAU Bloque 3
+            </span>
+<span class="px-2 py-0.5 rounded-md bg-tertiary-fixed text-on-tertiary-fixed font-code-sm text-[11px] font-bold">
+              Caja 2
+            </span>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" id="btn-tts" title="Escuchar síntesis de voz" type="button">
+<span class="material-symbols-outlined text-[20px]">volume_up</span>
+</button>
+<span class="font-code-sm text-code-sm text-on-surface-variant">Ficha 8 de 25</span>
+</div>
+</div>
+<!-- Cuerpo de Tarjeta: Anverso / Reverso Conmutable -->
+<div class="my-auto py-space-md cursor-pointer select-none" id="card-content-wrapper" onclick="toggleCardFlip()">
+<!-- Front State -->
+<div class="space-y-4" id="card-front">
+<div class="inline-flex items-center gap-1.5 text-secondary font-label-md text-label-md font-bold uppercase tracking-wider">
+<span class="material-symbols-outlined text-[16px]">help</span>
+              Pregunta Clave
+            </div>
+<p class="font-headline-md text-headline-md text-on-surface leading-snug">
+              ¿Cuáles fueron los dos objetivos fundamentales del <span class="text-secondary underline decoration-secondary/30 decoration-2 underline-offset-4">Tratado de Fontainebleau (1807)</span> y qué consecuencia directa e inmediata provocó en el territorio peninsular español?
+            </p>
+<div class="flex items-center gap-2 text-on-surface-variant font-label-sm text-label-sm pt-2">
+<span class="material-symbols-outlined text-[16px] text-tertiary-container">touch_app</span>
+<span>Haz clic o pulsa <kbd class="px-1.5 py-0.5 rounded bg-surface-container font-code-sm text-[11px]">Espacio</kbd> para revelar la respuesta</span>
+</div>
+</div>
+<!-- Back State (Oculto dinámicamente) -->
+<div class="hidden space-y-4" id="card-back">
+<div class="inline-flex items-center gap-1.5 text-emerald-streak font-label-md text-label-md font-bold uppercase tracking-wider">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+              Respuesta Desglosada &amp; Fuentes
+            </div>
+<div class="rounded-xl bg-surface-container-low p-space-base space-y-2">
+<p class="font-body-lg text-body-lg text-on-surface font-medium leading-relaxed">
+                1. Permitir el paso pacífico de las tropas napoleónicas para la invasión y reparto conjunto de Portugal.<br/>
+                2. Otorgar a Godoy un principado personal (los Algarves).
+              </p>
+<div class="pt-2">
+<span class="font-label-sm text-[11px] uppercase tracking-wider text-secondary font-bold">Consecuencia Directa:</span>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                  Ocupación de facto de plazas militares estratégicas españolas (Barcelona, Pamplona), generando un profundo descontento popular que desembocó en el <strong class="text-on-surface">Motín de Aranjuez</strong> y el inicio de la Guerra de la Independencia.
+                </p>
+</div>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-code-sm text-[11px]">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">menu_book</span>
+                Fuente: Cuaderno Tema 3, Pág. 4 (Apuntes de Clase)
+              </span>
+<span class="text-emerald-streak font-semibold">Tasa de acierto del mazo: 84%</span>
+</div>
+</div>
+</div>
+<!-- Botonera de Autoevaluación SM-2 -->
+<div class="pt-space-sm border-none">
+<div class="grid grid-cols-3 gap-space-sm">
+<button class="flex flex-col items-center justify-center py-2.5 px-3 rounded-xl bg-error-container/50 hover:bg-error-container text-on-error-container transition-all group" onclick="rateCard(1)" type="button">
+<span class="font-label-md text-label-md font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-error">close</span>
+                1. Difícil
+              </span>
+<span class="font-code-sm text-[10px] text-error/80 mt-0.5">Repetir hoy (Caja 1)</span>
+</button>
+<button class="flex flex-col items-center justify-center py-2.5 px-3 rounded-xl bg-tertiary-fixed hover:bg-tertiary-fixed-dim text-on-tertiary-fixed transition-all group" onclick="rateCard(2)" type="button">
+<span class="font-label-md text-label-md font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-tertiary-container">schedule</span>
+                2. Regular
+              </span>
+<span class="font-code-sm text-[10px] text-on-tertiary-fixed-variant mt-0.5">Repasar en 3 días (Caja 2)</span>
+</button>
+<button class="flex flex-col items-center justify-center py-2.5 px-3 rounded-xl bg-emerald-streak/15 hover:bg-emerald-streak/25 text-on-surface transition-all group" onclick="rateCard(3)" type="button">
+<span class="font-label-md text-label-md font-bold flex items-center gap-1 text-emerald-streak">
+<span class="material-symbols-outlined text-[16px]">done_all</span>
+                3. Fácil
+              </span>
+<span class="font-code-sm text-[10px] text-emerald-streak font-semibold mt-0.5">Avanzar a Caja 3</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Métricas de Sesión -->
+<section class="grid grid-cols-3 gap-space-sm">
+<div class="bg-surface-card rounded-xl p-space-base shadow-sm flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[20px] text-secondary">checklist</span>
+</div>
+<div class="min-w-0">
+<p class="font-label-sm text-label-sm text-on-surface-variant truncate">Progreso Sesión</p>
+<p class="font-code-sm text-headline-sm font-bold text-on-surface">8 <span class="text-body-sm font-normal text-on-surface-variant">/ 25</span></p>
+</div>
+</div>
+<div class="bg-surface-card rounded-xl p-space-base shadow-sm flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-emerald-streak/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[20px] text-emerald-streak">trending_up</span>
+</div>
+<div class="min-w-0">
+<p class="font-label-sm text-label-sm text-on-surface-variant truncate">Racha de Aciertos</p>
+<p class="font-code-sm text-headline-sm font-bold text-emerald-streak">92%</p>
+</div>
+</div>
+<div class="bg-surface-card rounded-xl p-space-base shadow-sm flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-tertiary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[20px] text-tertiary-container">pace</span>
+</div>
+<div class="min-w-0">
+<p class="font-label-sm text-label-sm text-on-surface-variant truncate">Tiempo Invertido</p>
+<p class="font-code-sm text-headline-sm font-bold text-on-surface">14 <span class="text-body-sm font-normal text-on-surface-variant">min</span></p>
+</div>
+</div>
+</section>
+</div>
+<!-- Columna Derecha: Pomodoro Zen & Entorno (5 Cols) -->
+<div class="lg:col-span-5 flex flex-col gap-space-base">
+<!-- Reloj Pomodoro Zen Circular -->
+<section class="bg-surface-card rounded-2xl p-space-lg shadow-sm flex flex-col items-center text-center relative overflow-hidden">
+<!-- Modos Pomodoro -->
+<div class="flex items-center justify-center gap-1 p-1 bg-surface-container-low rounded-xl mb-space-base w-full max-w-xs">
+<button class="flex-1 py-1.5 px-2 rounded-lg font-label-sm text-label-sm bg-surface-card text-on-surface font-semibold shadow-sm transition-all" id="mode-focus" onclick="setTimerMode('focus')">
+            Enfoque
+          </button>
+<button class="flex-1 py-1.5 px-2 rounded-lg font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-all" id="mode-short" onclick="setTimerMode('short')">
+            Corto (5m)
+          </button>
+<button class="flex-1 py-1.5 px-2 rounded-lg font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-all" id="mode-long" onclick="setTimerMode('long')">
+            Largo (15m)
+          </button>
+</div>
+<!-- Reloj Circular SVG con Temporizador -->
+<div class="relative w-52 h-52 flex items-center justify-center my-2">
+<svg class="w-full h-full -rotate-90" viewbox="0 0 100 100">
+<!-- Background circle -->
+<circle class="text-surface-container" cx="50" cy="50" fill="transparent" r="44" stroke="currentColor" stroke-width="5"></circle>
+<!-- Progress circle: circumference ≈ 276.46 -->
+<circle class="text-secondary transition-all duration-1000" cx="50" cy="50" fill="transparent" id="timer-progress-ring" r="44" stroke="currentColor" stroke-dasharray="276.46" stroke-dashoffset="69.1" stroke-linecap="round" stroke-width="6"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-code-sm text-display font-bold tracking-tight text-on-surface" id="timer-display">18:42</span>
+<span class="font-label-sm text-label-sm text-secondary font-semibold uppercase tracking-wider mt-1">Concentración</span>
+</div>
+</div>
+<!-- Controles Pomodoro -->
+<div class="flex items-center gap-space-sm mt-space-md mb-2">
+<button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-primary-container text-surface-card font-label-md text-label-md hover:bg-primary transition-all shadow-sm" id="btn-timer-toggle" onclick="toggleTimer()">
+<span class="material-symbols-outlined text-[20px]" id="timer-btn-icon">pause</span>
+<span id="timer-btn-label">Pausar (Espacio)</span>
+</button>
+<button class="p-2.5 rounded-xl bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors" onclick="resetTimer()" title="Reiniciar fase actual">
+<span class="material-symbols-outlined text-[20px]">replay</span>
+</button>
+<button class="p-2.5 rounded-xl bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors" onclick="skipPhase()" title="Saltar de fase">
+<span class="material-symbols-outlined text-[20px]">skip_next</span>
+</button>
+</div>
+<!-- Meta de Estudio Diario -->
+<div class="w-full mt-space-base pt-space-base border-none flex flex-col gap-2">
+<div class="flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm">
+<span>Sesión 3 de 4 • Enfoque Leitner</span>
+<span class="font-code-sm text-on-surface font-bold">1h 15m / 2h</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-secondary rounded-full transition-all duration-500" style="width: 62.5%;"></div>
+</div>
+</div>
+</section>
+<!-- Mezclador de Sonidos Zen de Fondo -->
+<section class="bg-surface-card rounded-2xl p-space-base shadow-sm space-y-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[19px] text-tertiary-container">graphic_eq</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Sonidos Zen &amp; Ruido Blanco</span>
+</div>
+<span class="inline-flex items-center gap-1 font-code-sm text-[11px] text-emerald-streak bg-emerald-streak/10 px-2 py-0.5 rounded-full font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-streak"></span>
+            3 Activos
+          </span>
+</div>
+<div class="space-y-3 pt-1">
+<!-- Canal Lluvia -->
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[17px] text-secondary">rainy</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-sm text-label-sm text-on-surface font-medium truncate">Lluvia suave en ventana</span>
+<span class="font-code-sm text-[11px] text-on-surface-variant font-semibold">60%</span>
+</div>
+<input class="w-full h-1.5 bg-surface-container rounded-lg appearance-none cursor-pointer accent-secondary" max="100" min="0" type="range" value="60"/>
+</div>
+</div>
+<!-- Canal Cafetería -->
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-tertiary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[17px] text-tertiary-container">coffee</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-sm text-label-sm text-on-surface font-medium truncate">Cafetería tranquila</span>
+<span class="font-code-sm text-[11px] text-on-surface-variant font-semibold">25%</span>
+</div>
+<input class="w-full h-1.5 bg-surface-container rounded-lg appearance-none cursor-pointer accent-tertiary-container" max="100" min="0" type="range" value="25"/>
+</div>
+</div>
+<!-- Canal Biblioteca -->
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-secondary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[17px] text-secondary">local_library</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-sm text-label-sm text-on-surface font-medium truncate">Biblioteca de Cambridge</span>
+<span class="font-code-sm text-[11px] text-on-surface-variant font-semibold">40%</span>
+</div>
+<input class="w-full h-1.5 bg-surface-container rounded-lg appearance-none cursor-pointer accent-secondary" max="100" min="0" type="range" value="40"/>
+</div>
+</div>
+<!-- Canal Olas / Ruido Blanco -->
+<div class="flex items-center gap-3 opacity-60 hover:opacity-100 transition-opacity">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[17px] text-on-surface-variant">waves</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-sm text-label-sm text-on-surface font-medium truncate">Olas marinas &amp; Ruido blanco</span>
+<span class="font-code-sm text-[11px] text-on-surface-variant font-semibold">Silenciado</span>
+</div>
+<input class="w-full h-1.5 bg-surface-container rounded-lg appearance-none cursor-pointer accent-secondary" max="100" min="0" type="range" value="0"/>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-2">
+<button class="inline-flex items-center gap-1 font-label-sm text-label-sm text-secondary hover:underline" type="button">
+<span class="material-symbols-outlined text-[15px]">fullscreen</span>
+            Modo Zen Completo (F11)
+          </button>
+<button class="inline-flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface" type="button">
+<span class="material-symbols-outlined text-[15px]">picture_in_picture_alt</span>
+            Mini PiP
+          </button>
+</div>
+</section>
+<!-- Reto & Técnica Feynman Card -->
+<section class="bg-gradient-to-br from-surface-card via-surface-container-low to-surface-card rounded-2xl p-space-base shadow-sm space-y-3">
+<div class="flex items-start gap-3">
+<div class="p-2 rounded-xl bg-tertiary-fixed text-tertiary-container shrink-0">
+<span class="material-symbols-outlined text-[20px]">emoji_events</span>
+</div>
+<div class="min-w-0">
+<h2 class="font-headline-sm text-body-md font-bold text-on-surface">Reto del Pomodoro Actual</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+              Repasar al menos <strong class="text-on-surface">20 flashcards</strong> antes del descanso largo para consolidar el bloque.
+            </p>
+</div>
+</div>
+<div class="rounded-xl bg-surface-card p-space-sm shadow-sm flex items-start gap-2">
+<span class="material-symbols-outlined text-[16px] text-indigo-ai shrink-0 mt-0.5">psychology</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+<strong class="text-on-surface">Técnica de Intercalado:</strong> Cambia de tema entre sesiones para activar la memoria asociativa y evitar el estancamiento.
+          </p>
+</div>
+</section>
+</div>
+</div>
+</div>
+<script>
+  // Control interactivo de Flashcard (Flip front/back)
+  let isFlipped = false;
+  function toggleCardFlip() {
+    isFlipped = !isFlipped;
+    const frontEl = document.getElementById('card-front');
+    const backEl = document.getElementById('card-back');
+    if (isFlipped) {
+      frontEl.classList.add('hidden');
+      backEl.classList.remove('hidden');
+    } else {
+      frontEl.classList.remove('hidden');
+      backEl.classList.add('hidden');
+    }
+  }
+
+  // Autoevaluación Leitner
+  function rateCard(score) {
+    // Animación de feedback y restablecer cara frontal
+    const wrapper = document.getElementById('card-content-wrapper');
+    wrapper.classList.add('scale-95', 'opacity-50');
+    setTimeout(() => {
+      wrapper.classList.remove('scale-95', 'opacity-50');
+      if (isFlipped) {
+        toggleCardFlip();
+      }
+    }, 200);
+  }
+
+  // Pomodoro Zen Timer Microinteracción
+  let timerMinutes = 18;
+  let timerSeconds = 42;
+  let timerRunning = true;
+  let timerInterval = null;
+
+  const timerDisplay = document.getElementById('timer-display');
+  const timerBtnIcon = document.getElementById('timer-btn-icon');
+  const timerBtnLabel = document.getElementById('timer-btn-label');
+  const ring = document.getElementById('timer-progress-ring');
+  const totalSecondsInitial = 25 * 60;
+
+  function updateDisplay() {
+    const minStr = String(timerMinutes).padStart(2, '0');
+    const secStr = String(timerSeconds).padStart(2, '0');
+    timerDisplay.textContent = `${minStr}:${secStr}`;
+    
+    // Cálculo offset SVG
+    const currentTotalSec = timerMinutes * 60 + timerSeconds;
+    const progress = (totalSecondsInitial - currentTotalSec) / totalSecondsInitial;
+    const circumference = 276.46;
+    const offset = circumference - (circumference * progress);
+    ring.style.strokeDashoffset = offset;
+  }
+
+  function toggleTimer() {
+    timerRunning = !timerRunning;
+    if (timerRunning) {
+      timerBtnIcon.textContent = 'pause';
+      timerBtnLabel.textContent = 'Pausar (Espacio)';
+      startInterval();
+    } else {
+      timerBtnIcon.textContent = 'play_arrow';
+      timerBtnLabel.textContent = 'Reanudar';
+      clearInterval(timerInterval);
+    }
+  }
+
+  function startInterval() {
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      if (timerSeconds > 0) {
+        timerSeconds--;
+      } else if (timerMinutes > 0) {
+        timerMinutes--;
+        timerSeconds = 59;
+      } else {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        timerBtnIcon.textContent = 'play_arrow';
+        timerBtnLabel.textContent = 'Iniciar';
+      }
+      updateDisplay();
+    }, 1000);
+  }
+
+  function resetTimer() {
+    timerMinutes = 25;
+    timerSeconds = 0;
+    updateDisplay();
+  }
+
+  function setTimerMode(mode) {
+    document.getElementById('mode-focus').className = 'flex-1 py-1.5 px-2 rounded-lg font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-all';
+    document.getElementById('mode-short').className = 'flex-1 py-1.5 px-2 rounded-lg font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-all';
+    document.getElementById('mode-long').className = 'flex-1 py-1.5 px-2 rounded-lg font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-all';
+    
+    const activeClass = 'flex-1 py-1.5 px-2 rounded-lg font-label-sm text-label-sm bg-surface-card text-on-surface font-semibold shadow-sm transition-all';
+    if (mode === 'focus') {
+      document.getElementById('mode-focus').className = activeClass;
+      timerMinutes = 25;
+    } else if (mode === 'short') {
+      document.getElementById('mode-short').className = activeClass;
+      timerMinutes = 5;
+    } else {
+      document.getElementById('mode-long').className = activeClass;
+      timerMinutes = 15;
+    }
+    timerSeconds = 0;
+    updateDisplay();
+  }
+
+  function skipPhase() {
+    setTimerMode('short');
+  }
+
+  // Atajo de teclado: Barra espaciadora para voltear o pausar
+  window.addEventListener('keydown', (e) => {
+    if (e.code === 'Space' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'SELECT') {
+      e.preventDefault();
+      toggleCardFlip();
+    }
+    if (e.key === '1') rateCard(1);
+    if (e.key === '2') rateCard(2);
+    if (e.key === '3') rateCard(3);
+  });
+
+  // Inicio de reloj
+  startInterval();
+</script></div></main></div></body></html>

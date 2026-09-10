@@ -1,56 +1,373 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Progreso & EBAU - Móvil</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>body { padding-bottom: 84px; }</style>
-</head>
-<body class="bg-[#f8f9ff] text-slate-800 font-['Plus_Jakarta_Sans',sans-serif] antialiased min-h-screen">
-  <header class="p-4 bg-white sticky top-0 z-20 border-b border-slate-100 flex items-center justify-between">
-    <div>
-      <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600">2º Bachillerato • Ciencias</span>
-      <h1 class="text-lg font-black text-slate-900">Calificaciones & EBAU</h1>
-    </div>
-    <div class="text-right">
-      <div class="text-base font-black font-mono text-emerald-600">9.42</div>
-      <div class="text-[10px] text-slate-400">Media T2</div>
-    </div>
-  </header>
 
-  <main class="p-4 space-y-4">
-    <!-- Simulador EBAU 14 Puntos -->
-    <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-5 rounded-2xl shadow-sm space-y-3">
-      <div class="flex justify-between items-center text-xs">
-        <span class="text-slate-300 font-bold uppercase">Simulador Selectividad</span>
-        <span class="bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded text-[10px] font-bold border border-emerald-500/30">Corte Superado</span>
-      </div>
-      <div class="text-3xl font-black font-mono">13.63 <span class="text-xs font-normal text-slate-400">/ 14.00</span></div>
-      <p class="text-xs text-slate-300">Grado Objetivo: <strong>Medicina (Corte: 13.150)</strong></p>
-      
-      <div class="space-y-2 pt-2 border-t border-slate-700 text-xs">
-        <div>
-          <div class="flex justify-between text-[11px]"><span>Fase General (9.35)</span><span class="font-mono">5.61 pts</span></div>
-          <input type="range" min="5" max="10" step="0.1" value="9.35" class="w-full accent-blue-500">
-        </div>
-        <div>
-          <div class="flex justify-between text-[11px]"><span>Física II (Pondera 0.2)</span><span class="font-mono">+1.90 pts</span></div>
-          <input type="range" min="5" max="10" step="0.1" value="9.50" class="w-full accent-purple-500">
-        </div>
-      </div>
-    </div>
-  </main>
+<html class="h-full" lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;width:100%;min-height:100%;}body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-primary-container": "#8590a6", "secondary-fixed": "#e1e0ff", "on-secondary-fixed-variant": "#2f2ebe", "secondary-fixed-dim": "#c0c1ff", "canvas-bg": "#F8FAFC", "on-primary-fixed-variant": "#3c475a", "surface-container-high": "#dce9ff", "on-primary": "#ffffff", "error": "#ba1a1a", "on-background": "#0b1c30", "on-secondary": "#ffffff", "surface-card": "#FFFFFF", "emerald-streak": "#10B981", "coral-urgent": "#F43F5E", "surface-container-low": "#eff4ff", "on-primary-fixed": "#111c2d", "surface-container-lowest": "#ffffff", "on-surface": "#0b1c30", "primary-container": "#1e293b", "primary-fixed": "#d8e3fb", "on-error-container": "#93000a", "surface-container": "#e5eeff", "primary": "#091426", "on-secondary-container": "#fffbff", "surface-sidebar": "#0F172A", "border-subtle": "#E2E8F0", "surface-variant": "#d3e4fe", "on-error": "#ffffff", "on-tertiary": "#ffffff", "error-container": "#ffdad6", "secondary": "#4648d4", "secondary-container": "#6063ee", "inverse-surface": "#213145", "on-secondary-fixed": "#07006c", "inverse-on-surface": "#eaf1ff", "outline": "#75777d", "surface-bright": "#f8f9ff", "inverse-primary": "#bcc7de", "primary-fixed-dim": "#bcc7de", "surface-dim": "#cbdbf5", "surface-tint": "#545f73", "on-surface-variant": "#45474c", "tertiary": "#201100", "outline-variant": "#c5c6cd", "on-tertiary-fixed": "#2a1700", "on-tertiary-container": "#c88000", "tertiary-container": "#3c2300", "on-tertiary-fixed-variant": "#653e00", "indigo-ai": "#8B5CF6", "tertiary-fixed": "#ffddb8", "tertiary-fixed-dim": "#ffb95f", "surface-container-highest": "#d3e4fe", "background": "#f8f9ff", "surface": "#f8f9ff", "border-dark": "#1E293B" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-xl": "2rem", "space-2xs": "0.125rem", "sidebar-collapsed": "68px", "space-md": "0.75rem", "space-base": "1rem", "max-content-width": "1440px", "space-xs": "0.25rem", "space-2xl": "3rem", "space-lg": "1.5rem", "space-sm": "0.5rem", "sidebar-width": "240px" }, "fontFamily": { "code-sm": ["JetBrains Mono"], "body-md": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "headline-lg": ["Plus Jakarta Sans"], "display": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"] }, "fontSize": { "code-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" }], "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "700" }], "display": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "headline-md": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }] } } } };</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface text-on-surface font-body-md text-body-md antialiased min-h-screen flex flex-col selection:bg-secondary-fixed selection:text-on-secondary-fixed"><header class="fixed top-0 inset-x-0 z-50 pt-safe bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(15,23,42,0.04)]"><div class="h-16 px-space-base flex items-center justify-between gap-space-sm max-w-[390px] mx-auto"><div class="flex items-center gap-space-xs min-w-0"><img alt="Brand logo. - Primary color: #1e293b - Font: plusJakartaSans - Mode: light - Roundness: rounded-md" class="h-8 w-auto object-contain flex-shrink-0" src="https://lh3.googleusercontent.com/aida/AEtjO1Xt0QI0bujpW_dAX6H7ljtxJlCAeurRG7yg3WmK34Y3337QOpaekcq2TvDmfsT6QOLx6yPvqFQ6lMR0ONV4XN3pCbbC0Moc44u3wWWmskWgCAED-65JhSEUE7be9aTm2W_LEGn-W7Tt7oCW9YNICLJJsA8a5Qr889E1KJLpp4CM9cCBFCL7ut8087eXUNV1e4V_aGdKGv3zYQM9qYoEicpJskkjCizFOezyaJjzJiwKpuwovKwFQR4UTIE"/><div class="flex flex-col min-w-0"><span class="font-headline-sm text-headline-sm text-primary tracking-tight truncate leading-none">Agenda</span><span class="font-label-sm text-label-sm text-on-surface-variant truncate uppercase tracking-wider">Mi Día</span></div></div><div class="flex items-center gap-space-xs flex-shrink-0"><div class="inline-flex items-center gap-space-2xs bg-surface-container px-space-xs py-space-2xs rounded-full shadow-[0_1px_4px_rgba(15,23,42,0.03)]"><span class="w-1.5 h-1.5 rounded-full bg-emerald-streak"></span><span class="font-code-sm text-code-sm text-on-surface font-medium hidden xs:inline">100% Offline</span><span class="font-code-sm text-code-sm text-on-surface font-medium xs:hidden">Offline</span></div><div class="inline-flex items-center gap-space-2xs bg-surface-container-low px-space-xs py-space-2xs rounded-full"><span class="material-symbols-outlined text-[16px] text-tertiary-fixed-dim leading-none">local_fire_department</span><span class="font-code-sm text-code-sm text-on-surface font-semibold">14</span></div><div class="p-0.5 rounded-full bg-surface-container-high"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1W4HtfLKFvhZVOn8lq_RjPqpGDGf01l7uvEiv2NXqf6436Nl-aHuR6CAtML8AINYW1OVdencKpooat0WT2GlpFG_-ej9iEW_PBAzEh930WYkrjjjAF3YAH1y4mhhDO4Nq1mBSa9y3bEaooe4_tDk3xyDk7bovvFdweQeRBRERIg_Z3lOeN0tnlp_OWtLXv0n0Ezx50Wx7aq8YZE5jHzP8kAeve1UlCF2mEW5PrOOS5oSFbTZjs9zPtCi5A"/></div></div></div></header><main class="flex-1 flex flex-col relative w-full max-w-[390px] mx-auto px-space-base pt-16 pb-28 bg-surface"><div class="flex flex-col w-full gap-space-base">
+<!-- Resumen Académico & Selector de Trimestre -->
+<section class="flex flex-col gap-space-sm">
+<!-- Trimestre Pills -->
+<div class="flex items-center justify-between gap-space-xs p-space-2xs bg-surface-container-low rounded-xl">
+<button class="flex-1 py-1.5 px-space-xs rounded-lg text-center transition-all bg-transparent text-on-surface-variant hover:text-on-surface" type="button">
+<span class="block font-label-sm text-label-sm leading-none opacity-80">1º Trimestre</span>
+<span class="font-code-sm text-code-sm font-semibold text-on-surface">9.28</span>
+</button>
+<button class="flex-1 py-1.5 px-space-xs rounded-lg text-center transition-all bg-surface-card text-on-surface shadow-sm relative" type="button">
+<span class="absolute -top-1 right-2 flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-streak opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-streak"></span>
+</span>
+<span class="block font-label-sm text-label-sm leading-none text-secondary font-bold">2º Trimestre</span>
+<span class="font-code-sm text-code-sm font-bold text-primary">9.42</span>
+</button>
+<button class="flex-1 py-1.5 px-space-xs rounded-lg text-center transition-all bg-transparent text-on-surface-variant opacity-60" type="button">
+<span class="block font-label-sm text-label-sm leading-none">3º Trimestre</span>
+<span class="font-code-sm text-code-sm font-medium">--</span>
+</button>
+</div>
+<!-- Media Global Card -->
+<div class="relative overflow-hidden bg-surface-card rounded-xl p-space-base shadow-sm">
+<div class="absolute -right-6 -bottom-6 w-32 h-32 bg-secondary/5 rounded-full blur-2xl pointer-events-none"></div>
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider block mb-1">Media Bachillerato Actual</span>
+<div class="flex items-baseline gap-1.5">
+<span class="font-display text-display text-primary tracking-tight font-bold">9.42</span>
+<span class="font-headline-sm text-headline-sm text-on-surface-variant">/ 10</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="inline-flex items-center gap-1 bg-emerald-streak/10 text-emerald-streak px-2 py-0.5 rounded-full font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+            +0.14 vs T1
+          </span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1">Honores Proyectados</span>
+</div>
+</div>
+<!-- Quick LOMLOE Stats Bar -->
+<div class="mt-space-md pt-space-sm border-t-0 flex items-center justify-between bg-surface-container-low rounded-lg px-space-sm py-2">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary text-[18px]">verified</span>
+<span class="font-label-sm text-label-sm text-on-surface">Criterios LOMLOE:</span>
+<span class="font-code-sm text-code-sm font-semibold text-primary">34 / 36</span>
+</div>
+<span class="font-code-sm text-code-sm text-emerald-streak font-medium">94.4% Superados</span>
+</div>
+</div>
+</section>
+<!-- Simulador EBAU Widget (Destacado) -->
+<section class="flex flex-col bg-surface-card rounded-xl p-space-base shadow-sm gap-space-md relative overflow-hidden">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<div class="w-7 h-7 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[18px]">calculate</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-primary leading-tight">Simulador EBAU</h2>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Admisión universitaria s/ 14.00</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-primary font-code-sm text-code-sm font-semibold">
+        60% Bach + 40% EvAU
+      </span>
+</div>
+<!-- Projected Score Hero -->
+<div class="bg-primary text-on-primary rounded-xl p-space-md flex flex-col gap-space-sm shadow-md">
+<div class="flex items-center justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-on-primary-container uppercase tracking-wider block">Nota Proyectada de Admisión</span>
+<div class="flex items-baseline gap-1.5">
+<span class="font-display text-display font-bold text-on-primary tracking-tight" id="ebau-total">13.63</span>
+<span class="font-body-md text-body-md text-on-primary-container">/ 14.000</span>
+</div>
+</div>
+<div class="text-right">
+<div class="inline-flex items-center gap-1 bg-emerald-streak text-on-primary px-2.5 py-1 rounded-full font-label-sm text-label-sm font-semibold shadow-sm">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+            Admitida
+          </div>
+<span class="block font-code-sm text-code-sm text-on-primary-container mt-1">+0.480 colchón</span>
+</div>
+</div>
+<!-- Target Goal Tracker -->
+<div class="bg-primary-container/80 rounded-lg p-2.5 flex items-center justify-between gap-space-xs">
+<div class="min-w-0">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px] text-tertiary-fixed-dim">favorite</span>
+<span class="font-label-md text-label-md text-on-primary truncate font-medium">Grado en Medicina (UCM)</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-primary-container">Corte 2024: 13.150</span>
+</div>
+<div class="flex-shrink-0 text-right">
+<span class="font-code-sm text-code-sm text-emerald-streak font-semibold">Supera con holgura</span>
+</div>
+</div>
+</div>
+<!-- Sliders Interactivos Compactos -->
+<div class="flex flex-col gap-space-sm bg-surface-container-low rounded-xl p-space-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-semibold uppercase tracking-wider">Ajuste de Expectativas EvAU</span>
+<!-- Slider 1: Fase Obligatoria -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Fase General (4 materias)</span>
+<span class="font-code-sm text-code-sm font-bold text-secondary" id="val-general">9.35</span>
+</div>
+<input class="w-full h-1.5 bg-surface-container-high rounded-lg appearance-none cursor-pointer accent-secondary" id="slider-general" max="10.00" min="5.00" step="0.05" type="range" value="9.35"/>
+</div>
+<!-- Slider 2: Química -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Química II</span>
+<span class="font-label-sm text-label-sm px-1.5 py-0.2 rounded bg-surface-container-high text-on-surface-variant font-semibold">×0.2</span>
+</div>
+<span class="font-code-sm text-code-sm font-bold text-secondary" id="val-quimica">9.50</span>
+</div>
+<input class="w-full h-1.5 bg-surface-container-high rounded-lg appearance-none cursor-pointer accent-secondary" id="slider-quimica" max="10.00" min="5.00" step="0.05" type="range" value="9.50"/>
+</div>
+<!-- Slider 3: Física -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Física II</span>
+<span class="font-label-sm text-label-sm px-1.5 py-0.2 rounded bg-surface-container-high text-on-surface-variant font-semibold">×0.2</span>
+</div>
+<span class="font-code-sm text-code-sm font-bold text-secondary" id="val-fisica">9.50</span>
+</div>
+<input class="w-full h-1.5 bg-surface-container-high rounded-lg appearance-none cursor-pointer accent-secondary" id="slider-fisica" max="10.00" min="5.00" step="0.05" type="range" value="9.50"/>
+</div>
+</div>
+<!-- Comparador Universitario Mini-Pills -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Otras opciones guardadas:</span>
+<button class="font-label-sm text-label-sm text-secondary font-semibold hover:underline" type="button">Ver catálogo</button>
+</div>
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-lowest shadow-sm">
+<div class="flex items-center gap-2 min-w-0">
+<span class="w-2 h-2 rounded-full bg-emerald-streak flex-shrink-0"></span>
+<div class="min-w-0">
+<span class="font-body-sm text-body-sm text-primary font-medium truncate block">Biotecnología (UPM)</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Corte: 12.890</span>
+</div>
+</div>
+<span class="font-code-sm text-code-sm font-semibold text-emerald-streak bg-emerald-streak/10 px-2 py-0.5 rounded-full flex-shrink-0">Admitida (+0.74)</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-lowest shadow-sm">
+<div class="flex items-center gap-2 min-w-0">
+<span class="w-2 h-2 rounded-full bg-emerald-streak flex-shrink-0"></span>
+<div class="min-w-0">
+<span class="font-body-sm text-body-sm text-primary font-medium truncate block">Biomedicina (UAM)</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Corte: 13.380</span>
+</div>
+</div>
+<span class="font-code-sm text-code-sm font-semibold text-emerald-streak bg-emerald-streak/10 px-2 py-0.5 rounded-full flex-shrink-0">Admitida (+0.25)</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Materias Principales con Criterios LOMLOE -->
+<section class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between px-space-xs">
+<h3 class="font-headline-sm text-headline-sm text-primary">Materias LOMLOE</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Orden: Mayor Ponderación</span>
+</div>
+<!-- Tarjeta 1: Matemáticas II -->
+<div class="bg-surface-card rounded-xl p-space-base shadow-sm flex flex-col gap-space-sm transition-all hover:shadow-md">
+<div class="flex items-start justify-between gap-space-xs">
+<div class="flex items-center gap-2">
+<div class="w-9 h-9 rounded-lg bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">functions</span>
+</div>
+<div>
+<div class="flex items-center gap-1.5">
+<h4 class="font-headline-sm text-headline-sm text-primary">Matemáticas II</h4>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-code-sm font-bold bg-secondary/10 text-secondary">Troncal</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Prof. D. Martín · 4h/sem</span>
+</div>
+</div>
+<div class="text-right">
+<span class="font-headline-md text-headline-md font-bold text-primary">9.60</span>
+<span class="font-label-sm text-label-sm text-emerald-streak block font-medium">Excelente</span>
+</div>
+</div>
+<!-- Barra de Criterios Superados -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>Competencias Específicas Evaluadas</span>
+<span class="font-code-sm text-code-sm font-semibold text-primary">8 / 8 (100%)</span>
+</div>
+<div class="w-full h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 100%"></div>
+</div>
+</div>
+<!-- Interactive Helper Button -->
+<button class="w-full py-2 px-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container flex items-center justify-between text-on-surface transition-colors" type="button">
+<div class="flex items-center gap-1.5 text-secondary">
+<span class="material-symbols-outlined text-[18px]">help_outline</span>
+<span class="font-label-md text-label-md font-semibold">¿Qué necesito en el examen final?</span>
+</div>
+<span class="font-code-sm text-code-sm text-on-surface-variant">Necesitas &gt; 7.10 para Matrícula</span>
+</button>
+</div>
+<!-- Tarjeta 2: Química II -->
+<div class="bg-surface-card rounded-xl p-space-base shadow-sm flex flex-col gap-space-sm transition-all hover:shadow-md">
+<div class="flex items-start justify-between gap-space-xs">
+<div class="flex items-center gap-2">
+<div class="w-9 h-9 rounded-lg bg-emerald-streak/15 text-emerald-streak flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">science</span>
+</div>
+<div>
+<div class="flex items-center gap-1.5">
+<h4 class="font-headline-sm text-headline-sm text-primary">Química II</h4>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-code-sm font-bold bg-emerald-streak/15 text-emerald-streak">Pondera 0.2</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Profa. C. Vega · Laboratorio</span>
+</div>
+</div>
+<div class="text-right">
+<span class="font-headline-md text-headline-md font-bold text-primary">9.50</span>
+<span class="font-label-sm text-label-sm text-emerald-streak block font-medium">Sobresaliente</span>
+</div>
+</div>
+<!-- Desglose Criterios Ponderados -->
+<div class="grid grid-cols-3 gap-2 bg-surface-container-low p-2.5 rounded-lg">
+<div class="flex flex-col text-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Exámenes (70%)</span>
+<span class="font-code-sm text-code-sm font-bold text-primary mt-0.5">9.40</span>
+</div>
+<div class="flex flex-col text-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Prácticas (20%)</span>
+<span class="font-code-sm text-code-sm font-bold text-primary mt-0.5">9.80</span>
+</div>
+<div class="flex flex-col text-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Actitud (10%)</span>
+<span class="font-code-sm text-code-sm font-bold text-emerald-streak mt-0.5">10.0</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px] text-emerald-streak">task_alt</span>
+          Última entrega: Equilibrio Químico (10.0)
+        </span>
+<span class="font-code-sm text-code-sm">Hace 2d</span>
+</div>
+</div>
+<!-- Tarjeta 3: Física II -->
+<div class="bg-surface-card rounded-xl p-space-base shadow-sm flex flex-col gap-space-sm transition-all hover:shadow-md">
+<div class="flex items-start justify-between gap-space-xs">
+<div class="flex items-center gap-2">
+<div class="w-9 h-9 rounded-lg bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">electric_bolt</span>
+</div>
+<div>
+<div class="flex items-center gap-1.5">
+<h4 class="font-headline-sm text-headline-sm text-primary">Física II</h4>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-code-sm font-bold bg-tertiary-fixed text-on-tertiary-fixed-variant">Pondera 0.2</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Prof. A. Robles · Electromagnetismo</span>
+</div>
+</div>
+<div class="text-right">
+<span class="font-headline-md text-headline-md font-bold text-primary">9.15</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Notable Alto</span>
+</div>
+</div>
+<!-- Alerta de Ponderación Crítica -->
+<div class="p-2.5 rounded-lg bg-surface-container-low flex items-center gap-2">
+<span class="material-symbols-outlined text-coral-urgent text-[18px] flex-shrink-0">notification_important</span>
+<p class="font-body-sm text-body-sm text-on-surface leading-tight">
+          Ponderación clave para Medicina/Biotecnología. El parcial de Campo Gravitatorio es el 24 de Marzo.
+        </p>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>Progreso Syllabus Bloque II</span>
+<span class="font-code-sm text-code-sm font-semibold text-primary">75%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-fixed-dim rounded-full" style="width: 75%"></div>
+</div>
+</div>
+</div>
+<!-- Tarjeta 4: Historia de España -->
+<div class="bg-surface-card rounded-xl p-space-base shadow-sm flex flex-col gap-space-sm transition-all hover:shadow-md">
+<div class="flex items-start justify-between gap-space-xs">
+<div class="flex items-center gap-2">
+<div class="w-9 h-9 rounded-lg bg-surface-container-high text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">history_edu</span>
+</div>
+<div>
+<div class="flex items-center gap-1.5">
+<h4 class="font-headline-sm text-headline-sm text-primary">Historia de España</h4>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-code-sm font-bold bg-surface-container text-on-surface-variant">Fase General</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Profa. E. Gallego</span>
+</div>
+</div>
+<div class="text-right">
+<span class="font-headline-md text-headline-md font-bold text-primary">9.20</span>
+<span class="font-label-sm text-label-sm text-emerald-streak block font-medium">Sobresaliente</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm bg-surface-container-low px-3 py-2 rounded-lg">
+<span>Estándares de aprendizaje: 14/15</span>
+<span class="font-code-sm text-code-sm font-semibold text-primary">Comentario Texto: 9.5</span>
+</div>
+</div>
+</section>
+<!-- Quick Action Drawer trigger -->
+<div class="p-space-base rounded-xl bg-surface-container-lowest shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[22px]">download_for_offline</span>
+<div>
+<span class="font-label-md text-label-md text-primary font-bold block">Informe Oficial LOMLOE (PDF)</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Firma digital del centro disponible</span>
+</div>
+</div>
+<button class="p-2 rounded-lg bg-surface-container-high text-primary hover:bg-secondary hover:text-on-secondary transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px] leading-none">open_in_new</span>
+</button>
+</div>
+</div>
+<script>
+  (function() {
+    const bachGrade = 9.42; // 60% of 10 points = 5.652
+    const sliderGen = document.getElementById('slider-general');
+    const sliderQuim = document.getElementById('slider-quimica');
+    const sliderFis = document.getElementById('slider-fisica');
 
-  <nav class="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur border-t border-slate-200 z-30 px-4 py-2 flex justify-around items-center text-[10px] font-bold text-slate-500">
-    <a href="index.html" class="flex flex-col items-center gap-1 hover:text-slate-900"><span>🏠</span><span>Mi Día</span></a>
-    <a href="agenda.html" class="flex flex-col items-center gap-1 hover:text-slate-900"><span>📅</span><span>Agenda</span></a>
-    <a href="camera-ocr.html" class="w-12 h-12 -mt-5 rounded-full bg-slate-900 text-white flex items-center justify-center text-xl shadow-lg border-4 border-[#f8f9ff]">+</a>
-    <a href="cuaderno-lm.html" class="flex flex-col items-center gap-1 hover:text-slate-900"><span>🧠</span><span>Estudio</span></a>
-    <a href="progreso-ebau.html" class="flex flex-col items-center gap-1 text-blue-600"><span>📊</span><span>Progreso</span></a>
-  </nav>
-</body>
-</html>
+    const valGen = document.getElementById('val-general');
+    const valQuim = document.getElementById('val-quimica');
+    const valFis = document.getElementById('val-fisica');
+    const ebauTotal = document.getElementById('ebau-total');
+
+    function calculateScore() {
+      const g = parseFloat(sliderGen.value);
+      const q = parseFloat(sliderQuim.value);
+      const f = parseFloat(sliderFis.value);
+
+      valGen.textContent = g.toFixed(2);
+      valQuim.textContent = q.toFixed(2);
+      valFis.textContent = f.toFixed(2);
+
+      // EBAU Formula: 0.6 * NMB + 0.4 * CFG + a*M1 + b*M2
+      const accessScore = (0.6 * bachGrade) + (0.4 * g);
+      const admissionScore = accessScore + (0.2 * q) + (0.2 * f);
+
+      ebauTotal.textContent = admissionScore.toFixed(2);
+    }
+
+    sliderGen.addEventListener('input', calculateScore);
+    sliderQuim.addEventListener('input', calculateScore);
+    sliderFis.addEventListener('input', calculateScore);
+
+    // Initial run
+    calculateScore();
+  })();
+</script></main><nav class="fixed bottom-0 inset-x-0 z-50 pb-safe bg-surface/90 backdrop-blur-xl shadow-[0_-4px_16px_rgba(15,23,42,0.05)]" data-active-classes="text-secondary font-semibold"><div class="h-20 max-w-[390px] mx-auto px-space-xs flex items-center justify-between relative"><a class="flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] py-1 text-on-surface-variant hover:text-on-surface transition-colors" data-path="mi-dia" href="index.html"><span class="material-symbols-outlined text-[24px] leading-none mb-0.5">wb_sunny</span><span class="font-label-sm text-label-sm leading-tight truncate">Mi Día</span></a><a class="flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] py-1 text-on-surface-variant hover:text-on-surface transition-colors" data-path="agenda" href="agenda.html"><span class="material-symbols-outlined text-[24px] leading-none mb-0.5">calendar_month</span><span class="font-label-sm text-label-sm leading-tight truncate">Agenda</span></a><div class="relative -top-5 flex-shrink-0 px-space-xs"><a href="camera-ocr.html" aria-label="Cámara OCR" class="w-14 h-14 rounded-full bg-primary-container text-on-primary flex items-center justify-center shadow-[0_8px_16px_rgba(15,23,42,0.18)] hover:bg-surface-sidebar active:scale-95 transition-all focus:outline-none"><span class="material-symbols-outlined text-[28px] leading-none">photo_camera</span></a></div><a class="flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] py-1 text-on-surface-variant hover:text-on-surface transition-colors" data-path="estudio" href="cuaderno-lm.html"><span class="material-symbols-outlined text-[24px] leading-none mb-0.5">psychology</span><span class="font-label-sm text-label-sm leading-tight truncate">Estudio</span></a><a class="flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] py-1 text-on-surface-variant hover:text-on-surface transition-colors" data-path="progreso" href="progreso-ebau.html"><span class="material-symbols-outlined text-[24px] leading-none mb-0.5">insert_chart</span><span class="font-label-sm text-label-sm leading-tight truncate">Progreso</span></a></div></nav></body></html>

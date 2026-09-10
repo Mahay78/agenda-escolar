@@ -1,59 +1,336 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Agenda: Deberes & Exámenes - Móvil</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    * { touch-action: manipulation; }
-    body { padding-bottom: 84px; }
+
+<html class="h-full" lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;width:100%;min-height:100%;}body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-primary-container": "#8590a6", "secondary-fixed": "#e1e0ff", "on-secondary-fixed-variant": "#2f2ebe", "secondary-fixed-dim": "#c0c1ff", "canvas-bg": "#F8FAFC", "on-primary-fixed-variant": "#3c475a", "surface-container-high": "#dce9ff", "on-primary": "#ffffff", "error": "#ba1a1a", "on-background": "#0b1c30", "on-secondary": "#ffffff", "surface-card": "#FFFFFF", "emerald-streak": "#10B981", "coral-urgent": "#F43F5E", "surface-container-low": "#eff4ff", "on-primary-fixed": "#111c2d", "surface-container-lowest": "#ffffff", "on-surface": "#0b1c30", "primary-container": "#1e293b", "primary-fixed": "#d8e3fb", "on-error-container": "#93000a", "surface-container": "#e5eeff", "primary": "#091426", "on-secondary-container": "#fffbff", "surface-sidebar": "#0F172A", "border-subtle": "#E2E8F0", "surface-variant": "#d3e4fe", "on-error": "#ffffff", "on-tertiary": "#ffffff", "error-container": "#ffdad6", "secondary": "#4648d4", "secondary-container": "#6063ee", "inverse-surface": "#213145", "on-secondary-fixed": "#07006c", "inverse-on-surface": "#eaf1ff", "outline": "#75777d", "surface-bright": "#f8f9ff", "inverse-primary": "#bcc7de", "primary-fixed-dim": "#bcc7de", "surface-dim": "#cbdbf5", "surface-tint": "#545f73", "on-surface-variant": "#45474c", "tertiary": "#201100", "outline-variant": "#c5c6cd", "on-tertiary-fixed": "#2a1700", "on-tertiary-container": "#c88000", "tertiary-container": "#3c2300", "on-tertiary-fixed-variant": "#653e00", "indigo-ai": "#8B5CF6", "tertiary-fixed": "#ffddb8", "tertiary-fixed-dim": "#ffb95f", "surface-container-highest": "#d3e4fe", "background": "#f8f9ff", "surface": "#f8f9ff", "border-dark": "#1E293B" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-xl": "2rem", "space-2xs": "0.125rem", "sidebar-collapsed": "68px", "space-md": "0.75rem", "space-base": "1rem", "max-content-width": "1440px", "space-xs": "0.25rem", "space-2xl": "3rem", "space-lg": "1.5rem", "space-sm": "0.5rem", "sidebar-width": "240px" }, "fontFamily": { "code-sm": ["JetBrains Mono"], "body-md": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "headline-lg": ["Plus Jakarta Sans"], "display": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"] }, "fontSize": { "code-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" }], "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "700" }], "display": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "headline-md": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }] } } } };</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
   </style>
-</head>
-<body class="bg-[#f8f9ff] text-slate-800 font-['Plus_Jakarta_Sans',sans-serif] antialiased min-h-screen">
-  <header class="p-4 bg-white sticky top-0 z-20 border-b border-slate-100 flex items-center justify-between">
-    <div>
-      <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600">Semana 8 • Bachillerato 2ºA</span>
-      <h1 class="text-lg font-black text-slate-900">Agenda Escolar</h1>
-    </div>
-    <div class="flex items-center gap-2">
-      <a href="camera-ocr.html" class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-bold border border-blue-200">📷</a>
-    </div>
-  </header>
-
-  <div class="p-4 bg-white border-b border-slate-100 flex gap-2 text-xs font-bold">
-    <button class="px-4 py-1.5 rounded-full bg-blue-600 text-white shadow-sm">Deberes (3)</button>
-    <button class="px-4 py-1.5 rounded-full bg-slate-100 text-slate-600">Exámenes (2)</button>
-    <button class="px-4 py-1.5 rounded-full bg-slate-100 text-slate-600">Horario</button>
-  </div>
-
-  <main class="p-4 space-y-4">
-    <section class="space-y-3">
-      <div class="p-4 bg-white border-2 border-rose-200 rounded-2xl shadow-sm space-y-2">
-        <div class="flex justify-between items-center text-xs">
-          <span class="font-bold text-rose-600 flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-rose-500"></span> FÍSICA II
+  </head><body class="bg-surface text-on-surface font-body-md text-body-md antialiased min-h-screen flex flex-col selection:bg-secondary-fixed selection:text-on-secondary-fixed"><header class="fixed top-0 inset-x-0 z-50 pt-safe bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(15,23,42,0.04)]"><div class="h-16 px-space-base flex items-center justify-between gap-space-sm max-w-[390px] mx-auto"><div class="flex items-center gap-space-xs min-w-0"><img alt="Brand logo. - Primary color: #1e293b - Font: plusJakartaSans - Mode: light - Roundness: rounded-md" class="h-8 w-auto object-contain flex-shrink-0" src="https://lh3.googleusercontent.com/aida/AEtjO1Xt0QI0bujpW_dAX6H7ljtxJlCAeurRG7yg3WmK34Y3337QOpaekcq2TvDmfsT6QOLx6yPvqFQ6lMR0ONV4XN3pCbbC0Moc44u3wWWmskWgCAED-65JhSEUE7be9aTm2W_LEGn-W7Tt7oCW9YNICLJJsA8a5Qr889E1KJLpp4CM9cCBFCL7ut8087eXUNV1e4V_aGdKGv3zYQM9qYoEicpJskkjCizFOezyaJjzJiwKpuwovKwFQR4UTIE"/><div class="flex flex-col min-w-0"><span class="font-headline-sm text-headline-sm text-primary tracking-tight truncate leading-none">Agenda</span><span class="font-label-sm text-label-sm text-on-surface-variant truncate uppercase tracking-wider">Mi Día</span></div></div><div class="flex items-center gap-space-xs flex-shrink-0"><div class="inline-flex items-center gap-space-2xs bg-surface-container px-space-xs py-space-2xs rounded-full shadow-[0_1px_4px_rgba(15,23,42,0.03)]"><span class="w-1.5 h-1.5 rounded-full bg-emerald-streak"></span><span class="font-code-sm text-code-sm text-on-surface font-medium hidden xs:inline">100% Offline</span><span class="font-code-sm text-code-sm text-on-surface font-medium xs:hidden">Offline</span></div><div class="inline-flex items-center gap-space-2xs bg-surface-container-low px-space-xs py-space-2xs rounded-full"><span class="material-symbols-outlined text-[16px] text-tertiary-fixed-dim leading-none">local_fire_department</span><span class="font-code-sm text-code-sm text-on-surface font-semibold">14</span></div><div class="p-0.5 rounded-full bg-surface-container-high"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1W4HtfLKFvhZVOn8lq_RjPqpGDGf01l7uvEiv2NXqf6436Nl-aHuR6CAtML8AINYW1OVdencKpooat0WT2GlpFG_-ej9iEW_PBAzEh930WYkrjjjAF3YAH1y4mhhDO4Nq1mBSa9y3bEaooe4_tDk3xyDk7bovvFdweQeRBRERIg_Z3lOeN0tnlp_OWtLXv0n0Ezx50Wx7aq8YZE5jHzP8kAeve1UlCF2mEW5PrOOS5oSFbTZjs9zPtCi5A"/></div></div></div></header><main class="flex-1 flex flex-col relative w-full max-w-[390px] mx-auto px-space-base pt-16 pb-28 bg-surface"><div class="flex flex-col w-full pb-6 space-y-5">
+<!-- Dynamic Student Greeting & Quick Status Summary -->
+<div class="flex items-center justify-between pt-1">
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1.5 uppercase tracking-wide">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+        Semana 8 · Bachillerato 2ºA
+      </span>
+<h1 class="font-headline-lg text-headline-lg text-primary tracking-tight truncate">
+        Agenda Escolar
+      </h1>
+</div>
+<div class="flex items-center gap-space-xs">
+<button aria-label="Buscar en la agenda" class="w-10 h-10 rounded-full bg-surface-container hover:bg-surface-container-high active:scale-95 text-primary flex items-center justify-center transition-transform" type="button">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</button>
+<button aria-label="Capturar apuntes con OCR" class="w-10 h-10 rounded-full bg-secondary-fixed text-on-secondary-fixed active:scale-95 flex items-center justify-center transition-transform shadow-sm" type="button">
+<span class="material-symbols-outlined text-[20px]">document_scanner</span>
+</button>
+</div>
+</div>
+<!-- Horizontal Scrollable Segment Pills -->
+<div class="flex items-center gap-2 overflow-x-auto no-scrollbar -mx-space-base px-space-base py-1">
+<button class="tab-pill inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-secondary text-on-secondary shadow-sm font-label-md text-label-md flex-shrink-0 transition-all" type="button">
+<span>Deberes</span>
+<span class="bg-white/20 text-on-secondary text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none">3</span>
+</button>
+<button class="tab-pill inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface font-label-md text-label-md flex-shrink-0 transition-all" type="button">
+<span>Exámenes</span>
+<span class="bg-surface-container-high text-primary text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none">2</span>
+</button>
+<button class="tab-pill inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface font-label-md text-label-md flex-shrink-0 transition-all" type="button">
+<span class="material-symbols-outlined text-[16px] leading-none">calendar_view_week</span>
+<span>Horario Semanal</span>
+</button>
+<button class="tab-pill inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface font-label-md text-label-md flex-shrink-0 transition-all" type="button">
+<span class="material-symbols-outlined text-[16px] leading-none">backpack</span>
+<span>Mochila Mañana</span>
+<span class="w-1.5 h-1.5 rounded-full bg-coral-urgent"></span>
+</button>
+</div>
+<!-- Alert: Backpack preparation status -->
+<div class="rounded-xl bg-surface-container-low p-3.5 flex items-start gap-3 shadow-sm transition-all hover:bg-surface-container">
+<div class="w-10 h-10 rounded-lg bg-tertiary-fixed flex items-center justify-center flex-shrink-0 text-on-tertiary-container shadow-xs">
+<span class="material-symbols-outlined text-[22px]">backpack</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-2">
+<span class="font-headline-sm text-[15px] font-semibold text-primary">Mochila para mañana</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant font-semibold">4/5 lista</span>
+</div>
+<p class="font-body-sm text-body-sm text-error mt-0.5 flex items-center gap-1 font-medium truncate">
+<span class="material-symbols-outlined text-[16px] text-error flex-shrink-0">error</span>
+<span>Falta: Láminas A3 Dibujo Técnico</span>
+</p>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full mt-2 overflow-hidden">
+<div class="bg-emerald-streak h-full rounded-full transition-all duration-500" style="width: 80%;"></div>
+</div>
+</div>
+<button aria-label="Revisar mochila" class="self-center p-1.5 text-on-surface-variant hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</div>
+<!-- Section 1: Urgent Homework & Assignments -->
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<h2 class="font-headline-sm text-headline-sm text-primary">Deberes Urgentes</h2>
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-semibold">3 activos</span>
+</div>
+<button class="font-label-sm text-label-sm text-secondary font-semibold hover:underline flex items-center gap-0.5" type="button">
+        Ver todos
+        <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+</div>
+<!-- Homework Card 1: Physics (Urgent + OCR Foto) -->
+<div class="homework-card rounded-xl bg-surface-container-lowest p-4 shadow-sm space-y-3 transition-transform duration-150 active:scale-[0.99]">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2 min-w-0">
+<span class="w-2.5 h-2.5 rounded-full bg-coral-urgent flex-shrink-0"></span>
+<span class="font-label-md text-label-md font-bold text-coral-urgent uppercase tracking-wide truncate">Física II</span>
+<span class="font-label-sm text-label-sm bg-error-container text-on-error-container px-2 py-0.5 rounded-md font-semibold flex-shrink-0">Mañana 08:30h</span>
+</div>
+<button aria-label="Marcar como completado" class="check-box-btn w-6 h-6 rounded-md bg-surface-container flex items-center justify-center text-transparent hover:text-emerald-streak transition-colors flex-shrink-0" onclick="toggleTask(this)" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</div>
+<div>
+<p class="task-title font-headline-sm text-[16px] text-primary font-semibold leading-snug">
+          Problemas 14 al 22 de Termodinámica
+        </p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+          Incluye ciclo de Carnot y variaciones de entropía. Entregar en hojas sueltas.
+        </p>
+</div>
+<!-- OCR Attachment Interactive Pill -->
+<div class="flex items-center justify-between pt-1 gap-2">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[15px] text-secondary">photo_camera</span>
+<span>Foto OCR Aula</span>
+</div>
+<button class="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-surface-container-high text-primary hover:bg-secondary hover:text-on-secondary transition-colors font-label-sm text-label-sm font-semibold" onclick="alert('Abriendo captura de pizarra: Problemas 14 al 22')" type="button">
+<span class="material-symbols-outlined text-[16px]">visibility</span>
+<span>Ver Foto</span>
+</button>
+</div>
+</div>
+<!-- Homework Card 2: Spanish History -->
+<div class="homework-card rounded-xl bg-surface-container-lowest p-4 shadow-sm space-y-2 transition-transform duration-150 active:scale-[0.99]">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2 min-w-0">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary flex-shrink-0"></span>
+<span class="font-label-md text-label-md font-bold text-secondary uppercase tracking-wide truncate">Historia de España</span>
+<span class="font-label-sm text-label-sm bg-surface-container-high text-on-surface-variant px-2 py-0.5 rounded-md font-semibold flex-shrink-0">Viernes 25</span>
+</div>
+<button aria-label="Marcar como completado" class="check-box-btn w-6 h-6 rounded-md bg-surface-container flex items-center justify-center text-transparent hover:text-emerald-streak transition-colors flex-shrink-0" onclick="toggleTask(this)" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</div>
+<div>
+<p class="task-title font-headline-sm text-[16px] text-primary font-semibold leading-snug">
+          Ensayo Restauración Borbónica (2 págs)
+        </p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+          Analizar el sistema turnista de Cánovas y Sagasta con fuentes primarias.
+        </p>
+</div>
+<div class="flex items-center justify-between pt-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1 font-medium">
+<span class="material-symbols-outlined text-[15px] text-tertiary-fixed-dim">priority_high</span>
+          Prioridad Media
+        </span>
+<span class="font-code-sm text-code-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">
+          PDF / Aula Virtual
+        </span>
+</div>
+</div>
+<!-- Homework Card 3: Math II -->
+<div class="homework-card rounded-xl bg-surface-container-lowest p-4 shadow-sm space-y-2 transition-transform duration-150 active:scale-[0.99]">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2 min-w-0">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-streak flex-shrink-0"></span>
+<span class="font-label-md text-label-md font-bold text-on-surface uppercase tracking-wide truncate">Matemáticas II</span>
+<span class="font-label-sm text-label-sm bg-surface-container-high text-on-surface-variant px-2 py-0.5 rounded-md font-semibold flex-shrink-0">Lunes 28</span>
+</div>
+<button aria-label="Marcar como completado" class="check-box-btn w-6 h-6 rounded-md bg-surface-container flex items-center justify-center text-transparent hover:text-emerald-streak transition-colors flex-shrink-0" onclick="toggleTask(this)" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</div>
+<div>
+<p class="task-title font-headline-sm text-[16px] text-primary font-semibold leading-snug">
+          Boletín de Matrices y Rango Gauss
+        </p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+          Ejercicios tipo PAU de discusión de sistemas con parámetro k.
+        </p>
+</div>
+<div class="flex items-center justify-between pt-1">
+<span class="font-label-sm text-label-sm text-emerald-streak font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">draw</span>
+          5 ejercicios restantes
+        </span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">Libro pág. 78</span>
+</div>
+</div>
+</div>
+<!-- Section 2: Upcoming Exams with countdown pills -->
+<div class="space-y-3 pt-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<h2 class="font-headline-sm text-headline-sm text-primary">Próximos Exámenes</h2>
+<span class="w-2 h-2 rounded-full bg-coral-urgent animate-ping"></span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">1er Trimestre</span>
+</div>
+<!-- Exam Card 1: Physics II -->
+<div class="rounded-xl bg-surface-container-lowest p-4 shadow-sm relative overflow-hidden flex flex-col gap-3 transition-transform duration-150 active:scale-[0.99]">
+<div class="absolute top-0 left-0 w-1.5 h-full bg-coral-urgent"></div>
+<div class="flex items-start justify-between gap-3 pl-1">
+<div class="min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md font-bold text-coral-urgent uppercase tracking-wide">Física II</span>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-bold">
+<span class="material-symbols-outlined text-[14px]">alarm</span>
+              ¡En 4 días!
+            </span>
+</div>
+<h3 class="font-headline-sm text-[16px] text-primary font-bold mt-1">
+            Campo Gravitatorio &amp; Electrostática
+          </h3>
+</div>
+<div class="text-right flex-shrink-0 bg-surface-container px-2.5 py-1.5 rounded-lg">
+<span class="font-label-sm text-[10px] uppercase text-on-surface-variant block font-bold">Ponderación</span>
+<span class="font-headline-sm text-headline-sm text-primary font-extrabold">35%</span>
+</div>
+</div>
+<!-- Exam Metadata & Study Shortcut -->
+<div class="flex items-center justify-between pt-1 border-t-0 pl-1">
+<div class="flex items-center gap-3 text-on-surface-variant font-body-sm text-body-sm">
+<span class="inline-flex items-center gap-1 font-medium">
+<span class="material-symbols-outlined text-[16px] text-secondary">event</span>
+            Lunes 28 Oct · 09:15
           </span>
-          <span class="font-mono text-[10px] font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-md">Mañana 08:30h</span>
-        </div>
-        <h3 class="font-extrabold text-sm text-slate-900">Problemas 14 al 22 de Termodinámica</h3>
-        <p class="text-xs text-slate-500">Ciclo de Carnot y entropía. Entregar en hojas sueltas.</p>
-        <div class="flex items-center gap-2 pt-2 border-t border-slate-100 text-xs">
-          <span class="bg-blue-50 text-blue-700 px-2 py-1 rounded-lg font-semibold text-[11px]">📷 Foto OCR Aula</span>
-        </div>
-      </div>
-    </section>
-  </main>
+<span class="inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+            Aula 204
+          </span>
+</div>
+<button class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-primary text-on-primary text-label-sm font-semibold hover:bg-secondary transition-colors" onclick="startStudyTimer('Física II')" type="button">
+<span class="material-symbols-outlined text-[14px]">play_arrow</span>
+          Repasar
+        </button>
+</div>
+</div>
+<!-- Exam Card 2: Chemistry II -->
+<div class="rounded-xl bg-surface-container-lowest p-4 shadow-sm relative overflow-hidden flex flex-col gap-3 transition-transform duration-150 active:scale-[0.99]">
+<div class="absolute top-0 left-0 w-1.5 h-full bg-secondary"></div>
+<div class="flex items-start justify-between gap-3 pl-1">
+<div class="min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md font-bold text-secondary uppercase tracking-wide">Química II</span>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+              En 11 días
+            </span>
+</div>
+<h3 class="font-headline-sm text-[16px] text-primary font-bold mt-1">
+            Estructura Atómica &amp; Sistema Periódico
+          </h3>
+</div>
+<div class="text-right flex-shrink-0 bg-surface-container px-2.5 py-1.5 rounded-lg">
+<span class="font-label-sm text-[10px] uppercase text-on-surface-variant block font-bold">Ponderación</span>
+<span class="font-headline-sm text-headline-sm text-primary font-extrabold">30%</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-1 pl-1">
+<div class="flex items-center gap-3 text-on-surface-variant font-body-sm text-body-sm">
+<span class="inline-flex items-center gap-1 font-medium">
+<span class="material-symbols-outlined text-[16px] text-secondary">event</span>
+            Jueves 4 Nov · 11:45
+          </span>
+<span class="inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">science</span>
+            Lab. Químico
+          </span>
+</div>
+<button class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-container text-primary text-label-sm font-semibold hover:bg-surface-container-high transition-colors" onclick="startStudyTimer('Química II')" type="button">
+<span class="material-symbols-outlined text-[14px]">school</span>
+          Fichas
+        </button>
+</div>
+</div>
+</div>
+<!-- Section 3: Daily Schedule Peek -->
+<div class="rounded-xl bg-surface-container p-4 space-y-3 shadow-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px] text-secondary">schedule</span>
+<h3 class="font-headline-sm text-[15px] text-primary font-semibold">Horario de Hoy (Jueves)</h3>
+</div>
+<span class="font-code-sm text-code-sm bg-surface-container-lowest px-2 py-0.5 rounded text-on-surface-variant">
+        6 clases · 2 restan
+      </span>
+</div>
+<!-- Mini Horizontal Timeline -->
+<div class="grid grid-cols-3 gap-2">
+<div class="bg-surface-container-lowest p-2.5 rounded-lg text-center opacity-60">
+<span class="font-label-sm text-[10px] text-on-surface-variant block">08:30 - 09:25</span>
+<span class="font-label-md text-label-md font-bold text-primary truncate block mt-0.5">Matemáticas</span>
+<span class="font-label-sm text-[10px] text-emerald-streak font-semibold block mt-1">Finalizada</span>
+</div>
+<div class="bg-surface-container-lowest p-2.5 rounded-lg text-center shadow-xs">
+<span class="font-label-sm text-[10px] text-secondary font-bold block">12:15 - 13:10</span>
+<span class="font-label-md text-label-md font-bold text-primary truncate block mt-0.5">Física II</span>
+<span class="font-label-sm text-[10px] bg-secondary-fixed text-on-secondary-fixed font-bold rounded px-1 inline-block mt-1">En curso</span>
+</div>
+<div class="bg-surface-container-lowest p-2.5 rounded-lg text-center">
+<span class="font-label-sm text-[10px] text-on-surface-variant block">13:15 - 14:10</span>
+<span class="font-label-md text-label-md font-bold text-primary truncate block mt-0.5">Historia</span>
+<span class="font-label-sm text-[10px] text-on-surface-variant block mt-1">Aula 102</span>
+</div>
+</div>
+</div>
+</div>
+<script>
+  function toggleTask(button) {
+    const isCompleted = button.getAttribute('data-completed') === 'true';
+    const card = button.closest('.homework-card');
+    const title = card.querySelector('.task-title');
 
-  <nav class="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur border-t border-slate-200 z-30 px-4 py-2 flex justify-around items-center text-[10px] font-bold text-slate-500">
-    <a href="index.html" class="flex flex-col items-center gap-1 hover:text-slate-900"><span>🏠</span><span>Mi Día</span></a>
-    <a href="agenda.html" class="flex flex-col items-center gap-1 text-blue-600"><span>📅</span><span>Agenda</span></a>
-    <a href="camera-ocr.html" class="w-12 h-12 -mt-5 rounded-full bg-slate-900 text-white flex items-center justify-center text-xl shadow-lg border-4 border-[#f8f9ff]">+</a>
-    <a href="cuaderno-lm.html" class="flex flex-col items-center gap-1 hover:text-slate-900"><span>🧠</span><span>Estudio</span></a>
-    <a href="progreso-ebau.html" class="flex flex-col items-center gap-1 hover:text-slate-900"><span>📊</span><span>Progreso</span></a>
-  </nav>
-</body>
-</html>
+    if (!isCompleted) {
+      button.setAttribute('data-completed', 'true');
+      button.classList.remove('bg-surface-container', 'text-transparent');
+      button.classList.add('bg-emerald-streak', 'text-on-secondary');
+      title.classList.add('line-through', 'text-on-surface-variant', 'opacity-60');
+      card.classList.add('opacity-75');
+    } else {
+      button.setAttribute('data-completed', 'false');
+      button.classList.remove('bg-emerald-streak', 'text-on-secondary');
+      button.classList.add('bg-surface-container', 'text-transparent');
+      title.classList.remove('line-through', 'text-on-surface-variant', 'opacity-60');
+      card.classList.remove('opacity-75');
+    }
+  }
+
+  function startStudyTimer(subject) {
+    const toast = document.createElement('div');
+    toast.className = 'fixed bottom-24 left-1/2 -translate-x-1/2 bg-primary text-on-primary font-label-md text-label-md px-4 py-2.5 rounded-full shadow-xl flex items-center gap-2 z-50 transition-all';
+    toast.innerHTML = `<span class="material-symbols-outlined text-[18px] text-emerald-streak">check_circle</span> Modo estudio activado: ${subject}`;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      setTimeout(() => toast.remove(), 300);
+    }, 2400);
+  }
+
+  // Interactive tab pills
+  document.querySelectorAll('.tab-pill').forEach(pill => {
+    pill.addEventListener('click', function() {
+      document.querySelectorAll('.tab-pill').forEach(p => {
+        p.classList.remove('bg-secondary', 'text-on-secondary', 'shadow-sm');
+        p.classList.add('bg-surface-container', 'text-on-surface-variant');
+      });
+      this.classList.add('bg-secondary', 'text-on-secondary', 'shadow-sm');
+      this.classList.remove('bg-surface-container', 'text-on-surface-variant');
+    });
+  });
+</script></main><nav class="fixed bottom-0 inset-x-0 z-50 pb-safe bg-surface/90 backdrop-blur-xl shadow-[0_-4px_16px_rgba(15,23,42,0.05)]" data-active-classes="text-secondary font-semibold"><div class="h-20 max-w-[390px] mx-auto px-space-xs flex items-center justify-between relative"><a class="flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] py-1 text-on-surface-variant hover:text-on-surface transition-colors" data-path="mi-dia" href="index.html"><span class="material-symbols-outlined text-[24px] leading-none mb-0.5">wb_sunny</span><span class="font-label-sm text-label-sm leading-tight truncate">Mi Día</span></a><a class="flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] py-1 text-on-surface-variant hover:text-on-surface transition-colors" data-path="agenda" href="agenda.html"><span class="material-symbols-outlined text-[24px] leading-none mb-0.5">calendar_month</span><span class="font-label-sm text-label-sm leading-tight truncate">Agenda</span></a><div class="relative -top-5 flex-shrink-0 px-space-xs"><a href="camera-ocr.html" aria-label="Cámara OCR" class="w-14 h-14 rounded-full bg-primary-container text-on-primary flex items-center justify-center shadow-[0_8px_16px_rgba(15,23,42,0.18)] hover:bg-surface-sidebar active:scale-95 transition-all focus:outline-none"><span class="material-symbols-outlined text-[28px] leading-none">photo_camera</span></a></div><a class="flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] py-1 text-on-surface-variant hover:text-on-surface transition-colors" data-path="estudio" href="cuaderno-lm.html"><span class="material-symbols-outlined text-[24px] leading-none mb-0.5">psychology</span><span class="font-label-sm text-label-sm leading-tight truncate">Estudio</span></a><a class="flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] py-1 text-on-surface-variant hover:text-on-surface transition-colors" data-path="progreso" href="progreso-ebau.html"><span class="material-symbols-outlined text-[24px] leading-none mb-0.5">insert_chart</span><span class="font-label-sm text-label-sm leading-tight truncate">Progreso</span></a></div></nav></body></html>
