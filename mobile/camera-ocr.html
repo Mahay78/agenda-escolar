@@ -1,21 +1,52 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agenda Escolar - Cámara con Zoom y OCR Móvil</title>
-  <meta http-equiv="refresh" content="0; url=../index.html?device=mobile&action=camera" />
-  <script>window.location.replace("../index.html?device=mobile&action=camera");</script>
-  <style>
-    body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; text-align: center; }
-    .spinner { width: 40px; height: 40px; border: 3px solid rgba(59, 130, 246, 0.2); border-top-color: #3b82f6; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 16px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    a { color: #60a5fa; text-decoration: none; font-weight: 500; }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Cámara Escolar con Zoom & OCR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>* { touch-action: manipulation; }</style>
 </head>
-<body>
-  <div class="spinner"></div>
-  <h2>Cargando Cámara con Zoom y OCR Móvil...</h2>
-  <p><a href="../index.html?device=mobile&action=camera">Haz clic aquí si no redirige automáticamente</a></p>
+<body class="bg-black text-white font-['Plus_Jakarta_Sans',sans-serif] antialiased h-screen w-screen flex flex-col justify-between overflow-hidden select-none">
+  <!-- Topbar -->
+  <header class="p-4 flex items-center justify-between z-20 bg-gradient-to-b from-black/80 to-transparent">
+    <div class="flex items-center gap-2">
+      <span class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs">⚡</span>
+    </div>
+    <div class="flex items-center gap-1 bg-black/60 backdrop-blur p-1 rounded-full border border-white/20 text-xs font-bold">
+      <button class="px-2.5 py-1 rounded-full bg-emerald-500 text-white">✨ ML Kit</button>
+      <button class="px-2.5 py-1 rounded-full text-slate-300">🤖 Gemini 1.5</button>
+    </div>
+    <a href="index.html" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs">✕</a>
+  </header>
+
+  <!-- Visor -->
+  <main class="flex-1 relative flex items-center justify-center p-4">
+    <div class="w-full h-full rounded-3xl border-2 border-dashed border-emerald-400/80 bg-slate-900/60 flex flex-col items-center justify-center p-6 text-center relative">
+      <div class="absolute top-3 left-3 bg-black/70 px-2 py-1 rounded-md text-[10px] font-mono text-emerald-300">
+        [+] AUTO-DESKEW ACTIVO
+      </div>
+      <span class="bg-emerald-500/20 text-emerald-300 text-xs font-bold px-3 py-1 rounded-full border border-emerald-400/40">
+        Pizarra Mat. II (98%)
+      </span>
+      <div class="absolute bottom-6 flex items-center gap-2 bg-black/70 p-1.5 rounded-full border border-white/20">
+        <button class="w-8 h-8 rounded-full bg-white/10 text-xs font-bold">1x</button>
+        <button class="w-8 h-8 rounded-full bg-white text-black text-xs font-bold">2x</button>
+        <button class="w-8 h-8 rounded-full bg-white/10 text-xs font-bold">3x</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Disparo -->
+  <footer class="p-6 bg-gradient-to-t from-black/95 via-black/80 to-transparent flex items-center justify-around z-20">
+    <div class="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-xs">🖼</div>
+    <button class="w-16 h-16 rounded-full border-4 border-white flex items-center justify-center p-1 active:scale-95 transition">
+      <div class="w-full h-full rounded-full bg-white"></div>
+    </button>
+    <div class="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-xs">🌓</div>
+  </footer>
 </body>
 </html>

@@ -1,21 +1,60 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agenda Escolar - Cuaderno LM Móvil</title>
-  <meta http-equiv="refresh" content="0; url=../notebook.html?device=mobile" />
-  <script>window.location.replace("../notebook.html?device=mobile");</script>
-  <style>
-    body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; text-align: center; }
-    .spinner { width: 40px; height: 40px; border: 3px solid rgba(59, 130, 246, 0.2); border-top-color: #3b82f6; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 16px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    a { color: #60a5fa; text-decoration: none; font-weight: 500; }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Cuaderno LM - Móvil</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>body { padding-bottom: 84px; }</style>
 </head>
-<body>
-  <div class="spinner"></div>
-  <h2>Cargando Cuaderno LM Móvil...</h2>
-  <p><a href="../notebook.html?device=mobile">Haz clic aquí si no redirige automáticamente</a></p>
+<body class="bg-[#f8f9ff] text-slate-800 font-['Plus_Jakarta_Sans',sans-serif] antialiased min-h-screen">
+  <header class="p-4 bg-white sticky top-0 z-20 border-b border-slate-100 flex items-center justify-between">
+    <div>
+      <span class="text-[10px] font-bold uppercase tracking-wider text-purple-600">Física II • Electromagnetismo</span>
+      <h1 class="text-lg font-black text-slate-900">Cuaderno LM</h1>
+    </div>
+    <span class="px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 text-xs font-bold border border-purple-200">RAG Activo</span>
+  </header>
+
+  <main class="p-4 space-y-4">
+    <!-- Podcast a 2 Voces -->
+    <div class="bg-gradient-to-br from-indigo-950 to-slate-900 text-white p-4 rounded-2xl shadow space-y-3">
+      <div class="flex justify-between items-center text-xs">
+        <span class="text-purple-300 font-bold uppercase tracking-wider">🎙 Podcast de Estudio</span>
+        <span class="font-mono text-[10px] bg-white/10 px-2 py-0.5 rounded">14:15 min</span>
+      </div>
+      <p class="text-xs text-slate-300">Lucía & Mateo debaten la ley de inducción electromagnética de Faraday y Lenz.</p>
+      <div class="flex items-center justify-between pt-2">
+        <button class="w-9 h-9 rounded-full bg-white text-slate-900 font-bold flex items-center justify-center">▶</button>
+        <div class="flex gap-1 text-[11px] font-mono">
+          <span class="px-2 py-1 bg-white/10 rounded">1.0x</span>
+          <span class="px-2 py-1 bg-white/20 rounded font-bold">1.2x</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notas Sintetizadas -->
+    <div class="p-4 bg-white border border-slate-200 rounded-2xl space-y-2">
+      <div class="flex justify-between text-xs">
+        <span class="font-mono text-[11px] font-bold text-blue-600">APUNTE CLAVE</span>
+        <span class="text-[10px] bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded font-bold">[Fuente 1: Pizarra Aula]</span>
+      </div>
+      <div class="font-mono text-xs bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+        ε = - dΦ_B / dt
+      </div>
+      <p class="text-xs text-slate-600">El signo negativo indica que la corriente inducida se opone a la variación del flujo.</p>
+    </div>
+  </main>
+
+  <nav class="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur border-t border-slate-200 z-30 px-4 py-2 flex justify-around items-center text-[10px] font-bold text-slate-500">
+    <a href="index.html" class="flex flex-col items-center gap-1 hover:text-slate-900"><span>🏠</span><span>Mi Día</span></a>
+    <a href="agenda.html" class="flex flex-col items-center gap-1 hover:text-slate-900"><span>📅</span><span>Agenda</span></a>
+    <a href="camera-ocr.html" class="w-12 h-12 -mt-5 rounded-full bg-slate-900 text-white flex items-center justify-center text-xl shadow-lg border-4 border-[#f8f9ff]">+</a>
+    <a href="cuaderno-lm.html" class="flex flex-col items-center gap-1 text-blue-600"><span>🧠</span><span>Estudio</span></a>
+    <a href="progreso-ebau.html" class="flex flex-col items-center gap-1 hover:text-slate-900"><span>📊</span><span>Progreso</span></a>
+  </nav>
 </body>
 </html>

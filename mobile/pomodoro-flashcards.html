@@ -1,21 +1,51 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agenda Escolar - Pomodoro & Flashcards Móvil</title>
-  <meta http-equiv="refresh" content="0; url=../index.html?device=mobile&tab=tab-study" />
-  <script>window.location.replace("../index.html?device=mobile&tab=tab-study");</script>
-  <style>
-    body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; text-align: center; }
-    .spinner { width: 40px; height: 40px; border: 3px solid rgba(59, 130, 246, 0.2); border-top-color: #3b82f6; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 16px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    a { color: #60a5fa; text-decoration: none; font-weight: 500; }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Pomodoro & Flashcards - Móvil</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>body { padding-bottom: 84px; }</style>
 </head>
-<body>
-  <div class="spinner"></div>
-  <h2>Cargando Pomodoro & Flashcards Móvil...</h2>
-  <p><a href="../index.html?device=mobile&tab=tab-study">Haz clic aquí si no redirige automáticamente</a></p>
+<body class="bg-[#f8f9ff] text-slate-800 font-['Plus_Jakarta_Sans',sans-serif] antialiased min-h-screen">
+  <header class="p-4 bg-white sticky top-0 z-20 border-b border-slate-100 flex items-center justify-between">
+    <h1 class="text-lg font-black text-slate-900">Pomodoro Zen & Fichas</h1>
+    <span class="text-xs font-mono font-bold px-2 py-0.5 bg-amber-50 text-amber-700 rounded-full border border-amber-200">Mazo: Física II</span>
+  </header>
+
+  <main class="p-4 space-y-4">
+    <!-- Reloj Pomodoro -->
+    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm text-center space-y-3">
+      <div class="text-4xl font-black font-mono text-slate-900">25:00</div>
+      <div class="flex justify-center gap-2 text-xs font-bold">
+        <button class="px-5 py-2 rounded-xl bg-slate-900 text-white shadow">▶ Iniciar</button>
+        <button class="px-4 py-2 rounded-xl bg-slate-100 text-slate-600">☕ Pausa 5m</button>
+      </div>
+    </div>
+
+    <!-- Ficha Leitner Interactiva -->
+    <div class="p-5 bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-2xl shadow space-y-3 min-h-[160px] flex flex-col justify-between">
+      <div class="flex justify-between text-xs text-blue-200">
+        <span>Ficha 4 de 20 • Caja 3</span>
+        <span>Toca para voltear 🔄</span>
+      </div>
+      <h3 class="text-base font-extrabold text-center">¿Cuál es la unidad del flujo magnético en el SI?</h3>
+      <div class="flex justify-between gap-2 pt-2">
+        <button class="flex-1 py-1.5 bg-rose-500/80 rounded-lg text-xs font-bold">Repetir</button>
+        <button class="flex-1 py-1.5 bg-emerald-500 rounded-lg text-xs font-bold">¡Dominada!</button>
+      </div>
+    </div>
+  </main>
+
+  <nav class="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur border-t border-slate-200 z-30 px-4 py-2 flex justify-around items-center text-[10px] font-bold text-slate-500">
+    <a href="index.html" class="flex flex-col items-center gap-1 hover:text-slate-900"><span>🏠</span><span>Mi Día</span></a>
+    <a href="agenda.html" class="flex flex-col items-center gap-1 hover:text-slate-900"><span>📅</span><span>Agenda</span></a>
+    <a href="camera-ocr.html" class="w-12 h-12 -mt-5 rounded-full bg-slate-900 text-white flex items-center justify-center text-xl shadow-lg border-4 border-[#f8f9ff]">+</a>
+    <a href="cuaderno-lm.html" class="flex flex-col items-center gap-1 text-blue-600"><span>🧠</span><span>Estudio</span></a>
+    <a href="progreso-ebau.html" class="flex flex-col items-center gap-1 hover:text-slate-900"><span>📊</span><span>Progreso</span></a>
+  </nav>
 </body>
 </html>

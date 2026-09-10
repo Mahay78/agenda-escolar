@@ -1,21 +1,59 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agenda Escolar - Agenda Móvil</title>
-  <meta http-equiv="refresh" content="0; url=../index.html?device=mobile&tab=tab-agenda" />
-  <script>window.location.replace("../index.html?device=mobile&tab=tab-agenda");</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Agenda: Deberes & Exámenes - Móvil</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; text-align: center; }
-    .spinner { width: 40px; height: 40px; border: 3px solid rgba(59, 130, 246, 0.2); border-top-color: #3b82f6; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 16px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    a { color: #60a5fa; text-decoration: none; font-weight: 500; }
+    * { touch-action: manipulation; }
+    body { padding-bottom: 84px; }
   </style>
 </head>
-<body>
-  <div class="spinner"></div>
-  <h2>Cargando Agenda Móvil...</h2>
-  <p><a href="../index.html?device=mobile&tab=tab-agenda">Haz clic aquí si no redirige automáticamente</a></p>
+<body class="bg-[#f8f9ff] text-slate-800 font-['Plus_Jakarta_Sans',sans-serif] antialiased min-h-screen">
+  <header class="p-4 bg-white sticky top-0 z-20 border-b border-slate-100 flex items-center justify-between">
+    <div>
+      <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600">Semana 8 • Bachillerato 2ºA</span>
+      <h1 class="text-lg font-black text-slate-900">Agenda Escolar</h1>
+    </div>
+    <div class="flex items-center gap-2">
+      <a href="camera-ocr.html" class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-bold border border-blue-200">📷</a>
+    </div>
+  </header>
+
+  <div class="p-4 bg-white border-b border-slate-100 flex gap-2 text-xs font-bold">
+    <button class="px-4 py-1.5 rounded-full bg-blue-600 text-white shadow-sm">Deberes (3)</button>
+    <button class="px-4 py-1.5 rounded-full bg-slate-100 text-slate-600">Exámenes (2)</button>
+    <button class="px-4 py-1.5 rounded-full bg-slate-100 text-slate-600">Horario</button>
+  </div>
+
+  <main class="p-4 space-y-4">
+    <section class="space-y-3">
+      <div class="p-4 bg-white border-2 border-rose-200 rounded-2xl shadow-sm space-y-2">
+        <div class="flex justify-between items-center text-xs">
+          <span class="font-bold text-rose-600 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-rose-500"></span> FÍSICA II
+          </span>
+          <span class="font-mono text-[10px] font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-md">Mañana 08:30h</span>
+        </div>
+        <h3 class="font-extrabold text-sm text-slate-900">Problemas 14 al 22 de Termodinámica</h3>
+        <p class="text-xs text-slate-500">Ciclo de Carnot y entropía. Entregar en hojas sueltas.</p>
+        <div class="flex items-center gap-2 pt-2 border-t border-slate-100 text-xs">
+          <span class="bg-blue-50 text-blue-700 px-2 py-1 rounded-lg font-semibold text-[11px]">📷 Foto OCR Aula</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur border-t border-slate-200 z-30 px-4 py-2 flex justify-around items-center text-[10px] font-bold text-slate-500">
+    <a href="index.html" class="flex flex-col items-center gap-1 hover:text-slate-900"><span>🏠</span><span>Mi Día</span></a>
+    <a href="agenda.html" class="flex flex-col items-center gap-1 text-blue-600"><span>📅</span><span>Agenda</span></a>
+    <a href="camera-ocr.html" class="w-12 h-12 -mt-5 rounded-full bg-slate-900 text-white flex items-center justify-center text-xl shadow-lg border-4 border-[#f8f9ff]">+</a>
+    <a href="cuaderno-lm.html" class="flex flex-col items-center gap-1 hover:text-slate-900"><span>🧠</span><span>Estudio</span></a>
+    <a href="progreso-ebau.html" class="flex flex-col items-center gap-1 hover:text-slate-900"><span>📊</span><span>Progreso</span></a>
+  </nav>
 </body>
 </html>
