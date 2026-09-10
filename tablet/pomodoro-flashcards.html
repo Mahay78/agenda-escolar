@@ -1,21 +1,95 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agenda Escolar - Pomodoro & Flashcards Tablet</title>
-  <meta http-equiv="refresh" content="0; url=../index.html?device=tablet&tab=tab-study" />
-  <script>window.location.replace("../index.html?device=tablet&tab=tab-study");</script>
-  <style>
-    body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; text-align: center; }
-    .spinner { width: 40px; height: 40px; border: 3px solid rgba(59, 130, 246, 0.2); border-top-color: #3b82f6; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 16px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    a { color: #60a5fa; text-decoration: none; font-weight: 500; }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Pomodoro Zen & Flashcards - Tablet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>body { padding-bottom: 96px; }</style>
 </head>
-<body>
-  <div class="spinner"></div>
-  <h2>Cargando Pomodoro & Flashcards Tablet...</h2>
-  <p><a href="../index.html?device=tablet&tab=tab-study">Haz clic aquí si no redirige automáticamente</a></p>
+<body class="bg-[#f8f9ff] text-slate-800 font-['Plus_Jakarta_Sans',sans-serif] antialiased min-h-screen flex flex-col">
+  <!-- Cabecera Tablet -->
+  <header class="px-6 py-4 bg-white sticky top-0 z-20 border-b border-slate-100 flex items-center justify-between">
+    <div>
+      <span class="text-[10px] font-bold uppercase tracking-wider text-amber-600">Técnicas de Estudio & Concentración</span>
+      <h1 class="text-base font-black text-slate-900">Pomodoro Zen & Flashcards SM-2</h1>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="text-xs font-mono font-bold px-3 py-1 bg-amber-50 text-amber-800 rounded-full border border-amber-200">
+        Mazo: Física II (20 Fichas)
+      </span>
+      <button class="px-3 py-1 bg-blue-600 text-white font-bold text-xs rounded-xl shadow-sm">+ Nueva Ficha</button>
+    </div>
+  </header>
+
+  <!-- Rejilla Tablet 2 Columnas -->
+  <main class="max-w-6xl w-full mx-auto p-6 flex-1 grid grid-cols-1 md:grid-cols-12 gap-6">
+    <!-- Columna Izquierda (5 cols): Reloj Pomodoro Zen -->
+    <div class="md:col-span-5 space-y-4">
+      <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm text-center space-y-4">
+        <div class="flex justify-between items-center text-xs">
+          <span class="font-bold text-slate-400 uppercase tracking-wider">Sesión de Enfoque</span>
+          <span class="text-[11px] font-bold bg-emerald-50 text-emerald-700 px-2.5 py-0.5 rounded-full">Racha: 3 Pomodoros</span>
+        </div>
+
+        <div class="text-6xl font-black font-mono text-slate-900 tracking-tight py-4">25:00</div>
+
+        <div class="flex justify-center gap-3">
+          <button class="px-6 py-3 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm shadow-md flex items-center gap-2">
+            <span>▶</span> Iniciar Sesión
+          </button>
+          <button class="px-4 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm">
+            ☕ 5 min
+          </button>
+        </div>
+
+        <!-- Selector de Sonido Zen Web Audio -->
+        <div class="pt-4 border-t border-slate-100 text-xs">
+          <div class="text-slate-400 font-bold uppercase text-[10px] mb-2 text-left">Ambiente Zen (Offline)</div>
+          <div class="grid grid-cols-3 gap-2 text-xs font-semibold">
+            <button class="p-2 rounded-xl bg-blue-50 text-blue-700 border border-blue-200">🌧 Lluvia</button>
+            <button class="p-2 rounded-xl bg-slate-50 text-slate-600 hover:bg-slate-100">🌊 Olas</button>
+            <button class="p-2 rounded-xl bg-slate-50 text-slate-600 hover:bg-slate-100">☕ Cafetería</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna Derecha (7 cols): Ficha Leitner Interactiva -->
+    <div class="md:col-span-7 space-y-4">
+      <div class="p-8 bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-3xl shadow-lg min-h-[340px] flex flex-col justify-between">
+        <div class="flex justify-between items-center text-xs text-blue-200">
+          <span class="font-bold">Ficha 4 de 20 • Caja Leitner 3 (SM-2: 6 días)</span>
+          <span class="bg-white/20 px-2.5 py-1 rounded-lg">Toca para voltear 🔄</span>
+        </div>
+
+        <div class="my-auto py-6 text-center">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-200 block mb-2">PREGUNTA</span>
+          <h2 class="text-2xl font-black">¿Cuál es la unidad del flujo magnético en el Sistema Internacional (SI)?</h2>
+        </div>
+
+        <div class="space-y-2 pt-4 border-t border-blue-500/50">
+          <div class="text-[11px] text-blue-200 text-center mb-1">Evalúa tu recuerdo (Algoritmo SM-2):</div>
+          <div class="grid grid-cols-3 gap-2 text-xs font-bold">
+            <button class="py-2.5 bg-rose-500/90 hover:bg-rose-500 rounded-xl shadow">❌ Repetir Hoy</button>
+            <button class="py-2.5 bg-amber-500/90 hover:bg-amber-500 rounded-xl shadow">⚡ Difícil (3d)</button>
+            <button class="py-2.5 bg-emerald-500 hover:bg-emerald-400 rounded-xl shadow">✅ ¡Dominada! (6d)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Barra Navegación Isla Tablet -->
+  <nav class="fixed bottom-4 inset-x-0 mx-auto max-w-2xl bg-white/95 backdrop-blur border border-slate-200 z-30 px-6 py-2.5 rounded-full shadow-xl flex justify-around items-center text-xs font-bold text-slate-500">
+    <a href="index.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>🏠</span><span>Mi Día</span></a>
+    <a href="deberes-examenes.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>📅</span><span>Agenda</span></a>
+    <a href="cuaderno-lm.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>📚</span><span>Cuaderno LM</span></a>
+    <a href="pomodoro-flashcards.html" class="flex items-center gap-2 text-blue-600 px-3 py-1.5 rounded-full bg-blue-50"><span>🧠</span><span>Estudio</span></a>
+    <a href="progreso-ebau.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>📊</span><span>Progreso</span></a>
+  </nav>
 </body>
 </html>

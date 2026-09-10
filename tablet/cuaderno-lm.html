@@ -1,21 +1,150 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agenda Escolar - Cuaderno LM 3 Columnas Tablet</title>
-  <meta http-equiv="refresh" content="0; url=../notebook.html?device=tablet" />
-  <script>window.location.replace("../notebook.html?device=tablet");</script>
-  <style>
-    body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; text-align: center; }
-    .spinner { width: 40px; height: 40px; border: 3px solid rgba(59, 130, 246, 0.2); border-top-color: #3b82f6; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 16px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    a { color: #60a5fa; text-decoration: none; font-weight: 500; }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Cuaderno LM - Suite Tablet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>body { padding-bottom: 96px; }</style>
 </head>
-<body>
-  <div class="spinner"></div>
-  <h2>Cargando Cuaderno LM 3 Columnas Tablet...</h2>
-  <p><a href="../notebook.html?device=tablet">Haz clic aquí si no redirige automáticamente</a></p>
+<body class="bg-[#f8f9ff] text-slate-800 font-['Plus_Jakarta_Sans',sans-serif] antialiased min-h-screen flex flex-col">
+  <!-- Cabecera Tablet -->
+  <header class="px-6 py-4 bg-white sticky top-0 z-20 border-b border-slate-100 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <a href="index.html" class="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-sm font-bold hover:bg-slate-200">‹</a>
+      <div>
+        <span class="text-[10px] font-bold uppercase tracking-wider text-purple-600">Física II • Electromagnetismo & Inducción</span>
+        <h1 class="text-base font-black text-slate-900">Cuaderno LM (Modo 3 Columnas)</h1>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-xs font-bold border border-purple-200 flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-purple-600 animate-pulse"></span> RAG Local Activo
+      </span>
+      <button class="px-3 py-1 rounded-xl bg-slate-900 text-white font-bold text-xs shadow-sm">+ Fuente PDF / Foto</button>
+    </div>
+  </header>
+
+  <!-- Rejilla 3 Columnas Tablet -->
+  <main class="max-w-7xl w-full mx-auto p-6 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <!-- Columna 1: Podcast de Estudio & Fuentes (3 cols) -->
+    <div class="lg:col-span-4 space-y-4">
+      <div class="bg-gradient-to-br from-indigo-950 to-slate-900 text-white p-5 rounded-3xl shadow-sm space-y-3">
+        <div class="flex justify-between items-center text-xs">
+          <span class="text-purple-300 font-bold uppercase tracking-wider">🎙 Podcast a 2 Voces</span>
+          <span class="font-mono text-[11px] bg-white/10 px-2 py-0.5 rounded">14:15 min</span>
+        </div>
+        <p class="text-xs text-slate-300">Lucía & Mateo debaten la ley de inducción de Faraday, la regla de Lenz y su aplicación en transformadores.</p>
+        <div class="flex items-center justify-between pt-3 border-t border-slate-800">
+          <button class="w-10 h-10 rounded-full bg-white text-slate-900 font-bold flex items-center justify-center shadow-lg hover:scale-105 transition">▶</button>
+          <div class="flex gap-1.5 text-xs font-mono">
+            <button class="px-2.5 py-1 bg-white/10 hover:bg-white/20 rounded-lg">1.0x</button>
+            <button class="px-2.5 py-1 bg-white/25 rounded-lg font-bold">1.2x</button>
+            <button class="px-2.5 py-1 bg-white/10 hover:bg-white/20 rounded-lg">1.5x</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fuentes Documentales -->
+      <div class="bg-white border border-slate-200 rounded-3xl p-5 shadow-sm space-y-3">
+        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Fuentes de este Tema (2)</h3>
+        <div class="space-y-2 text-xs">
+          <div class="p-3 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">📷</span>
+              <div>
+                <strong class="text-slate-900 block font-semibold">Pizarra Aula 204</strong>
+                <span class="text-[10px] text-slate-500">Foto OCR • 09:50h</span>
+              </div>
+            </div>
+            <span class="text-[10px] text-emerald-600 font-bold">Procesado</span>
+          </div>
+
+          <div class="p-3 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">📄</span>
+              <div>
+                <strong class="text-slate-900 block font-semibold">Tema 4 - Libro Física.pdf</strong>
+                <span class="text-[10px] text-slate-500">Páginas 82 - 96</span>
+              </div>
+            </div>
+            <span class="text-[10px] text-emerald-600 font-bold">Indexado</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna 2: Apuntes Sintetizados (5 cols) -->
+    <div class="lg:col-span-5 space-y-4">
+      <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4">
+        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Resumen Estructurado</span>
+          <span class="text-[11px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded-md font-semibold">[Fuente 1: Pizarra Aula]</span>
+        </div>
+
+        <h2 class="text-lg font-black text-slate-900">Ley de Faraday-Henry & Regla de Lenz</h2>
+        <p class="text-xs text-slate-600 leading-relaxed">
+          La fuerza electromotriz inducida en cualquier circuito cerrado es igual a la derivada temporal del flujo magnético a través del circuito cambiada de signo.
+        </p>
+
+        <!-- Fórmula -->
+        <div class="font-mono text-sm bg-slate-50 p-4 rounded-2xl border border-slate-200 text-center font-bold text-slate-900">
+          ε = - \frac{d\Phi_B}{dt}
+        </div>
+
+        <div class="p-3 bg-purple-50/60 rounded-2xl border border-purple-100 text-xs space-y-1">
+          <strong class="text-purple-900">💡 Significado del Signo Negativo:</strong>
+          <p class="text-purple-700 text-[11px]">
+            La polaridad de la f.e.m. inducida genera una corriente cuyo campo magnético se opone siempre a la variación del flujo que la produce (Conservación de la energía).
+          </p>
+        </div>
+
+        <div class="flex gap-2 pt-2">
+          <button class="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl">Crear Ficha Leitner</button>
+          <button class="flex-1 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl shadow-sm">Examen Rápido (Test)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna 3: Tutor IA & Bloc de Notas con Stylus (3 cols) -->
+    <div class="lg:col-span-3 space-y-4">
+      <div class="bg-white border border-slate-200 rounded-3xl p-5 shadow-sm space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+            <span>🤖</span> Tutor IA Socrático
+          </h3>
+          <span class="text-[10px] text-slate-400">Gemini Flash</span>
+        </div>
+        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 text-xs text-slate-700">
+          "¿Qué ocurriría con la f.e.m. inducida si duplicas la velocidad a la que mueves el imán hacia la bobina?"
+        </div>
+        <div class="relative">
+          <input type="text" placeholder="Escribe tu hipótesis..." class="w-full text-xs p-3 pr-8 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:border-blue-500">
+          <button class="absolute right-2.5 top-2.5 text-blue-600 font-bold text-xs">→</button>
+        </div>
+      </div>
+
+      <!-- Bloc de Notas Stylus -->
+      <div class="bg-amber-50/60 border border-amber-200 rounded-3xl p-5 space-y-2">
+        <div class="flex items-center justify-between text-xs">
+          <strong class="text-amber-900 flex items-center gap-1.5"><span>✏️</span> Notas Stylus</strong>
+          <span class="text-[10px] text-amber-700">Modo Lápiz</span>
+        </div>
+        <textarea rows="4" placeholder="Anotaciones rápidas en tablet..." class="w-full text-xs p-3 rounded-2xl border border-amber-200 bg-white/90 text-slate-800 focus:outline-none resize-none"></textarea>
+      </div>
+    </div>
+  </main>
+
+  <!-- Barra Navegación Isla Tablet -->
+  <nav class="fixed bottom-4 inset-x-0 mx-auto max-w-2xl bg-white/95 backdrop-blur border border-slate-200 z-30 px-6 py-2.5 rounded-full shadow-xl flex justify-around items-center text-xs font-bold text-slate-500">
+    <a href="index.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>🏠</span><span>Mi Día</span></a>
+    <a href="deberes-examenes.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>📅</span><span>Agenda</span></a>
+    <a href="cuaderno-lm.html" class="flex items-center gap-2 text-blue-600 px-3 py-1.5 rounded-full bg-blue-50"><span>📚</span><span>Cuaderno LM</span></a>
+    <a href="pomodoro-flashcards.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>🧠</span><span>Estudio</span></a>
+    <a href="progreso-ebau.html" class="flex items-center gap-2 hover:text-slate-900 px-3 py-1.5"><span>📊</span><span>Progreso</span></a>
+  </nav>
 </body>
 </html>
