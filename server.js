@@ -51,15 +51,8 @@ const server = http.createServer((req, res) => {
   let safePath = path.normalize(decodeURIComponent(reqUrl)).replace(/^(\.\.[\/\\])+/, '');
   let filePath = path.join(BASE_DIR, safePath);
 
-  // Comprobar si existe el archivo
-  fs.stat(filePath, (err, stats) => {
-    if (err || !stats.isFile()) {
-      res.writeHead(404, { 'Content-Type': 'text/plain; charset=UTF-8' });
-      res.end('404 No encontrado');
-      return;
-    }
-
-    const ext = path.extname(filePath).toLowerCase();
+  const serveFile = (targetPath) => {
+    const ext = path.extname(targetPath).toLowerCase();
     const contentType = MIME_TYPES[ext] || 'application/octet-stream';
 
     // Cabeceras para Service Worker y PWA
@@ -70,8 +63,32 @@ const server = http.createServer((req, res) => {
     };
 
     res.writeHead(200, headers);
-    const stream = fs.createReadStream(filePath);
+    const stream = fs.createReadStream(targetPath);
     stream.pipe(res);
+  };
+
+  // Comprobar si existe el archivo o si es un directorio
+  fs.stat(filePath, (err, stats) => {
+    if (!err && stats.isDirectory()) {
+      const indexFile = path.join(filePath, 'index.html');
+      fs.stat(indexFile, (err2, stats2) => {
+        if (!err2 && stats2.isFile()) {
+          serveFile(indexFile);
+        } else {
+          res.writeHead(404, { 'Content-Type': 'text/plain; charset=UTF-8' });
+          res.end('404 No encontrado');
+        }
+      });
+      return;
+    }
+
+    if (err || !stats.isFile()) {
+      res.writeHead(404, { 'Content-Type': 'text/plain; charset=UTF-8' });
+      res.end('404 No encontrado');
+      return;
+    }
+
+    serveFile(filePath);
   });
 });
 
