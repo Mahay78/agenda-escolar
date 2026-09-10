@@ -561,6 +561,35 @@ function initNavigation() {
 
   // Inicializar navegación del cajón lateral (Drawer)
   initDrawerNavigation();
+
+  // Soporte para apertura directa de vistas por URL
+  handleUrlRouting();
+}
+
+function handleUrlRouting() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const tabParam = params.get('tab') || window.location.hash.replace('#', '');
+    const actionParam = params.get('action');
+
+    if (tabParam) {
+      setTimeout(() => switchTab(tabParam, params.get('subtab')), 60);
+    }
+
+    if (actionParam === 'camera') {
+      setTimeout(() => {
+        if (typeof openQuickCamera === 'function') openQuickCamera();
+        else document.getElementById('quick-action-camera')?.click();
+      }, 350);
+    } else if (actionParam === 'copilot') {
+      setTimeout(() => {
+        if (typeof window.openCopilotModal === 'function') window.openCopilotModal();
+        else document.getElementById('btn-open-copilot')?.click();
+      }, 350);
+    }
+  } catch (e) {
+    console.warn('Ruteo por URL no disponible:', e);
+  }
 }
 
 function initDrawerNavigation() {
