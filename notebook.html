@@ -915,12 +915,12 @@
               </div>
             </div>
             <div class="audio-controls">
-              <select id="audio-speed-select" class="audio-speed-select">
+              <select id="audio-speed-select" class="audio-speed-select" aria-label="Velocidad de reproducción del podcast">
                 <option value="1">1.0x</option>
                 <option value="1.2">1.2x</option>
                 <option value="1.4">1.4x</option>
               </select>
-              <button type="button" id="btn-audio-play-pause" class="btn-audio-play">
+              <button type="button" id="btn-audio-play-pause" class="btn-audio-play" aria-label="Reproducir o pausar podcast de estudio">
                 ▶️ Reproducir
               </button>
             </div>
@@ -989,26 +989,26 @@
 
       <form id="form-add-source">
         <div class="form-group">
-          <label class="form-label">Título de la Fuente *</label>
+          <label for="source-title-input" class="form-label">Título de la Fuente *</label>
           <input type="text" id="source-title-input" class="form-input" placeholder="Ej: Pizarra de Historia Tema 3, Apuntes de Biología Celular..." required />
         </div>
 
         <div class="form-group">
-          <label class="form-label">Tipo de Contenido</label>
-          <select id="source-type-select" class="form-input">
+          <label for="source-type-select" class="form-label">Tipo de Contenido</label>
+          <select id="source-type-select" class="form-input" aria-label="Tipo de Contenido">
             <option value="text">📝 Texto / Apuntes Escritos</option>
             <option value="image">📸 Imagen / Pizarra / Foto</option>
           </select>
         </div>
 
         <div class="form-group" id="group-source-text">
-          <label class="form-label">Texto o Contenido de la Lección *</label>
+          <label for="source-content-input" class="form-label">Texto o Contenido de la Lección *</label>
           <textarea id="source-content-input" class="form-textarea" placeholder="Pega aquí el contenido de tus apuntes, resumen del libro, fotocopia o lección del profesor..."></textarea>
         </div>
 
         <div class="form-group hidden" id="group-source-file">
-          <label class="form-label">Subir Fotografía o Pizarra</label>
-          <input type="file" id="source-file-input" accept="image/*" class="form-input" />
+          <label for="source-file-input" class="form-label">Subir Fotografía o Pizarra</label>
+          <input type="file" id="source-file-input" accept="image/*" class="form-input" aria-label="Subir Fotografía o Pizarra" />
         </div>
 
         <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px;">

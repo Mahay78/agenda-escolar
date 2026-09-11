@@ -3,12 +3,19 @@
  * Permite que la Agenda Escolar funcione sin conexión a internet en móvil, tablet y PC.
  */
 
-const CACHE_NAME = 'agenda-escolar-v3.5.2';
+const CACHE_NAME = 'agenda-escolar-v3.5.3';
 
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './notebook.html',
+  './deberes-examenes.html',
+  './horario-mochila.html',
+  './pomodoro-flashcards.html',
+  './progreso-ebau.html',
+  './portafolio-artistico.html',
+  './english-coach.html',
+  './ajustes-nube.html',
   './styles.css',
   './app.js',
   './ai-assistant.js',
@@ -26,11 +33,14 @@ const ASSETS_TO_CACHE = [
   './google-drive-sync.js',
   './firebase-sync.js',
   './flashcards.js',
+  './js/stitch-interactions.js',
   './libs/jspdf.umd.min.js',
   './libs/tesseract.min.js',
   './libs/worker.min.js',
   './manifest.webmanifest',
-  './icon.svg'
+  './icon.svg',
+  './assets/logo-stitch.png',
+  './assets/avatar-stitch.png'
 ];
 
 // Instalación del Service Worker: cachear recursos estáticos

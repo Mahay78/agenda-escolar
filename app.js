@@ -184,7 +184,7 @@ let deferredPrompt = null;
 // ==========================================================================
 // INICIALIZACIÓN
 // ==========================================================================
-document.addEventListener('DOMContentLoaded', async () => {
+async function bootApp() {
   try {
     // 1. Iniciar IndexedDB y datos iniciales
     await initDB();
@@ -237,7 +237,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.error('Error al inicializar la aplicación:', err);
     showToast('Error al inicializar la agenda: ' + err.message, 'error');
   }
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', bootApp);
+} else {
+  bootApp();
+}
 
 /**
  * Carga todos los datos de IndexedDB a la memoria

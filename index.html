@@ -600,7 +600,7 @@
           <button type="button" id="btn-import-flashcards" class="btn-secondary" style="width: auto;" title="Importar mazo desde archivo JSON">
             📥 Importar
           </button>
-          <input type="file" id="input-import-flashcards-file" accept=".json" style="display: none;" />
+          <input type="file" id="input-import-flashcards-file" accept=".json" style="display: none;" aria-label="Seleccionar archivo JSON para importar fichas" />
           <button type="button" id="btn-open-new-flashcard" class="btn-secondary" style="width: auto;">
             ➕ Nueva Ficha
           </button>
@@ -770,8 +770,8 @@
       <div id="flashcards-manage-view" class="hidden">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
           <div style="display: flex; gap: 8px; align-items: center;">
-            <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted);">Filtrar por nivel:</span>
-            <select id="flashcard-filter-box" class="form-select" style="width: auto; padding: 4px 10px; font-size: 0.82rem;">
+            <label for="flashcard-filter-box" style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted);">Filtrar por nivel:</label>
+            <select id="flashcard-filter-box" class="form-select" style="width: auto; padding: 4px 10px; font-size: 0.82rem;" aria-label="Filtrar fichas por nivel">
               <option value="all">Todas las cajas (1 a 5)</option>
               <option value="1">Caja 1: Aprendiendo (1 día)</option>
               <option value="2">Caja 2: Familiar (3 días)</option>
@@ -860,7 +860,7 @@
             </button>
           </div>
           <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-            <select id="select-ambient-sound" class="form-select" style="flex: 1; min-width: 150px; font-size: 0.82rem; padding: 6px 10px;">
+            <select id="select-ambient-sound" class="form-select" style="flex: 1; min-width: 150px; font-size: 0.82rem; padding: 6px 10px;" aria-label="Sonido ambiental de fondo para concentración">
               <option value="none">🔇 Sin sonido de fondo</option>
               <option value="rain">🌧️ Lluvia suave en ventana</option>
               <option value="waves">🌊 Olas de mar relajantes</option>
@@ -869,7 +869,7 @@
             </select>
             <div style="display: flex; align-items: center; gap: 6px; flex: 1; min-width: 120px;">
               <span style="font-size: 0.75rem; color: var(--text-muted);">🔊</span>
-              <input type="range" id="slider-ambient-volume" min="0" max="1" step="0.05" value="0.5" style="width: 100%; cursor: pointer;" title="Volumen de sonido ambiental" />
+              <input type="range" id="slider-ambient-volume" min="0" max="1" step="0.05" value="0.5" style="width: 100%; cursor: pointer;" title="Volumen de sonido ambiental" aria-label="Volumen del sonido ambiental" />
             </div>
           </div>
         </div>
@@ -1079,20 +1079,20 @@
 
         <div class="form-row" style="margin-top: 6px;">
           <div class="form-group">
-            <label class="form-label">Materia Optativa 1 (Nota 0 - 10)</label>
+            <label for="evau-m1-score" class="form-label">Materia Optativa 1 (Nota 0 - 10)</label>
             <div style="display: flex; gap: 6px;">
-              <input type="number" id="evau-m1-score" class="form-input" min="0" max="10" step="0.01" placeholder="Ej: 8.5" style="flex: 2;" />
-              <select id="evau-m1-weight" class="form-select" style="flex: 1;" title="Ponderación">
+              <input type="number" id="evau-m1-score" class="form-input" min="0" max="10" step="0.01" placeholder="Ej: 8.5" style="flex: 2;" aria-label="Nota Materia Optativa 1" />
+              <select id="evau-m1-weight" class="form-select" style="flex: 1;" title="Ponderación" aria-label="Ponderación Materia Optativa 1">
                 <option value="0.2">x 0.2</option>
                 <option value="0.1">x 0.1</option>
               </select>
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">Materia Optativa 2 (Nota 0 - 10)</label>
+            <label for="evau-m2-score" class="form-label">Materia Optativa 2 (Nota 0 - 10)</label>
             <div style="display: flex; gap: 6px;">
-              <input type="number" id="evau-m2-score" class="form-input" min="0" max="10" step="0.01" placeholder="Ej: 9.0" style="flex: 2;" />
-              <select id="evau-m2-weight" class="form-select" style="flex: 1;" title="Ponderación">
+              <input type="number" id="evau-m2-score" class="form-input" min="0" max="10" step="0.01" placeholder="Ej: 9.0" style="flex: 2;" aria-label="Nota Materia Optativa 2" />
+              <select id="evau-m2-weight" class="form-select" style="flex: 1;" title="Ponderación" aria-label="Ponderación Materia Optativa 2">
                 <option value="0.2">x 0.2</option>
                 <option value="0.1">x 0.1</option>
               </select>
@@ -1269,7 +1269,7 @@
           <button id="btn-import-backup-trigger" class="btn-secondary">
             <span>📤</span> Restaurar Copia
           </button>
-          <input type="file" id="backup-file-input" accept=".json" class="hidden" />
+          <input type="file" id="backup-file-input" accept=".json" class="hidden" aria-label="Seleccionar archivo JSON de copia de seguridad para restaurar" />
         </div>
       </div>
 
@@ -1466,33 +1466,33 @@
       <form id="task-form">
         <input type="hidden" id="task-id" />
         <div class="form-group">
-          <label class="form-label">Título del Deber o Trabajo *</label>
+          <label for="task-title-input" class="form-label">Título del Deber o Trabajo *</label>
           <div class="input-with-voice-btn">
             <input type="text" id="task-title-input" class="form-input" placeholder="Ej: Ejercicios 3, 4 y 5 pág 78" required />
-            <button type="button" class="btn-voice-dictate" data-voice-target="task-title-input" title="Dictar por voz 🎙️">
+            <button type="button" class="btn-voice-dictate" data-voice-target="task-title-input" title="Dictar por voz 🎙️" aria-label="Dictar título de la tarea por voz">
               <span>🎙️</span>
             </button>
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Asignatura *</label>
-            <select id="task-subject-select" class="form-select" required></select>
+            <label for="task-subject-select" class="form-label">Asignatura *</label>
+            <select id="task-subject-select" class="form-select" required aria-label="Asignatura de la tarea"></select>
           </div>
           <div class="form-group">
-            <label class="form-label">Fecha de Entrega *</label>
+            <label for="task-due-date" class="form-label">Fecha de Entrega *</label>
             <div class="quick-date-row">
               <button type="button" class="btn-quick-date" data-date-target="task-due-date" data-days="0">Hoy</button>
               <button type="button" class="btn-quick-date active" data-date-target="task-due-date" data-days="1">Mañana</button>
               <button type="button" class="btn-quick-date" data-date-target="task-due-date" data-days="2">Pasado</button>
               <button type="button" class="btn-quick-date" data-date-target="task-due-date" data-days="7">+1 sem</button>
             </div>
-            <input type="date" id="task-due-date" class="form-input" required />
+            <input type="date" id="task-due-date" class="form-input" required aria-label="Fecha de Entrega" />
           </div>
         </div>
         <div class="form-group">
-          <label class="form-label">Prioridad</label>
-          <select id="task-priority-select" class="form-select">
+          <label for="task-priority-select" class="form-label">Prioridad</label>
+          <select id="task-priority-select" class="form-select" aria-label="Prioridad de la tarea">
             <option value="baja">Baja</option>
             <option value="media" selected>Normal / Media</option>
             <option value="alta">Urgente / Alta</option>
@@ -1500,8 +1500,8 @@
         </div>
         <div class="form-group">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <label class="form-label" style="margin-bottom: 0;">Descripción / Notas adicionales</label>
-            <button type="button" class="btn-voice-dictate btn-voice-dictate-sm" data-voice-target="task-desc-input" title="Dictar descripción por voz 🎙️">
+            <label for="task-desc-input" class="form-label" style="margin-bottom: 0;">Descripción / Notas adicionales</label>
+            <button type="button" class="btn-voice-dictate btn-voice-dictate-sm" data-voice-target="task-desc-input" title="Dictar descripción por voz 🎙️" aria-label="Dictar descripción de la tarea por voz">
               <span>🎙️ Dictar</span>
             </button>
           </div>
@@ -1571,34 +1571,34 @@
       <form id="exam-form">
         <input type="hidden" id="exam-id" />
         <div class="form-group">
-          <label class="form-label">Título / Temario *</label>
+          <label for="exam-title-input" class="form-label">Título / Temario *</label>
           <div class="input-with-voice-btn">
             <input type="text" id="exam-title-input" class="form-input" placeholder="Ej: Examen Tema 3 y 4: Ecuaciones" required />
-            <button type="button" class="btn-voice-dictate" data-voice-target="exam-title-input" title="Dictar por voz 🎙️">
+            <button type="button" class="btn-voice-dictate" data-voice-target="exam-title-input" title="Dictar por voz 🎙️" aria-label="Dictar título del examen por voz">
               <span>🎙️</span>
             </button>
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Asignatura *</label>
-            <select id="exam-subject-select" class="form-select" required></select>
+            <label for="exam-subject-select" class="form-label">Asignatura *</label>
+            <select id="exam-subject-select" class="form-select" required aria-label="Asignatura del examen"></select>
           </div>
           <div class="form-group">
-            <label class="form-label">Fecha del Examen *</label>
+            <label for="exam-date-input" class="form-label">Fecha del Examen *</label>
             <div class="quick-date-row">
               <button type="button" class="btn-quick-date" data-date-target="exam-date-input" data-days="1">Mañana</button>
               <button type="button" class="btn-quick-date" data-date-target="exam-date-input" data-days="3">En 3 d</button>
               <button type="button" class="btn-quick-date" data-date-target="exam-date-input" data-days="7">En 1 sem</button>
               <button type="button" class="btn-quick-date" data-date-target="exam-date-input" data-days="14">En 2 sem</button>
             </div>
-            <input type="date" id="exam-date-input" class="form-input" required />
+            <input type="date" id="exam-date-input" class="form-input" required aria-label="Fecha del Examen" />
           </div>
         </div>
         <div class="form-group">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <label class="form-label" style="margin-bottom: 0;">Temas a estudiar / Contenido</label>
-            <button type="button" class="btn-voice-dictate btn-voice-dictate-sm" data-voice-target="exam-topics-input" title="Dictar temario por voz 🎙️">
+            <label for="exam-topics-input" class="form-label" style="margin-bottom: 0;">Temas a estudiar / Contenido</label>
+            <button type="button" class="btn-voice-dictate btn-voice-dictate-sm" data-voice-target="exam-topics-input" title="Dictar temario por voz 🎙️" aria-label="Dictar temario del examen por voz">
               <span>🎙️ Dictar</span>
             </button>
           </div>
@@ -1650,12 +1650,12 @@
         <input type="hidden" id="grade-id" />
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Asignatura *</label>
-            <select id="grade-subject-select" class="form-select" required></select>
+            <label for="grade-subject-select" class="form-label">Asignatura *</label>
+            <select id="grade-subject-select" class="form-select" required aria-label="Asignatura de la nota"></select>
           </div>
           <div class="form-group">
-            <label class="form-label">Trimestre *</label>
-            <select id="grade-term-select" class="form-select">
+            <label for="grade-term-select" class="form-label">Trimestre *</label>
+            <select id="grade-term-select" class="form-select" aria-label="Trimestre">
               <option value="1">1º Trimestre</option>
               <option value="2">2º Trimestre</option>
               <option value="3">3º Trimestre</option>
@@ -1663,31 +1663,31 @@
           </div>
         </div>
         <div class="form-group">
-          <label class="form-label">Concepto / Examen / Trabajo *</label>
+          <label for="grade-title-input" class="form-label">Concepto / Examen / Trabajo *</label>
           <input type="text" id="grade-title-input" class="form-input" placeholder="Ej: Control de Polinomios" required />
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Tipo de Evaluación (Ponderación)</label>
-            <select id="grade-type-select" class="form-select">
+            <label for="grade-type-select" class="form-label">Tipo de Evaluación (Ponderación)</label>
+            <select id="grade-type-select" class="form-select" aria-label="Tipo de Evaluación y Ponderación">
               <option value="exam" selected>📝 Examen / Control (70%)</option>
               <option value="work">📂 Trabajo / Práctica (20%)</option>
               <option value="attitude">🙋 Actitud / Participación / Cuaderno (10%)</option>
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label">Peso Personalizado (%)</label>
-            <input type="number" id="grade-weight-input" class="form-input" min="1" max="100" placeholder="Ej: 70" />
+            <label for="grade-weight-input" class="form-label">Peso Personalizado (%)</label>
+            <input type="number" id="grade-weight-input" class="form-input" min="1" max="100" placeholder="Ej: 70" aria-label="Peso personalizado en porcentaje" />
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Nota (0 - 10) *</label>
-            <input type="number" id="grade-score-input" class="form-input" min="0" max="10" step="0.05" placeholder="Ej: 8.5" required />
+            <label for="grade-score-input" class="form-label">Nota (0 - 10) *</label>
+            <input type="number" id="grade-score-input" class="form-input" min="0" max="10" step="0.05" placeholder="Ej: 8.5" required aria-label="Nota numérica de 0 a 10" />
           </div>
           <div class="form-group">
-            <label class="form-label">Fecha</label>
-            <input type="date" id="grade-date-input" class="form-input" />
+            <label for="grade-date-input" class="form-label">Fecha</label>
+            <input type="date" id="grade-date-input" class="form-input" aria-label="Fecha de la calificación" />
           </div>
         </div>
         <button type="submit" class="btn-primary">💾 Guardar Calificación</button>
@@ -1706,13 +1706,13 @@
         <input type="hidden" id="slot-day" />
         <input type="hidden" id="slot-index" />
         <div class="form-group">
-          <label class="form-label">Asignatura</label>
-          <select id="slot-subject-select" class="form-select">
+          <label for="slot-subject-select" class="form-label">Asignatura</label>
+          <select id="slot-subject-select" class="form-select" aria-label="Asignatura de la franja horaria">
             <option value="">-- Sin Asignatura (Hora Libre) --</option>
           </select>
         </div>
         <div class="form-group">
-          <label class="form-label">Aula / Ubicación (Opcional)</label>
+          <label for="slot-classroom-input" class="form-label">Aula / Ubicación (Opcional)</label>
           <input type="text" id="slot-classroom-input" class="form-input" placeholder="Ej: Aula 201 o Gimnasio" />
         </div>
         <button type="submit" class="btn-primary">💾 Guardar en Horario</button>
@@ -1730,21 +1730,21 @@
       <form id="subject-form">
         <input type="hidden" id="subject-id" />
         <div class="form-group">
-          <label class="form-label">Nombre de la Asignatura *</label>
+          <label for="subject-name-input" class="form-label">Nombre de la Asignatura *</label>
           <input type="text" id="subject-name-input" class="form-input" placeholder="Ej: Matemáticas" required />
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Icono / Emoji</label>
+            <label for="subject-icon-input" class="form-label">Icono / Emoji</label>
             <div class="icon-input-row">
               <span id="subject-icon-preview" class="icon-preview-badge">📖</span>
-              <input type="text" id="subject-icon-input" class="form-input icon-code-input" placeholder="📖" maxlength="4" />
-              <button type="button" id="btn-toggle-icon-picker" class="btn-picker-toggle" title="Mostrar/Ocultar catálogo">🎨 Catálogo...</button>
+              <input type="text" id="subject-icon-input" class="form-input icon-code-input" placeholder="📖" maxlength="4" aria-label="Icono o Emoji de la asignatura" />
+              <button type="button" id="btn-toggle-icon-picker" class="btn-picker-toggle" title="Mostrar/Ocultar catálogo" aria-label="Mostrar u ocultar catálogo de iconos">🎨 Catálogo...</button>
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">Color Identificativo</label>
-            <input type="color" id="subject-color-input" class="form-input" value="#3b82f6" style="height: 42px; padding: 4px;" />
+            <label for="subject-color-input" class="form-label">Color Identificativo</label>
+            <input type="color" id="subject-color-input" class="form-input" value="#3b82f6" style="height: 42px; padding: 4px;" aria-label="Color identificativo de la asignatura" />
           </div>
         </div>
 
@@ -1799,16 +1799,16 @@
           <button type="button" class="zoom-pill-btn active" data-zoom="1">1x</button>
           <button type="button" class="zoom-pill-btn" data-zoom="2">2x</button>
           <button type="button" class="zoom-pill-btn" data-zoom="3">3x</button>
-          <input type="range" id="camera-zoom-slider" class="zoom-slider" min="1" max="4" step="0.1" value="1" title="Ajuste fino de zoom" />
+          <input type="range" id="camera-zoom-slider" class="zoom-slider" min="1" max="4" step="0.1" value="1" title="Ajuste fino de zoom" aria-label="Ajuste fino de zoom" />
           <span id="camera-zoom-text" class="zoom-level-badge">1.0x</span>
         </div>
       </div>
 
       <!-- Controles de captura en vivo -->
       <div id="camera-controls" class="camera-bar">
-        <button id="btn-switch-camera" class="btn-icon" title="Cambiar cámara delantera/trasera">🔄</button>
-        <button id="btn-capture-photo" class="btn-capture" title="Tomar Fotografía (con Zoom)"></button>
-        <button id="btn-upload-gallery" class="btn-icon" title="Subir desde la Galería">🖼️</button>
+        <button id="btn-switch-camera" class="btn-icon" title="Cambiar cámara delantera/trasera" aria-label="Cambiar cámara delantera o trasera">🔄</button>
+        <button id="btn-capture-photo" class="btn-capture" title="Tomar Fotografía (con Zoom)" aria-label="Tomar Fotografía con Zoom"></button>
+        <button id="btn-upload-gallery" class="btn-icon" title="Subir desde la Galería" aria-label="Subir desde la Galería">🖼️</button>
       </div>
 
       <!-- Controles de confirmación tras captura con opción de zoom -->
@@ -1819,7 +1819,7 @@
       </div>
 
       <!-- Input invisible para selección de archivo / cámara nativa -->
-      <input type="file" id="camera-file-input" accept="image/*" capture="environment" class="hidden" />
+      <input type="file" id="camera-file-input" accept="image/*" capture="environment" class="hidden" aria-label="Seleccionar archivo de imagen para cámara" />
     </div>
   </div>
 
@@ -1832,7 +1832,7 @@
           <button type="button" id="btn-viewer-ocr" class="btn-action-small" style="background: var(--success); color: #fff; font-size: 0.85rem; padding: 4px 10px;" title="Extraer texto de esta foto con OCR">🔍 Extraer Texto (OCR)</button>
           <button type="button" id="btn-viewer-annotate" class="btn-action-small" style="background: var(--primary); color: #fff; font-size: 0.85rem; padding: 4px 10px;">✏️ Anotar / Dibujar</button>
           <button type="button" id="btn-viewer-delete" class="btn-action-small danger" style="font-size: 0.85rem; padding: 4px 10px;" title="Eliminar esta fotografía">🗑️ Eliminar</button>
-          <button id="btn-close-viewer" class="btn-close" style="color: #fff;">&times;</button>
+          <button id="btn-close-viewer" class="btn-close" style="color: #fff;" aria-label="Cerrar visor">&times;</button>
         </div>
       </div>
       <img id="image-viewer-img" src="" alt="Foto en alta resolución" />
@@ -1857,8 +1857,8 @@
       <!-- Panel 1: WhatsApp -->
       <div id="share-panel-wa">
         <div class="form-group">
-          <label class="form-label">¿Qué deseas enviar por WhatsApp?</label>
-          <select id="wa-content-type" class="form-select">
+          <label for="wa-content-type" class="form-label">¿Qué deseas enviar por WhatsApp?</label>
+          <select id="wa-content-type" class="form-select" aria-label="Tipo de contenido para WhatsApp">
             <option value="tasks_tomorrow">📅 Deberes para mañana</option>
             <option value="tasks_today">🚨 Deberes para hoy</option>
             <option value="tasks_all">📋 Todas las tareas pendientes</option>
@@ -1868,8 +1868,8 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">Vista previa del mensaje:</label>
-          <textarea id="wa-preview-text" class="form-textarea" rows="7" placeholder="Generando mensaje..."></textarea>
+          <label for="wa-preview-text" class="form-label">Vista previa del mensaje:</label>
+          <textarea id="wa-preview-text" class="form-textarea" rows="7" placeholder="Generando mensaje..." aria-label="Vista previa del mensaje para WhatsApp"></textarea>
         </div>
 
         <div style="display: flex; gap: 10px;">
@@ -1885,8 +1885,8 @@
       <!-- Panel 2: Generar Código QR -->
       <div id="share-panel-qr" class="hidden">
         <div class="form-group">
-          <label class="form-label">Contenido del Código QR:</label>
-          <select id="qr-content-type" class="form-select">
+          <label for="qr-content-type" class="form-label">Contenido del Código QR:</label>
+          <select id="qr-content-type" class="form-select" aria-label="Contenido del Código QR">
             <option value="app_url">🌐 Abrir / Instalar Agenda en el móvil</option>
             <option value="tasks_tomorrow">📅 Deberes para mañana</option>
             <option value="tasks_today">🚨 Deberes para hoy</option>
@@ -1933,17 +1933,17 @@
       <form id="material-form">
         <input type="hidden" id="material-id" />
         <div class="form-group">
-          <label class="form-label">Nombre del Material o Herramienta *</label>
+          <label for="material-name-input" class="form-label">Nombre del Material o Herramienta *</label>
           <input type="text" id="material-name-input" class="form-input" placeholder="Ej: Portaminas 0.5mm 2B" required />
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Asignatura Asociada</label>
-            <select id="material-subject-select" class="form-select"></select>
+            <label for="material-subject-select" class="form-label">Asignatura Asociada</label>
+            <select id="material-subject-select" class="form-select" aria-label="Asignatura Asociada"></select>
           </div>
           <div class="form-group">
-            <label class="form-label">Icono / Emoji</label>
-            <input type="text" id="material-icon-input" class="form-input" placeholder="✏️" maxlength="4" />
+            <label for="material-icon-input" class="form-label">Icono / Emoji</label>
+            <input type="text" id="material-icon-input" class="form-input" placeholder="✏️" maxlength="4" aria-label="Icono o Emoji del material" />
           </div>
         </div>
         <button type="submit" class="btn-primary">💾 Guardar Material</button>
@@ -1961,22 +1961,22 @@
       <form id="project-form">
         <input type="hidden" id="project-id" />
         <div class="form-group">
-          <label class="form-label">Título de la Obra o Proyecto *</label>
+          <label for="project-title-input" class="form-label">Título de la Obra o Proyecto *</label>
           <div class="input-with-voice-btn">
             <input type="text" id="project-title-input" class="form-input" placeholder="Ej: Escultura de escayola o Lámina A3" required />
-            <button type="button" class="btn-voice-dictate" data-voice-target="project-title-input" title="Dictar por voz 🎙️">
+            <button type="button" class="btn-voice-dictate" data-voice-target="project-title-input" title="Dictar por voz 🎙️" aria-label="Dictar título del proyecto por voz">
               <span>🎙️</span>
             </button>
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Asignatura *</label>
-            <select id="project-subject-select" class="form-select" required></select>
+            <label for="project-subject-select" class="form-label">Asignatura *</label>
+            <select id="project-subject-select" class="form-select" required aria-label="Asignatura del proyecto"></select>
           </div>
           <div class="form-group">
-            <label class="form-label">Fase de la Obra</label>
-            <select id="project-status-select" class="form-select">
+            <label for="project-status-select" class="form-label">Fase de la Obra</label>
+            <select id="project-status-select" class="form-select" aria-label="Fase de la Obra">
               <option value="boceto">✏️ Fase 1: Boceto / Idea</option>
               <option value="proceso" selected>⏳ Fase 2: En Proceso / Taller</option>
               <option value="terminado">✅ Fase 3: Obra Terminada</option>
@@ -1986,18 +1986,18 @@
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Técnica / Soporte</label>
+            <label for="project-technique-input" class="form-label">Técnica / Soporte</label>
             <input type="text" id="project-technique-input" class="form-input" placeholder="Ej: Acrílico sobre tabla, Carboncillo..." />
           </div>
           <div class="form-group">
-            <label class="form-label">Fecha Límite de Entrega</label>
-            <input type="date" id="project-due-date" class="form-input" />
+            <label for="project-due-date" class="form-label">Fecha Límite de Entrega</label>
+            <input type="date" id="project-due-date" class="form-input" aria-label="Fecha Límite de Entrega" />
           </div>
         </div>
         <div class="form-group">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <label class="form-label" style="margin-bottom: 0;">Descripción y Criterios del Profesor</label>
-            <button type="button" class="btn-voice-dictate btn-voice-dictate-sm" data-voice-target="project-desc-input" title="Dictar descripción por voz 🎙️">
+            <label for="project-desc-input" class="form-label" style="margin-bottom: 0;">Descripción y Criterios del Profesor</label>
+            <button type="button" class="btn-voice-dictate btn-voice-dictate-sm" data-voice-target="project-desc-input" title="Dictar descripción por voz 🎙️" aria-label="Dictar descripción por voz">
               <span>🎙️ Dictar</span>
             </button>
           </div>
@@ -2057,21 +2057,21 @@
         </div>
 
         <div style="display: flex; gap: 6px; align-items: center;">
-          <button type="button" class="color-dot active" data-anno-color="#ef4444" style="width: 24px; height: 24px; border-radius: 50%; background: #ef4444; border: 2px solid #fff; cursor: pointer;"></button>
-          <button type="button" class="color-dot" data-anno-color="#3b82f6" style="width: 24px; height: 24px; border-radius: 50%; background: #3b82f6; border: 2px solid transparent; cursor: pointer;"></button>
-          <button type="button" class="color-dot" data-anno-color="#10b981" style="width: 24px; height: 24px; border-radius: 50%; background: #10b981; border: 2px solid transparent; cursor: pointer;"></button>
-          <button type="button" class="color-dot" data-anno-color="#eab308" style="width: 24px; height: 24px; border-radius: 50%; background: #eab308; border: 2px solid transparent; cursor: pointer;"></button>
-          <button type="button" class="color-dot" data-anno-color="#ffffff" style="width: 24px; height: 24px; border-radius: 50%; background: #ffffff; border: 2px solid transparent; cursor: pointer;"></button>
+          <button type="button" class="color-dot active" data-anno-color="#ef4444" style="width: 24px; height: 24px; border-radius: 50%; background: #ef4444; border: 2px solid #fff; cursor: pointer;" title="Rojo" aria-label="Color Rojo"></button>
+          <button type="button" class="color-dot" data-anno-color="#3b82f6" style="width: 24px; height: 24px; border-radius: 50%; background: #3b82f6; border: 2px solid transparent; cursor: pointer;" title="Azul" aria-label="Color Azul"></button>
+          <button type="button" class="color-dot" data-anno-color="#10b981" style="width: 24px; height: 24px; border-radius: 50%; background: #10b981; border: 2px solid transparent; cursor: pointer;" title="Verde" aria-label="Color Verde"></button>
+          <button type="button" class="color-dot" data-anno-color="#eab308" style="width: 24px; height: 24px; border-radius: 50%; background: #eab308; border: 2px solid transparent; cursor: pointer;" title="Amarillo" aria-label="Color Amarillo"></button>
+          <button type="button" class="color-dot" data-anno-color="#ffffff" style="width: 24px; height: 24px; border-radius: 50%; background: #ffffff; border: 2px solid transparent; cursor: pointer;" title="Blanco" aria-label="Color Blanco"></button>
         </div>
 
         <div style="display: flex; gap: 8px; align-items: center;">
-          <select id="anno-line-width" class="form-select" style="padding: 4px 8px; font-size: 0.8rem; width: auto;">
+          <select id="anno-line-width" class="form-select" style="padding: 4px 8px; font-size: 0.8rem; width: auto;" aria-label="Grosor del trazo de anotación">
             <option value="2">2px Fino</option>
             <option value="4" selected>4px Medio</option>
             <option value="8">8px Grueso</option>
             <option value="14">14px Resaltador</option>
           </select>
-          <button type="button" id="btn-anno-undo" class="btn-action-small" title="Deshacer último trazo">↩️ Deshacer</button>
+          <button type="button" id="btn-anno-undo" class="btn-action-small" title="Deshacer último trazo" aria-label="Deshacer último trazo">↩️ Deshacer</button>
         </div>
       </div>
 
@@ -2336,8 +2336,8 @@
 
       <!-- Selector de Asignatura -->
       <div class="form-group" style="margin-bottom: 14px;">
-        <label class="form-label">Seleccionar Asignatura</label>
-        <select id="resources-subject-select" class="form-select">
+        <label for="resources-subject-select" class="form-label">Seleccionar Asignatura</label>
+        <select id="resources-subject-select" class="form-select" aria-label="Seleccionar Asignatura">
           <!-- Asignaturas cargadas dinámicamente -->
         </select>
       </div>
@@ -2347,12 +2347,12 @@
         <h4 style="margin: 0 0 10px 0; font-size: 0.9rem; color: var(--text-main);">➕ Añadir Nuevo Enlace o Recurso</h4>
         <div class="form-row">
           <div class="form-group" style="flex: 2;">
-            <label class="form-label">Título del Recurso</label>
+            <label for="resource-title" class="form-label">Título del Recurso</label>
             <input type="text" id="resource-title" class="form-input" placeholder="Ej: Google Classroom, Apuntes Drive, Vídeos" required />
           </div>
           <div class="form-group" style="flex: 1;">
-            <label class="form-label">Tipo</label>
-            <select id="resource-type" class="form-select">
+            <label for="resource-type" class="form-label">Tipo</label>
+            <select id="resource-type" class="form-select" aria-label="Tipo de Recurso">
               <option value="classroom">🏫 Classroom</option>
               <option value="drive">📁 Drive</option>
               <option value="moodle">🎓 Moodle / Aula</option>
@@ -2362,7 +2362,7 @@
           </div>
         </div>
         <div class="form-group">
-          <label class="form-label">Dirección Web (URL)</label>
+          <label for="resource-url" class="form-label">Dirección Web (URL)</label>
           <input type="url" id="resource-url" class="form-input" placeholder="https://..." required />
         </div>
         <button type="submit" class="btn-primary" style="width: auto; padding: 6px 14px; font-size: 0.85rem;">
@@ -2507,14 +2507,14 @@
         <input type="hidden" id="flashcard-id" />
 
         <div class="form-group">
-          <label class="form-label">Asignatura *</label>
-          <select id="flashcard-subject-select" class="form-select" required></select>
+          <label for="flashcard-subject-select" class="form-label">Asignatura *</label>
+          <select id="flashcard-subject-select" class="form-select" required aria-label="Asignatura de la ficha"></select>
         </div>
 
         <div class="form-group">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <label class="form-label" style="margin-bottom: 0;">Anverso: Pregunta / Concepto / Término *</label>
-            <button type="button" class="btn-voice-dictate btn-voice-dictate-sm" data-voice-target="flashcard-front-input" title="Dictar pregunta por voz 🎙️">
+            <label for="flashcard-front-input" class="form-label" style="margin-bottom: 0;">Anverso: Pregunta / Concepto / Término *</label>
+            <button type="button" class="btn-voice-dictate btn-voice-dictate-sm" data-voice-target="flashcard-front-input" title="Dictar pregunta por voz 🎙️" aria-label="Dictar pregunta de la ficha por voz">
               <span>🎙️ Dictar</span>
             </button>
           </div>
@@ -2523,12 +2523,12 @@
 
         <div class="form-group">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <label class="form-label" style="margin-bottom: 0;">Reverso: Respuesta / Explicación / Definición *</label>
-            <button type="button" class="btn-voice-dictate btn-voice-dictate-sm" data-voice-target="flashcard-back-input" title="Dictar respuesta por voz 🎙️">
+            <label for="flashcard-back-input" class="form-label" style="margin-bottom: 0;">Reverso: Respuesta / Explicación / Definición *</label>
+            <button type="button" class="btn-voice-dictate btn-voice-dictate-sm" data-voice-target="flashcard-back-input" title="Dictar respuesta por voz 🎙️" aria-label="Dictar respuesta de la ficha por voz">
               <span>🎙️ Dictar</span>
             </button>
           </div>
-          <textarea id="flashcard-back-input" class="form-textarea" rows="4" placeholder="Ej: Disposición armónica de las partes del cuerpo humano en la que el peso descansa en una pierna mientras la otra permanece relajada..." required></textarea>
+          <textarea id="flashcard-back-input" class="form-textarea" rows="3" placeholder="Ej: Disposición armónica de las partes del cuerpo humano que rompe la ley de frontalidad..." required></textarea>
         </div>
 
         <div class="form-group">
@@ -2648,17 +2648,17 @@
         </div>
 
         <form id="copilot-form" class="copilot-form">
-          <button type="button" id="btn-copilot-voice" class="btn-copilot-round btn-copilot-voice" title="Hablar por voz (Micrófono) 🎙️">
+          <button type="button" id="btn-copilot-voice" class="btn-copilot-round btn-copilot-voice" title="Hablar por voz (Micrófono) 🎙️" aria-label="Hablar por voz con el Copiloto">
             🎙️
           </button>
-          <button type="button" id="btn-copilot-attach" class="btn-copilot-round btn-copilot-voice" title="Adjuntar foto de apuntes 📸">
+          <button type="button" id="btn-copilot-attach" class="btn-copilot-round btn-copilot-voice" title="Adjuntar foto de apuntes 📸" aria-label="Adjuntar foto de apuntes para el Copiloto">
             📸
           </button>
-          <input type="file" id="copilot-file-input" accept="image/*" class="hidden" />
+          <input type="file" id="copilot-file-input" accept="image/*" class="hidden" aria-label="Seleccionar archivo de imagen para el Copiloto" />
 
-          <textarea id="copilot-input-text" class="copilot-textarea" rows="1" placeholder="Pregúntame algo, pide una tarea o investiga..."></textarea>
+          <textarea id="copilot-input-text" class="copilot-textarea" rows="1" placeholder="Pregúntame algo, pide una tarea o investiga..." aria-label="Mensaje o pregunta para el Copiloto Escolar IA"></textarea>
           
-          <button type="submit" id="btn-copilot-send" class="btn-copilot-round btn-copilot-send" title="Enviar mensaje">
+          <button type="submit" id="btn-copilot-send" class="btn-copilot-round btn-copilot-send" title="Enviar mensaje" aria-label="Enviar mensaje al Copiloto">
             ➤
           </button>
         </form>
@@ -2677,12 +2677,12 @@
       <form id="flashcard-ai-form">
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Asignatura *</label>
-            <select id="flashcard-ai-subject-select" class="form-select" required></select>
+            <label for="flashcard-ai-subject-select" class="form-label">Asignatura *</label>
+            <select id="flashcard-ai-subject-select" class="form-select" required aria-label="Asignatura para generar fichas"></select>
           </div>
           <div class="form-group">
-            <label class="form-label">Cantidad de Fichas</label>
-            <select id="flashcard-ai-count-select" class="form-select">
+            <label for="flashcard-ai-count-select" class="form-label">Cantidad de Fichas</label>
+            <select id="flashcard-ai-count-select" class="form-select" aria-label="Cantidad de fichas a generar">
               <option value="3">3 Fichas clave</option>
               <option value="5" selected>5 Fichas (Recomendado)</option>
               <option value="8">8 Fichas completas</option>
@@ -2691,14 +2691,14 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">Tema o Título del Temario (Opcional)</label>
+          <label for="flashcard-ai-topic-input" class="form-label">Tema o Título del Temario (Opcional)</label>
           <input type="text" id="flashcard-ai-topic-input" class="form-input" placeholder="Ej: La Ilustración, El Teorema de Pitágoras, Órganos celulares..." />
         </div>
 
         <div class="form-group">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <label class="form-label" style="margin-bottom: 0;">Apuntes, Pizarra o Texto de Estudio *</label>
-            <button type="button" class="btn-voice-dictate btn-voice-dictate-sm" data-voice-target="flashcard-ai-text-input" title="Dictar apuntes por voz 🎙️">
+            <label for="flashcard-ai-text-input" class="form-label" style="margin-bottom: 0;">Apuntes, Pizarra o Texto de Estudio *</label>
+            <button type="button" class="btn-voice-dictate btn-voice-dictate-sm" data-voice-target="flashcard-ai-text-input" title="Dictar apuntes por voz 🎙️" aria-label="Dictar apuntes por voz">
               <span>🎙️ Dictar</span>
             </button>
           </div>
