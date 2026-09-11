@@ -386,7 +386,13 @@ window.applyTheme = async function (themeName, notify = true) {
 
   if (!AppState.studentInfo) AppState.studentInfo = {};
   AppState.studentInfo.theme = themeName;
-  await setSetting('studentInfo', AppState.studentInfo);
+  try {
+    if (typeof setSetting === 'function') {
+      await setSetting('studentInfo', AppState.studentInfo);
+    }
+  } catch (err) {
+    console.warn('Persistencia de tema:', err);
+  }
 
   const themeSelect = document.getElementById('setting-theme-select');
   if (themeSelect && themeSelect.value !== themeName) {
@@ -410,10 +416,9 @@ window.applyTheme = async function (themeName, notify = true) {
  * Conmuta entre los temas principales al pulsar el botón del encabezado
  */
 window.toggleTheme = async function () {
-  const current = AppState.studentInfo?.theme || 'dark';
-  const cycle = ['dark', 'light', 'oled', 'lavender', 'forest', 'pastel'];
-  const nextIdx = (cycle.indexOf(current) + 1) % cycle.length;
-  await window.applyTheme(cycle[nextIdx], true);
+  const isLight = document.body.classList.contains('light-theme') || (window.AppState?.studentInfo?.theme === 'light');
+  const nextTheme = isLight ? 'dark' : 'light';
+  await window.applyTheme(nextTheme, true);
 };
 
 /**
@@ -488,6 +493,7 @@ const TAB_HIERARCHY = {
   'tab-study': { parent: 'tab-study', subtab: 'tab-flashcards' },
   'tab-flashcards': { parent: 'tab-study', subtab: 'tab-flashcards' },
   'tab-notebook-embed': { parent: 'tab-study', subtab: 'tab-notebook-embed' },
+  'tab-english-coach': { parent: 'tab-study', subtab: 'tab-english-coach' },
   'tab-pomodoro': { parent: 'tab-study', subtab: 'tab-pomodoro' },
   'tab-gallery': { parent: 'tab-study', subtab: 'tab-gallery' },
   'tab-mocktest': { parent: 'tab-study', subtab: 'tab-mocktest' },

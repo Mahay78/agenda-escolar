@@ -4640,3 +4640,565 @@ body.theme-pastel .heatmap-cell {
   color: var(--text-muted);
 }
 
+
+
+
+
+
+
+
+
+/* ==========================================================================
+   OPEN DESIGN - SISTEMA DUAL THEME PROFESIONAL (OSCURO 🌙 & CLARO ☀️)
+   ========================================================================== */
+
+/* 1. TEMA OSCURO POR DEFECTO (DARK OBSIDIAN / SLATE) */
+:root {
+  --bg-main: #090d16;
+  --bg-card: #111726;
+  --bg-card-hover: #162035;
+  --bg-surface: #141c2e;
+  --bg-input: #0d1322;
+  --bg-header: rgba(9, 13, 22, 0.92);
+  --bg-nav: rgba(9, 13, 22, 0.94);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-subtle: rgba(255, 255, 255, 0.04);
+  --border-focus: #3b82f6;
+
+  --primary: #3b82f6;
+  --primary-hover: #2563eb;
+  --primary-light: rgba(59, 130, 246, 0.12);
+  --primary-border: rgba(59, 130, 246, 0.28);
+  
+  --success: #10b981;
+  --success-bg: rgba(16, 185, 129, 0.12);
+  --warning: #f59e0b;
+  --warning-bg: rgba(245, 158, 11, 0.12);
+  --danger: #ef4444;
+  --danger-bg: rgba(239, 68, 68, 0.12);
+  --accent-purple: #8b5cf6;
+  --accent-purple-bg: rgba(139, 92, 246, 0.12);
+
+  --text-main: #f3f4f6;
+  --text-muted: #9ca3af;
+  --text-dim: #6b7280;
+
+  --hero-bg: linear-gradient(135deg, #101726 0%, #162035 100%);
+  --hero-border: rgba(255, 255, 255, 0.08);
+  --hero-text: #ffffff;
+  --hero-badge-bg: rgba(255, 255, 255, 0.06);
+  --hero-badge-border: rgba(255, 255, 255, 0.12);
+
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.5);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.4), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+}
+
+/* 2. TEMA CLARO LUMINOSO (LIGHT CLEAN CANVAS) */
+body.light-theme,
+body.theme-light {
+  --bg-main: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f1f5f9;
+  --bg-surface: #f1f5f9;
+  --bg-input: #ffffff;
+  --bg-header: rgba(248, 250, 252, 0.94);
+  --bg-nav: rgba(255, 255, 255, 0.96);
+  --border-color: rgba(0, 0, 0, 0.08);
+  --border-subtle: rgba(0, 0, 0, 0.04);
+  --border-focus: #2563eb;
+
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-light: rgba(37, 99, 235, 0.08);
+  --primary-border: rgba(37, 99, 235, 0.22);
+
+  --success: #059669;
+  --success-bg: rgba(5, 150, 105, 0.1);
+  --warning: #d97706;
+  --warning-bg: rgba(217, 119, 6, 0.1);
+  --danger: #dc2626;
+  --danger-bg: rgba(220, 38, 38, 0.1);
+  --accent-purple: #7c3aed;
+  --accent-purple-bg: rgba(124, 58, 237, 0.1);
+
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --text-dim: #64748b;
+
+  --hero-bg: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
+  --hero-border: rgba(37, 99, 235, 0.2);
+  --hero-text: #0f172a;
+  --hero-badge-bg: rgba(37, 99, 235, 0.08);
+  --hero-badge-border: rgba(37, 99, 235, 0.25);
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.06);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06), 0 4px 12px -2px rgba(0, 0, 0, 0.04);
+}
+
+/* ==========================================================================
+   ESTRUCTURA VISUAL ADAPTABLE A AMBOS TEMAS
+   ========================================================================== */
+body {
+  background-color: var(--bg-main) !important;
+  color: var(--text-main) !important;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+  transition: background-color 0.2s ease, color 0.2s ease !important;
+}
+
+/* Cabecera común a ambos temas */
+.app-header {
+  background: var(--bg-header) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  transition: background-color 0.2s ease, border-color 0.2s ease !important;
+}
+
+.brand-info h1 {
+  color: var(--text-main) !important;
+}
+
+.brand-info p {
+  color: var(--text-dim) !important;
+}
+
+.btn-global-search {
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-muted) !important;
+}
+
+.btn-global-search:hover {
+  background: var(--bg-card-hover) !important;
+  color: var(--text-main) !important;
+  border-color: var(--border-focus) !important;
+}
+
+.search-kbd {
+  background: var(--bg-input) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-dim) !important;
+}
+
+.status-pill {
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-muted) !important;
+}
+
+.btn-icon {
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-muted) !important;
+}
+
+.btn-icon:hover {
+  background: var(--bg-card-hover) !important;
+  color: var(--text-main) !important;
+}
+
+/* Tarjetas y Contenedores */
+.card {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: var(--shadow-card) !important;
+  color: var(--text-main) !important;
+  transition: all 0.2s ease !important;
+}
+
+.card:hover {
+  border-color: var(--primary-border) !important;
+}
+
+.section-title {
+  color: var(--text-main) !important;
+}
+
+.section-subtitle {
+  color: var(--text-dim) !important;
+}
+
+/* Hero Banner Adaptativo */
+.hero-banner {
+  background: var(--hero-bg) !important;
+  border: 1px solid var(--hero-border) !important;
+  border-left: 4px solid var(--primary) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.hero-text h2 {
+  color: var(--hero-text) !important;
+}
+
+.hero-text p {
+  color: var(--text-muted) !important;
+}
+
+.hero-date-badge {
+  background: var(--hero-badge-bg) !important;
+  border: 1px solid var(--hero-badge-border) !important;
+  color: var(--text-main) !important;
+}
+
+/* Tareas y Horario */
+.task-item {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-color) !important;
+  border-left: 3px solid var(--primary) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.task-item:hover {
+  background: var(--bg-card-hover) !important;
+  border-left-color: var(--primary-hover) !important;
+}
+
+.task-title {
+  color: var(--text-main) !important;
+}
+
+.filter-chip {
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-muted) !important;
+}
+
+.filter-chip.active {
+  background: var(--primary) !important;
+  color: #ffffff !important;
+}
+
+.day-pill {
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-muted) !important;
+}
+
+.day-pill.active {
+  background: var(--primary) !important;
+  color: #ffffff !important;
+}
+
+.schedule-slot-card {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.slot-subject-name {
+  color: var(--text-main) !important;
+}
+
+/* Inputs y Formularios */
+input[type="text"], input[type="date"], input[type="time"], input[type="email"], input[type="number"], select, textarea {
+  background: var(--bg-input) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-main) !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 2px var(--primary-light) !important;
+}
+
+/* Modales */
+.modal-content, .modal-dialog, .modal-card {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: var(--shadow-md) !important;
+  color: var(--text-main) !important;
+}
+
+.modal-title {
+  color: var(--text-main) !important;
+}
+
+/* ==========================================================================
+   COMPORTAMIENTO RESPONSIVE (ESCRITORIO / TABLET / MÓVIL)
+   ========================================================================== */
+
+/* Escritorio (>= 1024px) */
+@media (min-width: 1024px) {
+  .app-header {
+    height: 60px !important;
+    padding: 10px 24px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 40 !important;
+  }
+
+  .app-nav {
+    background: var(--bg-nav) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    padding: 8px 24px !important;
+    display: flex !important;
+    justify-content: flex-start !important;
+    gap: 6px !important;
+    position: sticky !important;
+    top: 60px !important;
+    z-index: 30 !important;
+  }
+
+  .nav-tab {
+    background: transparent !important;
+    border: 1px solid transparent !important;
+    border-radius: var(--radius-sm) !important;
+    color: var(--text-muted) !important;
+    padding: 6px 14px !important;
+    font-size: 0.84rem !important;
+    font-weight: 500 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  .nav-tab:hover {
+    background: var(--bg-surface) !important;
+    color: var(--text-main) !important;
+  }
+
+  .nav-tab.active {
+    background: var(--primary-light) !important;
+    color: var(--primary) !important;
+    border-color: var(--primary-border) !important;
+    font-weight: 600 !important;
+  }
+
+  .main-container {
+    max-width: 1200px !important;
+    padding: 24px 24px 100px !important;
+    margin: 0 auto !important;
+  }
+
+  .dashboard-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)) !important;
+    gap: 18px !important;
+  }
+}
+
+/* Tablet (768px a 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .app-header {
+    height: 58px !important;
+    padding: 10px 20px !important;
+  }
+
+  .main-container {
+    padding: 16px 20px 96px !important;
+    max-width: 900px !important;
+    margin: 0 auto !important;
+  }
+
+  .dashboard-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 16px !important;
+  }
+
+  .app-nav {
+    position: fixed !important;
+    bottom: 16px !important;
+    top: auto !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: calc(100% - 40px) !important;
+    max-width: 620px !important;
+    background: var(--bg-nav) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: var(--radius-lg) !important;
+    box-shadow: var(--shadow-md) !important;
+    display: flex !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    padding: 6px 8px !important;
+    z-index: 50 !important;
+  }
+
+  .app-nav .nav-tab {
+    background: transparent !important;
+    border: none !important;
+    border-radius: var(--radius-sm) !important;
+    color: var(--text-muted) !important;
+    padding: 8px 12px !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+  }
+
+  .app-nav .nav-tab.active {
+    background: var(--primary-light) !important;
+    color: var(--primary) !important;
+  }
+}
+
+/* Móvil (<= 767px) */
+@media (max-width: 767px) {
+  html, body {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  .app-header {
+    height: 52px !important;
+    padding: max(8px, env(safe-area-inset-top, 8px)) 12px 8px 12px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 8px !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 40 !important;
+  }
+
+  .brand-section {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+    overflow: hidden !important;
+  }
+
+  .brand-section .app-logo {
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: var(--radius-xs) !important;
+  }
+
+  .brand-info h1 {
+    font-size: 0.92rem !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 140px !important;
+  }
+
+  .brand-info p {
+    display: none !important;
+  }
+
+  #connection-status,
+  #btn-open-share,
+  #btn-install-pwa,
+  .app-header a[href="./notebook.html"],
+  .btn-copilot-badge .copilot-badge-text,
+  .btn-global-search .search-hint,
+  .btn-global-search .search-kbd {
+    display: none !important;
+  }
+
+  /* Botón de alternar tema 🌓 permanece visible y accesible en móvil */
+  #btn-toggle-theme {
+    display: inline-flex !important;
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 0.9rem !important;
+  }
+
+  .btn-global-search, #btn-open-copilot {
+    padding: 6px 8px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    justify-content: center !important;
+  }
+
+  .btn-streak-badge {
+    height: 32px !important;
+    padding: 0 8px !important;
+    font-size: 0.74rem !important;
+  }
+
+  /* Barra inferior móvil nativa */
+  .app-nav {
+    position: fixed !important;
+    bottom: 0 !important;
+    top: auto !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 56px !important;
+    padding: 4px 6px max(6px, env(safe-area-inset-bottom, 6px)) 6px !important;
+    background: var(--bg-nav) !important;
+    border-top: 1px solid var(--border-color) !important;
+    border-bottom: none !important;
+    display: flex !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2) !important;
+    z-index: 50 !important;
+  }
+
+  .app-nav .nav-tab {
+    flex: 1 1 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 4px 2px !important;
+    min-height: 48px !important;
+    gap: 2px !important;
+    background: transparent !important;
+    border: none !important;
+    color: var(--text-muted) !important;
+  }
+
+  .app-nav .nav-tab.active {
+    color: var(--primary) !important;
+    background: var(--primary-light) !important;
+  }
+
+  .nav-tab-label {
+    font-size: 0.65rem !important;
+    font-weight: 600 !important;
+  }
+
+  .nav-tab-center-action {
+    flex: 0 0 44px !important;
+    width: 44px !important;
+    height: 44px !important;
+    margin-top: -14px !important;
+    background: var(--primary) !important;
+    border: 2px solid var(--bg-nav) !important;
+    border-radius: 50% !important;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #ffffff !important;
+  }
+
+  .nav-tab-mobile-more {
+    display: none !important;
+  }
+
+  .main-container {
+    padding: 12px 14px 84px 14px !important;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .hero-banner {
+    padding: 16px 18px !important;
+    border-radius: var(--radius-md) !important;
+    margin-bottom: 14px !important;
+  }
+}
