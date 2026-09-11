@@ -88,6 +88,71 @@
       color: var(--text-main);
     }
 
+    /* SELECTOR DE NIVEL MCER (B1, B2, C1, C2) */
+    .level-select-dropdown {
+      background: var(--bg-input);
+      color: var(--primary);
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 4px 8px;
+      font-size: 0.74rem;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      cursor: pointer;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .level-select-dropdown:hover, .level-select-dropdown:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    }
+
+    .level-pills-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 3px;
+    }
+
+    .level-pill-btn {
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .level-pill-btn:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-main);
+      border-color: var(--primary);
+    }
+
+    .level-pill-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 2px 6px rgba(99, 102, 241, 0.35);
+    }
+
+    .level-badge-tag {
+      font-size: 0.65rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      transition: all 0.2s ease;
+    }
+
     /* 2. NAVEGADOR PRINCIPAL DE SECCIONES (TABS BAR) */
     .sections-nav-bar {
       display: flex;
@@ -822,11 +887,11 @@
   <div class="print-dossier-header">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <div>
-        <h1 style="font-size: 1.6rem; font-weight: 800; margin: 0; color: #0f172a;">Agenda Escolar PWA • English Coach C1</h1>
-        <p style="font-size: 0.9rem; color: #475569; margin: 4px 0 0 0;">Dossier Académico de Inglés • Preparación EBAU / PAU & Cambridge CAE</p>
+        <h1 id="print-header-title" style="font-size: 1.6rem; font-weight: 800; margin: 0; color: #0f172a;">Agenda Escolar PWA • English Coach</h1>
+        <p id="print-header-desc" style="font-size: 0.9rem; color: #475569; margin: 4px 0 0 0;">Dossier Académico de Inglés • Calibración MCER C1</p>
       </div>
       <div style="text-align: right; font-family: var(--font-mono); font-size: 0.85rem; color: #475569;">
-        <span>Nivel: C1 Superior</span><br />
+        <span id="print-level-badge">Nivel: C1 Avanzado (PAU)</span><br />
         <span id="print-date">Fecha de Emisión</span>
       </div>
     </div>
@@ -841,15 +906,25 @@
       </a>
       <img src="./assets/logo-stitch.png" onerror="this.src='./icon.svg'" alt="Logo Agenda" class="app-logo" />
       <div class="brand-info">
-        <h1 style="font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; gap: 6px;">
+        <h1 style="font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
           <span>English Coach</span>
-          <span style="font-size: 0.65rem; background: var(--primary-light); color: var(--primary); padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono);">C1 ADVANCED</span>
+          <span id="header-level-badge" class="level-badge-tag" style="background: rgba(99, 102, 241, 0.15); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3);">C1 ADVANCED</span>
         </h1>
-        <p style="font-size: 0.78rem; color: var(--text-muted);">Tutor Socrático de Idiomas • PAU & Cambridge</p>
+        <p id="header-level-subtitle" style="font-size: 0.78rem; color: var(--text-muted);">Tutor Socrático de Idiomas • Nivel C1 Advanced</p>
       </div>
     </div>
 
     <div class="header-actions">
+      <!-- Selector Rápido de Nivel MCER -->
+      <div class="header-level-selector-wrap" style="display: flex; align-items: center; gap: 6px;" title="Calibrar nivel de inglés MCER">
+        <select id="english-level-select-header" class="level-select-dropdown" aria-label="Seleccionar Nivel MCER de Inglés">
+          <option value="B1">🎯 B1 Intermediate</option>
+          <option value="B2">🎯 B2 First (FCE)</option>
+          <option value="C1" selected>🎯 C1 Advanced (PAU)</option>
+          <option value="C2">🎯 C2 Proficiency</option>
+        </select>
+      </div>
+
       <!-- Exportar Dossier PDF -->
       <button id="btn-export-dossier-pdf" class="btn-icon" title="Exportar Dossier Completo en PDF" style="background: rgba(16, 185, 129, 0.12); color: #34d399; border-color: rgba(16, 185, 129, 0.35);">
         <span class="material-symbols-outlined" style="font-size: 18px;">picture_as_pdf</span>
@@ -883,6 +958,19 @@
     <!-- 1. BARRA DE RESUMEN SUPERIOR COMPACTA (QUICK STATS STRIP) -->
     <section class="stats-strip">
       <div class="stats-strip-left">
+        <!-- Control de Nivel MCER en Pills -->
+        <div class="stat-pill-item" style="border-color: rgba(99, 102, 241, 0.35); background: rgba(99, 102, 241, 0.06);">
+          <span style="font-size: 1.1rem;">🎯</span>
+          <div>
+            <div class="stat-pill-label" style="color: var(--primary);">Nivel MCER</div>
+            <div class="level-pills-row" id="level-pills-container">
+              <button type="button" class="level-pill-btn" data-level="B1" title="B1 Intermediate (PET)">B1</button>
+              <button type="button" class="level-pill-btn" data-level="B2" title="B2 First (FCE / 1º Bach)">B2</button>
+              <button type="button" class="level-pill-btn active" data-level="C1" title="C1 Advanced (PAU / EBAU)">C1</button>
+              <button type="button" class="level-pill-btn" data-level="C2" title="C2 Proficiency (CPE / Maestría)">C2</button>
+            </div>
+          </div>
+        </div>
         <div class="stat-pill-item">
           <span style="font-size: 1.1rem;">🔥</span>
           <div>
@@ -930,7 +1018,7 @@
       <button class="section-tab-btn" data-target="view-writing" type="button">
         <span class="material-symbols-outlined" style="font-size: 18px;">edit_note</span>
         <span>2. Writing & Ensayos PAU</span>
-        <span class="section-tab-badge">180 w</span>
+        <span class="section-tab-badge" id="tab-badge-writing-words">180 w</span>
       </button>
       <button class="section-tab-btn" data-target="view-flashcards" type="button">
         <span class="material-symbols-outlined" style="font-size: 18px;">style</span>
@@ -1024,7 +1112,7 @@
           <!-- Historial de Conversación -->
           <div class="chat-stream" id="speaking-chat-stream">
             <div style="text-align: center; margin: 4px 0;">
-              <span style="background: var(--bg-input); color: var(--text-dim); font-size: 0.72rem; padding: 4px 12px; border-radius: 9999px; font-family: var(--font-mono);">
+              <span id="speaking-level-pill" style="background: var(--bg-input); color: var(--text-dim); font-size: 0.72rem; padding: 4px 12px; border-radius: 9999px; font-family: var(--font-mono);">
                 Sesión de Práctica Oral Activa • Nivel C1 • Acento Nativo RP
               </span>
             </div>
@@ -1037,7 +1125,7 @@
                   Dr. Vance (Oxford Scholar) • Inicio
                 </div>
                 <div class="bubble-body tutor-bubble">
-                  <p>
+                  <p id="tutor-initial-bubble-text">
                     Good afternoon! I am Dr. Julian Vance. Today we are examining <em>the environmental ramifications of artificial intelligence</em>. In your view, does AI pose a greater threat through its substantial energy demands, or does it hold unparalleled promise for optimizing global resource management?
                   </p>
                   <button class="audio-play-btn" onclick="speakText('Good afternoon! I am Dr. Julian Vance. In your view, does AI pose a greater threat through its energy demands, or does it hold unparalleled promise for optimizing global resource management?')">
@@ -1104,7 +1192,7 @@
                 <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--success);"></span>
                 <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Feedback Pedagógico en Vivo</span>
               </div>
-              <span style="background: var(--success-bg); color: var(--success); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; font-family: var(--font-mono);">
+              <span id="inspector-level-badge" style="background: rgba(99, 102, 241, 0.15); color: #818cf8; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; font-family: var(--font-mono);">
                 C1 Level
               </span>
             </div>
@@ -1115,7 +1203,7 @@
                 “Esperando tu primera intervención oral o escrita en inglés...”
               </p>
 
-              <span style="font-size: 0.7rem; color: #818cf8; text-transform: uppercase; font-weight: 700; margin-top: 4px;">Alternativa Formal C1 / C2 Sugerida:</span>
+              <span id="inspector-rec-title" style="font-size: 0.7rem; color: #818cf8; text-transform: uppercase; font-weight: 700; margin-top: 4px;">Alternativa Formal C1 Sugerida:</span>
               <div id="inspector-recommended-phrase" style="background: var(--bg-card); border: 1px solid rgba(70, 72, 212, 0.3); border-radius: var(--radius-sm); padding: 10px; font-size: 0.88rem; color: var(--text-main);">
                 “AI holds the potential to <strong style="color: #818cf8;">substantially streamline</strong> distribution networks...”
               </div>
@@ -1136,13 +1224,13 @@
             </div>
           </div>
 
-          <!-- Conectores C1 Rápidos para Hablar -->
+          <!-- Conectores Rápidos para Hablar -->
           <div class="inspector-card">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">Conectores C1 Recomendados</span>
+              <span id="speaking-connectors-title" style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">Conectores C1 Recomendados</span>
               <span style="font-size: 0.7rem; color: var(--text-dim);">Toca para usar</span>
             </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div id="speaking-connectors-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
               <button class="connector-btn" onclick="insertSpeakingConnector('Notwithstanding')">Notwithstanding</button>
               <button class="connector-btn" onclick="insertSpeakingConnector('In stark contrast to')">In stark contrast to</button>
               <button class="connector-btn" onclick="insertSpeakingConnector('Paving the way for')">Paving the way for</button>
@@ -1166,7 +1254,7 @@
           <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
             <div>
               <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-                <span style="font-size: 0.7rem; font-weight: 700; background: rgba(139, 92, 246, 0.15); color: #a78bfa; padding: 2px 8px; border-radius: 4px; font-family: var(--font-mono);">
+                <span id="writing-level-banner" style="font-size: 0.7rem; font-weight: 700; background: rgba(139, 92, 246, 0.15); color: #a78bfa; padding: 2px 8px; border-radius: 4px; font-family: var(--font-mono);">
                   EBAU / PAU & CAMBRIDGE CAE WRITING
                 </span>
                 <span class="word-counter-badge" id="writing-word-counter">0 / 180 Palabras</span>
@@ -1187,13 +1275,15 @@
           </div>
 
           <!-- Barra de Conectores para Redacción -->
-          <div class="connectors-toolbar">
-            <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); margin-right: 4px;">Insertar Conector C1:</span>
-            <button class="connector-btn" onclick="insertEssayConnector('It is widely acknowledged that')">It is widely acknowledged that</button>
-            <button class="connector-btn" onclick="insertEssayConnector('Albeit with certain caveats')">Albeit with certain caveats</button>
-            <button class="connector-btn" onclick="insertEssayConnector('On the other hand, it must be noted that')">On the other hand</button>
-            <button class="connector-btn" onclick="insertEssayConnector('All things considered')">All things considered</button>
-            <button class="connector-btn" onclick="insertEssayConnector('Hence')">Hence</button>
+          <div class="connectors-toolbar" id="writing-connectors-toolbar">
+            <span id="writing-connectors-title" style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); margin-right: 4px;">Insertar Conector C1:</span>
+            <div id="writing-connectors-buttons" style="display: inline-flex; gap: 6px; flex-wrap: wrap;">
+              <button class="connector-btn" onclick="insertEssayConnector('It is widely acknowledged that')">It is widely acknowledged that</button>
+              <button class="connector-btn" onclick="insertEssayConnector('Albeit with certain caveats')">Albeit with certain caveats</button>
+              <button class="connector-btn" onclick="insertEssayConnector('On the other hand, it must be noted that')">On the other hand</button>
+              <button class="connector-btn" onclick="insertEssayConnector('All things considered')">All things considered</button>
+              <button class="connector-btn" onclick="insertEssayConnector('Hence')">Hence</button>
+            </div>
           </div>
 
           <!-- Área de Redacción -->
@@ -1211,7 +1301,7 @@
               <button id="btn-clear-essay" class="btn-secondary" style="padding: 8px 14px; font-size: 0.82rem;" type="button">Limpiar</button>
               <button id="btn-evaluate-essay" class="btn-primary" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; font-size: 0.85rem;" type="button">
                 <span class="material-symbols-outlined" style="font-size: 16px;">auto_fix_high</span>
-                <span>Evaluar Ensayo con Rúbrica C1</span>
+                <span id="btn-evaluate-text">Evaluar Ensayo con Rúbrica C1</span>
               </button>
             </div>
           </div>
@@ -1287,12 +1377,12 @@
         <!-- Barra Superior de Acciones de Flashcards -->
         <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
           <div>
-            <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-main); margin: 0;">Mazo de Vocabulario y Expresiones C1</h3>
-            <p style="font-size: 0.82rem; color: var(--text-muted); margin: 2px 0 0 0;">Repasa con el algoritmo Leitner de repetición espaciada o añade nuevas tarjetas al mazo.</p>
+            <h3 id="flashcards-deck-title" style="font-size: 1.15rem; font-weight: 800; color: var(--text-main); margin: 0;">Mazo de Vocabulario y Expresiones C1</h3>
+            <p id="flashcards-deck-subtitle" style="font-size: 0.82rem; color: var(--text-muted); margin: 2px 0 0 0;">Repasa con el algoritmo Leitner de repetición espaciada o añade nuevas tarjetas al mazo.</p>
           </div>
           <button id="btn-toggle-create-card" class="btn-primary" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-size: 0.85rem;" type="button">
             <span class="material-symbols-outlined" style="font-size: 18px;">add_circle</span>
-            <span>➕ Añadir Nueva Ficha C1</span>
+            <span id="btn-add-card-text">➕ Añadir Nueva Ficha C1</span>
           </button>
         </div>
 
@@ -1322,7 +1412,7 @@
           </div>
 
           <div class="form-group">
-            <label>Ejemplo Académico en Contexto de Selectividad</label>
+            <label>Ejemplo Académico en Contexto de Examen</label>
             <input type="text" id="fc-input-ex" class="form-input" placeholder="Ej: This breakthrough will pave the way for renewable energy self-sufficiency." />
           </div>
 
@@ -1330,6 +1420,15 @@
             <div class="form-group">
               <label>Traducción o Notas en Español</label>
               <input type="text" id="fc-input-trans" class="form-input" placeholder="Ej: Allanar el camino para, facilitar" />
+            </div>
+            <div class="form-group">
+              <label>Nivel MCER de la Ficha</label>
+              <select id="fc-input-level" class="form-input" style="cursor: pointer;">
+                <option value="B1">B1 • Intermediate</option>
+                <option value="B2">B2 • First Certificate</option>
+                <option value="C1" selected>C1 • Advanced / PAU</option>
+                <option value="C2">C2 • Proficiency</option>
+              </select>
             </div>
             <div class="form-group">
               <label>Caja Leitner Inicial</label>
@@ -1442,7 +1541,16 @@
             <h4 style="font-size: 1rem; font-weight: 800; color: var(--text-main); margin: 0;">
               Tu Colección de Fichas (<span id="collection-count">4</span> activas)
             </h4>
-            <input type="text" id="deck-search-input" class="form-input" style="max-width: 240px; padding: 6px 10px; font-size: 0.8rem;" placeholder="Buscar término..." />
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <select id="deck-level-filter" class="form-input" style="width: auto; padding: 6px 10px; font-size: 0.8rem; cursor: pointer;">
+                <option value="ALL">🎯 Todos los Niveles</option>
+                <option value="B1">Solo B1 Intermediate</option>
+                <option value="B2">Solo B2 First</option>
+                <option value="C1">Solo C1 Advanced</option>
+                <option value="C2">Solo C2 Proficiency</option>
+              </select>
+              <input type="text" id="deck-search-input" class="form-input" style="max-width: 180px; padding: 6px 10px; font-size: 0.8rem;" placeholder="Buscar término..." />
+            </div>
           </div>
 
           <div class="deck-items-grid" id="deck-cards-list">
@@ -1933,7 +2041,9 @@
         const clean = text.replace(/[*_#`]/g, '');
         const utterance = new SpeechSynthesisUtterance(clean);
         utterance.lang = 'en-GB';
-        utterance.rate = 0.95;
+
+        const cfg = (typeof LEVELS_CONFIG !== 'undefined' && LEVELS_CONFIG[currentLevel]) ? LEVELS_CONFIG[currentLevel] : null;
+        utterance.rate = cfg ? (cfg.ttsRate || 0.95) : 0.95;
 
         const voices = window.speechSynthesis.getVoices();
         const britishVoice = voices.find(v => v.lang.includes('en-GB') || v.name.includes('British') || v.name.includes('English United Kingdom'));
@@ -1943,7 +2053,304 @@
         window.speechSynthesis.speak(utterance);
       };
 
-      // 8. CHAT EN INGLÉS CON IA (GEMINI API O MOTOR SOCRÁTICO OFFLINE)
+      // ======================================================================
+      // 8. CONFIGURACIÓN Y CALIBRACIÓN POR NIVELES MCER (B1, B2, C1, C2)
+      // ======================================================================
+      const LEVELS_CONFIG = {
+        B1: {
+          key: 'B1',
+          name: 'B1 Intermediate',
+          badgeText: 'B1 INTERMEDIATE',
+          subtitle: 'Tutor Socrático • Calibración MCER B1 (PET)',
+          printLevel: 'Nivel: B1 Intermedio (PET)',
+          color: '#3b82f6',
+          bgLight: 'rgba(59, 130, 246, 0.15)',
+          borderLight: 'rgba(59, 130, 246, 0.35)',
+          writingWordsTarget: 120,
+          writingBadgeText: '120 w',
+          writingBanner: 'B1 INTERMEDIATE WRITING (100-120 WORDS)',
+          speakingConnectors: ['However', 'Although', 'In my opinion', 'Furthermore', 'For example', 'In addition'],
+          writingConnectors: [
+            { label: 'In my opinion', text: 'In my opinion,' },
+            { label: 'Although', text: 'Although it is widely said that' },
+            { label: 'However', text: 'However, on the other hand,' },
+            { label: 'In addition', text: 'In addition,' },
+            { label: 'To sum up', text: 'To sum up, it is clear that' }
+          ],
+          ttsRate: 0.90,
+          initialGreeting: 'Hello! I am Dr. Julian Vance. Today we are exploring daily technology and education. In your view, do tablets and laptops really improve learning in schools, or do they distract students from reading books?',
+          speakingTone: 'CEFR Level B1 (Intermediate). Use clear, structured, and encouraging English. Speak at a measured pace. Reward correct basic grammar, prepositions, and simple discourse markers.',
+          sampleTerm: 'Bring about',
+          sampleRecommended: '“In my opinion, technology <strong style="color: #60a5fa;">brings about</strong> useful daily changes...”',
+          sampleExplanation: 'Estructura clara de nivel B1 con un phrasal verb cotidiano y argumentación directa.',
+          offlinePrompt: (msg, topic) => `A clear and thoughtful view on ${topic}! You expressed your premise well. To level up your B1 speaking, could you add an example starting with "For instance, in my school..." or contrast it with "However..."?`,
+          rubricScore: '8.8 / 10 Banda B1'
+        },
+        B2: {
+          key: 'B2',
+          name: 'B2 First Certificate',
+          badgeText: 'B2 FIRST',
+          subtitle: 'Tutor Socrático • Calibración MCER B2 (FCE / 1º Bach)',
+          printLevel: 'Nivel: B2 First / 1º Bachillerato',
+          color: '#10b981',
+          bgLight: 'rgba(16, 185, 129, 0.15)',
+          borderLight: 'rgba(16, 185, 129, 0.35)',
+          writingWordsTarget: 150,
+          writingBadgeText: '150 w',
+          writingBanner: 'B2 FIRST & 1º BACHILLERATO WRITING (140-160 WORDS)',
+          speakingConnectors: ['On the one hand', 'Consequently', 'Despite that', 'Whereas', 'As a result', 'Moreover'],
+          writingConnectors: [
+            { label: 'On the one hand', text: 'On the one hand,' },
+            { label: 'On the other hand', text: 'On the other hand, it is worth noting that' },
+            { label: 'Consequently', text: 'Consequently,' },
+            { label: 'Despite the fact that', text: 'Despite the fact that' },
+            { label: 'In conclusion', text: 'In conclusion, the evidence suggests that' }
+          ],
+          ttsRate: 0.93,
+          initialGreeting: 'Good afternoon! I am Dr. Julian Vance. Today we examine the rise of sustainable consumerism. Do you believe individual consumer habits can significantly curb environmental damage, or are government mandates required?',
+          speakingTone: 'CEFR Level B2 (Vantage / Upper-Intermediate). Encourage natural phrasal verbs, second and third conditionals, and well-balanced contrast clauses.',
+          sampleTerm: 'Bring about',
+          sampleRecommended: '“Adopting renewable practices will <strong style="color: #34d399;">bring about</strong> substantial environmental benefits...”',
+          sampleExplanation: 'El empleo de phrasal verbs idiomáticos como <strong>‘bring about’</strong> consolida la puntuación de competencia léxica B2.',
+          offlinePrompt: (msg, topic) => `Spot on! Your argument on ${topic} shows good cohesion. To strengthen your B2 response, how might you reframe this using a second conditional: "If authorities were to intervene, would the outcome differ?"`,
+          rubricScore: '9.0 / 10 Banda B2'
+        },
+        C1: {
+          key: 'C1',
+          name: 'C1 Advanced / PAU',
+          badgeText: 'C1 ADVANCED',
+          subtitle: 'Tutor Socrático • Calibración MCER C1 (PAU / EBAU & CAE)',
+          printLevel: 'Nivel: C1 Avanzado / PAU Selectividad',
+          color: '#6366f1',
+          bgLight: 'rgba(99, 102, 241, 0.15)',
+          borderLight: 'rgba(99, 102, 241, 0.35)',
+          writingWordsTarget: 180,
+          writingBadgeText: '180 w',
+          writingBanner: 'EBAU / PAU & CAMBRIDGE CAE WRITING (180-220 WORDS)',
+          speakingConnectors: ['Notwithstanding', 'In stark contrast to', 'Paving the way for', 'Furthermore', 'Albeit contentious', 'It is imperative that'],
+          writingConnectors: [
+            { label: 'It is widely acknowledged that', text: 'It is widely acknowledged that' },
+            { label: 'Albeit with certain caveats', text: 'Albeit with certain caveats,' },
+            { label: 'On the other hand', text: 'On the other hand, it must be noted that' },
+            { label: 'All things considered', text: 'All things considered,' },
+            { label: 'Hence', text: 'Hence,' }
+          ],
+          ttsRate: 0.95,
+          initialGreeting: 'Good afternoon! I am Dr. Julian Vance. Today we are examining the environmental ramifications of artificial intelligence. In your view, does AI pose a greater threat through its substantial energy demands, or does it hold unparalleled promise for optimizing global resource management?',
+          speakingTone: 'CEFR Level C1 (Effective Operational Proficiency / Advanced). Expect syntactic inversions, cleft sentences, advanced academic collocations, and formal British English register.',
+          sampleTerm: 'Streamline',
+          sampleRecommended: '“AI holds the potential to <strong style="color: #818cf8;">substantially streamline</strong> distribution networks...”',
+          sampleExplanation: 'El uso de verbos de alto registro como <strong>‘streamline’</strong> eleva tu nota de vocabulario en la prueba de Selectividad.',
+          offlinePrompt: (msg, topic) => `An insightful stance on ${topic}! You formulated your premise clearly. To bolster your C1 lexical precision, how might you reframe your argument utilizing an inversion, such as "Seldom have we witnessed..." or the academic collocation "to hold accountability"? What would be the counterpoint?`,
+          rubricScore: '9.2 / 10 Banda C1'
+        },
+        C2: {
+          key: 'C2',
+          name: 'C2 Proficiency',
+          badgeText: 'C2 PROFICIENCY',
+          subtitle: 'Tutor Socrático • Calibración MCER C2 (CPE / Maestría)',
+          printLevel: 'Nivel: C2 Maestría / Cambridge CPE',
+          color: '#ec4899',
+          bgLight: 'rgba(236, 72, 153, 0.15)',
+          borderLight: 'rgba(236, 72, 153, 0.35)',
+          writingWordsTarget: 250,
+          writingBadgeText: '250 w',
+          writingBanner: 'C2 PROFICIENCY & MASTER DISCOURSE (250+ WORDS)',
+          speakingConnectors: ['Be that as it may', 'Inexorably linked to', 'A caveat to bear in mind', 'Quintessentially', 'Irrespective of', 'Per se'],
+          writingConnectors: [
+            { label: 'Be that as it may', text: 'Be that as it may,' },
+            { label: 'Inexorably linked to', text: 'It is inexorably linked to the premise that' },
+            { label: 'A caveat to bear in mind', text: 'A quintessential caveat to bear in mind is that' },
+            { label: 'Irrespective of', text: 'Irrespective of prevailing dogma,' },
+            { label: 'Undeniably', text: 'It is undeniably quintessential that' }
+          ],
+          ttsRate: 0.98,
+          initialGreeting: 'Good afternoon, esteemed colleague. I am Dr. Julian Vance. We convene to scrutinize the philosophical and empirical implications of artificial cognition. Does the mechanization of intellect signify the zenith of Enlightenment reason, or a Faustian bargain with unforeseen ontological consequences?',
+          speakingTone: 'CEFR Level C2 (Mastery / Native Academic). Require nuanced scholarly rhetoric, erudite idioms, complex concessions, ironies, and flawless British academic prose.',
+          sampleTerm: 'Inexorably',
+          sampleRecommended: '“Such technological paradigms are <strong style="color: #f472b6;">inexorably intertwined</strong> with ethical conundrums...”',
+          sampleExplanation: 'Registro erudito C2: combinaciones léxicas como <strong>‘inexorably intertwined’</strong> denotan maestría bilingüe absoluta.',
+          offlinePrompt: (msg, topic) => `A formidable critique of ${topic}. Your dialectic shows notable intellectual gravity. How would you synthesize the quintessential caveat that while efficiency increases, the ontological risk becomes ever more acute? Could you employ a subjunctive condition?`,
+          rubricScore: '9.8 / 10 Banda C2'
+        }
+      };
+
+      let currentLevel = localStorage.getItem('english_coach_level') || 'C1';
+      if (!LEVELS_CONFIG[currentLevel]) currentLevel = 'C1';
+
+      // 9. FUNCIÓN CENTRAL PARA CAMBIAR Y CALIBRAR EL NIVEL
+      function setEnglishLevel(newLevel, notifyUser = true) {
+        if (!LEVELS_CONFIG[newLevel]) newLevel = 'C1';
+        currentLevel = newLevel;
+        localStorage.setItem('english_coach_level', newLevel);
+
+        const cfg = LEVELS_CONFIG[newLevel];
+
+        // 1. Actualizar Selectores en la UI
+        const headerSelect = document.getElementById('english-level-select-header');
+        if (headerSelect) headerSelect.value = newLevel;
+
+        const pillBtns = document.querySelectorAll('#level-pills-container .level-pill-btn');
+        pillBtns.forEach(btn => {
+          if (btn.getAttribute('data-level') === newLevel) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+
+        // 2. Cabecera e Identidad Visual
+        const headerBadge = document.getElementById('header-level-badge');
+        if (headerBadge) {
+          headerBadge.textContent = cfg.badgeText;
+          headerBadge.style.color = cfg.color;
+          headerBadge.style.background = cfg.bgLight;
+          headerBadge.style.borderColor = cfg.borderLight;
+        }
+
+        const headerSub = document.getElementById('header-level-subtitle');
+        if (headerSub) headerSub.textContent = cfg.subtitle;
+
+        const printBadge = document.getElementById('print-level-badge');
+        if (printBadge) printBadge.textContent = cfg.printLevel;
+
+        const printDesc = document.getElementById('print-header-desc');
+        if (printDesc) printDesc.textContent = `Dossier Académico de Inglés • Calibración MCER ${cfg.badgeText}`;
+
+        // 3. Adaptar Speaking & Inspector
+        const speakingPill = document.getElementById('speaking-level-pill');
+        if (speakingPill) {
+          speakingPill.textContent = `Sesión de Práctica Oral Activa • Nivel ${cfg.badgeText} • Acento Nativo RP`;
+        }
+
+        const inspectorBadge = document.getElementById('inspector-level-badge');
+        if (inspectorBadge) {
+          inspectorBadge.textContent = `${newLevel} Level`;
+          inspectorBadge.style.color = cfg.color;
+          inspectorBadge.style.background = cfg.bgLight;
+        }
+
+        const inspectorRecTitle = document.getElementById('inspector-rec-title');
+        if (inspectorRecTitle) inspectorRecTitle.textContent = `Alternativa Formal ${newLevel} Sugerida:`;
+
+        const inspectorRec = document.getElementById('inspector-recommended-phrase');
+        if (inspectorRec) inspectorRec.innerHTML = cfg.sampleRecommended;
+
+        const inspectorExp = document.getElementById('inspector-explanation');
+        if (inspectorExp) inspectorExp.innerHTML = cfg.sampleExplanation;
+
+        const spkConnTitle = document.getElementById('speaking-connectors-title');
+        if (spkConnTitle) spkConnTitle.textContent = `Conectores ${newLevel} Recomendados`;
+
+        const spkConnGrid = document.getElementById('speaking-connectors-grid');
+        if (spkConnGrid) {
+          spkConnGrid.innerHTML = '';
+          cfg.speakingConnectors.forEach(conn => {
+            const btn = document.createElement('button');
+            btn.className = 'connector-btn';
+            btn.textContent = conn;
+            btn.onclick = () => insertSpeakingConnector(conn);
+            spkConnGrid.appendChild(btn);
+          });
+        }
+
+        // 4. Adaptar Writing
+        const writingBanner = document.getElementById('writing-level-banner');
+        if (writingBanner) writingBanner.textContent = cfg.writingBanner;
+
+        const tabBadgeWords = document.getElementById('tab-badge-writing-words');
+        if (tabBadgeWords) tabBadgeWords.textContent = cfg.writingBadgeText;
+
+        const btnEvalText = document.getElementById('btn-evaluate-text');
+        if (btnEvalText) btnEvalText.textContent = `Evaluar Ensayo con Rúbrica ${newLevel}`;
+
+        const wConnTitle = document.getElementById('writing-connectors-title');
+        if (wConnTitle) wConnTitle.textContent = `Insertar Conector ${newLevel}:`;
+
+        const wConnBtns = document.getElementById('writing-connectors-buttons');
+        if (wConnBtns) {
+          wConnBtns.innerHTML = '';
+          cfg.writingConnectors.forEach(item => {
+            const btn = document.createElement('button');
+            btn.className = 'connector-btn';
+            btn.textContent = item.label;
+            btn.onclick = () => insertEssayConnector(item.text);
+            wConnBtns.appendChild(btn);
+          });
+        }
+
+        updateEssayMetrics();
+
+        // 5. Adaptar Flashcards
+        const fcTitle = document.getElementById('flashcards-deck-title');
+        if (fcTitle) fcTitle.textContent = `Mazo de Vocabulario y Expresiones ${newLevel}`;
+
+        const fcBtnText = document.getElementById('btn-add-card-text');
+        if (fcBtnText) fcBtnText.textContent = `➕ Añadir Nueva Ficha ${newLevel}`;
+
+        const fcInputLevel = document.getElementById('fc-input-level');
+        if (fcInputLevel) fcInputLevel.value = newLevel;
+
+        renderDeckList();
+
+        // 6. Mensaje e Interacción al Usuario
+        if (notifyUser) {
+          showToast(`🎯 Nivel calibrado a ${cfg.name} (Meta: ${cfg.writingWordsTarget} palabras)`, '🎯');
+
+          // Añadir mensaje del Dr. Vance adaptado al nuevo nivel en el chat stream
+          const now = new Date();
+          const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+          const greetingRow = document.createElement('div');
+          greetingRow.className = 'bubble-row tutor';
+          greetingRow.innerHTML = `
+            <div class="bubble-avatar">AI</div>
+            <div>
+              <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); margin-bottom: 2px;">
+                Dr. Vance (Calibrado a ${cfg.badgeText}) • ${timeStr}
+              </div>
+              <div class="bubble-body tutor-bubble">
+                <p>${escapeHTML(cfg.initialGreeting)}</p>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                  <button class="audio-play-btn" onclick="speakText('${escapeQuotes(cfg.initialGreeting)}')">
+                    <span class="material-symbols-outlined" style="font-size: 14px; color: var(--primary);">volume_up</span>
+                    <span>Escuchar Audio (UK)</span>
+                  </button>
+                  <button class="audio-play-btn" onclick="openNewCardWithTerm('${cfg.sampleTerm}')">
+                    <span class="material-symbols-outlined" style="font-size: 14px; color: #f59e0b;">style</span>
+                    <span>Guardar '${cfg.sampleTerm}'</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+          const chatStream = document.getElementById('speaking-chat-stream');
+          if (chatStream) {
+            chatStream.appendChild(greetingRow);
+            chatStream.scrollTop = chatStream.scrollHeight;
+          }
+        }
+      }
+      window.setEnglishLevel = setEnglishLevel;
+
+      // Event Listeners para cambio de nivel
+      const headerLevelSelect = document.getElementById('english-level-select-header');
+      if (headerLevelSelect) {
+        headerLevelSelect.addEventListener('change', function () {
+          setEnglishLevel(this.value, true);
+        });
+      }
+
+      const pillBtns = document.querySelectorAll('#level-pills-container .level-pill-btn');
+      pillBtns.forEach(btn => {
+        btn.addEventListener('click', function () {
+          const lvl = this.getAttribute('data-level');
+          if (lvl) setEnglishLevel(lvl, true);
+        });
+      });
+
+      // ======================================================================
+      // 10. CHAT EN INGLÉS CON IA (GEMINI API O MOTOR SOCRÁTICO OFFLINE)
+      // ======================================================================
       const speakingInput = document.getElementById('speaking-input-text');
       const btnSend = document.getElementById('btn-speaking-send');
       const chatStream = document.getElementById('speaking-chat-stream');
@@ -1952,7 +2359,7 @@
       let conversationHistory = [
         {
           role: 'model',
-          text: 'Good afternoon! I am Dr. Julian Vance. Today we are examining the environmental ramifications of artificial intelligence. In your view, does AI pose a greater threat through its substantial energy demands, or does it hold unparalleled promise for optimizing global resource management?'
+          text: LEVELS_CONFIG[currentLevel]?.initialGreeting || LEVELS_CONFIG.C1.initialGreeting
         }
       ];
 
@@ -1963,15 +2370,18 @@
         }
 
         const candidateModels = ['gemini-2.5-flash', 'gemini-flash-latest', 'gemini-1.5-flash', 'gemini-2.0-flash'];
-        const currentTopic = document.getElementById('speaking-current-topic').textContent;
+        const currentTopicEl = document.getElementById('speaking-current-topic');
+        const currentTopic = currentTopicEl ? currentTopicEl.textContent : 'General Academic Discourse';
+        const cfg = LEVELS_CONFIG[currentLevel] || LEVELS_CONFIG.C1;
 
-        const systemPrompt = `You are Dr. Julian Vance, an Oxford University scholar and personal Socratic English Coach for an advanced high school student preparing for the C1 Advanced Cambridge exam and Spanish PAU/EBAU Selectividad.
+        const systemPrompt = `You are Dr. Julian Vance, an Oxford University scholar and personal Socratic English Coach for a student practicing at CEFR Level: ${cfg.name}.
 The student is speaking/writing to you in English on the topic: "${currentTopic}".
-Guidelines:
-1. ALWAYS respond in natural, elegant British English (RP). Keep your response under 70 words.
-2. Employ the Socratic Method: gently challenge their assumptions, praise advanced vocabulary they used, and ask ONE provocative follow-up question.
-3. Suggest ONE high-tier C1/C2 collocation, phrasal verb, or inversion structure related to what they said.
-4. If they make a grammatical error, reformulate it gracefully.`;
+Pedagogical Guidelines for CEFR ${cfg.key}:
+1. Tone & Register: ${cfg.speakingTone}
+2. Socratic Method: gently challenge their assumptions, praise advanced vocabulary they used, and ask ONE provocative follow-up question appropriate for CEFR ${cfg.key}.
+3. Vocabulary & Syntax: Suggest ONE high-tier collocation, phrasal verb, or sentence structure at CEFR ${cfg.key} level.
+4. Keep your response under 70 words in natural British English (RP).
+5. If they make a grammatical error, reformulate it gracefully.`;
 
         const contents = conversationHistory.map(m => ({
           role: m.role === 'tutor' || m.role === 'model' ? 'model' : 'user',
@@ -2006,16 +2416,10 @@ Guidelines:
       }
 
       function generateOfflineSocraticResponse(userMsg) {
-        const msgLower = userMsg.toLowerCase();
-        const currentTopic = document.getElementById('speaking-current-topic').textContent;
-
-        if (msgLower.includes('because') || msgLower.includes('think') || msgLower.includes('believe')) {
-          return `An insightful stance on ${currentTopic}! You formulated your premise clearly. To bolster your C1 lexical precision, how might you reframe your argument utilizing an inversion, such as "Seldom have we witnessed..." or the academic collocation "to hold accountability"? What would be the counterpoint?`;
-        } else if (msgLower.length > 50) {
-          return `Spot on! Your articulation demonstrates genuine fluency. Notice how replacing common terms with expressions like "to streamline" or "notwithstanding" would instantly elevate your register to Band 10. Could you elaborate on how public policy might resolve this dilemma?`;
-        } else {
-          return `A concise perspective! However, in a C1 oral exam or Selectividad essay, examiners look for expanded justifications. How would you substantiate that view using a concession clause like "Albeit contentious, it remains undeniable that..."?`;
-        }
+        const currentTopicEl = document.getElementById('speaking-current-topic');
+        const currentTopic = currentTopicEl ? currentTopicEl.textContent : 'our current theme';
+        const cfg = LEVELS_CONFIG[currentLevel] || LEVELS_CONFIG.C1;
+        return cfg.offlinePrompt(userMsg, currentTopic);
       }
 
       async function sendSpeakingMessage() {
@@ -2075,7 +2479,7 @@ Guidelines:
             <div class="bubble-avatar">AI</div>
             <div>
               <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); margin-bottom: 2px;">
-                Dr. Vance • ${timeStr}
+                Dr. Vance (${currentLevel}) • ${timeStr}
               </div>
               <div class="bubble-body tutor-bubble">
                 <p>${escapeHTML(reply)}</p>
@@ -2101,11 +2505,12 @@ Guidelines:
       }
 
       function extractKeyWord(text) {
-        const words = ['streamline', 'notwithstanding', 'substantiate', 'alleviate', 'scrutinize', 'mitigate', 'unprecedented'];
+        const words = ['streamline', 'notwithstanding', 'substantiate', 'alleviate', 'scrutinize', 'mitigate', 'unprecedented', 'bring about', 'cope with', 'inexorably', 'quintessential'];
         for (const w of words) {
           if (text.toLowerCase().includes(w)) return w;
         }
-        return 'notwithstanding';
+        const cfg = LEVELS_CONFIG[currentLevel] || LEVELS_CONFIG.C1;
+        return cfg.sampleTerm || 'notwithstanding';
       }
 
       function escapeQuotes(str) {
@@ -2124,16 +2529,17 @@ Guidelines:
 
       if (btnClearChat) {
         btnClearChat.addEventListener('click', function () {
+          const cfg = LEVELS_CONFIG[currentLevel] || LEVELS_CONFIG.C1;
           conversationHistory = [
             {
               role: 'model',
-              text: 'Good afternoon! Let us begin afresh. What aspect of our topic shall we dissect first?'
+              text: cfg.initialGreeting
             }
           ];
           chatStream.innerHTML = `
             <div style="text-align: center; margin: 4px 0;">
-              <span style="background: var(--bg-input); color: var(--text-dim); font-size: 0.72rem; padding: 4px 12px; border-radius: 9999px; font-family: var(--font-mono);">
-                Diálogo Reiniciado con el Dr. Vance • Nivel C1
+              <span id="speaking-level-pill" style="background: var(--bg-input); color: var(--text-dim); font-size: 0.72rem; padding: 4px 12px; border-radius: 9999px; font-family: var(--font-mono);">
+                Diálogo Reiniciado con el Dr. Vance • Nivel ${cfg.badgeText}
               </span>
             </div>
             <div class="bubble-row tutor">
@@ -2143,8 +2549,8 @@ Guidelines:
                   Dr. Vance • Inicio
                 </div>
                 <div class="bubble-body tutor-bubble">
-                  <p>Good afternoon! Let us begin afresh. What aspect of our topic shall we dissect first?</p>
-                  <button class="audio-play-btn" onclick="speakText('Good afternoon! Let us begin afresh. What aspect of our topic shall we dissect first?')">
+                  <p id="tutor-initial-bubble-text">${escapeHTML(cfg.initialGreeting)}</p>
+                  <button class="audio-play-btn" onclick="speakText('${escapeQuotes(cfg.initialGreeting)}')">
                     <span class="material-symbols-outlined" style="font-size: 14px; color: var(--primary);">volume_up</span>
                     <span>Escuchar Audio (UK)</span>
                   </button>
@@ -2166,7 +2572,9 @@ Guidelines:
         }[tag] || tag));
       }
 
-      // 9. RECONOCIMIENTO DE VOZ POR MICRÓFONO (Web Speech API)
+      // ======================================================================
+      // 11. RECONOCIMIENTO DE VOZ POR MICRÓFONO (Web Speech API)
+      // ======================================================================
       const micBtn = document.getElementById('btn-speaking-mic');
       const micLabel = document.getElementById('speaking-mic-label');
       let recognition = null;
@@ -2219,20 +2627,25 @@ Guidelines:
         });
       }
 
-      // 10. INSERTORES DE CONECTORES Y PISTAS
+      // 12. INSERTORES DE CONECTORES Y PISTAS
       window.insertSpeakingConnector = function (connector) {
         if (!speakingInput) return;
-        const pos = speakingInput.selectionStart;
+        const pos = speakingInput.selectionStart || speakingInput.value.length;
         speakingInput.value = speakingInput.value.substring(0, pos) + `${connector}, ` + speakingInput.value.substring(pos);
         speakingInput.focus();
-        showToast(`Conector C1 "${connector}" insertado`, '✍️');
+        showToast(`Conector "${connector}" insertado`, '✍️');
       };
 
       window.insertClueText = function () {
         if (!speakingInput) return;
-        speakingInput.value = 'In light of recent scientific consensus, it can be maintained that ';
+        const cfg = LEVELS_CONFIG[currentLevel] || LEVELS_CONFIG.C1;
+        const clue = cfg.key === 'B1' ? 'In my opinion, the main advantage is that '
+                   : cfg.key === 'B2' ? 'Taking everything into account, it could be argued that '
+                   : cfg.key === 'C2' ? 'In stark juxtaposition to orthodox discourse, it is apparent that '
+                   : 'In light of recent scientific consensus, it can be maintained that ';
+        speakingInput.value = clue;
         speakingInput.focus();
-        showToast('Pista socrática insertada', '💡');
+        showToast(`Pista socrática ${currentLevel} insertada`, '💡');
       };
 
       window.practiceDrillInSpeaking = function (text) {
@@ -2245,7 +2658,9 @@ Guidelines:
         showToast('Estructura cargada en el Speaking', '🎯');
       };
 
-      // 11. WRITING EDITOR LOGIC
+      // ======================================================================
+      // 13. WRITING EDITOR LOGIC (CALIBRADO AL NIVEL MCER)
+      // ======================================================================
       const essayInput = document.getElementById('essay-content-input');
       const wordCounter = document.getElementById('writing-word-counter');
       const paragraphCounter = document.getElementById('essay-paragraph-count');
@@ -2258,7 +2673,10 @@ Guidelines:
         const paragraphs = text ? text.split(/\n+/).filter(p => p.trim().length > 0).length : 0;
         const estMinutes = Math.ceil(words / 130);
 
-        if (wordCounter) wordCounter.textContent = `${words} / 180 Palabras`;
+        const cfg = LEVELS_CONFIG[currentLevel] || LEVELS_CONFIG.C1;
+        const target = cfg.writingWordsTarget || 180;
+
+        if (wordCounter) wordCounter.textContent = `${words} / ${target} Palabras`;
         if (paragraphCounter) paragraphCounter.textContent = String(paragraphs);
         if (readingTime) readingTime.textContent = `${estMinutes} min`;
       }
@@ -2269,7 +2687,7 @@ Guidelines:
 
       window.insertEssayConnector = function (connector) {
         if (!essayInput) return;
-        const pos = essayInput.selectionStart;
+        const pos = essayInput.selectionStart || essayInput.value.length;
         essayInput.value = essayInput.value.substring(0, pos) + `${connector} ` + essayInput.value.substring(pos);
         essayInput.focus();
         updateEssayMetrics();
@@ -2284,9 +2702,10 @@ Guidelines:
             showToast('Escribe o pega primero tu ensayo', '⚠️');
             return;
           }
-          showToast('Evaluando redacción con rúbrica oficial C1...', '🔍');
+          const cfg = LEVELS_CONFIG[currentLevel] || LEVELS_CONFIG.C1;
+          showToast(`Evaluando redacción con rúbrica oficial ${currentLevel}...`, '🔍');
           setTimeout(() => {
-            showToast('Evaluación completada: 9.2 / 10 Banda C1', '✅');
+            showToast(`Evaluación completada: ${cfg.rubricScore}`, '✅');
           }, 900);
         });
       }
@@ -2301,12 +2720,20 @@ Guidelines:
         });
       }
 
-      // 12. GESTOR DE FLASHCARDS LEITNER (CREAR & ESTUDIAR)
+      // ======================================================================
+      // 14. GESTOR DE FLASHCARDS LEITNER (CON SOPORTE Y FILTRO POR NIVEL)
+      // ======================================================================
       const defaultDeck = [
-        { term: 'Streamline', ipa: '/ˈstriːm.laɪn/', def: 'To make an organization or system simpler and more effective by employing modern methods.', ex: 'AI algorithms substantially streamline energy distribution.', trans: 'Optimizar, agilizar', box: 1 },
-        { term: 'Notwithstanding', ipa: '/ˌnɒt.wɪðˈstæn.dɪŋ/', def: 'Despite the fact or thing mentioned; in spite of.', ex: 'Notwithstanding the initial budget constraints, the project flourished.', trans: 'A pesar de, no obstante', box: 2 },
-        { term: 'Pave the way for', ipa: '/peɪv ðə weɪ fɔːr/', def: 'To create the conditions or circumstances that make something possible.', ex: 'Renewable technology will pave the way for sustainable cities.', trans: 'Allanar el camino para', box: 3 },
-        { term: 'In stark contrast to', ipa: '/ɪn stɑːk ˈkɒn.trɑːst tuː/', def: 'Used to emphasize when two things are extremely different.', ex: 'In stark contrast to fossil fuel plants, solar farms yield zero direct emissions.', trans: 'En marcado contraste con', box: 4 }
+        { id: 'fc_1', level: 'C1', term: 'Streamline', ipa: '/ˈstriːm.laɪn/', def: 'To make an organization or system simpler and more effective by employing modern methods.', ex: 'AI algorithms substantially streamline energy distribution.', trans: 'Optimizar, agilizar', box: 1 },
+        { id: 'fc_2', level: 'C1', term: 'Notwithstanding', ipa: '/ˌnɒt.wɪðˈstæn.dɪŋ/', def: 'Despite the fact or thing mentioned; in spite of.', ex: 'Notwithstanding the initial budget constraints, the project flourished.', trans: 'A pesar de, no obstante', box: 2 },
+        { id: 'fc_3', level: 'C1', term: 'Pave the way for', ipa: '/peɪv ðə weɪ fɔːr/', def: 'To create the conditions or circumstances that make something possible.', ex: 'Renewable technology will pave the way for sustainable cities.', trans: 'Allanar el camino para', box: 3 },
+        { id: 'fc_4', level: 'C1', term: 'In stark contrast to', ipa: '/ɪn stɑːk ˈkɒn.trɑːst tuː/', def: 'Used to emphasize when two things are extremely different.', ex: 'In stark contrast to fossil fuel plants, solar farms yield zero direct emissions.', trans: 'En marcado contraste con', box: 4 },
+        { id: 'fc_5', level: 'B1', term: 'Cope with', ipa: '/kəʊp wɪð/', def: 'To deal successfully with a difficult situation or problem.', ex: 'Students must learn how to cope with stressful exam schedules.', trans: 'Afrontar, lidiar con', box: 1 },
+        { id: 'fc_6', level: 'B1', term: 'Look forward to', ipa: '/lʊk ˈfɔː.wəd tuː/', def: 'To feel pleased and excited about something that is going to happen.', ex: 'I look forward to hearing your perspective on this topic.', trans: 'Esperar con ilusión, tener ganas de', box: 2 },
+        { id: 'fc_7', level: 'B2', term: 'Bring about', ipa: '/brɪŋ əˈbaʊt/', def: 'To cause something to happen or result in change.', ex: 'Technological innovations bring about significant environmental benefits.', trans: 'Provocar, suscitar, ocasionar', box: 1 },
+        { id: 'fc_8', level: 'B2', term: 'Take for granted', ipa: '/teɪk fɔːr ˈɡrɑːn.tɪd/', def: 'To believe something to be the truth without thinking or proof.', ex: 'We shouldn’t take natural water resources for granted.', trans: 'Dar por sentado', box: 3 },
+        { id: 'fc_9', level: 'C2', term: 'Inexorably', ipa: '/ɪnˈek.sər.ə.bli/', def: 'In a way that continues without any possibility of being stopped.', ex: 'Technological advances are inexorably reshaping human governance.', trans: 'Inexorablemente, de forma imparable', box: 1 },
+        { id: 'fc_10', level: 'C2', term: 'Quintessential', ipa: '/ˌkwɪn.tɪˈsen.ʃəl/', def: 'Representing the most perfect or typical example of a quality or class.', ex: 'This dissertation is the quintessential manifestation of academic rigor.', trans: 'Por excelencia, arquetípico', box: 4 }
       ];
 
       function loadFlashcards() {
@@ -2318,8 +2745,10 @@ Guidelines:
             stored.forEach(s => {
               const term = s.term || s.question || 'Expresión';
               map.set(term.toLowerCase(), {
+                id: s.id || 'fc_' + Date.now(),
+                level: s.level || 'C1',
                 term: term,
-                ipa: s.ipa || '/C1 Level/',
+                ipa: s.ipa || `/${s.level || 'C1'} Level/`,
                 def: s.def || s.answer || '',
                 ex: s.ex || '',
                 trans: s.trans || '',
@@ -2341,23 +2770,35 @@ Guidelines:
         const cardInner = document.getElementById('interactive-flip-card');
         if (cardInner) cardInner.classList.remove('flipped');
 
+        const cardLvl = card.level || 'C1';
+        const cfg = LEVELS_CONFIG[cardLvl] || LEVELS_CONFIG.C1;
+
         document.getElementById('card-front-term').textContent = card.term;
-        document.getElementById('card-front-ipa').innerHTML = `<span>${card.ipa || ''}</span> <span>• Caja ${card.box || 1}</span>`;
+        document.getElementById('card-front-ipa').innerHTML = `<span>${card.ipa || ''}</span> <span>• Caja ${card.box || 1} • <strong style="color: ${cfg.color}">${cardLvl}</strong></span>`;
         document.getElementById('card-back-def').textContent = `“${card.def || ''}”`;
-        document.getElementById('card-back-ex').textContent = card.ex ? `Ejemplo Selectividad: “${card.ex}”` : '';
+        document.getElementById('card-back-ex').textContent = card.ex ? `Ejemplo Examen: “${card.ex}”` : '';
         document.getElementById('card-back-trans').textContent = card.trans ? `Traducción: ${card.trans}` : '';
-        document.getElementById('card-tag-label').textContent = `FICHA C1 #${String(currentCardIndex + 1).padStart(3, '0')}`;
+        document.getElementById('card-tag-label').textContent = `FICHA ${cardLvl} #${String(currentCardIndex + 1).padStart(3, '0')}`;
       }
 
       function updateCounts() {
         const total = flashcardDeck.length;
         const box1 = flashcardDeck.filter(c => (c.box || 1) === 1).length;
 
-        document.getElementById('tab-badge-cards').textContent = total;
-        document.getElementById('strip-flashcard-count').textContent = `${total} Cards`;
-        document.getElementById('progress-card-count').textContent = `${total} Cards`;
-        document.getElementById('box1-count').textContent = box1;
-        document.getElementById('collection-count').textContent = total;
+        const tabBadgeCards = document.getElementById('tab-badge-cards');
+        if (tabBadgeCards) tabBadgeCards.textContent = total;
+
+        const stripCount = document.getElementById('strip-flashcard-count');
+        if (stripCount) stripCount.textContent = `${total} Cards`;
+
+        const progCount = document.getElementById('progress-card-count');
+        if (progCount) progCount.textContent = `${total} Cards`;
+
+        const b1Count = document.getElementById('box1-count');
+        if (b1Count) b1Count.textContent = box1;
+
+        const colCount = document.getElementById('collection-count');
+        if (colCount) colCount.textContent = total;
       }
 
       function renderDeckList(filterText = '') {
@@ -2365,24 +2806,39 @@ Guidelines:
         if (!listEl) return;
         listEl.innerHTML = '';
 
+        const levelFilterSelect = document.getElementById('deck-level-filter');
+        const selectedLevelFilter = levelFilterSelect ? levelFilterSelect.value : 'ALL';
+
         const filtered = flashcardDeck.filter(c => {
+          // Filtro por nivel
+          if (selectedLevelFilter !== 'ALL' && (c.level || 'C1') !== selectedLevelFilter) {
+            return false;
+          }
+          // Filtro por texto
           if (!filterText) return true;
           const q = filterText.toLowerCase();
           return c.term.toLowerCase().includes(q) || (c.trans && c.trans.toLowerCase().includes(q));
         });
 
         if (!filtered.length) {
-          listEl.innerHTML = `<p style="color: var(--text-dim); font-size: 0.85rem; grid-column: 1/-1; text-align: center; padding: 20px;">No se encontraron fichas coincidentes.</p>`;
+          listEl.innerHTML = `<p style="color: var(--text-dim); font-size: 0.85rem; grid-column: 1/-1; text-align: center; padding: 20px;">No se encontraron fichas coincidentes para este filtro.</p>`;
           return;
         }
 
         filtered.forEach((c, idx) => {
+          const cardLvl = c.level || 'C1';
+          const cfg = LEVELS_CONFIG[cardLvl] || LEVELS_CONFIG.C1;
+          const originalIndex = flashcardDeck.indexOf(c);
+
           const item = document.createElement('div');
           item.className = 'deck-item-card';
           item.innerHTML = `
             <div>
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                <span style="font-size: 0.7rem; font-family: var(--font-mono); font-weight: 700; color: var(--primary);">CAJA ${c.box || 1}</span>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <span style="font-size: 0.7rem; font-family: var(--font-mono); font-weight: 700; color: var(--primary);">CAJA ${c.box || 1}</span>
+                  <span class="level-badge-tag" style="background: ${cfg.bgLight}; color: ${cfg.color};">${cardLvl}</span>
+                </div>
                 <button class="audio-play-btn" style="margin: 0; padding: 2px 6px;" onclick="speakText('${escapeQuotes(c.term)}')">
                   <span class="material-symbols-outlined" style="font-size: 14px;">volume_up</span>
                 </button>
@@ -2392,10 +2848,10 @@ Guidelines:
               <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0; line-height: 1.4;">${escapeHTML(c.def || '')}</p>
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 8px; margin-top: 4px;">
-              <span style="font-size: 0.72rem; color: var(--text-dim);">${escapeHTML(c.trans || 'C1 Academic')}</span>
+              <span style="font-size: 0.72rem; color: var(--text-dim);">${escapeHTML(c.trans || `${cardLvl} Vocabulary`)}</span>
               <div style="display: flex; gap: 4px;">
-                <button class="btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="selectCardToStudy(${idx})">Estudiar</button>
-                <button class="btn-secondary" style="padding: 4px 6px; font-size: 0.75rem; color: #ef4444;" onclick="deleteFlashcard(${idx})">🗑️</button>
+                <button class="btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="selectCardToStudy(${originalIndex})">Estudiar</button>
+                <button class="btn-secondary" style="padding: 4px 6px; font-size: 0.75rem; color: #ef4444;" onclick="deleteFlashcard(${originalIndex})">🗑️</button>
               </div>
             </div>
           `;
@@ -2458,6 +2914,8 @@ Guidelines:
         if (formContainer) {
           formContainer.style.display = 'flex';
           formContainer.scrollIntoView({ behavior: 'smooth' });
+          const lvlSelect = document.getElementById('fc-input-level');
+          if (lvlSelect) lvlSelect.value = currentLevel;
           document.getElementById('fc-input-term').focus();
         }
       };
@@ -2489,6 +2947,7 @@ Guidelines:
           const def = document.getElementById('fc-input-def').value.trim();
           const ex = document.getElementById('fc-input-ex').value.trim();
           const trans = document.getElementById('fc-input-trans').value.trim();
+          const level = document.getElementById('fc-input-level')?.value || currentLevel;
           const box = parseInt(document.getElementById('fc-input-box').value) || 1;
 
           if (!term || !def) {
@@ -2498,8 +2957,9 @@ Guidelines:
 
           const newCard = {
             id: 'fc_' + Date.now(),
+            level: level,
             term: term,
-            ipa: ipa || '/C1 Level/',
+            ipa: ipa || `/${level} Level/`,
             def: def,
             ex: ex,
             trans: trans,
@@ -2522,7 +2982,7 @@ Guidelines:
           renderDeckList();
           closeNewCardForm();
 
-          showToast(`¡Nueva ficha "${term}" guardada con éxito!`, '🎉');
+          showToast(`¡Nueva ficha ${level} "${term}" guardada con éxito!`, '🎉');
         });
       }
 
@@ -2533,21 +2993,30 @@ Guidelines:
         });
       }
 
-      // 13. BOTÓN RÁPIDO GUARDAR FLASHCARD DESDE EL INSPECTOR
+      const deckLevelFilter = document.getElementById('deck-level-filter');
+      if (deckLevelFilter) {
+        deckLevelFilter.addEventListener('change', () => {
+          renderDeckList(searchDeckInput ? searchDeckInput.value : '');
+        });
+      }
+
+      // 15. BOTÓN RÁPIDO GUARDAR FLASHCARD DESDE EL INSPECTOR
       const btnSaveQuick = document.getElementById('btn-save-quick-card');
       if (btnSaveQuick) {
         btnSaveQuick.addEventListener('click', function () {
+          const cfg = LEVELS_CONFIG[currentLevel] || LEVELS_CONFIG.C1;
           const cardData = {
-            id: 'fc_streamline_' + Date.now(),
-            term: 'Streamline',
-            ipa: '/ˈstriːm.laɪn/ • Verb',
-            def: 'To make an organization or system simpler, faster, and more effective.',
-            ex: 'AI holds the potential to substantially streamline distribution networks.',
-            trans: 'Optimizar, simplificar',
+            id: 'fc_quick_' + Date.now(),
+            level: currentLevel,
+            term: cfg.sampleTerm,
+            ipa: `/${currentLevel} Core Term/`,
+            def: `Key vocabulary item calibrated for ${cfg.name}.`,
+            ex: `Demonstrating excellence in formal ${currentLevel} English examination.`,
+            trans: `Término clave de nivel ${currentLevel}`,
             box: 1
           };
 
-          if (!flashcardDeck.some(c => c.term.toLowerCase() === 'streamline')) {
+          if (!flashcardDeck.some(c => c.term.toLowerCase() === cfg.sampleTerm.toLowerCase())) {
             flashcardDeck.unshift(cardData);
             localStorage.setItem('agenda_flashcards', JSON.stringify(flashcardDeck));
           }
@@ -2558,11 +3027,11 @@ Guidelines:
 
           btnSaveQuick.innerHTML = '<span class="material-symbols-outlined" style="font-size: 16px; color: var(--success);">check_circle</span><span>¡Guardada en Mazo!</span>';
           btnSaveQuick.disabled = true;
-          showToast('¡Ficha "Streamline" guardada en tu mazo Leitner!', '⭐');
+          showToast(`¡Ficha "${cfg.sampleTerm}" guardada en tu mazo Leitner!`, '⭐');
         });
       }
 
-      // 14. CAMBIAR TEMA DE SPEAKING
+      // 16. CAMBIAR TEMA DE SPEAKING
       const speakingTopics = [
         'The Impact of Artificial Intelligence on Climate Change Mitigation',
         'Should Higher Education be Fully Subsidized by the State? (PAU Madrid)',
@@ -2581,7 +3050,8 @@ Guidelines:
         });
       }
 
-      // Inicialización
+      // Inicialización de Nivel y Componentes
+      setEnglishLevel(currentLevel, false);
       renderCurrentCard();
       updateCounts();
       renderDeckList();
