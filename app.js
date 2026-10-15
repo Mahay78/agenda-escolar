@@ -25,22 +25,9 @@ import {
 
 import { initCameraModule, openCamera, openImageViewer } from './camera.js';
 import { initAnnotationModule, openAnnotationEditor } from './annotations.js';
-import {
-  exportSchedulePDF,
-  exportGradesReportPDF,
-  exportProjectDossierPDF
-} from './pdf-export.js';
-import {
-  downloadICS,
-  generateExamsICS,
-  generateScheduleICS,
-  exportSingleExam
-} from './ics-export.js';
-import {
-  getGamificationStats,
-  recordStudyActivity,
-  addXP
-} from './gamification.js';
+import { exportSchedulePDF, exportGradesReportPDF, exportProjectDossierPDF } from './pdf-export.js';
+import { downloadICS, generateExamsICS, generateScheduleICS, exportSingleExam } from './ics-export.js';
+import { getGamificationStats, recordStudyActivity, addXP } from './gamification.js';
 import {
   areNotificationsSupported,
   getNotificationPermission,
@@ -233,7 +220,7 @@ async function loadAllData() {
     course: '1º Bachillerato de Artes',
     theme: 'dark'
   });
-  
+
   const savedPomo = await getSetting('pomodoroStats');
   if (savedPomo && savedPomo.date === getTodayDateString()) {
     AppState.pomodoro.countToday = savedPomo.countToday || 0;
@@ -441,20 +428,28 @@ function initDrawerNavigation() {
   let touchStartX = 0;
   let touchStartY = 0;
 
-  drawer?.addEventListener('touchstart', (e) => {
-    touchStartX = e.changedTouches[0].screenX;
-    touchStartY = e.changedTouches[0].screenY;
-  }, { passive: true });
+  drawer?.addEventListener(
+    'touchstart',
+    (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    },
+    { passive: true }
+  );
 
-  drawer?.addEventListener('touchend', (e) => {
-    const touchEndX = e.changedTouches[0].screenX;
-    const touchEndY = e.changedTouches[0].screenY;
-    const diffX = touchStartX - touchEndX;
-    const diffY = Math.abs(touchStartY - touchEndY);
-    if (diffX > 50 && diffY < 90) {
-      window.closeDrawer();
-    }
-  }, { passive: true });
+  drawer?.addEventListener(
+    'touchend',
+    (e) => {
+      const touchEndX = e.changedTouches[0].screenX;
+      const touchEndY = e.changedTouches[0].screenY;
+      const diffX = touchStartX - touchEndX;
+      const diffY = Math.abs(touchStartY - touchEndY);
+      if (diffX > 50 && diffY < 90) {
+        window.closeDrawer();
+      }
+    },
+    { passive: true }
+  );
 }
 
 function switchTab(tabId, specificSubtab = null) {
@@ -555,70 +550,82 @@ function setupTaskSwipeGestures() {
   let currentItem = null;
   let isSwiping = false;
 
-  document.addEventListener('touchstart', (e) => {
-    const item = e.target.closest('.task-item');
-    if (!item) return;
-    if (e.target.closest('button, input, select, audio, a')) return;
+  document.addEventListener(
+    'touchstart',
+    (e) => {
+      const item = e.target.closest('.task-item');
+      if (!item) return;
+      if (e.target.closest('button, input, select, audio, a')) return;
 
-    touchStartX = e.touches[0].clientX;
-    touchStartY = e.touches[0].clientY;
-    currentItem = item;
-    isSwiping = false;
-  }, { passive: true });
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      currentItem = item;
+      isSwiping = false;
+    },
+    { passive: true }
+  );
 
-  document.addEventListener('touchmove', (e) => {
-    if (!currentItem) return;
-    const currentX = e.touches[0].clientX;
-    const currentY = e.touches[0].clientY;
-    const diffX = currentX - touchStartX;
-    const diffY = currentY - touchStartY;
+  document.addEventListener(
+    'touchmove',
+    (e) => {
+      if (!currentItem) return;
+      const currentX = e.touches[0].clientX;
+      const currentY = e.touches[0].clientY;
+      const diffX = currentX - touchStartX;
+      const diffY = currentY - touchStartY;
 
-    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 12) {
-      isSwiping = true;
-      currentItem.classList.add('swiping');
-      const clampedX = Math.max(-110, Math.min(110, diffX));
-      currentItem.style.transform = `translateX(${clampedX}px)`;
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 12) {
+        isSwiping = true;
+        currentItem.classList.add('swiping');
+        const clampedX = Math.max(-110, Math.min(110, diffX));
+        currentItem.style.transform = `translateX(${clampedX}px)`;
 
-      if (diffX > 45) {
-        currentItem.classList.add('swipe-complete-hint');
-        currentItem.classList.remove('swipe-delete-hint');
-      } else if (diffX < -45) {
-        currentItem.classList.add('swipe-delete-hint');
-        currentItem.classList.remove('swipe-complete-hint');
-      } else {
-        currentItem.classList.remove('swipe-complete-hint', 'swipe-delete-hint');
+        if (diffX > 45) {
+          currentItem.classList.add('swipe-complete-hint');
+          currentItem.classList.remove('swipe-delete-hint');
+        } else if (diffX < -45) {
+          currentItem.classList.add('swipe-delete-hint');
+          currentItem.classList.remove('swipe-complete-hint');
+        } else {
+          currentItem.classList.remove('swipe-complete-hint', 'swipe-delete-hint');
+        }
       }
-    }
-  }, { passive: true });
+    },
+    { passive: true }
+  );
 
-  document.addEventListener('touchend', (e) => {
-    if (!currentItem) return;
-    const item = currentItem;
-    currentItem = null;
+  document.addEventListener(
+    'touchend',
+    (e) => {
+      if (!currentItem) return;
+      const item = currentItem;
+      currentItem = null;
 
-    if (!isSwiping) return;
-    item.classList.remove('swiping');
+      if (!isSwiping) return;
+      item.classList.remove('swiping');
 
-    const endX = e.changedTouches[0].clientX;
-    const diffX = endX - touchStartX;
+      const endX = e.changedTouches[0].clientX;
+      const diffX = endX - touchStartX;
 
-    item.classList.remove('swipe-complete-hint', 'swipe-delete-hint');
-    item.style.transform = '';
+      item.classList.remove('swipe-complete-hint', 'swipe-delete-hint');
+      item.style.transform = '';
 
-    if (diffX > 60) {
-      const checkbox = item.querySelector('.task-checkbox');
-      if (checkbox) {
-        triggerHaptic('success');
-        checkbox.click();
+      if (diffX > 60) {
+        const checkbox = item.querySelector('.task-checkbox');
+        if (checkbox) {
+          triggerHaptic('success');
+          checkbox.click();
+        }
+      } else if (diffX < -60) {
+        const deleteBtn = item.querySelector('.btn-action-small.danger');
+        if (deleteBtn) {
+          triggerHaptic('medium');
+          deleteBtn.click();
+        }
       }
-    } else if (diffX < -60) {
-      const deleteBtn = item.querySelector('.btn-action-small.danger');
-      if (deleteBtn) {
-        triggerHaptic('medium');
-        deleteBtn.click();
-      }
-    }
-  }, { passive: true });
+    },
+    { passive: true }
+  );
 }
 
 /**
@@ -629,44 +636,56 @@ function setupBottomSheetDismiss() {
   let activeModal = null;
   let isDraggingModal = false;
 
-  document.addEventListener('touchstart', (e) => {
-    if (window.innerWidth > 640) return;
-    const handle = e.target.closest('.sheet-handle-bar, .modal-header');
-    if (!handle) return;
-    const modalContent = handle.closest('.modal-content');
-    if (!modalContent) return;
+  document.addEventListener(
+    'touchstart',
+    (e) => {
+      if (window.innerWidth > 640) return;
+      const handle = e.target.closest('.sheet-handle-bar, .modal-header');
+      if (!handle) return;
+      const modalContent = handle.closest('.modal-content');
+      if (!modalContent) return;
 
-    activeModal = modalContent.closest('.modal-overlay');
-    startY = e.touches[0].clientY;
-    isDraggingModal = true;
-  }, { passive: true });
+      activeModal = modalContent.closest('.modal-overlay');
+      startY = e.touches[0].clientY;
+      isDraggingModal = true;
+    },
+    { passive: true }
+  );
 
-  document.addEventListener('touchmove', (e) => {
-    if (!isDraggingModal || !activeModal) return;
-    const currentY = e.touches[0].clientY;
-    const diffY = currentY - startY;
-    if (diffY > 0) {
-      const content = activeModal.querySelector('.modal-content');
-      if (content) {
-        content.style.transform = `translateY(${diffY}px)`;
+  document.addEventListener(
+    'touchmove',
+    (e) => {
+      if (!isDraggingModal || !activeModal) return;
+      const currentY = e.touches[0].clientY;
+      const diffY = currentY - startY;
+      if (diffY > 0) {
+        const content = activeModal.querySelector('.modal-content');
+        if (content) {
+          content.style.transform = `translateY(${diffY}px)`;
+        }
       }
-    }
-  }, { passive: true });
+    },
+    { passive: true }
+  );
 
-  document.addEventListener('touchend', (e) => {
-    if (!isDraggingModal || !activeModal) return;
-    const endY = e.changedTouches[0].clientY;
-    const diffY = endY - startY;
-    const content = activeModal.querySelector('.modal-content');
-    if (content) content.style.transform = '';
+  document.addEventListener(
+    'touchend',
+    (e) => {
+      if (!isDraggingModal || !activeModal) return;
+      const endY = e.changedTouches[0].clientY;
+      const diffY = endY - startY;
+      const content = activeModal.querySelector('.modal-content');
+      if (content) content.style.transform = '';
 
-    if (diffY > 75) {
-      triggerHaptic('light');
-      activeModal.classList.add('hidden');
-    }
-    isDraggingModal = false;
-    activeModal = null;
-  }, { passive: true });
+      if (diffY > 75) {
+        triggerHaptic('light');
+        activeModal.classList.add('hidden');
+      }
+      isDraggingModal = false;
+      activeModal = null;
+    },
+    { passive: true }
+  );
 }
 
 // ==========================================================================
@@ -746,12 +765,12 @@ function initEventListeners() {
 
     // Si el foco está en un campo de texto o elemento interactivo, no activar atajos de una sola tecla
     const activeEl = document.activeElement;
-    const isEditing = activeEl && (
-      activeEl.tagName === 'INPUT' ||
-      activeEl.tagName === 'TEXTAREA' ||
-      activeEl.tagName === 'SELECT' ||
-      activeEl.isContentEditable
-    );
+    const isEditing =
+      activeEl &&
+      (activeEl.tagName === 'INPUT' ||
+        activeEl.tagName === 'TEXTAREA' ||
+        activeEl.tagName === 'SELECT' ||
+        activeEl.isContentEditable);
     if (isEditing) return;
 
     // Si hay algún modal abierto en pantalla, no disparar atajos de fondo
@@ -999,7 +1018,11 @@ function initEventListeners() {
 
   // Plantillas de Bachillerato de Artes
   document.getElementById('btn-load-preset-plasticas')?.addEventListener('click', async () => {
-    if (confirm('¿Cargar las asignaturas de Bachillerato de Artes Plásticas, Imagen y Diseño? Se actualizará tu catálogo de asignaturas.')) {
+    if (
+      confirm(
+        '¿Cargar las asignaturas de Bachillerato de Artes Plásticas, Imagen y Diseño? Se actualizará tu catálogo de asignaturas.'
+      )
+    ) {
       await applySubjectPreset('artes_plasticas');
       await loadAllData();
       renderAllViews();
@@ -1008,7 +1031,11 @@ function initEventListeners() {
   });
 
   document.getElementById('btn-load-preset-escenicas')?.addEventListener('click', async () => {
-    if (confirm('¿Cargar las asignaturas de Bachillerato de Música y Artes Escénicas? Se actualizará tu catálogo de asignaturas.')) {
+    if (
+      confirm(
+        '¿Cargar las asignaturas de Bachillerato de Música y Artes Escénicas? Se actualizará tu catálogo de asignaturas.'
+      )
+    ) {
       await applySubjectPreset('artes_escenicas');
       await loadAllData();
       renderAllViews();
@@ -1105,7 +1132,9 @@ function updateHeaderInfo() {
   const drawerNameEl = document.getElementById('drawer-student-name');
   const drawerSchoolEl = document.getElementById('drawer-school-name');
 
-  const studentTitle = AppState.studentInfo?.studentName ? `Agenda de ${AppState.studentInfo.studentName}` : 'Agenda Escolar';
+  const studentTitle = AppState.studentInfo?.studentName
+    ? `Agenda de ${AppState.studentInfo.studentName}`
+    : 'Agenda Escolar';
   const schoolSubtitle = `${AppState.studentInfo?.schoolName || 'Instituto'} - ${AppState.studentInfo?.course || ''}`;
 
   if (nameEl) nameEl.textContent = studentTitle;
@@ -1236,7 +1265,8 @@ function updateCurrentLiveCard(now = new Date(), dayOfWeek = now.getDay()) {
     if (statusLabelEl) statusLabelEl.textContent = 'FIN DE SEMANA';
     if (iconEl) iconEl.textContent = '🌴';
     if (titleEl) titleEl.textContent = '¡Tiempo de Descanso y Repaso!';
-    if (subEl) subEl.textContent = 'No hay clases lectivas hoy. Buen momento para repasar fichas Leitner o desconectar.';
+    if (subEl)
+      subEl.textContent = 'No hay clases lectivas hoy. Buen momento para repasar fichas Leitner o desconectar.';
     if (timerEl) timerEl.textContent = 'Fin de semana';
     if (nextEl) nextEl.textContent = 'Próxima jornada escolar: Lunes por la mañana';
     if (locationEl) locationEl.textContent = '';
@@ -1282,8 +1312,9 @@ function updateCurrentLiveCard(now = new Date(), dayOfWeek = now.getDay()) {
 
     if (statusLabelEl) statusLabelEl.textContent = 'ANTES DE EMPEZAR';
     if (iconEl) iconEl.textContent = sub?.icon || '🎒';
-    if (titleEl) titleEl.textContent = `Próxima: ${sub ? sub.name : (firstSlot.isBreak ? 'Recreo' : 'Hora Libre')}`;
-    if (subEl) subEl.textContent = `Comienza a las ${firstSlot.start} ${match?.classroom ? 'en aula ' + match.classroom : ''}`;
+    if (titleEl) titleEl.textContent = `Próxima: ${sub ? sub.name : firstSlot.isBreak ? 'Recreo' : 'Hora Libre'}`;
+    if (subEl)
+      subEl.textContent = `Comienza a las ${firstSlot.start} ${match?.classroom ? 'en aula ' + match.classroom : ''}`;
     if (timerEl) timerEl.textContent = diff < 60 ? `En ${diff} min` : `A las ${firstSlot.start}`;
     if (nextEl) nextEl.textContent = `Jornada escolar de ${slotsWithTimes.length} tramos`;
     if (locationEl) locationEl.textContent = match?.classroom || sub?.classroom || '';
@@ -1297,7 +1328,11 @@ function updateCurrentLiveCard(now = new Date(), dayOfWeek = now.getDay()) {
     if (statusLabelEl) statusLabelEl.textContent = 'JORNADA FINALIZADA';
     if (iconEl) iconEl.textContent = '🎉';
     if (titleEl) titleEl.textContent = '¡Clases terminadas por hoy!';
-    if (subEl) subEl.textContent = pendingTomorrow > 0 ? `Tienes ${pendingTomorrow} tarea(s) pendiente(s) para mañana.` : '¡Genial! No tienes tareas pendientes para mañana.';
+    if (subEl)
+      subEl.textContent =
+        pendingTomorrow > 0
+          ? `Tienes ${pendingTomorrow} tarea(s) pendiente(s) para mañana.`
+          : '¡Genial! No tienes tareas pendientes para mañana.';
     if (timerEl) timerEl.textContent = 'Libre';
     if (nextEl) nextEl.textContent = 'Próxima jornada escolar: Mañana a las ' + firstSlot.start;
     if (locationEl) locationEl.textContent = '';
@@ -1325,7 +1360,7 @@ function updateCurrentLiveCard(now = new Date(), dayOfWeek = now.getDay()) {
     if (nextSlot) {
       const nextMatch = todaySlots.find((s) => s.slotIndex === nextSlot.index);
       const nextSub = nextMatch ? AppState.subjects.find((s) => s.id === nextMatch.subjectId) : null;
-      nextInfo = `Siguiente: ${nextSlot.isBreak ? '🥪 Recreo' : (nextSub ? nextSub.name : 'Hora libre')} (${nextSlot.start})`;
+      nextInfo = `Siguiente: ${nextSlot.isBreak ? '🥪 Recreo' : nextSub ? nextSub.name : 'Hora libre'} (${nextSlot.start})`;
     }
 
     if (activeSlot.isBreak) {
@@ -1356,10 +1391,11 @@ function updateCurrentLiveCard(now = new Date(), dayOfWeek = now.getDay()) {
     const sub = match ? AppState.subjects.find((s) => s.id === match.subjectId) : null;
     if (statusLabelEl) statusLabelEl.textContent = 'CAMBIO DE CLASE';
     if (iconEl) iconEl.textContent = '🚶‍♂️';
-    if (titleEl) titleEl.textContent = `Toca: ${upcomingSlot.isBreak ? '🥪 Recreo' : (sub ? sub.name : 'Hora Libre')}`;
+    if (titleEl) titleEl.textContent = `Toca: ${upcomingSlot.isBreak ? '🥪 Recreo' : sub ? sub.name : 'Hora Libre'}`;
     if (subEl) subEl.textContent = `Comienza a las ${upcomingSlot.start} (en ${minUntil} min)`;
     if (timerEl) timerEl.textContent = `En ${minUntil} min`;
-    if (nextEl) nextEl.textContent = match?.classroom || sub?.classroom ? `Ubicación: ${match?.classroom || sub?.classroom}` : '';
+    if (nextEl)
+      nextEl.textContent = match?.classroom || sub?.classroom ? `Ubicación: ${match?.classroom || sub?.classroom}` : '';
     if (locationEl) locationEl.textContent = '';
   }
 }
@@ -1367,7 +1403,20 @@ function updateCurrentLiveCard(now = new Date(), dayOfWeek = now.getDay()) {
 function renderTodayView() {
   const now = new Date();
   const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-  const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  const months = [
+    'enero',
+    'febrero',
+    'marzo',
+    'abril',
+    'mayo',
+    'junio',
+    'julio',
+    'agosto',
+    'septiembre',
+    'octubre',
+    'noviembre',
+    'diciembre'
+  ];
 
   const dayOfWeek = now.getDay();
   const dayName = days[dayOfWeek];
@@ -1471,9 +1520,7 @@ function renderTodayView() {
 
   // Próximo examen
   const todayStr = getTodayDateString();
-  const upcomingExams = AppState.exams
-    .filter((e) => e.date >= todayStr)
-    .sort((a, b) => a.date.localeCompare(b.date));
+  const upcomingExams = AppState.exams.filter((e) => e.date >= todayStr).sort((a, b) => a.date.localeCompare(b.date));
 
   const nextExamContainer = document.getElementById('today-next-exam');
   if (nextExamContainer) {
@@ -2246,15 +2293,19 @@ function renderTaskModalSubtasks() {
     return;
   }
 
-  container.innerHTML = subtasks.map((st, idx) => `
+  container.innerHTML = subtasks
+    .map(
+      (st, idx) => `
     <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; background: var(--bg-card); padding: 6px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
       <span style="font-size: 0.82rem; color: var(--text-main); word-break: break-word;">${escapeHTML(st.title)}</span>
       <button type="button" class="btn-action-small danger" onclick="window.removeTaskSubtask(${idx})" style="padding: 2px 6px; font-size: 0.7rem;" title="Eliminar paso">✕</button>
     </div>
-  `).join('');
+  `
+    )
+    .join('');
 }
 
-window.removeTaskSubtask = function(idx) {
+window.removeTaskSubtask = function (idx) {
   if (AppState.tempTaskSubtasks) {
     AppState.tempTaskSubtasks.splice(idx, 1);
     renderTaskModalSubtasks();
@@ -2287,7 +2338,7 @@ window.openTaskModal = function (taskId = null, defaultDate = null) {
       descInput.value = task.description || '';
       AppState.tempTaskPhotos = [...(task.photos || [])];
       AppState.tempTaskAudio = task.audioUrl || null;
-      AppState.tempTaskSubtasks = (task.subtasks || []).map(s => ({ ...s }));
+      AppState.tempTaskSubtasks = (task.subtasks || []).map((s) => ({ ...s }));
       if (AppState.tempTaskAudio && audioPreview && audioPlayer) {
         audioPlayer.src = AppState.tempTaskAudio;
         audioPreview.classList.remove('hidden');
@@ -2518,7 +2569,8 @@ async function handleGradeFormSubmit(e) {
   const date = document.getElementById('grade-date-input').value;
   const type = document.getElementById('grade-type-select')?.value || 'exam';
   const customWeight = parseFloat(document.getElementById('grade-weight-input')?.value);
-  const weight = !isNaN(customWeight) && customWeight > 0 ? customWeight : (type === 'exam' ? 70 : type === 'work' ? 20 : 10);
+  const weight =
+    !isNaN(customWeight) && customWeight > 0 ? customWeight : type === 'exam' ? 70 : type === 'work' ? 20 : 10;
 
   const grade = { id, subjectId, term, title, score, date, type, weight };
   await saveItem('grades', grade);
@@ -2832,7 +2884,11 @@ async function handleImportBackup(e) {
   const file = e.target.files[0];
   if (!file) return;
 
-  if (confirm('¡Atención! Al restaurar una copia de seguridad se reemplazarán los datos actuales por los de la copia. ¿Deseas continuar?')) {
+  if (
+    confirm(
+      '¡Atención! Al restaurar una copia de seguridad se reemplazarán los datos actuales por los de la copia. ¿Deseas continuar?'
+    )
+  ) {
     const reader = new FileReader();
     reader.onload = async (event) => {
       try {
@@ -2955,7 +3011,12 @@ function updateQRCode() {
     textToEncode = formatExamsForWhatsApp(AppState.exams, AppState.subjects, AppState.studentInfo);
     description = 'Código QR con los próximos exámenes y temario.';
   } else if (type === 'schedule') {
-    textToEncode = formatScheduleForWhatsApp(AppState.schedule, AppState.subjects, AppState.timeSlots, AppState.studentInfo);
+    textToEncode = formatScheduleForWhatsApp(
+      AppState.schedule,
+      AppState.subjects,
+      AppState.timeSlots,
+      AppState.studentInfo
+    );
     description = 'Código QR con el horario escolar semanal.';
   }
 
@@ -2964,7 +3025,9 @@ function updateQRCode() {
     if (descEl) descEl.textContent = description;
   } catch (err) {
     console.error('Error al generar código QR:', err);
-    if (descEl) descEl.textContent = 'El contenido es demasiado largo para un solo código QR. Prueba a seleccionar una sola sección.';
+    if (descEl)
+      descEl.textContent =
+        'El contenido es demasiado largo para un solo código QR. Prueba a seleccionar una sola sección.';
   }
 }
 
@@ -3484,7 +3547,7 @@ function initEVAUSimulator() {
     }
 
     // Nota de acceso (sobre 10)
-    const accessScore = 0.60 * nmb + 0.40 * cfg;
+    const accessScore = 0.6 * nmb + 0.4 * cfg;
     if (accessScore < 5.0) {
       resultBox.classList.remove('hidden');
       resultBox.style.borderColor = 'var(--danger)';
@@ -3786,9 +3849,21 @@ function initGlobalSearch() {
     if (filter === 'all' || filter === 'photos') {
       const checkedPhotos = new Set();
       const allP = [];
-      AppState.tasks.forEach((t) => (t.photos || []).forEach((src) => allP.push({ src, title: t.title, sub: AppState.subjects.find((s) => s.id === t.subjectId) })));
-      AppState.exams.forEach((e) => (e.photos || []).forEach((src) => allP.push({ src, title: `Examen: ${e.title}`, sub: AppState.subjects.find((s) => s.id === e.subjectId) })));
-      AppState.projects.forEach((pr) => (pr.photos || []).forEach((src) => allP.push({ src, title: `Proyecto: ${pr.title}`, sub: AppState.subjects.find((s) => s.id === pr.subjectId) })));
+      AppState.tasks.forEach((t) =>
+        (t.photos || []).forEach((src) =>
+          allP.push({ src, title: t.title, sub: AppState.subjects.find((s) => s.id === t.subjectId) })
+        )
+      );
+      AppState.exams.forEach((e) =>
+        (e.photos || []).forEach((src) =>
+          allP.push({ src, title: `Examen: ${e.title}`, sub: AppState.subjects.find((s) => s.id === e.subjectId) })
+        )
+      );
+      AppState.projects.forEach((pr) =>
+        (pr.photos || []).forEach((src) =>
+          allP.push({ src, title: `Proyecto: ${pr.title}`, sub: AppState.subjects.find((s) => s.id === pr.subjectId) })
+        )
+      );
 
       allP.forEach((photoObj) => {
         if (checkedPhotos.has(photoObj.src)) return;
@@ -3824,7 +3899,8 @@ function initGlobalSearch() {
     }
 
     resultsContainer.innerHTML = matches
-      .map((item, idx) => `
+      .map(
+        (item, idx) => `
         <div class="search-result-item ${idx === 0 ? 'selected' : ''}" data-match-index="${idx}">
           <div>
             <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-main);">
@@ -3840,7 +3916,8 @@ function initGlobalSearch() {
             ${escapeHTML(item.badge)}
           </span>
         </div>
-      `)
+      `
+      )
       .join('');
 
     resultsContainer.querySelectorAll('.search-result-item').forEach((el, idx) => {
@@ -4014,7 +4091,9 @@ function initOcrModule() {
     ocrModal?.classList.add('hidden');
     document.getElementById('image-viewer-modal')?.classList.add('hidden');
     if (window.openCopilotModal) {
-      window.openCopilotModal(`Explícame de forma clara y didáctica estos apuntes de clase que acabo de fotografiar:\n\n${text}`);
+      window.openCopilotModal(
+        `Explícame de forma clara y didáctica estos apuntes de clase que acabo de fotografiar:\n\n${text}`
+      );
     }
   });
 
@@ -4045,7 +4124,8 @@ function initOcrModule() {
     setTimeout(() => {
       const topicsInput = document.getElementById('exam-topics-input');
       if (topicsInput) {
-        topicsInput.value = (topicsInput.value ? topicsInput.value + '\n\n' : '') + `[Temario extraído por OCR]:\n${text}`;
+        topicsInput.value =
+          (topicsInput.value ? topicsInput.value + '\n\n' : '') + `[Temario extraído por OCR]:\n${text}`;
       }
     }, 100);
   });
@@ -4211,7 +4291,7 @@ function startPomodoro() {
         recordStudyActivity('pomodoro_completed').then(({ newlyUnlocked }) => {
           getGamificationStats().then(updateGamificationUI);
           if (newlyUnlocked && newlyUnlocked.length > 0) {
-            newlyUnlocked.forEach(a => showToast(`🏆 ¡Logro Desbloqueado!: ${a.title}`, 'success'));
+            newlyUnlocked.forEach((a) => showToast(`🏆 ¡Logro Desbloqueado!: ${a.title}`, 'success'));
           }
         });
         setPomodoroMode('short', 5);
@@ -4515,12 +4595,22 @@ function renderTrashItems() {
     return;
   }
 
-  container.innerHTML = AppState.trash.map(item => {
-    const typeBadgeClass = `trash-badge-${item.originalStore === 'tasks' ? 'task' : item.originalStore === 'exams' ? 'exam' : item.originalStore === 'projects' ? 'project' : 'grade'}`;
-    const typeLabel = item.originalStore === 'tasks' ? 'Tarea' : item.originalStore === 'exams' ? 'Examen' : item.originalStore === 'projects' ? 'Proyecto' : item.originalStore === 'materials' ? 'Material' : 'Nota';
-    const dateStr = new Date(item.deletedAt).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' });
+  container.innerHTML = AppState.trash
+    .map((item) => {
+      const typeBadgeClass = `trash-badge-${item.originalStore === 'tasks' ? 'task' : item.originalStore === 'exams' ? 'exam' : item.originalStore === 'projects' ? 'project' : 'grade'}`;
+      const typeLabel =
+        item.originalStore === 'tasks'
+          ? 'Tarea'
+          : item.originalStore === 'exams'
+            ? 'Examen'
+            : item.originalStore === 'projects'
+              ? 'Proyecto'
+              : item.originalStore === 'materials'
+                ? 'Material'
+                : 'Nota';
+      const dateStr = new Date(item.deletedAt).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' });
 
-    return `
+      return `
       <div class="trash-item-card" id="trash-card-${escapeHTML(item.id)}">
         <div class="trash-item-info">
           <div class="trash-item-title">${escapeHTML(item.label)}</div>
@@ -4539,10 +4629,11 @@ function renderTrashItems() {
         </div>
       </div>
     `;
-  }).join('');
+    })
+    .join('');
 }
 
-window.handleRestoreTrash = async function(trashId) {
+window.handleRestoreTrash = async function (trashId) {
   const restored = await restoreFromTrash(trashId);
   if (restored) {
     await loadAllData();
@@ -4552,7 +4643,7 @@ window.handleRestoreTrash = async function(trashId) {
   }
 };
 
-window.handlePermanentDeleteTrash = async function(trashId) {
+window.handlePermanentDeleteTrash = async function (trashId) {
   if (confirm('¿Eliminar permanentemente este elemento?')) {
     await deletePermanentlyFromTrash(trashId);
     AppState.trash = await getTrashItems();
@@ -4595,7 +4686,7 @@ function initSubjectResourcesModule() {
       return;
     }
 
-    const sub = AppState.subjects.find(s => s.id === subId);
+    const sub = AppState.subjects.find((s) => s.id === subId);
     if (!sub) return;
 
     const titleInput = document.getElementById('resource-title');
@@ -4629,7 +4720,7 @@ function renderSubjectResourcesList() {
   if (!selectSubject || !container) return;
 
   const subId = selectSubject.value;
-  const sub = AppState.subjects.find(s => s.id === subId);
+  const sub = AppState.subjects.find((s) => s.id === subId);
   const resources = sub?.resources || [];
 
   if (resources.length === 0) {
@@ -4645,9 +4736,10 @@ function renderSubjectResourcesList() {
     web: '🌐'
   };
 
-  container.innerHTML = resources.map(res => {
-    const icon = iconMap[res.type] || '🔗';
-    return `
+  container.innerHTML = resources
+    .map((res) => {
+      const icon = iconMap[res.type] || '🔗';
+      return `
       <div class="resource-link-item">
         <a href="${escapeHTML(safeUrl(res.url))}" target="_blank" rel="noopener noreferrer" class="resource-link-btn" title="Abrir en nueva pestaña">
           <span>${icon}</span>
@@ -4659,13 +4751,14 @@ function renderSubjectResourcesList() {
         </button>
       </div>
     `;
-  }).join('');
+    })
+    .join('');
 }
 
-window.handleDeleteResource = async function(subId, resId) {
-  const sub = AppState.subjects.find(s => s.id === subId);
+window.handleDeleteResource = async function (subId, resId) {
+  const sub = AppState.subjects.find((s) => s.id === subId);
   if (!sub || !sub.resources) return;
-  sub.resources = sub.resources.filter(r => r.id !== resId);
+  sub.resources = sub.resources.filter((r) => r.id !== resId);
   await saveItem('subjects', sub);
   await loadAllData();
   renderSubjectResourcesList();
@@ -4770,10 +4863,10 @@ function initIcsExportModule() {
     }
   });
 
-  window.handleExportSingleExamICS = function(examId) {
-    const exam = AppState.exams.find(e => e.id === examId);
+  window.handleExportSingleExamICS = function (examId) {
+    const exam = AppState.exams.find((e) => e.id === examId);
     if (!exam) return;
-    const sub = AppState.subjects.find(s => s.id === exam.subjectId);
+    const sub = AppState.subjects.find((s) => s.id === exam.subjectId);
     exportSingleExam(exam, sub);
     showToast('📅 Examen exportado a calendario (.ics)', 'success');
   };
@@ -4809,10 +4902,10 @@ function initPdfExportModule() {
     }
   });
 
-  window.handleExportProjectPDF = async function(projectId) {
-    const proj = AppState.projects.find(p => p.id === projectId);
+  window.handleExportProjectPDF = async function (projectId) {
+    const proj = AppState.projects.find((p) => p.id === projectId);
     if (!proj) return;
-    const sub = AppState.subjects.find(s => s.id === proj.subjectId);
+    const sub = AppState.subjects.find((s) => s.id === proj.subjectId);
     try {
       showToast('📄 Generando Dossier de Proyecto en PDF...', 'info');
       await exportProjectDossierPDF(proj, sub);
@@ -4897,7 +4990,8 @@ function initGoogleDriveModule() {
       if (modalEmail) modalEmail.textContent = 'Pulsa conectar para vincular tu Drive';
       if (btnModalAuth) btnModalAuth.textContent = '🔑 Conectar Google';
       if (backupsList) {
-        backupsList.innerHTML = '<p class="section-subtitle" style="text-align: center; padding: 12px 0;">Conecta tu cuenta para ver tus copias en Google Drive.</p>';
+        backupsList.innerHTML =
+          '<p class="section-subtitle" style="text-align: center; padding: 12px 0;">Conecta tu cuenta para ver tus copias en Google Drive.</p>';
       }
     }
   };
@@ -4986,28 +5080,34 @@ function initGoogleDriveModule() {
   const fetchAndRenderBackups = async () => {
     if (!isGoogleDriveConnected()) {
       if (backupsList) {
-        backupsList.innerHTML = '<p class="section-subtitle" style="text-align: center; padding: 12px 0;">Debes conectar tu cuenta de Google para consultar tus copias.</p>';
+        backupsList.innerHTML =
+          '<p class="section-subtitle" style="text-align: center; padding: 12px 0;">Debes conectar tu cuenta de Google para consultar tus copias.</p>';
       }
       return;
     }
 
     if (backupsList) {
-      backupsList.innerHTML = '<p class="section-subtitle" style="text-align: center; padding: 12px 0;">Consultando copias en Google Drive...</p>';
+      backupsList.innerHTML =
+        '<p class="section-subtitle" style="text-align: center; padding: 12px 0;">Consultando copias en Google Drive...</p>';
     }
 
     try {
       const files = await listBackupsFromGoogleDrive();
       if (!files || files.length === 0) {
         if (backupsList) {
-          backupsList.innerHTML = '<p class="section-subtitle" style="text-align: center; padding: 12px 0;">No se encontraron copias de seguridad anteriores en tu Google Drive.</p>';
+          backupsList.innerHTML =
+            '<p class="section-subtitle" style="text-align: center; padding: 12px 0;">No se encontraron copias de seguridad anteriores en tu Google Drive.</p>';
         }
         return;
       }
 
-      backupsList.innerHTML = files.map((f) => {
-        const dateStr = f.createdTime ? new Date(f.createdTime).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' }) : 'Fecha desconocida';
-        const sizeKb = f.size ? Math.round(Number(f.size) / 1024) + ' KB' : 'N/A';
-        return `
+      backupsList.innerHTML = files
+        .map((f) => {
+          const dateStr = f.createdTime
+            ? new Date(f.createdTime).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })
+            : 'Fecha desconocida';
+          const sizeKb = f.size ? Math.round(Number(f.size) / 1024) + ' KB' : 'N/A';
+          return `
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; background: var(--bg-input); border-radius: var(--radius-sm); margin-bottom: 6px; border: 1px solid var(--border-color);">
             <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 8px;">
               <div style="font-weight: 600; font-size: 0.85rem; color: var(--text-main);">📄 ${escapeHTML(f.name)}</div>
@@ -5020,7 +5120,8 @@ function initGoogleDriveModule() {
             </div>
           </div>
         `;
-      }).join('');
+        })
+        .join('');
     } catch (err) {
       if (backupsList) {
         backupsList.innerHTML = `<p class="section-subtitle" style="text-align: center; padding: 12px 0; color: var(--danger);">Error al listar copias: ${escapeHTML(err.message)}</p>`;
@@ -5031,7 +5132,11 @@ function initGoogleDriveModule() {
   btnRefreshList?.addEventListener('click', fetchAndRenderBackups);
 
   window.handleRestoreFromGoogleDrive = async function (fileId) {
-    if (!confirm('¿Deseas restaurar esta copia de seguridad de Google Drive en tu agenda escolar? Los datos locales se actualizarán.')) {
+    if (
+      !confirm(
+        '¿Deseas restaurar esta copia de seguridad de Google Drive en tu agenda escolar? Los datos locales se actualizarán.'
+      )
+    ) {
       return;
     }
     try {
@@ -5083,8 +5188,8 @@ function initFirebaseSyncModule() {
 
   const updateFirebaseUI = (user) => {
     if (user) {
-      const name = user.isAnonymous ? 'Usuario Anónimo' : (user.displayName || user.email || 'Conectado');
-      const email = user.isAnonymous ? 'Sesión Temporal Anónima' : (user.email || 'Cuenta vinculada');
+      const name = user.isAnonymous ? 'Usuario Anónimo' : user.displayName || user.email || 'Conectado';
+      const email = user.isAnonymous ? 'Sesión Temporal Anónima' : user.email || 'Cuenta vinculada';
       if (userIndicator) userIndicator.textContent = `Firestore: ${name}`;
       if (userNameEl) userNameEl.textContent = name;
       if (userEmailEl) userEmailEl.textContent = email;
@@ -5443,16 +5548,17 @@ function renderManageGrid() {
     return;
   }
 
-  container.innerHTML = filtered.map((c) => {
-    const sub = AppState.subjects.find((s) => s.id === c.subjectId);
-    const boxNum = c.box || 1;
-    let pipsHtml = '';
-    for (let i = 1; i <= 5; i++) {
-      pipsHtml += `<span class="box-pip ${i <= boxNum ? 'active' : ''}"></span>`;
-    }
-    const nextDate = c.nextReviewDate ? formatDateSpanish(c.nextReviewDate) : 'Hoy';
+  container.innerHTML = filtered
+    .map((c) => {
+      const sub = AppState.subjects.find((s) => s.id === c.subjectId);
+      const boxNum = c.box || 1;
+      let pipsHtml = '';
+      for (let i = 1; i <= 5; i++) {
+        pipsHtml += `<span class="box-pip ${i <= boxNum ? 'active' : ''}"></span>`;
+      }
+      const nextDate = c.nextReviewDate ? formatDateSpanish(c.nextReviewDate) : 'Hoy';
 
-    return `
+      return `
       <div class="flashcard-item-card" id="card-${escapeHTML(c.id)}">
         <div>
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
@@ -5479,7 +5585,8 @@ function renderManageGrid() {
         </div>
       </div>
     `;
-  }).join('');
+    })
+    .join('');
 }
 
 function initFlashcardsModule() {
@@ -6156,7 +6263,9 @@ function initAIAssistantModule() {
   btnSpeechToggle?.addEventListener('click', () => {
     isSpeechEnabled = !isSpeechEnabled;
     btnSpeechToggle.textContent = isSpeechEnabled ? '🔊' : '🔇';
-    btnSpeechToggle.title = isSpeechEnabled ? 'Voz activada (pulsa para silenciar)' : 'Voz silenciada (pulsa para activar)';
+    btnSpeechToggle.title = isSpeechEnabled
+      ? 'Voz activada (pulsa para silenciar)'
+      : 'Voz silenciada (pulsa para activar)';
     showToast(isSpeechEnabled ? '🔊 Lectura de voz activada' : '🔇 Voz silenciada', 'info');
     if (!isSpeechEnabled) stopSpeaking();
   });
@@ -6238,9 +6347,15 @@ function initAIAssistantModule() {
     // Cursiva
     html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
     // Código inline
-    html = html.replace(/`([^`]+)`/g, '<code style="background:var(--bg-input);padding:2px 5px;border-radius:4px;">$1</code>');
+    html = html.replace(
+      /`([^`]+)`/g,
+      '<code style="background:var(--bg-input);padding:2px 5px;border-radius:4px;">$1</code>'
+    );
     // Enlaces markdown [texto](url)
-    html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\)"\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" style="color:var(--primary);text-decoration:underline;">$1 ↗</a>');
+    html = html.replace(
+      /\[([^\]]+)\]\((https?:\/\/[^\)"\s]+)\)/g,
+      '<a href="$2" target="_blank" rel="noopener noreferrer" style="color:var(--primary);text-decoration:underline;">$1 ↗</a>'
+    );
 
     // Listas con viñetas
     const lines = html.split('\n');
@@ -6373,7 +6488,10 @@ function initAIAssistantModule() {
         btn.addEventListener('click', async () => {
           const front = btn.getAttribute('data-front');
           const back = btn.getAttribute('data-back');
-          const englishSub = AppState.subjects.find((s) => s.name.toLowerCase().includes('ingl') || s.name.toLowerCase().includes('english')) || AppState.subjects[0];
+          const englishSub =
+            AppState.subjects.find(
+              (s) => s.name.toLowerCase().includes('ingl') || s.name.toLowerCase().includes('english')
+            ) || AppState.subjects[0];
           const newCard = createFlashcard({
             subjectId: englishSub ? englishSub.id : 'sub_general',
             front,
@@ -6553,13 +6671,17 @@ function initAIAssistantModule() {
 
       // Renderizar previsualización
       if (flashcardAiResultsGrid) {
-        flashcardAiResultsGrid.innerHTML = cards.map((c, i) => `
+        flashcardAiResultsGrid.innerHTML = cards
+          .map(
+            (c, i) => `
           <div class="flashcards-ai-item-preview">
             <div class="front-text">❓ ${escapeHTML(c.front)}</div>
             <div class="back-text">💡 ${escapeHTML(c.back)}</div>
             ${c.hint ? `<div class="hint-text">🔑 Pista: ${escapeHTML(c.hint)}</div>` : ''}
           </div>
-        `).join('');
+        `
+          )
+          .join('');
       }
 
       if (flashcardAiCountGenerated) {
@@ -6763,7 +6885,9 @@ function setupTaskDragAndDrop() {
         if (fromIndex !== -1 && toIndex !== -1) {
           const [moved] = AppState.tasks.splice(fromIndex, 1);
           AppState.tasks.splice(toIndex, 0, moved);
-          AppState.tasks.forEach((t, i) => { t.order = i; });
+          AppState.tasks.forEach((t, i) => {
+            t.order = i;
+          });
           await saveItem('tasks', moved);
           renderTasksView();
           triggerHaptic('medium');
@@ -6819,8 +6943,18 @@ function renderCalendarView() {
   if (!grid || !monthLabel) return;
 
   const monthNames = [
-    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    'Enero',
+    'Febrero',
+    'Marzo',
+    'Abril',
+    'Mayo',
+    'Junio',
+    'Julio',
+    'Agosto',
+    'Septiembre',
+    'Octubre',
+    'Noviembre',
+    'Diciembre'
   ];
   monthLabel.textContent = `${monthNames[AppState.calendarMonth]} ${AppState.calendarYear}`;
 
@@ -7101,7 +7235,12 @@ function initPomodoroPiPModule() {
 
     if (pipOverlay) {
       pipOverlay.classList.toggle('hidden');
-      showToast(pipOverlay.classList.contains('hidden') ? 'Ventana flotante cerrada' : '🖼️ Temporizador Pomodoro flotante activado', 'info');
+      showToast(
+        pipOverlay.classList.contains('hidden')
+          ? 'Ventana flotante cerrada'
+          : '🖼️ Temporizador Pomodoro flotante activado',
+        'info'
+      );
     }
   });
 }
@@ -7164,12 +7303,15 @@ function initFlashcardShareModule() {
 
       const rawCards = Array.isArray(parsed.flashcards) ? parsed.flashcards : Array.isArray(parsed) ? parsed : [];
       // Validación estricta: cada ficha debe ser un objeto con 'front' y 'back' de texto
-      const cards = rawCards.filter((c) => (
-        c !== null &&
-        typeof c === 'object' &&
-        typeof c.front === 'string' && c.front.trim() !== '' &&
-        typeof c.back === 'string' && c.back.trim() !== ''
-      ));
+      const cards = rawCards.filter(
+        (c) =>
+          c !== null &&
+          typeof c === 'object' &&
+          typeof c.front === 'string' &&
+          c.front.trim() !== '' &&
+          typeof c.back === 'string' &&
+          c.back.trim() !== ''
+      );
 
       if (cards.length === 0) {
         showToast('El archivo no contiene fichas válidas.', 'error');
@@ -7179,7 +7321,8 @@ function initFlashcardShareModule() {
       let importedCount = 0;
       for (const c of cards) {
         const newCard = createFlashcard({
-          subjectId: typeof c.subjectId === 'string' && c.subjectId ? c.subjectId : (AppState.subjects[0]?.id || 'sub_general'),
+          subjectId:
+            typeof c.subjectId === 'string' && c.subjectId ? c.subjectId : AppState.subjects[0]?.id || 'sub_general',
           front: c.front.slice(0, 5000),
           back: c.back.slice(0, 5000),
           hint: typeof c.hint === 'string' ? c.hint.slice(0, 2000) : ''
@@ -7192,7 +7335,10 @@ function initFlashcardShareModule() {
       addXP(importedCount * 5);
       renderFlashcardsView();
       const skippedMsg = skipped > 0 ? ` (${skipped} descartada(s) por formato inválido)` : '';
-      showToast(`📥 ¡Éxito! Se han importado ${importedCount} fichas de estudio (+${importedCount * 5} XP)${skippedMsg}`, 'success');
+      showToast(
+        `📥 ¡Éxito! Se han importado ${importedCount} fichas de estudio (+${importedCount * 5} XP)${skippedMsg}`,
+        'success'
+      );
     } catch (err) {
       showToast('Error al importar archivo de fichas: ' + err.message, 'error');
     }
@@ -7458,9 +7604,10 @@ function finishMockQuiz() {
 
   document.getElementById('btn-mock-convert-flashcards')?.addEventListener('click', async () => {
     let savedCount = 0;
-    const actualSubId = (currentMockQuiz.subjectId && currentMockQuiz.subjectId !== 'all')
-      ? currentMockQuiz.subjectId
-      : (AppState.subjects[0]?.id || 'sub_general');
+    const actualSubId =
+      currentMockQuiz.subjectId && currentMockQuiz.subjectId !== 'all'
+        ? currentMockQuiz.subjectId
+        : AppState.subjects[0]?.id || 'sub_general';
 
     for (const fq of failedQuestions) {
       const correctText = fq.options[fq.correctIndex] || '';
@@ -7494,7 +7641,3 @@ if (typeof window !== 'undefined') {
     window.speechSynthesis?.cancel();
   });
 }
-
-
-
-

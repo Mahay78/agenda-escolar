@@ -56,12 +56,12 @@ export async function initFirebase(config, onAuthStateChange = null) {
 
   try {
     const mods = await loadFirebaseModules();
-    
+
     // Si ya había una app, no duplicarla
     if (!firebaseApp) {
       firebaseApp = mods.initializeApp(config);
     }
-    
+
     firebaseAuth = mods.getAuth(firebaseApp);
     firestoreDb = mods.getFirestore(firebaseApp);
 

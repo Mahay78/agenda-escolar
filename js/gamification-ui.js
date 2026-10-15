@@ -75,9 +75,10 @@ export function updateGamificationUI(stats) {
   // Congelador de Racha (Roadmap Item 28)
   const freezeCount = stats.streakFreeze?.available ?? 1;
   if (modalFreezeBadge) {
-    modalFreezeBadge.textContent = freezeCount > 0
-      ? `🧊 ${freezeCount} ${freezeCount === 1 ? 'Congelador Disponible' : 'Congeladores Disponibles'}`
-      : '🧊 Sin Congelador';
+    modalFreezeBadge.textContent =
+      freezeCount > 0
+        ? `🧊 ${freezeCount} ${freezeCount === 1 ? 'Congelador Disponible' : 'Congeladores Disponibles'}`
+        : '🧊 Sin Congelador';
   }
 
   if (modalXpTotal) {
@@ -106,12 +107,14 @@ export function renderActivityHeatmap(activityLog = {}) {
   const data = generateActivityHeatmap(activityLog, 70);
   let activeDays = 0;
 
-  grid.innerHTML = data.map(item => {
-    if (item.count > 0) activeDays++;
-    const lvlClass = item.level > 0 ? `lvl-${item.level}` : '';
-    const title = `${item.date}: ${item.count} ${item.count === 1 ? 'actividad' : 'actividades'}`;
-    return `<div class="heatmap-cell ${lvlClass}" title="${title}" data-date="${item.date}"></div>`;
-  }).join('');
+  grid.innerHTML = data
+    .map((item) => {
+      if (item.count > 0) activeDays++;
+      const lvlClass = item.level > 0 ? `lvl-${item.level}` : '';
+      const title = `${item.date}: ${item.count} ${item.count === 1 ? 'actividad' : 'actividades'}`;
+      return `<div class="heatmap-cell ${lvlClass}" title="${title}" data-date="${item.date}"></div>`;
+    })
+    .join('');
 
   if (activeCountEl) {
     activeCountEl.textContent = `${activeDays} ${activeDays === 1 ? 'día activo' : 'días activos'}`;
@@ -123,7 +126,7 @@ export function renderAchievementsList(stats) {
   if (!container) return;
 
   const unlockedSet = new Set(stats.unlockedAchievements || []);
-  container.innerHTML = ACHIEVEMENTS.map(ach => {
+  container.innerHTML = ACHIEVEMENTS.map((ach) => {
     const isUnlocked = unlockedSet.has(ach.id);
     return `
       <div class="achievement-card ${isUnlocked ? 'unlocked' : ''}">

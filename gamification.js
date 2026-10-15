@@ -216,7 +216,7 @@ export async function getGamificationStats() {
 
 /**
  * Registra una acción de estudio y actualiza la racha, XP y logros
- * @param {'task_completed'|'pomodoro_completed'|'backpack_packed'|'grade_added'|'flashcards_reviewed'|'app_opened'} actionType 
+ * @param {'task_completed'|'pomodoro_completed'|'backpack_packed'|'grade_added'|'flashcards_reviewed'|'app_opened'} actionType
  * @returns {Promise<{ stats: Object, newlyUnlocked: Array, xpGained: number, streakSavedByFreeze: boolean }>}
  */
 export async function recordStudyActivity(actionType) {

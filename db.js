@@ -228,7 +228,7 @@ export async function emptyTrash() {
 export async function purgeOldTrash(days = 30) {
   try {
     const trashItems = await getAll('trash');
-    const cutoff = Date.now() - (days * 24 * 60 * 60 * 1000);
+    const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
     for (const item of trashItems) {
       if (item.deletedAt && item.deletedAt < cutoff) {
         await deleteItem('trash', item.id);
@@ -241,28 +241,161 @@ export async function purgeOldTrash(days = 30) {
 
 // Catálogos de asignaturas por modalidad
 export const ARTS_PLASTICAS_SUBJECTS = [
-  { id: 'sub_dibujo_art', name: 'Dibujo Artístico', color: '#ec4899', icon: '🎨', teacher: 'Prof. de Dibujo', classroom: 'Aula de Dibujo' },
-  { id: 'sub_dibujo_tec', name: 'Dibujo Técnico Aplicado al Arte', color: '#3b82f6', icon: '📐', teacher: 'Prof. Técnico', classroom: 'Aula Dibujo Técnico' },
-  { id: 'sub_cultura_audio', name: 'Cultura Audiovisual', color: '#8b5cf6', icon: '🎬', teacher: 'Prof. Audiovisuales', classroom: 'Aula Multimedia / Lab' },
-  { id: 'sub_proyectos_art', name: 'Proyectos Artísticos', color: '#f59e0b', icon: '🖌️', teacher: 'Prof. de Proyectos', classroom: 'Taller de Arte' },
-  { id: 'sub_volumen', name: 'Volumen y Escultura', color: '#d97706', icon: '🗿', teacher: 'Prof. de Volumen', classroom: 'Taller de Escultura' },
-  { id: 'sub_diseno', name: 'Diseño Gráfico y Digital', color: '#06b6d4', icon: '💻', teacher: 'Prof. de Diseño', classroom: 'Aula de Informática' },
-  { id: 'sub_historia_arte', name: 'Historia del Arte', color: '#eab308', icon: '🖼️', teacher: 'Prof. de Historia', classroom: 'Aula 201' },
-  { id: 'sub_expresion_grafica', name: 'Técnicas de Expresión Gráfica', color: '#10b981', icon: '✏️', teacher: 'Prof. Técnicas', classroom: 'Taller Gráfico' },
-  { id: 'sub_lengua', name: 'Lengua Castellana y Literatura', color: '#ef4444', icon: '📚', teacher: 'Prof. de Lengua', classroom: 'Aula 104' },
-  { id: 'sub_filosofia_historia', name: 'Filosofía / Historia de España', color: '#6366f1', icon: '🏛️', teacher: 'Prof. Filosofía', classroom: 'Aula 102' },
-  { id: 'sub_ingles', name: 'Inglés', color: '#a855f7', icon: '🇬🇧', teacher: 'Prof. de Inglés', classroom: 'Aula Idiomas' },
-  { id: 'sub_edfisica', name: 'Educación Física', color: '#14b8a6', icon: '🏃', teacher: 'Prof. Ed. Física', classroom: 'Gimnasio' }
+  {
+    id: 'sub_dibujo_art',
+    name: 'Dibujo Artístico',
+    color: '#ec4899',
+    icon: '🎨',
+    teacher: 'Prof. de Dibujo',
+    classroom: 'Aula de Dibujo'
+  },
+  {
+    id: 'sub_dibujo_tec',
+    name: 'Dibujo Técnico Aplicado al Arte',
+    color: '#3b82f6',
+    icon: '📐',
+    teacher: 'Prof. Técnico',
+    classroom: 'Aula Dibujo Técnico'
+  },
+  {
+    id: 'sub_cultura_audio',
+    name: 'Cultura Audiovisual',
+    color: '#8b5cf6',
+    icon: '🎬',
+    teacher: 'Prof. Audiovisuales',
+    classroom: 'Aula Multimedia / Lab'
+  },
+  {
+    id: 'sub_proyectos_art',
+    name: 'Proyectos Artísticos',
+    color: '#f59e0b',
+    icon: '🖌️',
+    teacher: 'Prof. de Proyectos',
+    classroom: 'Taller de Arte'
+  },
+  {
+    id: 'sub_volumen',
+    name: 'Volumen y Escultura',
+    color: '#d97706',
+    icon: '🗿',
+    teacher: 'Prof. de Volumen',
+    classroom: 'Taller de Escultura'
+  },
+  {
+    id: 'sub_diseno',
+    name: 'Diseño Gráfico y Digital',
+    color: '#06b6d4',
+    icon: '💻',
+    teacher: 'Prof. de Diseño',
+    classroom: 'Aula de Informática'
+  },
+  {
+    id: 'sub_historia_arte',
+    name: 'Historia del Arte',
+    color: '#eab308',
+    icon: '🖼️',
+    teacher: 'Prof. de Historia',
+    classroom: 'Aula 201'
+  },
+  {
+    id: 'sub_expresion_grafica',
+    name: 'Técnicas de Expresión Gráfica',
+    color: '#10b981',
+    icon: '✏️',
+    teacher: 'Prof. Técnicas',
+    classroom: 'Taller Gráfico'
+  },
+  {
+    id: 'sub_lengua',
+    name: 'Lengua Castellana y Literatura',
+    color: '#ef4444',
+    icon: '📚',
+    teacher: 'Prof. de Lengua',
+    classroom: 'Aula 104'
+  },
+  {
+    id: 'sub_filosofia_historia',
+    name: 'Filosofía / Historia de España',
+    color: '#6366f1',
+    icon: '🏛️',
+    teacher: 'Prof. Filosofía',
+    classroom: 'Aula 102'
+  },
+  {
+    id: 'sub_ingles',
+    name: 'Inglés',
+    color: '#a855f7',
+    icon: '🇬🇧',
+    teacher: 'Prof. de Inglés',
+    classroom: 'Aula Idiomas'
+  },
+  {
+    id: 'sub_edfisica',
+    name: 'Educación Física',
+    color: '#14b8a6',
+    icon: '🏃',
+    teacher: 'Prof. Ed. Física',
+    classroom: 'Gimnasio'
+  }
 ];
 
 export const ARTS_ESCENICAS_SUBJECTS = [
-  { id: 'sub_artes_escenicas', name: 'Artes Escénicas', color: '#ec4899', icon: '🎭', teacher: 'Prof. Teatro', classroom: 'Salón de Actos / Taller' },
-  { id: 'sub_analisis_musical', name: 'Análisis Musical', color: '#8b5cf6', icon: '🎼', teacher: 'Prof. Música', classroom: 'Aula de Música' },
-  { id: 'sub_coro_vocal', name: 'Coro y Técnica Vocal', color: '#eab308', icon: '🎤', teacher: 'Prof. Canto', classroom: 'Aula de Música' },
-  { id: 'sub_cultura_audio', name: 'Cultura Audiovisual', color: '#06b6d4', icon: '🎬', teacher: 'Prof. Audiovisuales', classroom: 'Aula Multimedia' },
-  { id: 'sub_literatura_uni', name: 'Literatura Universal', color: '#f59e0b', icon: '📖', teacher: 'Prof. Literatura', classroom: 'Aula 104' },
-  { id: 'sub_lengua', name: 'Lengua Castellana y Literatura', color: '#ef4444', icon: '📚', teacher: 'Prof. Lengua', classroom: 'Aula 101' },
-  { id: 'sub_filosofia_historia', name: 'Filosofía / Historia de España', color: '#6366f1', icon: '🏛️', teacher: 'Prof. Filosofía', classroom: 'Aula 102' },
+  {
+    id: 'sub_artes_escenicas',
+    name: 'Artes Escénicas',
+    color: '#ec4899',
+    icon: '🎭',
+    teacher: 'Prof. Teatro',
+    classroom: 'Salón de Actos / Taller'
+  },
+  {
+    id: 'sub_analisis_musical',
+    name: 'Análisis Musical',
+    color: '#8b5cf6',
+    icon: '🎼',
+    teacher: 'Prof. Música',
+    classroom: 'Aula de Música'
+  },
+  {
+    id: 'sub_coro_vocal',
+    name: 'Coro y Técnica Vocal',
+    color: '#eab308',
+    icon: '🎤',
+    teacher: 'Prof. Canto',
+    classroom: 'Aula de Música'
+  },
+  {
+    id: 'sub_cultura_audio',
+    name: 'Cultura Audiovisual',
+    color: '#06b6d4',
+    icon: '🎬',
+    teacher: 'Prof. Audiovisuales',
+    classroom: 'Aula Multimedia'
+  },
+  {
+    id: 'sub_literatura_uni',
+    name: 'Literatura Universal',
+    color: '#f59e0b',
+    icon: '📖',
+    teacher: 'Prof. Literatura',
+    classroom: 'Aula 104'
+  },
+  {
+    id: 'sub_lengua',
+    name: 'Lengua Castellana y Literatura',
+    color: '#ef4444',
+    icon: '📚',
+    teacher: 'Prof. Lengua',
+    classroom: 'Aula 101'
+  },
+  {
+    id: 'sub_filosofia_historia',
+    name: 'Filosofía / Historia de España',
+    color: '#6366f1',
+    icon: '🏛️',
+    teacher: 'Prof. Filosofía',
+    classroom: 'Aula 102'
+  },
   { id: 'sub_ingles', name: 'Inglés', color: '#a855f7', icon: '🇬🇧', teacher: 'Prof. Inglés', classroom: 'Aula Idiomas' }
 ];
 
@@ -463,7 +596,9 @@ export function validateBackupData(data) {
 
   const hasAnyStore = Object.keys(BACKUP_SCHEMA).some((store) => Array.isArray(data[store]));
   if (!hasAnyStore) {
-    throw new Error('El archivo no contiene un formato de copia de seguridad válido: no se encontró ninguna colección de datos reconocible.');
+    throw new Error(
+      'El archivo no contiene un formato de copia de seguridad válido: no se encontró ninguna colección de datos reconocible.'
+    );
   }
 
   const warnings = [];
@@ -490,10 +625,16 @@ export function validateBackupData(data) {
 
     const cleanList = [];
     for (const item of rawList) {
-      if (!isPlainObject(item)) { dropped++; continue; }
+      if (!isPlainObject(item)) {
+        dropped++;
+        continue;
+      }
       const cleaned = stripUnsafeKeys(item);
       const pk = cleaned[keyPath];
-      if (typeof pk !== 'string' || pk.trim() === '') { dropped++; continue; }
+      if (typeof pk !== 'string' || pk.trim() === '') {
+        dropped++;
+        continue;
+      }
       cleanList.push(cleaned);
     }
     normalized[store] = cleanList;

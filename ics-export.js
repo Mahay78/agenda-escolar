@@ -5,13 +5,13 @@
 
 /**
  * Formatea una fecha o cadena YYYY-MM-DD a formato iCalendar (YYYYMMDD o YYYYMMDDTHHmmssZ)
- * @param {string|Date} dateInput 
+ * @param {string|Date} dateInput
  * @param {string} [timeStr] Hora en formato HH:mm
  * @returns {string}
  */
 function formatICSDate(dateInput, timeStr = null) {
   const d = dateInput instanceof Date ? dateInput : new Date(dateInput);
-  
+
   if (isNaN(d.getTime())) {
     const now = new Date();
     return now.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
@@ -30,7 +30,7 @@ function formatICSDate(dateInput, timeStr = null) {
 
 /**
  * Limpia y escapa texto para formato iCalendar
- * @param {string} text 
+ * @param {string} text
  * @returns {string}
  */
 function escapeICSText(text) {
@@ -45,8 +45,8 @@ function escapeICSText(text) {
 
 /**
  * Descarga un contenido iCalendar en el dispositivo del usuario
- * @param {string} icsContent 
- * @param {string} filename 
+ * @param {string} icsContent
+ * @param {string} filename
  */
 export function downloadICS(icsContent, filename = 'agenda-escolar.ics') {
   const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
@@ -86,9 +86,9 @@ export function generateExamsICS(exams, subjects = []) {
     const timeStr = exam.time || '09:00';
     const examTitle = exam.title || exam.topics || 'Examen';
     const summary = `${sub.icon ? sub.icon + ' ' : ''}Examen: ${sub.name} - ${examTitle}`;
-    
+
     const dtStart = formatICSDate(dateStr, timeStr);
-    
+
     let dtEnd = dtStart;
     if (/T\d{6}/.test(dtStart)) {
       const [h, m] = timeStr.split(':').map(Number);
@@ -102,7 +102,9 @@ export function generateExamsICS(exams, subjects = []) {
       exam.weight ? `Ponderación: ${exam.weight}%` : '',
       `Asignatura: ${sub.name}`,
       sub.teacher ? `Profesor/a: ${sub.teacher}` : ''
-    ].filter(Boolean).join('\\n');
+    ]
+      .filter(Boolean)
+      .join('\\n');
 
     const location = sub.classroom ? escapeICSText(sub.classroom) : '';
     const uid = `exam_${exam.id || Date.now()}_${Math.random().toString(36).substring(2, 7)}@agenda-escolar.app`;
@@ -155,7 +157,7 @@ export function generateScheduleICS(schedule, subjects = [], timeSlots = []) {
   // Buscar el próximo lunes para usarlo como fecha base del evento recurrente
   const baseMonday = new Date();
   const currentDayOfWeek = baseMonday.getDay();
-  const daysUntilNextMonday = ((1 - currentDayOfWeek + 7) % 7) || 7;
+  const daysUntilNextMonday = (1 - currentDayOfWeek + 7) % 7 || 7;
   baseMonday.setDate(baseMonday.getDate() + (currentDayOfWeek === 1 ? 0 : daysUntilNextMonday));
 
   let lines = [
@@ -193,8 +195,10 @@ export function generateScheduleICS(schedule, subjects = [], timeSlots = []) {
       `Asignatura: ${sub.name}`,
       sub.teacher ? `Profesor: ${sub.teacher}` : '',
       sub.classroom ? `Aula: ${sub.classroom}` : '',
-      `Franja: ${slot.label || (slot.start + ' - ' + slot.end)}`
-    ].filter(Boolean).join('\\n');
+      `Franja: ${slot.label || slot.start + ' - ' + slot.end}`
+    ]
+      .filter(Boolean)
+      .join('\\n');
 
     const location = sub.classroom ? escapeICSText(sub.classroom) : '';
     const uid = `sched_d${dayIndex}_s${cell.slotIndex}_${sub.id}@agenda-escolar.app`;
@@ -218,8 +222,8 @@ export function generateScheduleICS(schedule, subjects = [], timeSlots = []) {
 
 /**
  * Exporta un examen individual a archivo .ics
- * @param {Object} exam 
- * @param {Object} subject 
+ * @param {Object} exam
+ * @param {Object} subject
  */
 export function exportSingleExam(exam, subject) {
   const ics = generateExamsICS([exam], subject ? [subject] : []);

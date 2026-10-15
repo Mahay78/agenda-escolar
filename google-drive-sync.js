@@ -160,7 +160,7 @@ export async function disconnectGoogleDrive() {
 
 /**
  * Busca o crea una carpeta en Google Drive para la app
- * @param {string} token 
+ * @param {string} token
  * @returns {Promise<string|null>} Folder ID
  */
 async function getOrCreateAppFolder(token) {
@@ -281,7 +281,7 @@ export async function listBackupsFromGoogleDrive() {
 
 /**
  * Descarga una copia de seguridad específica de Google Drive
- * @param {string} fileId 
+ * @param {string} fileId
  * @returns {Promise<string>} Contenido JSON de la copia de seguridad
  */
 export async function downloadBackupFromGoogleDrive(fileId) {

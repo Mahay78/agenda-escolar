@@ -1,6 +1,6 @@
 /**
  * notebook.js - Motor Inteligente de Estudio Estilo NotebookLM
- * 
+ *
  * Capacidades:
  * 1. Gestión de Fuentes (Sources): Textos, fotos de pizarra y apuntes.
  * 2. Grounded Chat: Chat con citas obligatorias [Fuente X].
@@ -37,19 +37,23 @@ function loadSources() {
     const parsed = raw ? JSON.parse(raw) : null;
     if (Array.isArray(parsed)) {
       // Validación: cada fuente debe ser un objeto con id, title y content de texto
-      NotebookState.sources = parsed.filter((s) => (
-        s !== null &&
-        typeof s === 'object' &&
-        typeof s.id === 'string' && s.id.trim() !== '' &&
-        typeof s.content === 'string'
-      )).map((s) => ({
-        id: s.id,
-        title: typeof s.title === 'string' ? s.title : 'Fuente sin título',
-        type: typeof s.type === 'string' ? s.type : 'text',
-        content: s.content,
-        date: typeof s.date === 'string' ? s.date : new Date().toLocaleDateString('es-ES'),
-        active: s.active === true
-      }));
+      NotebookState.sources = parsed
+        .filter(
+          (s) =>
+            s !== null &&
+            typeof s === 'object' &&
+            typeof s.id === 'string' &&
+            s.id.trim() !== '' &&
+            typeof s.content === 'string'
+        )
+        .map((s) => ({
+          id: s.id,
+          title: typeof s.title === 'string' ? s.title : 'Fuente sin título',
+          type: typeof s.type === 'string' ? s.type : 'text',
+          content: s.content,
+          date: typeof s.date === 'string' ? s.date : new Date().toLocaleDateString('es-ES'),
+          active: s.active === true
+        }));
     } else {
       NotebookState.sources = [];
     }
@@ -101,7 +105,7 @@ Permite el crecimiento de organismos pluricelulares, la reparación de tejidos y
   }
 
   // Activar todas por defecto
-  NotebookState.sources.forEach(s => NotebookState.activeSourceIds.add(s.id));
+  NotebookState.sources.forEach((s) => NotebookState.activeSourceIds.add(s.id));
 }
 
 function saveSources() {
@@ -115,7 +119,10 @@ function getApiKey() {
 // Escapa texto para insertarlo de forma segura en HTML
 function escapeHtml(str) {
   if (str === null || str === undefined) return '';
-  return String(str).replace(/[&<>'"]/g, (tag) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+  return String(str).replace(
+    /[&<>'"]/g,
+    (tag) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[tag] || tag
+  );
 }
 
 // ==========================================================================
@@ -141,9 +148,10 @@ function renderSourcesList() {
     return;
   }
 
-  container.innerHTML = NotebookState.sources.map((src, index) => {
-    const isChecked = NotebookState.activeSourceIds.has(src.id);
-    return `
+  container.innerHTML = NotebookState.sources
+    .map((src, index) => {
+      const isChecked = NotebookState.activeSourceIds.has(src.id);
+      return `
       <div class="source-card ${isChecked ? 'selected' : ''}" data-source-id="${escapeHtml(src.id)}">
         <div class="source-header">
           <input type="checkbox" class="source-checkbox" data-source-checkbox="${escapeHtml(src.id)}" ${isChecked ? 'checked' : ''} style="margin-top: 3px; cursor: pointer;" />
@@ -157,10 +165,11 @@ function renderSourcesList() {
         <div class="source-preview">${escapeHtml(src.content || '(Foto / Imagen cargada)')}</div>
       </div>
     `;
-  }).join('');
+    })
+    .join('');
 
   // Listeners de checkboxes
-  container.querySelectorAll('[data-source-checkbox]').forEach(chk => {
+  container.querySelectorAll('[data-source-checkbox]').forEach((chk) => {
     chk.addEventListener('change', (e) => {
       const id = e.target.getAttribute('data-source-checkbox');
       if (e.target.checked) {
@@ -174,12 +183,12 @@ function renderSourcesList() {
   });
 
   // Listeners de eliminación
-  container.querySelectorAll('[data-delete-source]').forEach(btn => {
+  container.querySelectorAll('[data-delete-source]').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       const id = btn.getAttribute('data-delete-source');
       if (confirm('¿Deseas eliminar esta fuente de estudio?')) {
-        NotebookState.sources = NotebookState.sources.filter(s => s.id !== id);
+        NotebookState.sources = NotebookState.sources.filter((s) => s.id !== id);
         NotebookState.activeSourceIds.delete(id);
         saveSources();
         renderSourcesList();
@@ -199,12 +208,14 @@ function updateStudioStatus() {
 
 // Obtiene el texto de todas las fuentes activas estructurado para Gemini
 function getActiveSourcesContext() {
-  const activeSources = NotebookState.sources.filter(s => NotebookState.activeSourceIds.has(s.id));
+  const activeSources = NotebookState.sources.filter((s) => NotebookState.activeSourceIds.has(s.id));
   if (activeSources.length === 0) return '';
 
-  return activeSources.map((s, idx) => {
-    return `[FUENTE ${idx + 1}: "${s.title}"]:\n${s.content}\n[FIN DE FUENTE ${idx + 1}]`;
-  }).join('\n\n');
+  return activeSources
+    .map((s, idx) => {
+      return `[FUENTE ${idx + 1}: "${s.title}"]:\n${s.content}\n[FIN DE FUENTE ${idx + 1}]`;
+    })
+    .join('\n\n');
 }
 
 // ==========================================================================
@@ -240,11 +251,14 @@ ${userPrompt}`;
 
   for (const model of candidateModels) {
     try {
-      response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
+      response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }
+      );
       if (response.ok) break;
       if (response.status === 404) continue;
       break;
@@ -252,13 +266,17 @@ ${userPrompt}`;
   }
 
   if (!response || !response.ok) {
-    const errData = await response?.json().catch(() => ({})) || {};
+    const errData = (await response?.json().catch(() => ({}))) || {};
     const rawMsg = errData.error?.message || `Error HTTP ${response?.status || 'red'}`;
     if (response?.status === 400 || rawMsg.toLowerCase().includes('api key not valid')) {
-      throw new Error('Tu clave de Google Gemini no es válida. Abre el botón ⚙️ Clave IA para configurarla o crear una nueva gratis en Google AI Studio.');
+      throw new Error(
+        'Tu clave de Google Gemini no es válida. Abre el botón ⚙️ Clave IA para configurarla o crear una nueva gratis en Google AI Studio.'
+      );
     }
     if (response?.status === 429) {
-      throw new Error('Límite de cuota gratuita alcanzado temporalmente. Espera un momento antes de volver a solicitarlo.');
+      throw new Error(
+        'Límite de cuota gratuita alcanzado temporalmente. Espera un momento antes de volver a solicitarlo.'
+      );
     }
     throw new Error(rawMsg);
   }
@@ -269,11 +287,14 @@ ${userPrompt}`;
 
 // Fallback local enriquecido en caso de estar offline o sin clave
 function generateLocalFallback(promptType, context) {
-  const lines = context.split('\n').map(l => l.trim()).filter(Boolean);
+  const lines = context
+    .split('\n')
+    .map((l) => l.trim())
+    .filter(Boolean);
   const keyPoints = lines
-    .filter(l => l.startsWith('-') || l.startsWith('•') || l.includes(':'))
+    .filter((l) => l.startsWith('-') || l.startsWith('•') || l.includes(':'))
     .slice(0, 10)
-    .map(l => `• ${l.replace(/^[\-\•\d\.]\s*/, '')}`);
+    .map((l) => `• ${l.replace(/^[\-\•\d\.]\s*/, '')}`);
 
   const isQuiz = /examen|quiz|prueba|test/i.test(promptType);
   const isFlashcards = /ficha|flashcard/i.test(promptType);
@@ -300,7 +321,13 @@ ${keyPoints.slice(0, 5).join('\n') || '• Revisa los títulos y definiciones de
 
 > 💡 **Nota:** Con la IA de Google Gemini activa, se generan tarjetas con pistas mnemotécnicas profundas. Conéctala en **⚙️ Clave IA**.
 
-${keyPoints.slice(0, 6).map((kp, i) => `**Ficha ${i + 1}:**\n- **Pregunta:** ¿Qué define o explica: "${kp.substring(2, 60)}..."?\n- **Respuesta:** ${kp.substring(2)}\n- **Pista:** [Fuente seleccionada]`).join('\n\n')}`;
+${keyPoints
+  .slice(0, 6)
+  .map(
+    (kp, i) =>
+      `**Ficha ${i + 1}:**\n- **Pregunta:** ¿Qué define o explica: "${kp.substring(2, 60)}..."?\n- **Respuesta:** ${kp.substring(2)}\n- **Pista:** [Fuente seleccionada]`
+  )
+  .join('\n\n')}`;
   }
 
   if (isPodcast) {
@@ -485,10 +512,10 @@ function updateAudioPlayButton() {
 // ==========================================================================
 function switchToMobileStudio() {
   if (window.innerWidth <= 900) {
-    document.querySelectorAll('.mobile-tab-btn').forEach(b => {
+    document.querySelectorAll('.mobile-tab-btn').forEach((b) => {
       b.classList.toggle('active', b.getAttribute('data-mobile-view') === 'col-studio');
     });
-    document.querySelectorAll('.col-sources, .col-studio, .col-chat').forEach(col => {
+    document.querySelectorAll('.col-sources, .col-studio, .col-chat').forEach((col) => {
       col.classList.remove('active-mobile-view');
     });
     document.getElementById('col-studio')?.classList.add('active-mobile-view');
@@ -523,11 +550,15 @@ function renderArtifactCard(title, markdownContent, hasExportButton = false) {
       <div class="artifact-header">
         <h3>${escapeHtml(title)}</h3>
         <div class="artifact-actions">
-          ${hasExportButton ? `
+          ${
+            hasExportButton
+              ? `
             <button type="button" id="btn-export-to-agenda-flashcards" class="btn-header-action" style="background:#10b981; color:#fff; border:none;" title="Añadir estas fichas al mazo de la Agenda Escolar">
               📥 Exportar a Agenda
             </button>
-          ` : ''}
+          `
+              : ''
+          }
           <button type="button" class="btn-header-action" id="btn-save-to-notes" title="Guardar este resumen en tu bloc de notas">
             📌 En mis Notas
           </button>
@@ -563,7 +594,8 @@ function renderArtifactCard(title, markdownContent, hasExportButton = false) {
   document.getElementById('btn-export-to-agenda-flashcards')?.addEventListener('click', async () => {
     try {
       // Parsear preguntas y respuestas del markdown
-      const regex = /Pregunta:\s*(.*?)\n\s*-\s*Respuesta:\s*(.*?)(?:\n\s*-\s*Pista:\s*(.*?))?(?=\n\s*\*\*Ficha|\n\s*$)/gs;
+      const regex =
+        /Pregunta:\s*(.*?)\n\s*-\s*Respuesta:\s*(.*?)(?:\n\s*-\s*Pista:\s*(.*?))?(?=\n\s*\*\*Ficha|\n\s*$)/gs;
       let match;
       let count = 0;
 
@@ -609,7 +641,10 @@ function formatMarkdownToHTML(text) {
     .replace(/'/g, '&#39;');
 
   // Citas tipo [Fuente 1]
-  html = html.replace(/\[Fuente\s*(\d+)\]/gi, '<span class="chat-citation" title="Cita a la Fuente $1">[Fuente $1]</span>');
+  html = html.replace(
+    /\[Fuente\s*(\d+)\]/gi,
+    '<span class="chat-citation" title="Cita a la Fuente $1">[Fuente $1]</span>'
+  );
 
   // Encabezados
   html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
@@ -683,13 +718,13 @@ document.addEventListener('DOMContentLoaded', () => {
   updateStudioStatus();
 
   // Navegación en móvil
-  document.querySelectorAll('.mobile-tab-btn').forEach(btn => {
+  document.querySelectorAll('.mobile-tab-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.mobile-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.mobile-tab-btn').forEach((b) => b.classList.remove('active'));
       btn.classList.add('active');
 
       const targetId = btn.getAttribute('data-mobile-view');
-      document.querySelectorAll('.col-sources, .col-studio, .col-chat').forEach(col => {
+      document.querySelectorAll('.col-sources, .col-studio, .col-chat').forEach((col) => {
         col.classList.remove('active-mobile-view');
       });
       document.getElementById(targetId)?.classList.add('active-mobile-view');
@@ -844,11 +879,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     for (const model of candidateModels) {
       try {
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${candidate}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ contents: [{ parts: [{ text: 'OK' }] }] })
-        });
+        const res = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${candidate}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contents: [{ parts: [{ text: 'OK' }] }] })
+          }
+        );
 
         if (res.ok) {
           verified = true;
@@ -956,7 +994,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-clear-chat')?.addEventListener('click', () => {
     const container = document.getElementById('chat-messages');
     if (container) {
-      container.innerHTML = '<div class="chat-bubble chat-bubble-bot">👋 Conversación reiniciada. Pregúntame lo que quieras sobre tus fuentes.</div>';
+      container.innerHTML =
+        '<div class="chat-bubble chat-bubble-bot">👋 Conversación reiniciada. Pregúntame lo que quieras sobre tus fuentes.</div>';
     }
   });
 

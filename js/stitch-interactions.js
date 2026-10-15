@@ -12,7 +12,7 @@
   // Helper para buscar elementos por texto de forma segura
   function findElementsByText(selector, textSubstring) {
     const elements = Array.from(document.querySelectorAll(selector));
-    return elements.filter(el => (el.textContent || '').toLowerCase().includes(textSubstring.toLowerCase()));
+    return elements.filter((el) => (el.textContent || '').toLowerCase().includes(textSubstring.toLowerCase()));
   }
 
   // =========================================================================
@@ -28,17 +28,19 @@
     }
 
     const toast = document.createElement('div');
-    const bgClass = type === 'success' ? 'bg-emerald-600 text-white'
-      : type === 'error' ? 'bg-rose-600 text-white'
-      : type === 'warning' ? 'bg-amber-500 text-white'
-      : 'bg-slate-900 text-white';
+    const bgClass =
+      type === 'success'
+        ? 'bg-emerald-600 text-white'
+        : type === 'error'
+          ? 'bg-rose-600 text-white'
+          : type === 'warning'
+            ? 'bg-amber-500 text-white'
+            : 'bg-slate-900 text-white';
 
     toast.className = `${bgClass} px-4 py-2.5 rounded-xl shadow-xl flex items-center gap-2.5 text-xs font-semibold transform transition-all duration-300 translate-y-[-10px] opacity-0 pointer-events-auto select-none`;
-    
-    const icon = type === 'success' ? 'check_circle'
-      : type === 'error' ? 'error'
-      : type === 'warning' ? 'warning'
-      : 'info';
+
+    const icon =
+      type === 'success' ? 'check_circle' : type === 'error' ? 'error' : type === 'warning' ? 'warning' : 'info';
 
     toast.innerHTML = `
       <span class="material-symbols-outlined text-[18px]">${icon}</span>
@@ -67,14 +69,16 @@
     mode: 'focus',
 
     formatTime(seconds) {
-      const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+      const m = Math.floor(seconds / 60)
+        .toString()
+        .padStart(2, '0');
       const s = (seconds % 60).toString().padStart(2, '0');
       return `${m}:${s}`;
     },
 
     updateDisplays() {
       const formatted = this.formatTime(this.timeLeft);
-      document.querySelectorAll('.font-code-sm, span').forEach(el => {
+      document.querySelectorAll('.font-code-sm, span').forEach((el) => {
         const txt = el.textContent.trim();
         if ((txt === '25:00' || txt === '24:59' || el.dataset.isPomodoro === 'true') && el.children.length === 0) {
           el.dataset.isPomodoro = 'true';
@@ -83,7 +87,7 @@
       });
 
       // Update play icons
-      document.querySelectorAll('button[title*="Pomodoro"], .btn-pomodoro-play').forEach(btn => {
+      document.querySelectorAll('button[title*="Pomodoro"], .btn-pomodoro-play').forEach((btn) => {
         const icon = btn.querySelector('.material-symbols-outlined');
         if (icon) {
           icon.textContent = this.isRunning ? 'pause' : 'play_arrow';
@@ -102,7 +106,10 @@
     start() {
       if (this.isRunning) return;
       this.isRunning = true;
-      showToast(this.mode === 'focus' ? '🎯 Pomodoro iniciado (25 min de enfoque)' : '☕ Descanso iniciado (5 min)', 'success');
+      showToast(
+        this.mode === 'focus' ? '🎯 Pomodoro iniciado (25 min de enfoque)' : '☕ Descanso iniciado (5 min)',
+        'success'
+      );
       this.timerId = setInterval(() => {
         if (this.timeLeft > 0) {
           this.timeLeft--;
@@ -171,7 +178,7 @@
     let streak = parseInt(localStorage.getItem('study_streak') || '14', 10);
     streak++;
     localStorage.setItem('study_streak', streak.toString());
-    document.querySelectorAll('.font-display').forEach(el => {
+    document.querySelectorAll('.font-display').forEach((el) => {
       if (el.textContent === '14') el.textContent = streak.toString();
     });
   }
@@ -182,10 +189,13 @@
   function initTasks() {
     // 3.1. Marcar tareas como completadas al pulsar el botón check o input
     document.addEventListener('click', (e) => {
-      const checkBtn = e.target.closest('button[aria-label="Marcar como completada"], .task-checkbox, label input[type="checkbox"]');
+      const checkBtn = e.target.closest(
+        'button[aria-label="Marcar como completada"], .task-checkbox, label input[type="checkbox"]'
+      );
       if (checkBtn) {
         // Verificar si es de la mochila
-        const isBackpack = checkBtn.closest('section') && (checkBtn.closest('section').textContent || '').includes('Mochila');
+        const isBackpack =
+          checkBtn.closest('section') && (checkBtn.closest('section').textContent || '').includes('Mochila');
         if (isBackpack) return; // Se gestiona en initBackpack
 
         const card = checkBtn.closest('.group, #task-card-1, .task-card') || checkBtn.parentElement;
@@ -225,19 +235,31 @@
 
     // 3.2. Filtro de pestañas (Todos, Urgentes, Para Mañana, Esta Semana, Con OCR)
     const filterButtons = document.querySelectorAll('section button.rounded-full');
-    filterButtons.forEach(btn => {
+    filterButtons.forEach((btn) => {
       const text = btn.textContent.trim().toLowerCase();
-      if (text.includes('todos') || text.includes('urgentes') || text.includes('mañana') || text.includes('semana') || text.includes('ocr')) {
+      if (
+        text.includes('todos') ||
+        text.includes('urgentes') ||
+        text.includes('mañana') ||
+        text.includes('semana') ||
+        text.includes('ocr')
+      ) {
         btn.addEventListener('click', () => {
-          filterButtons.forEach(b => {
-            b.classList.remove('bg-primary-container', 'text-surface-card', 'shadow-inner', 'bg-blue-600', 'text-white');
+          filterButtons.forEach((b) => {
+            b.classList.remove(
+              'bg-primary-container',
+              'text-surface-card',
+              'shadow-inner',
+              'bg-blue-600',
+              'text-white'
+            );
             b.classList.add('bg-surface-container', 'text-on-surface-variant');
           });
           btn.classList.add('bg-primary-container', 'text-surface-card', 'shadow-inner');
           btn.classList.remove('bg-surface-container', 'text-on-surface-variant');
 
           const allCards = document.querySelectorAll('.space-y-space-sm > div.p-space-base, main .space-y-3 > div');
-          allCards.forEach(card => {
+          allCards.forEach((card) => {
             const cardText = card.textContent.toLowerCase();
             if (text.includes('todos')) {
               card.style.display = '';
@@ -271,7 +293,8 @@
       const taskContainer = document.querySelector('.space-y-space-sm');
       if (taskContainer) {
         const newCard = document.createElement('div');
-        newCard.className = 'p-space-base rounded-xl bg-surface-bright hover:bg-surface-container-low transition-all shadow-sm hover:shadow-md flex flex-col md:flex-row md:items-center justify-between gap-space-sm group';
+        newCard.className =
+          'p-space-base rounded-xl bg-surface-bright hover:bg-surface-container-low transition-all shadow-sm hover:shadow-md flex flex-col md:flex-row md:items-center justify-between gap-space-sm group';
         newCard.innerHTML = `
           <div class="flex items-start gap-space-sm flex-1 min-w-0">
             <button aria-label="Marcar como completada" class="mt-1 w-5 h-5 rounded flex items-center justify-center bg-surface-card shadow-sm text-transparent hover:text-emerald-streak group-hover:bg-surface-container-high transition-all" type="button">
@@ -325,8 +348,10 @@
   function initBackpack() {
     // Buscar la sección de la mochila
     const allSections = Array.from(document.querySelectorAll('section, div.bg-surface-card'));
-    const backpackSection = allSections.find(s => (s.textContent || '').includes('Mochila Inteligente') || (s.textContent || '').includes('Mochila Rápida'));
-    
+    const backpackSection = allSections.find(
+      (s) => (s.textContent || '').includes('Mochila Inteligente') || (s.textContent || '').includes('Mochila Rápida')
+    );
+
     if (!backpackSection) return;
 
     const backpackLabels = backpackSection.querySelectorAll('label');
@@ -335,7 +360,7 @@
     function updateCounter() {
       let total = 0;
       let checked = 0;
-      backpackLabels.forEach(lbl => {
+      backpackLabels.forEach((lbl) => {
         const chk = lbl.querySelector('input[type="checkbox"]');
         if (chk) {
           total++;
@@ -348,7 +373,7 @@
       }
     }
 
-    backpackLabels.forEach(lbl => {
+    backpackLabels.forEach((lbl) => {
       const chk = lbl.querySelector('input[type="checkbox"]');
       if (chk) {
         chk.addEventListener('change', () => {
@@ -366,7 +391,8 @@
     });
 
     // Botón añadir recordatorio de material
-    const addMaterialBtn = findElementsByText('button', 'recordatorio de material')[0] || findElementsByText('button', 'Añadir material')[0];
+    const addMaterialBtn =
+      findElementsByText('button', 'recordatorio de material')[0] || findElementsByText('button', 'Añadir material')[0];
     if (addMaterialBtn) {
       addMaterialBtn.addEventListener('click', () => {
         const item = prompt('¿Qué material o libro necesitas recordar para mañana?');
@@ -374,7 +400,8 @@
           const list = addMaterialBtn.previousElementSibling;
           if (list) {
             const newLabel = document.createElement('label');
-            newLabel.className = 'flex items-center justify-between p-2 rounded-lg bg-surface-bright hover:bg-surface-container-low transition-colors cursor-pointer group';
+            newLabel.className =
+              'flex items-center justify-between p-2 rounded-lg bg-surface-bright hover:bg-surface-container-low transition-colors cursor-pointer group';
             newLabel.innerHTML = `
               <div class="flex items-center gap-space-sm min-w-0">
                 <input class="w-4 h-4 rounded text-emerald-streak focus:ring-emerald-streak border-border-subtle" type="checkbox"/>
@@ -399,7 +426,8 @@
 
     const modal = document.createElement('div');
     modal.id = 'stitch-search-modal';
-    modal.className = 'fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-start justify-center pt-20 px-4 transition-opacity';
+    modal.className =
+      'fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-start justify-center pt-20 px-4 transition-opacity';
     modal.innerHTML = `
       <div class="bg-white dark:bg-slate-900 w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 flex flex-col">
         <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center gap-3">
@@ -460,7 +488,7 @@
 
     input.addEventListener('input', () => {
       const q = input.value.toLowerCase().trim();
-      allLinks.forEach(link => {
+      allLinks.forEach((link) => {
         const t = link.textContent.toLowerCase();
         link.style.display = t.includes(q) ? '' : 'none';
       });
@@ -555,7 +583,9 @@
     const close = () => modal.classList.add('hidden');
     modal.querySelector('#stitch-close-task-modal').addEventListener('click', close);
     modal.querySelector('#stitch-cancel-task-btn').addEventListener('click', close);
-    modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) close();
+    });
 
     modal.querySelector('#stitch-new-task-form').addEventListener('submit', (e) => {
       e.preventDefault();
@@ -566,7 +596,8 @@
       const taskContainer = document.querySelector('.space-y-space-sm');
       if (taskContainer) {
         const newCard = document.createElement('div');
-        newCard.className = 'p-space-base rounded-xl bg-surface-bright hover:bg-surface-container-low transition-all shadow-sm hover:shadow-md flex flex-col md:flex-row md:items-center justify-between gap-space-sm group';
+        newCard.className =
+          'p-space-base rounded-xl bg-surface-bright hover:bg-surface-container-low transition-all shadow-sm hover:shadow-md flex flex-col md:flex-row md:items-center justify-between gap-space-sm group';
         newCard.innerHTML = `
           <div class="flex items-start gap-space-sm flex-1 min-w-0">
             <button aria-label="Marcar como completada" class="mt-1 w-5 h-5 rounded flex items-center justify-center bg-surface-card shadow-sm text-transparent hover:text-emerald-streak group-hover:bg-surface-container-high transition-all" type="button">
@@ -616,16 +647,24 @@
   // =========================================================================
   function initCopilot() {
     const copilotInput = document.querySelector('input[placeholder*="Pregunta algo a tu temario"]');
-    const sendBtn = copilotInput ? copilotInput.parentElement.querySelector('button[title*="Enviar"], button:last-child') : null;
+    const sendBtn = copilotInput
+      ? copilotInput.parentElement.querySelector('button[title*="Enviar"], button:last-child')
+      : null;
     const micBtn = copilotInput ? copilotInput.parentElement.querySelector('button[title*="Dictar"]') : null;
-    const quickChips = findElementsByText('button', 'Test de 10 preguntas').concat(findElementsByText('button', 'Resumen del tema'));
+    const quickChips = findElementsByText('button', 'Test de 10 preguntas').concat(
+      findElementsByText('button', 'Resumen del tema')
+    );
 
-    const chatBubble = findElementsByText('p', 'He detectado que tienes examen')[0] || document.querySelector('.bg-surface-container-low p.font-body-sm');
+    const chatBubble =
+      findElementsByText('p', 'He detectado que tienes examen')[0] ||
+      document.querySelector('.bg-surface-container-low p.font-body-sm');
 
     const responses = {
-      test: "🎯 **Simulacro de Matemáticas II:**\n1. ¿Cuál es la condición para que una matriz tenga inversa? (Det ≠ 0)\n2. Si A · B = I, ¿es B = A⁻¹? (Sí)\n3. Calcula el rango de una matriz 3x3 de determinante nulo. (Rango < 3)",
-      resumen: "📝 **Resumen Express de Inducción Electromagnética:**\n- **Ley de Faraday:** La f.e.m. inducida es directamente proporcional a la rapidez de variación del flujo magnético: ε = -dΦ/dt.\n- **Ley de Lenz:** El sentido de la corriente inducida siempre se opone a la causa que la produce.",
-      general: "💡 He consultado tus apuntes del Cuaderno LM: Para calcular la matriz inversa, aplica la fórmula A⁻¹ = (1 / |A|) · Adj(A)ᵀ tras comprobar que |A| ≠ 0."
+      test: '🎯 **Simulacro de Matemáticas II:**\n1. ¿Cuál es la condición para que una matriz tenga inversa? (Det ≠ 0)\n2. Si A · B = I, ¿es B = A⁻¹? (Sí)\n3. Calcula el rango de una matriz 3x3 de determinante nulo. (Rango < 3)',
+      resumen:
+        '📝 **Resumen Express de Inducción Electromagnética:**\n- **Ley de Faraday:** La f.e.m. inducida es directamente proporcional a la rapidez de variación del flujo magnético: ε = -dΦ/dt.\n- **Ley de Lenz:** El sentido de la corriente inducida siempre se opone a la causa que la produce.',
+      general:
+        '💡 He consultado tus apuntes del Cuaderno LM: Para calcular la matriz inversa, aplica la fórmula A⁻¹ = (1 / |A|) · Adj(A)ᵀ tras comprobar que |A| ≠ 0.'
     };
 
     function sendToCopilot(query) {
@@ -635,14 +674,15 @@
         let answer = responses.general;
         const q = query.toLowerCase();
         if (q.includes('test') || q.includes('pregunta')) answer = responses.test;
-        else if (q.includes('resumen') || q.includes('faraday') || q.includes('lenz') || q.includes('tema')) answer = responses.resumen;
-        
+        else if (q.includes('resumen') || q.includes('faraday') || q.includes('lenz') || q.includes('tema'))
+          answer = responses.resumen;
+
         chatBubble.innerHTML = answer.replace(/\n/g, '<br/>');
         showToast('🤖 Copiloto IA ha respondido a tu consulta', 'success');
       }, 700);
     }
 
-    quickChips.forEach(chip => {
+    quickChips.forEach((chip) => {
       chip.addEventListener('click', () => {
         sendToCopilot(chip.textContent.trim());
       });
@@ -698,14 +738,28 @@
   // =========================================================================
   function initFlashcards() {
     const flashcards = [
-      { q: "¿Qué establece la Regla de Sarrus?", a: "Permite calcular determinantes de orden 3 multiplicando diagonales principales menos secundarias.", cat: "Matemáticas II" },
-      { q: "Enuncia la Ley de Lenz", a: "El sentido de las corrientes inducidas es tal que se opone a la variación del flujo magnético que las produce.", cat: "Física II" },
-      { q: "¿En qué año se promulgó la Constitución de Cádiz ('La Pepa')?", a: "El 19 de marzo de 1812 durante la Guerra de la Independencia española.", cat: "Historia de España" }
+      {
+        q: '¿Qué establece la Regla de Sarrus?',
+        a: 'Permite calcular determinantes de orden 3 multiplicando diagonales principales menos secundarias.',
+        cat: 'Matemáticas II'
+      },
+      {
+        q: 'Enuncia la Ley de Lenz',
+        a: 'El sentido de las corrientes inducidas es tal que se opone a la variación del flujo magnético que las produce.',
+        cat: 'Física II'
+      },
+      {
+        q: "¿En qué año se promulgó la Constitución de Cádiz ('La Pepa')?",
+        a: 'El 19 de marzo de 1812 durante la Guerra de la Independencia española.',
+        cat: 'Historia de España'
+      }
     ];
     let cardIdx = 0;
 
     const cards = Array.from(document.querySelectorAll('div.bg-surface-card, div.rounded-2xl'));
-    const flashCardContainer = cards.find(c => (c.textContent || '').includes('¿') || (c.textContent || '').includes('Flashcard'));
+    const flashCardContainer = cards.find(
+      (c) => (c.textContent || '').includes('¿') || (c.textContent || '').includes('Flashcard')
+    );
 
     if (flashCardContainer) {
       flashCardContainer.style.cursor = 'pointer';
@@ -724,7 +778,7 @@
       .concat(findElementsByText('button', 'Bien'))
       .concat(findElementsByText('button', 'Difícil'));
 
-    reviewBtns.forEach(btn => {
+    reviewBtns.forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         cardIdx = (cardIdx + 1) % flashcards.length;
@@ -741,9 +795,15 @@
   // 9. CUADERNO LM: REPRODUCTOR DE PODCAST DE ESTUDIO
   // =========================================================================
   function initPodcastPlayer() {
-    const playBtns = findElementsByText('button', '▶').concat(Array.from(document.querySelectorAll('button[title*="Podcast"], button:has(span.material-symbols-outlined)')));
-    const playBtn = playBtns.find(b => (b.textContent || '').includes('▶') || (b.closest('div') && (b.closest('div').textContent || '').includes('Podcast')));
-    
+    const playBtns = findElementsByText('button', '▶').concat(
+      Array.from(document.querySelectorAll('button[title*="Podcast"], button:has(span.material-symbols-outlined)'))
+    );
+    const playBtn = playBtns.find(
+      (b) =>
+        (b.textContent || '').includes('▶') ||
+        (b.closest('div') && (b.closest('div').textContent || '').includes('Podcast'))
+    );
+
     let isPlaying = false;
     let podcastInterval = null;
     let secondsElapsed = 0;
@@ -825,12 +885,14 @@
       modal.classList.add('hidden');
       const video = modal.querySelector('#stitch-camera-video');
       if (video && video.srcObject) {
-        video.srcObject.getTracks().forEach(track => track.stop());
+        video.srcObject.getTracks().forEach((track) => track.stop());
       }
     };
 
     modal.querySelector('#stitch-close-ocr-modal').addEventListener('click', close);
-    modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) close();
+    });
 
     const startCamera = async () => {
       const video = modal.querySelector('#stitch-camera-video');
@@ -876,14 +938,15 @@
   // =========================================================================
   function bindGlobalButtons() {
     // 11.1. Pomodoro Play/Pause en barra superior y floating pill
-    document.querySelectorAll('button[title*="Pomodoro"], #pomodoroToggleBtn').forEach(btn => {
+    document.querySelectorAll('button[title*="Pomodoro"], #pomodoroToggleBtn').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         Pomodoro.toggle();
       });
     });
 
-    const floatingPomodoro = findElementsByText('button', 'Iniciar Enfoque')[0] || findElementsByText('button', 'Iniciar Pomodoro')[0];
+    const floatingPomodoro =
+      findElementsByText('button', 'Iniciar Enfoque')[0] || findElementsByText('button', 'Iniciar Pomodoro')[0];
     if (floatingPomodoro) {
       floatingPomodoro.addEventListener('click', (e) => {
         e.preventDefault();
@@ -893,7 +956,7 @@
 
     // 11.2. Botón OCR en la cabecera
     const ocrBtns = findElementsByText('button', 'OCR');
-    ocrBtns.forEach(btn => {
+    ocrBtns.forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         openCameraOCR();
@@ -902,7 +965,7 @@
 
     // 11.3. Botón "Dictar" en la cabecera
     const dictarBtns = findElementsByText('button', 'Dictar');
-    dictarBtns.forEach(btn => {
+    dictarBtns.forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
@@ -923,7 +986,7 @@
 
     // 11.4. Botón "Nueva Tarea" en la cabecera
     const newTaskBtns = findElementsByText('button', 'Nueva Tarea');
-    newTaskBtns.forEach(btn => {
+    newTaskBtns.forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         openNewTaskModal();
@@ -931,8 +994,10 @@
     });
 
     // 11.5. Input de búsqueda en cabecera + atajo ⌘K / Ctrl+K
-    const searchInputs = document.querySelectorAll('header input[placeholder*="Buscar"], input[placeholder*="Buscar asignaturas"]');
-    searchInputs.forEach(inp => {
+    const searchInputs = document.querySelectorAll(
+      'header input[placeholder*="Buscar"], input[placeholder*="Buscar asignaturas"]'
+    );
+    searchInputs.forEach((inp) => {
       inp.addEventListener('focus', (e) => {
         e.preventDefault();
         inp.blur();
@@ -976,7 +1041,7 @@
 
     // 11.8. Botón Sincronizar
     const syncBtns = findElementsByText('button', 'Sincronizar');
-    syncBtns.forEach(b => {
+    syncBtns.forEach((b) => {
       b.addEventListener('click', () => {
         showToast('☁️ Sincronizando con Google Drive y Firebase...', 'info');
         setTimeout(() => {
@@ -987,7 +1052,7 @@
 
     // 11.9. Botón Personalizar Día
     const customBtns = findElementsByText('button', 'Personalizar Día');
-    customBtns.forEach(b => {
+    customBtns.forEach((b) => {
       b.addEventListener('click', () => {
         showToast('⚙️ Abriendo configuración de vista del día...', 'info');
       });
@@ -995,16 +1060,22 @@
 
     // 11.10. Botón "Ver horario semanal completo"
     const scheduleBtns = findElementsByText('button', 'horario semanal');
-    scheduleBtns.forEach(b => {
+    scheduleBtns.forEach((b) => {
       b.addEventListener('click', () => {
-        const prefix = window.location.pathname.includes('/tablet') ? '' : window.location.pathname.includes('/mobile') ? '' : '';
-        window.location.href = window.location.pathname.includes('/tablet') ? 'horario-mochila.html' : 'horario-mochila.html';
+        const prefix = window.location.pathname.includes('/tablet')
+          ? ''
+          : window.location.pathname.includes('/mobile')
+            ? ''
+            : '';
+        window.location.href = window.location.pathname.includes('/tablet')
+          ? 'horario-mochila.html'
+          : 'horario-mochila.html';
       });
     });
 
     // 11.11. Botón "Apuntes" en clase activa
     const notesBtns = findElementsByText('button', 'Apuntes');
-    notesBtns.forEach(b => {
+    notesBtns.forEach((b) => {
       b.addEventListener('click', () => {
         window.location.href = window.location.pathname.includes('/tablet') ? 'cuaderno-lm.html' : 'notebook.html';
       });
@@ -1012,7 +1083,7 @@
 
     // 11.12. Botón "Generar Test IA con Cuaderno LM"
     const testGenBtns = findElementsByText('button', 'Generar Test IA');
-    testGenBtns.forEach(b => {
+    testGenBtns.forEach((b) => {
       b.addEventListener('click', () => {
         window.location.href = window.location.pathname.includes('/tablet') ? 'cuaderno-lm.html' : 'notebook.html';
       });
@@ -1020,9 +1091,11 @@
 
     // 11.13. Botón "Repasar →"
     const reviewBtns = findElementsByText('button', 'Repasar');
-    reviewBtns.forEach(b => {
+    reviewBtns.forEach((b) => {
       b.addEventListener('click', () => {
-        window.location.href = window.location.pathname.includes('/tablet') ? 'pomodoro-flashcards.html' : 'pomodoro-flashcards.html';
+        window.location.href = window.location.pathname.includes('/tablet')
+          ? 'pomodoro-flashcards.html'
+          : 'pomodoro-flashcards.html';
       });
     });
   }
@@ -1048,5 +1121,4 @@
   } else {
     initAll();
   }
-
 })();
