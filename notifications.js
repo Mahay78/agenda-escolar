@@ -56,6 +56,26 @@ export async function sendTestNotification() {
 }
 
 /**
+ * Envía una notificación local genérica (si hay permiso y están activadas)
+ * @param {string} title Título de la notificación
+ * @param {string} body Cuerpo del mensaje
+ * @param {string} tag Etiqueta para agrupar/reemplazar notificaciones
+ */
+export async function sendNotification(title, body, tag = 'agenda-escolar') {
+  if (!areNotificationsSupported() || Notification.permission !== 'granted') return null;
+
+  const enabled = await getSetting('notificationsEnabled', true);
+  if (!enabled) return null;
+
+  return new Notification(title, {
+    body,
+    icon: './icon.svg',
+    badge: './icon.svg',
+    tag
+  });
+}
+
+/**
  * Comprueba tareas y exámenes pendientes y dispara notificaciones locales
  * @param {Array} tasks Lista de tareas
  * @param {Array} exams Lista de exámenes

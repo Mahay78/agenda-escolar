@@ -10,6 +10,7 @@ import {
   getGamificationStats,
   getRankInfo,
   generateActivityHeatmap,
+  getWeeklyChallenges,
   ACHIEVEMENTS
 } from '../gamification.js';
 import { showToast, escapeHTML } from './utils.js';
@@ -97,6 +98,33 @@ export function updateGamificationUI(stats) {
 
   // Renderizar Mapa de Calor de 70 días (Roadmap Item 26)
   renderActivityHeatmap(stats.activityLog || {});
+
+  // Renderizar Retos Semanales (Roadmap Item 27)
+  renderWeeklyChallenges(stats);
+}
+
+export function renderWeeklyChallenges(stats) {
+  const container = document.getElementById('weekly-challenges-container');
+  if (!container) return;
+
+  const challenges = getWeeklyChallenges(stats);
+  container.innerHTML = challenges
+    .map((challenge) => {
+      const pct = Math.round((challenge.progress / challenge.target) * 100);
+      return `
+      <div class="achievement-card ${challenge.completed ? 'unlocked' : ''}">
+        <div class="achievement-icon-box">${challenge.icon}</div>
+        <div class="achievement-info">
+          <h4>${escapeHTML(challenge.title)} ${challenge.completed ? '✅' : '🎯'}</h4>
+          <div class="xp-bar-track" style="margin: 6px 0;">
+            <div class="xp-bar-fill" style="width: ${pct}%;"></div>
+          </div>
+          <p>${challenge.progress}/${challenge.target} · +${challenge.xp} XP</p>
+        </div>
+      </div>
+    `;
+    })
+    .join('');
 }
 
 export function renderActivityHeatmap(activityLog = {}) {

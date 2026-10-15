@@ -33,6 +33,7 @@ import {
   getNotificationPermission,
   requestNotificationPermission,
   sendTestNotification,
+  sendNotification,
   checkDueReminders
 } from './notifications.js';
 import {
@@ -168,6 +169,7 @@ async function bootApp() {
     initTrashModule();
     initSubjectResourcesModule();
     initNotificationsModule();
+    initEveningReminder();
     initPdfExportModule();
     initIcsExportModule();
     initGoogleDriveModule();
@@ -347,6 +349,11 @@ function handleUrlRouting() {
       setTimeout(() => {
         if (typeof window.openCopilotModal === 'function') window.openCopilotModal();
         else document.getElementById('btn-open-copilot')?.click();
+      }, 350);
+    } else if (actionParam === 'new-task') {
+      setTimeout(() => {
+        if (typeof openTaskModal === 'function') openTaskModal();
+        else document.getElementById('btn-add-task')?.click();
       }, 350);
     }
   } catch (e) {
@@ -4827,6 +4834,105 @@ async function initNotificationsModule() {
       checkDueReminders(AppState.tasks, AppState.exams, AppState.subjects);
     }
   });
+}
+
+/**
+ * Recordatorio Inteligente Vespertino (Roadmap Item 9)
+ * Envía un aviso por la tarde con las asignaturas y deberes de mañana.
+ */
+async function initEveningReminder() {
+  const toggle = document.getElementById('setting-evening-reminder');
+  const timeInput = document.getElementById('setting-evening-reminder-time');
+  const testBtn = document.getElementById('btn-test-evening-reminder');
+
+  const savedEnabled = await getSetting('eveningReminderEnabled', true);
+  const savedTime = await getSetting('eveningReminderTime', '19:30');
+
+  if (toggle) toggle.checked = savedEnabled !== false;
+  if (timeInput && /^\d{2}:\d{2}$/.test(savedTime)) timeInput.value = savedTime;
+
+  const getTime = () => (timeInput && timeInput.value) || savedTime || '19:30';
+  const isEnabled = () => (toggle ? toggle.checked : savedEnabled) !== false;
+
+  const buildSummary = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const dayOfWeek = tomorrow.getDay();
+    const tomorrowStr = getLocalDateString(tomorrow);
+
+    const subjectNames = [];
+    if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+      AppState.schedule
+        .filter((s) => s.day === dayOfWeek)
+        .forEach((slot) => {
+          const sub = AppState.subjects.find((x) => x.id === slot.subjectId);
+          if (sub && !subjectNames.includes(sub.name)) subjectNames.push(sub.name);
+        });
+    }
+
+    const pending = AppState.tasks.filter((t) => t.status !== 'completed' && t.dueDate && t.dueDate <= tomorrowStr);
+
+    const parts = [];
+    if (subjectNames.length) parts.push(`Mañana tienes ${subjectNames.join(', ')}.`);
+    if (pending.length === 1) parts.push('Te queda 1 tarea pendiente.');
+    else if (pending.length > 1) parts.push(`Te quedan ${pending.length} tareas pendientes.`);
+    if (!parts.length) parts.push('No tienes deberes urgentes. ¡Buen momento para repasar!');
+
+    return parts.join(' ');
+  };
+
+  const notifyNow = async (force = false) => {
+    const todayStr = getTodayDateString();
+    if (!force) {
+      const last = await getSetting('eveningReminderLastDate', null);
+      if (last === todayStr) return;
+    }
+    const sent = await sendNotification('🌙 Agenda Escolar - Resumen de mañana', buildSummary(), 'evening-reminder');
+    if (sent) {
+      if (force) showToast('🌙 Recordatorio de prueba enviado', 'success');
+      else await setSetting('eveningReminderLastDate', todayStr);
+    }
+  };
+
+  const scheduleToday = () => {
+    if (!isEnabled()) return;
+    const [hh, mm] = getTime().split(':').map(Number);
+    const target = new Date();
+    target.setHours(hh || 19, mm || 30, 0, 0);
+    const delay = target.getTime() - Date.now();
+    if (delay > 0) setTimeout(() => notifyNow(false), delay);
+  };
+
+  const checkIfDue = () => {
+    if (!isEnabled()) return;
+    const [hh, mm] = getTime().split(':').map(Number);
+    const now = new Date();
+    if (now.getHours() > (hh || 19) || (now.getHours() === (hh || 19) && now.getMinutes() >= (mm || 30))) {
+      notifyNow(false);
+    }
+  };
+
+  toggle?.addEventListener('change', async () => {
+    await setSetting('eveningReminderEnabled', toggle.checked);
+    showToast(toggle.checked ? '🌙 Recordatorio vespertino activado' : '🌙 Recordatorio vespertino desactivado');
+    if (toggle.checked) scheduleToday();
+  });
+
+  timeInput?.addEventListener('change', async () => {
+    if (/^\d{2}:\d{2}$/.test(timeInput.value)) {
+      await setSetting('eveningReminderTime', timeInput.value);
+      scheduleToday();
+    }
+  });
+
+  testBtn?.addEventListener('click', () => notifyNow(true));
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') scheduleToday();
+  });
+
+  scheduleToday();
+  checkIfDue();
 }
 
 // ==========================================================================

@@ -1311,6 +1311,27 @@
             Estado: Comprobando...
           </span>
         </div>
+
+        <!-- Recordatorio Inteligente Vespertino (Roadmap Item 9) -->
+        <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color);">
+          <h4 style="margin: 0 0 6px 0; font-size: 0.92rem;">🌙 Recordatorio vespertino inteligente</h4>
+          <p class="section-subtitle" style="margin-bottom: 12px;">
+            Un aviso por la tarde con las asignaturas de mañana y los deberes que te quedan pendientes.
+          </p>
+          <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+              <input type="checkbox" id="setting-evening-reminder" checked />
+              <span>Activar recordatorio</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px;">
+              <span>Hora:</span>
+              <input type="time" id="setting-evening-reminder-time" value="19:30" style="padding: 6px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-input); color: var(--text-main);" />
+            </label>
+            <button id="btn-test-evening-reminder" class="btn-secondary" style="width: auto;">
+              <span>🌙</span> Probar recordatorio
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- Papelera de Reciclaje Temporal -->
@@ -2316,8 +2337,14 @@
         </div>
       </div>
 
+      <!-- Retos y Desafíos Semanales (Roadmap Item 27) -->
+      <h4 style="margin: 16px 0 10px 0; font-size: 0.95rem; color: var(--text-main);">🎯 Retos de la Semana</h4>
+      <div id="weekly-challenges-container" class="achievements-grid">
+        <!-- Renderizado dinámico de retos semanales -->
+      </div>
+
       <!-- Cuadrícula de Medallas y Trofeos -->
-      <h4 style="margin: 0 0 10px 0; font-size: 0.95rem; color: var(--text-main);">Medallas y Desafíos</h4>
+      <h4 style="margin: 16px 0 10px 0; font-size: 0.95rem; color: var(--text-main);">Medallas y Desafíos</h4>
       <div id="achievements-container" class="achievements-grid">
         <!-- Renderizado dinámico de logros -->
       </div>
