@@ -49,5 +49,9 @@ export const AppState = {
     countToday: 0,
     totalFocusMinutes: 0
   },
-  trash: []
+  trash: [],
+  selectedTaskIds: [],
+  tasksSelectionMode: false,
+  rotatingWeeksEnabled: false,
+  rotatingWeekAParity: 'odd'
 };

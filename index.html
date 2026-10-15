@@ -369,6 +369,7 @@
         <button class="filter-chip" data-task-filter="week">📆 Esta Semana</button>
         <button class="filter-chip" data-task-filter="photos">📸 Con Fotos</button>
         <button class="filter-chip" data-task-filter="done">✅ Completadas</button>
+        <button class="filter-chip" id="btn-toggle-task-selection" type="button" title="Selección múltiple: activa y pulsa sobre las tareas para seleccionarlas">☑️ Seleccionar</button>
       </div>
 
       <!-- Lista de tareas -->
@@ -409,6 +410,7 @@
         <div>
           <h2 class="section-title"><span>📅</span> Horario Escolar</h2>
           <p class="section-subtitle">Selecciona el día de la semana para ver y editar tus clases</p>
+          <span id="schedule-week-badge" class="badge hidden" style="margin-top: 8px; display: inline-block; background: var(--bg-input); padding: 4px 12px; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 700;"></span>
         </div>
         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
           <button id="btn-export-schedule-pdf" class="btn-primary" style="width: auto; display: inline-flex; align-items: center; gap: 6px;" title="Descargar Horario Oficial en PDF">
@@ -1334,6 +1336,56 @@
         </div>
       </div>
 
+      <!-- Tareas Recurrentes / Plantillas (Roadmap Item 12) -->
+      <div class="card">
+        <h3 class="section-title" style="margin-bottom: 12px;">🔁 Tareas Recurrentes (Plantillas)</h3>
+        <p class="section-subtitle" style="margin-bottom: 16px;">
+          Crea deberes que se repiten cada semana (p. ej. "Estudiar vocabulario de inglés"). Se añadirán solos a tu agenda el día que elijas.
+        </p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;">
+          <input type="text" id="recurring-title" placeholder="Título de la tarea" maxlength="120" style="grid-column: 1 / -1; padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-input); color: var(--text-main);" />
+          <select id="recurring-subject" aria-label="Asignatura de la plantilla" style="padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-input); color: var(--text-main);"></select>
+          <select id="recurring-weekday" aria-label="Día de la semana" style="padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-input); color: var(--text-main);">
+            <option value="1">Lunes</option>
+            <option value="2">Martes</option>
+            <option value="3">Miércoles</option>
+            <option value="4">Jueves</option>
+            <option value="5">Viernes</option>
+            <option value="6">Sábado</option>
+            <option value="7">Domingo</option>
+          </select>
+          <select id="recurring-priority" aria-label="Prioridad" style="padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-input); color: var(--text-main);">
+            <option value="baja">Prioridad Baja</option>
+            <option value="media" selected>Prioridad Normal</option>
+            <option value="alta">Prioridad Alta</option>
+          </select>
+          <button id="btn-add-recurring" class="btn-primary" style="width: auto; grid-column: 1 / -1;">➕ Añadir plantilla recurrente</button>
+        </div>
+        <div id="recurring-templates-list"></div>
+      </div>
+
+      <!-- Horarios Rotativos Semanas A/B (Roadmap Item 10) -->
+      <div class="card">
+        <h3 class="section-title" style="margin-bottom: 12px;">🔀 Horarios Rotativos (Semanas A/B)</h3>
+        <p class="section-subtitle" style="margin-bottom: 16px;">
+          Algunos institutos alternan dos horarios cada semana. Actívalo para asignar clases a la Semana A o B.
+        </p>
+        <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <input type="checkbox" id="setting-rotating-weeks" />
+            <span>Activar semanas rotativas A/B</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px;">
+            <span>Esta semana es:</span>
+            <select id="setting-rotating-parity" aria-label="Paridad de la semana A" style="padding: 6px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-input); color: var(--text-main);">
+              <option value="odd">Semana A (semanas impares)</option>
+              <option value="even">Semana A (semanas pares)</option>
+            </select>
+          </label>
+        </div>
+        <p class="section-subtitle" id="rotating-weeks-hint" style="margin-top: 12px;"></p>
+      </div>
+
       <!-- Papelera de Reciclaje Temporal -->
       <div class="card">
         <div class="section-header">
@@ -1756,6 +1808,14 @@
         <div class="form-group">
           <label for="slot-classroom-input" class="form-label">Aula / Ubicación (Opcional)</label>
           <input type="text" id="slot-classroom-input" class="form-input" placeholder="Ej: Aula 201 o Gimnasio" />
+        </div>
+        <div class="form-group">
+          <label for="slot-variant-select" class="form-label">Semana (para horarios rotativos A/B)</label>
+          <select id="slot-variant-select" class="form-select" aria-label="Semana a la que se aplica esta clase">
+            <option value="all">Todas las semanas</option>
+            <option value="A">Solo Semana A</option>
+            <option value="B">Solo Semana B</option>
+          </select>
         </div>
         <button type="submit" class="btn-primary">💾 Guardar en Horario</button>
       </form>

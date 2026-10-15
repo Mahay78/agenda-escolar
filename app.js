@@ -170,6 +170,9 @@ async function bootApp() {
     initSubjectResourcesModule();
     initNotificationsModule();
     initEveningReminder();
+    initTasksBatchActions();
+    initRecurringTasks();
+    initScheduleRotation();
     initPdfExportModule();
     initIcsExportModule();
     initGoogleDriveModule();
@@ -185,6 +188,13 @@ async function bootApp() {
 
     // 4. Renderizar vistas
     renderAllViews();
+
+    // 5. Generar las tareas recurrentes de esta semana (Roadmap Item 12)
+    const recurringCreated = await generateRecurringTasks();
+    if (recurringCreated > 0) {
+      renderAllViews();
+      showToast(`🔁 ${recurringCreated} tarea(s) recurrente(s) añadida(s)`, 'success');
+    }
 
     console.log('Agenda Escolar lista y operativa.');
   } catch (err) {
@@ -216,6 +226,8 @@ async function loadAllData() {
   }
   AppState.trash = await getTrashItems();
   AppState.timeSlots = await getSetting('timeSlots', []);
+  AppState.rotatingWeeksEnabled = await getSetting('rotatingWeeksEnabled', false);
+  AppState.rotatingWeekAParity = await getSetting('rotatingWeekAParity', 'odd');
   AppState.studentInfo = await getSetting('studentInfo', {
     studentName: 'Estudiante',
     schoolName: 'Instituto de Educación Secundaria',
@@ -1281,7 +1293,7 @@ function updateCurrentLiveCard(now = new Date(), dayOfWeek = now.getDay()) {
   }
 
   // Día lectivo de Lunes a Viernes
-  const todaySlots = AppState.schedule.filter((s) => s.day === dayOfWeek);
+  const todaySlots = getScheduleForDay(dayOfWeek);
   if (!AppState.timeSlots || AppState.timeSlots.length === 0) {
     if (statusLabelEl) statusLabelEl.textContent = 'HORARIO';
     if (iconEl) iconEl.textContent = '📅';
@@ -1452,7 +1464,7 @@ function renderTodayView() {
   const scheduleContainer = document.getElementById('today-schedule-list');
   if (scheduleContainer) {
     if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-      const todaySlots = AppState.schedule.filter((s) => s.day === dayOfWeek);
+      const todaySlots = getScheduleForDay(dayOfWeek);
       if (todaySlots.length === 0) {
         scheduleContainer.innerHTML = `
           <p class="section-subtitle">No has configurado clases para el ${dayName}.</p>
@@ -1640,8 +1652,10 @@ function renderTasksView() {
           `
           : '';
 
+      const isSelected = getSelectedTaskIds().includes(task.id);
+
       return `
-        <div class="task-item ${isCompleted ? 'completed' : ''}" style="border-left-color: ${safeColor(sub?.color)}" draggable="true" data-task-id="${escapeHTML(task.id)}">
+        <div class="task-item ${isCompleted ? 'completed' : ''} ${isSelected ? 'is-selected' : ''}" style="border-left-color: ${safeColor(sub?.color)}" draggable="true" data-task-id="${escapeHTML(task.id)}">
           <div class="task-top">
             <input type="checkbox" class="task-checkbox" ${isCompleted ? 'checked' : ''} onchange="window.toggleTaskComplete('${escapeHTML(task.id)}')" />
             <div class="task-content">
@@ -1705,15 +1719,384 @@ function renderTasksView() {
     .join('');
 }
 
+/**
+ * Selección múltiple y acciones en lote sobre tareas (Roadmap Item 41)
+ */
+function getSelectedTaskIds() {
+  return Array.isArray(AppState.selectedTaskIds) ? AppState.selectedTaskIds : [];
+}
+
+function toggleTaskSelection(taskId, force) {
+  const current = new Set(getSelectedTaskIds());
+  const shouldSelect = force === undefined ? !current.has(taskId) : force;
+  if (shouldSelect) current.add(taskId);
+  else current.delete(taskId);
+  AppState.selectedTaskIds = Array.from(current);
+  renderTasksView();
+  renderTasksBatchBar();
+}
+
+function renderTasksBatchBar() {
+  const selected = getSelectedTaskIds();
+  let bar = document.getElementById('tasks-batch-bar');
+  if (selected.length === 0) {
+    if (bar) bar.remove();
+    return;
+  }
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.id = 'tasks-batch-bar';
+    bar.setAttribute('role', 'toolbar');
+    bar.style.cssText =
+      'position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 1200; display: flex; gap: 8px; align-items: center; justify-content: center; flex-wrap: wrap; background: var(--bg-card, #1e293b); border: 1px solid var(--border-color, #334155); box-shadow: 0 10px 30px rgba(0,0,0,0.35); padding: 10px 14px; border-radius: 999px; max-width: min(92vw, 760px);';
+    document.body.appendChild(bar);
+  }
+  bar.innerHTML = `
+    <span style="font-weight: 700; font-size: 0.85rem; color: var(--text-main);">${selected.length} seleccionada(s)</span>
+    <button class="btn-action-small" type="button" data-batch="complete">✅ Completar</button>
+    <button class="btn-action-small" type="button" data-batch="pending">↩️ Pendiente</button>
+    <button class="btn-action-small" type="button" data-batch="tomorrow">⏰ Mañana</button>
+    <button class="btn-action-small" type="button" data-batch="priority">🎚️ Prioridad</button>
+    <button class="btn-action-small danger" type="button" data-batch="delete">🗑️ Eliminar</button>
+    <button class="btn-action-small" type="button" data-batch="clear">✖️</button>
+  `;
+}
+
+async function applyTasksBatchAction(action) {
+  const ids = getSelectedTaskIds();
+  if (ids.length === 0) return;
+  const selectedTasks = AppState.tasks.filter((t) => ids.includes(t.id));
+
+  if (action === 'clear') {
+    AppState.selectedTaskIds = [];
+    renderTasksView();
+    renderTasksBatchBar();
+    return;
+  }
+
+  if (action === 'delete') {
+    if (!confirm(`¿Mover ${ids.length} tarea(s) a la papelera de reciclaje?`)) return;
+    for (const task of selectedTasks) {
+      await moveToTrash('tasks', task, task.title || 'Tarea');
+      await deleteItem('tasks', task.id);
+    }
+    AppState.tasks = AppState.tasks.filter((t) => !ids.includes(t.id));
+  } else if (action === 'complete' || action === 'pending') {
+    for (const task of selectedTasks) {
+      task.status = action === 'complete' ? 'completed' : 'pending';
+      await saveItem('tasks', task);
+    }
+  } else if (action === 'tomorrow') {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    const tomorrowStr = getLocalDateString(d);
+    for (const task of selectedTasks) {
+      task.dueDate = tomorrowStr;
+      await saveItem('tasks', task);
+    }
+  } else if (action === 'priority') {
+    const order = ['baja', 'media', 'alta'];
+    for (const task of selectedTasks) {
+      const idx = Math.max(0, order.indexOf(task.priority || 'media'));
+      task.priority = order[(idx + 1) % order.length];
+      await saveItem('tasks', task);
+    }
+  } else {
+    return;
+  }
+
+  AppState.selectedTaskIds = [];
+  renderTasksView();
+  renderTasksBatchBar();
+  updateBadges();
+  showToast(`✅ Acción aplicada a ${ids.length} tarea(s)`, 'success');
+}
+
+function initTasksBatchActions() {
+  const toggleBtn = document.getElementById('btn-toggle-task-selection');
+  const container = document.getElementById('tasks-container');
+
+  toggleBtn?.addEventListener('click', () => {
+    AppState.tasksSelectionMode = !AppState.tasksSelectionMode;
+    if (!AppState.tasksSelectionMode) AppState.selectedTaskIds = [];
+    toggleBtn.classList.toggle('active', AppState.tasksSelectionMode);
+    renderTasksView();
+    renderTasksBatchBar();
+  });
+
+  container?.addEventListener('click', (e) => {
+    if (e.target.closest('button, input, a, audio, label')) return;
+    const item = e.target.closest('.task-item');
+    if (!item) return;
+    const taskId = item.getAttribute('data-task-id');
+    if (!taskId) return;
+
+    if (AppState.tasksSelectionMode) {
+      e.preventDefault();
+      toggleTaskSelection(taskId);
+    } else if (e.ctrlKey || e.metaKey) {
+      e.preventDefault();
+      toggleTaskSelection(taskId);
+    }
+  });
+
+  document.body.addEventListener('click', (e) => {
+    const btn = e.target.closest('#tasks-batch-bar [data-batch]');
+    if (!btn) return;
+    applyTasksBatchAction(btn.getAttribute('data-batch'));
+  });
+}
+
+/**
+ * Plantillas de Tareas Recurrentes (Roadmap Item 12)
+ */
+async function getRecurringTemplates() {
+  return (await getSetting('recurringTemplates', [])) || [];
+}
+
+/**
+ * Devuelve la fecha (YYYY-MM-DD) del día de la semana indicado dentro de la
+ * semana actual. `weekday`: 1=Lunes ... 7=Domingo.
+ */
+function getWeekdayDateInCurrentWeek(weekday) {
+  const now = new Date();
+  const current = now.getDay() === 0 ? 7 : now.getDay();
+  const target = new Date(now);
+  target.setDate(now.getDate() + (weekday - current));
+  return getLocalDateString(target);
+}
+
+/**
+ * Genera las tareas a partir de las plantillas recurrentes activas.
+ * Solo crea la tarea si su día aún no ha pasado esta semana y no se creó ya.
+ */
+async function generateRecurringTasks() {
+  const templates = await getRecurringTemplates();
+  if (!templates.length) return 0;
+
+  const todayStr = getTodayDateString();
+  let created = 0;
+  let changed = false;
+
+  for (const template of templates) {
+    if (template.active === false) continue;
+    const occurrence = getWeekdayDateInCurrentWeek(template.weekday);
+    if (occurrence < todayStr) continue; // ya pasó esta semana
+    if (template.lastCreated === occurrence) continue; // ya generada
+
+    const alreadyExists = AppState.tasks.some((t) => t.recurringId === template.id && t.dueDate === occurrence);
+    if (!alreadyExists) {
+      const task = {
+        id: 'task_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 6),
+        title: template.title,
+        description: '',
+        subjectId: template.subjectId || null,
+        dueDate: occurrence,
+        status: 'pending',
+        priority: template.priority || 'media',
+        photos: [],
+        subtasks: [],
+        recurringId: template.id
+      };
+      await saveItem('tasks', task);
+      AppState.tasks.push(task);
+      created++;
+    }
+    template.lastCreated = occurrence;
+    changed = true;
+  }
+
+  if (changed) await setSetting('recurringTemplates', templates);
+  return created;
+}
+
+function initRecurringTasks() {
+  const titleInput = document.getElementById('recurring-title');
+  const subjectSel = document.getElementById('recurring-subject');
+  const weekdaySel = document.getElementById('recurring-weekday');
+  const prioritySel = document.getElementById('recurring-priority');
+  const addBtn = document.getElementById('btn-add-recurring');
+  const list = document.getElementById('recurring-templates-list');
+  if (!addBtn) return;
+
+  populateSubjectSelect(subjectSel, true);
+
+  const dayNames = ['', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+
+  const renderList = async () => {
+    const templates = await getRecurringTemplates();
+    if (!list) return;
+    if (!templates.length) {
+      list.innerHTML = '<p class="section-subtitle">Aún no tienes plantillas recurrentes.</p>';
+      return;
+    }
+    list.innerHTML = templates
+      .map((tpl) => {
+        const sub = AppState.subjects.find((s) => s.id === tpl.subjectId);
+        return `
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); margin-bottom: 8px; background: var(--bg-input);">
+            <div>
+              <div style="font-weight: 700; color: var(--text-main);">${escapeHTML(tpl.title)}</div>
+              <div style="font-size: 0.78rem; color: var(--text-dim);">
+                ${dayNames[tpl.weekday] || ''} · ${escapeHTML(sub?.name || 'General')}${tpl.active === false ? ' · (pausada)' : ''}
+              </div>
+            </div>
+            <div style="display: flex; gap: 6px;">
+              <button class="btn-action-small" type="button" title="${tpl.active === false ? 'Reanudar' : 'Pausar'}" data-recurring-toggle="${escapeHTML(tpl.id)}">${tpl.active === false ? '▶️' : '⏸️'}</button>
+              <button class="btn-action-small danger" type="button" title="Eliminar plantilla" data-recurring-delete="${escapeHTML(tpl.id)}">🗑️</button>
+            </div>
+          </div>
+        `;
+      })
+      .join('');
+  };
+
+  addBtn.addEventListener('click', async () => {
+    const title = (titleInput?.value || '').trim();
+    if (!title) {
+      showToast('Escribe un título para la plantilla', 'danger');
+      return;
+    }
+    const templates = await getRecurringTemplates();
+    templates.push({
+      id: 'rec_' + Date.now().toString(36),
+      title,
+      subjectId: subjectSel?.value || '',
+      weekday: Number(weekdaySel?.value || 1),
+      priority: prioritySel?.value || 'media',
+      active: true,
+      lastCreated: null
+    });
+    await setSetting('recurringTemplates', templates);
+    if (titleInput) titleInput.value = '';
+    await renderList();
+    showToast('🔁 Plantilla recurrente añadida', 'success');
+  });
+
+  list?.addEventListener('click', async (e) => {
+    const deleteBtn = e.target.closest('[data-recurring-delete]');
+    const toggleBtn = e.target.closest('[data-recurring-toggle]');
+    if (!deleteBtn && !toggleBtn) return;
+    const templates = await getRecurringTemplates();
+    if (deleteBtn) {
+      const id = deleteBtn.getAttribute('data-recurring-delete');
+      await setSetting(
+        'recurringTemplates',
+        templates.filter((t) => t.id !== id)
+      );
+      showToast('🗑️ Plantilla eliminada');
+    } else if (toggleBtn) {
+      const id = toggleBtn.getAttribute('data-recurring-toggle');
+      const template = templates.find((t) => t.id === id);
+      if (template) {
+        template.active = template.active === false;
+        await setSetting('recurringTemplates', templates);
+      }
+    }
+    await renderList();
+  });
+
+  renderList();
+}
+
 // ----------------------------------------------------
 // 3. VISTA: HORARIO ESCOLAR
 // ----------------------------------------------------
+/**
+ * Horarios Semanales Rotativos A/B (Roadmap Item 10)
+ */
+function getCurrentScheduleVariant() {
+  if (!AppState.rotatingWeeksEnabled) return 'all';
+  const now = new Date();
+  const d = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+  const dayNum = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  const weekNo = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+  const isEven = weekNo % 2 === 0;
+  const aIsEven = AppState.rotatingWeekAParity === 'even';
+  return isEven === aIsEven ? 'A' : 'B';
+}
+
+/**
+ * Devuelve las clases de un día visibles según la semana rotativa activa
+ */
+function getScheduleForDay(day) {
+  const rotating = AppState.rotatingWeeksEnabled;
+  const variant = getCurrentScheduleVariant();
+  return AppState.schedule.filter((s) => {
+    if (s.day !== day) return false;
+    const v = s.variant || 'all';
+    if (!rotating) return v === 'all';
+    return v === 'all' || v === variant;
+  });
+}
+
+/**
+ * Devuelve la entrada de horario para (día, franja) según la semana activa
+ */
+function getScheduleEntry(day, slotIndex) {
+  const entries = AppState.schedule.filter((s) => s.day === day && s.slotIndex === slotIndex);
+  if (!entries.length) return undefined;
+  const variant = getCurrentScheduleVariant();
+  if (!AppState.rotatingWeeksEnabled) return entries.find((s) => (s.variant || 'all') === 'all');
+  return entries.find((s) => (s.variant || 'all') === variant) || entries.find((s) => (s.variant || 'all') === 'all');
+}
+
+function updateScheduleWeekBadge() {
+  const badge = document.getElementById('schedule-week-badge');
+  if (!badge) return;
+  if (AppState.rotatingWeeksEnabled) {
+    const variant = getCurrentScheduleVariant();
+    badge.textContent = `📅 Horario de la Semana ${variant}`;
+    badge.classList.remove('hidden');
+  } else {
+    badge.classList.add('hidden');
+  }
+}
+
+async function initScheduleRotation() {
+  const toggle = document.getElementById('setting-rotating-weeks');
+  const parity = document.getElementById('setting-rotating-parity');
+  const hint = document.getElementById('rotating-weeks-hint');
+
+  if (toggle) toggle.checked = AppState.rotatingWeeksEnabled === true;
+  if (parity) parity.value = AppState.rotatingWeekAParity || 'odd';
+
+  const refreshHint = () => {
+    if (!hint) return;
+    hint.textContent = AppState.rotatingWeeksEnabled
+      ? `Ahora mismo se muestra el horario de la Semana ${getCurrentScheduleVariant()}.`
+      : '';
+  };
+
+  toggle?.addEventListener('change', async () => {
+    AppState.rotatingWeeksEnabled = toggle.checked;
+    await setSetting('rotatingWeeksEnabled', toggle.checked);
+    refreshHint();
+    updateScheduleWeekBadge();
+    renderAllViews();
+    showToast(toggle.checked ? '🔀 Semanas rotativas activadas' : '🔀 Semanas rotativas desactivadas', 'success');
+  });
+
+  parity?.addEventListener('change', async () => {
+    AppState.rotatingWeekAParity = parity.value;
+    await setSetting('rotatingWeekAParity', parity.value);
+    refreshHint();
+    updateScheduleWeekBadge();
+    renderAllViews();
+  });
+
+  refreshHint();
+  updateScheduleWeekBadge();
+}
+
 function renderScheduleView() {
   const container = document.getElementById('schedule-timeline-container');
   if (!container) return;
 
   const day = AppState.selectedScheduleDay;
-  const daySlots = AppState.schedule.filter((s) => s.day === day);
+  const daySlots = getScheduleForDay(day);
 
   container.innerHTML = AppState.timeSlots
     .map((slot) => {
@@ -1775,8 +2158,8 @@ function renderBackpackView() {
     let tomorrowDay = tomorrow.getDay();
     if (tomorrowDay === 0 || tomorrowDay === 6) tomorrowDay = 1; // Si es fin de semana, considerar Lunes
 
-    const tomorrowSubjectIds = AppState.schedule
-      .filter((s) => s.day === tomorrowDay && s.subjectId)
+    const tomorrowSubjectIds = getScheduleForDay(tomorrowDay)
+      .filter((s) => s.subjectId)
       .map((s) => s.subjectId);
 
     filtered = filtered.filter((m) => !m.subjectId || tomorrowSubjectIds.includes(m.subjectId));
@@ -2606,20 +2989,26 @@ window.openSlotModal = function (day, slotIndex) {
   const indexInput = document.getElementById('slot-index');
   const subjectSelect = document.getElementById('slot-subject-select');
   const classroomInput = document.getElementById('slot-classroom-input');
+  const variantSelect = document.getElementById('slot-variant-select');
 
   dayInput.value = day;
   indexInput.value = slotIndex;
 
   populateSubjectSelect(subjectSelect, true);
 
-  const existing = AppState.schedule.find((s) => s.day === day && s.slotIndex === slotIndex);
-  if (existing) {
-    subjectSelect.value = existing.subjectId || '';
-    classroomInput.value = existing.classroom || '';
-  } else {
-    subjectSelect.value = '';
-    classroomInput.value = '';
-  }
+  const defaultVariant = AppState.rotatingWeeksEnabled ? getCurrentScheduleVariant() : 'all';
+  if (variantSelect) variantSelect.value = defaultVariant;
+
+  const loadExisting = () => {
+    const variant = variantSelect ? variantSelect.value : 'all';
+    const existing = AppState.schedule.find(
+      (s) => s.day === day && s.slotIndex === slotIndex && (s.variant || 'all') === variant
+    );
+    subjectSelect.value = existing?.subjectId || '';
+    classroomInput.value = existing?.classroom || '';
+  };
+  loadExisting();
+  if (variantSelect) variantSelect.onchange = loadExisting;
 
   modal.classList.remove('hidden');
 };
@@ -2630,14 +3019,15 @@ async function handleSlotFormSubmit(e) {
   const slotIndex = parseInt(document.getElementById('slot-index').value, 10);
   const subjectId = document.getElementById('slot-subject-select').value;
   const classroom = document.getElementById('slot-classroom-input').value.trim();
+  const variant = document.getElementById('slot-variant-select')?.value || 'all';
 
-  const id = `slot_${day}_${slotIndex}`;
+  const id = variant === 'all' ? `slot_${day}_${slotIndex}` : `slot_${day}_${slotIndex}_${variant}`;
 
   if (!subjectId) {
     // Si se dejó en blanco, borrar asignación
     await deleteItem('schedule', id);
   } else {
-    await saveItem('schedule', { id, day, slotIndex, subjectId, classroom });
+    await saveItem('schedule', { id, day, slotIndex, subjectId, classroom, variant });
   }
 
   await loadAllData();
@@ -4862,12 +5252,10 @@ async function initEveningReminder() {
 
     const subjectNames = [];
     if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-      AppState.schedule
-        .filter((s) => s.day === dayOfWeek)
-        .forEach((slot) => {
-          const sub = AppState.subjects.find((x) => x.id === slot.subjectId);
-          if (sub && !subjectNames.includes(sub.name)) subjectNames.push(sub.name);
-        });
+      getScheduleForDay(dayOfWeek).forEach((slot) => {
+        const sub = AppState.subjects.find((x) => x.id === slot.subjectId);
+        if (sub && !subjectNames.includes(sub.name)) subjectNames.push(sub.name);
+      });
     }
 
     const pending = AppState.tasks.filter((t) => t.status !== 'completed' && t.dueDate && t.dueDate <= tomorrowStr);
@@ -7254,7 +7642,7 @@ function renderScheduleMatrixView() {
     `;
 
     days.forEach((d) => {
-      const match = AppState.schedule.find((s) => s.day === d.num && s.slotIndex === slot.index);
+      const match = getScheduleEntry(d.num, slot.index);
       const sub = match ? AppState.subjects.find((s) => s.id === match.subjectId) : null;
 
       if (sub) {
