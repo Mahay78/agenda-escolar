@@ -1,0 +1,8 @@
+node_modules/
+libs/
+assets/
+package-lock.json
+*.min.js
+
+# Páginas con maquetación manual muy extensa: se formatean bajo demanda
+*.html
