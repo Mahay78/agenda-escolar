@@ -38,7 +38,8 @@ import {
 } from './ics-export.js';
 import {
   getGamificationStats,
-  recordStudyActivity
+  recordStudyActivity,
+  addXP
 } from './gamification.js';
 import {
   areNotificationsSupported,

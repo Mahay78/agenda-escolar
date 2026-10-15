@@ -304,3 +304,32 @@ export async function recordStudyActivity(actionType) {
 
   return { stats, newlyUnlocked, xpGained, streakSavedByFreeze };
 }
+
+/**
+ * Otorga una cantidad de XP arbitraria (importaciones, simulacros, etc.),
+ * registra la actividad del día y comprueba los logros desbloqueados.
+ * @param {number} amount Cantidad de XP a sumar (se redondea y nunca es negativa)
+ * @returns {Promise<{stats: Object, newlyUnlocked: Array}>}
+ */
+export async function addXP(amount = 0) {
+  const gained = Math.max(0, Math.round(Number(amount) || 0));
+  const stats = await getGamificationStats();
+  const today = getTodayDateStr();
+
+  stats.xp = (stats.xp || 0) + gained;
+  stats.activityLog = stats.activityLog || {};
+  stats.activityLog[today] = (stats.activityLog[today] || 0) + 1;
+
+  const newlyUnlocked = [];
+  const currentUnlocked = new Set(stats.unlockedAchievements || []);
+  for (const ach of ACHIEVEMENTS) {
+    if (!currentUnlocked.has(ach.id) && ach.condition(stats)) {
+      currentUnlocked.add(ach.id);
+      newlyUnlocked.push(ach);
+    }
+  }
+  stats.unlockedAchievements = Array.from(currentUnlocked);
+  await setSetting('gamificationStats', stats);
+
+  return { stats, newlyUnlocked };
+}
