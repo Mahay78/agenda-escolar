@@ -18,22 +18,22 @@ Bienvenido a la hoja de ruta oficial del proyecto **Agenda Escolar**. En este do
 ## 🧠 1. Inteligencia Artificial y Gemini Flash
 
 - [x] ✅ **1. Generador de Exámenes Simulados (Mock Tests):** Examen interactivo tipo test con temporizador, corrección automática, desglose y explicación razonada de cada fallo, con botón para convertir fallos en fichas Leitner.
-- [ ] 💡 **2. Generador de Preguntas de Desarrollo con Calificación:** Preguntas abiertas típicas de examen de bachillerato/selectividad con rúbrica de corrección y nota estimada del 1 al 10.
-- [ ] 💡 **3. Detección Automática de Deberes por Foto de Pizarra:** Sacas una foto al rincón de la pizarra donde el profesor apuntó los ejercicios y la IA crea automáticamente las tareas correspondientes con sus fechas límite.
-- [ ] 💡 **4. Escaneo Mágico del Horario Escolar en Papel:** Foto a la hoja del horario de inicio de curso y extracción automática de asignaturas, horas y aulas para toda la semana.
+- [x] ✅ **2. Generador de Preguntas de Desarrollo con Calificación:** Preguntas abiertas típicas de examen de bachillerato/selectividad con rúbrica de corrección y nota estimada del 1 al 10.
+- [x] ✅ **3. Detección Automática de Deberes por Foto de Pizarra:** Sacas una foto al rincón de la pizarra donde el profesor apuntó los ejercicios y la IA crea automáticamente las tareas correspondientes con sus fechas límite.
+- [x] ✅ **4. Escaneo Mágico del Horario Escolar en Papel:** Foto a la hoja del horario de inicio de curso y extracción automática de asignaturas, horas y aulas para toda la semana.
 - [x] ✅ **5. Podcast de Estudio con Diálogo a Dos Voces:** En el *Cuaderno LM*, simulación de un diálogo dinámico entre dos locutores que debaten y explican tus apuntes para escuchar de camino al instituto.
 - [x] ✅ **6. Modo Tutor Socrático:** La IA te ayuda a resolver dudas guiándote mediante preguntas paso a paso en lugar de darte la solución directa.
 - [x] ✅ **7. Corrector y Asesor de Redacciones:** Análisis de ensayos y redacciones en español o inglés evaluando vocabulario, ortografía, estructura y conectores.
-- [ ] 💡 **8. Creador de Esquemas y Mapas Conceptuales:** Generación de resúmenes visuales y diagramas de flujo/árbol con sintaxis Mermaid a partir de temas densos.
+- [x] ✅ **8. Creador de Esquemas y Mapas Conceptuales:** Generación de resúmenes visuales y diagramas de flujo/árbol con sintaxis Mermaid a partir de temas densos.
 
 ---
 
 ## 📅 2. Organización, Horario y Tareas
 
-- [ ] 💡 **9. Recordatorio Inteligente Vespertino (Mochila & Deberes):** Notificación automática a las 19:30 o 20:00: *«Mañana tienes Biología (recuerda la bata de laboratorio) y te quedan 2 tareas de Historia»*.
-- [ ] 💡 **10. Horarios Semanales Rotativos (Semanas A / B):** Soporte para centros con asignaturas alternas por semanas pares/impares.
+- [x] ✅ **9. Recordatorio Inteligente Vespertino (Mochila & Deberes):** Notificación automática a las 19:30 o 20:00: *«Mañana tienes Biología (recuerda la bata de laboratorio) y te quedan 2 tareas de Historia»*.
+- [x] ✅ **10. Horarios Semanales Rotativos (Semanas A / B):** Soporte para centros con asignaturas alternas por semanas pares/impares.
 - [x] ✅ **11. Subtareas y Listas de Control (Checklists):** Posibilidad de desglosar tareas grandes o trabajos en entregas parciales marcables interactivamente.
-- [ ] 💡 **12. Plantillas de Tareas Recurrentes:** Configurar tareas periódicas fijas (ej. *«Lectura semanal»* o *«Ficha de ejercicios de los viernes»*).
+- [x] ✅ **12. Plantillas de Tareas Recurrentes:** Configurar tareas periódicas fijas (ej. *«Lectura semanal»* o *«Ficha de ejercicios de los viernes»*).
 - [x] ✅ **13. Sincronización Automática con Google Calendar:** Exportación continua en formato `.ics` para ver las fechas de exámenes y entregas en la app de calendario nativa del móvil.
 
 ---
@@ -43,8 +43,8 @@ Bienvenido a la hoja de ruta oficial del proyecto **Agenda Escolar**. En este do
 - [x] ✅ **14. Algoritmo Spaced Repetition (SuperMemo SM-2) en Flashcards:** Intervalos calculados científicamente en función de la curva del olvido ($EF \ge 1.3$, repeticiones y valoraciones).
 - [x] ✅ **15. Modo Escritura en Fichas de Estudio:** Opción para teclear la respuesta en vez de solo voltear la tarjeta, con similitud semántica en tiempo real.
 - [x] ✅ **16. Modo Zen / Enfoque con Sonidos de Ambiente:** Pantalla completa en el temporizador Pomodoro con sintetizador Web Audio API de lluvia, olas del mar, cafetería y ruido rosa sin conexión.
-- [ ] 💡 **17. Estadísticas de Tiempo por Asignatura:** Gráficos que muestran cuántas horas has dedicado a cada materia para balancear tu esfuerzo antes de las evaluaciones.
-- [ ] 💡 **18. Técnica Feynman Guiada:** Espacio donde el estudiante explica un concepto con sus propias palabras y la IA detecta imprecisiones o conceptos olvidados.
+- [x] ✅ **17. Estadísticas de Tiempo por Asignatura:** Gráficos que muestran cuántas horas has dedicado a cada materia para balancear tu esfuerzo antes de las evaluaciones.
+- [x] ✅ **18. Técnica Feynman Guiada:** Espacio donde el estudiante explica un concepto con sus propias palabras y la IA detecta imprecisiones o conceptos olvidados.
 
 ---
 
@@ -68,7 +68,7 @@ Bienvenido a la hoja de ruta oficial del proyecto **Agenda Escolar**. En este do
 
 - [x] ✅ **25. Niveles de Estudiante y Puntos de Experiencia (XP):** Subir de nivel (*Novato*, *Estratega*, *Erudito*, *Máster Académico*) al completar tareas, pomodoros y simulacros.
 - [x] ✅ **26. Mapa de Calor de Constancia (Estilo GitHub):** Cuadrícula visual de 70 días activos para visualizar tu disciplina durante todo el curso.
-- [ ] 💡 **27. Retos y Desafíos Semanales:** Misiones opcionales para fomentar buenos hábitos de estudio diario.
+- [x] ✅ **27. Retos y Desafíos Semanales:** Misiones opcionales para fomentar buenos hábitos de estudio diario.
 - [x] ✅ **28. Congelador de Racha (Streak Freeze):** Salvar la racha de estudio si un día estuviste enfermo o sin acceso al teléfono.
 
 ---
@@ -85,7 +85,7 @@ Bienvenido a la hoja de ruta oficial del proyecto **Agenda Escolar**. En este do
 
 - [x] ✅ **32. Temas de Color Temáticos (OLED Negro Puro, Pastel, Lavanda, Bosque):** Personalización estética del entorno de estudio.
 - [x] ✅ **33. Tipografía Especial para Dislexia (OpenDyslexic y Atkinson Hyperlegible):** Opciones en ajustes para cambiar la tipografía facilitando la lectura.
-- [ ] 💡 **34. Atajos en el Icono del Móvil (App Shortcuts):** Accesos directos al mantener pulsado el icono en la pantalla de inicio (*Nueva Tarea*, *Horario*, *Copiloto IA*).
+- [x] ✅ **34. Atajos en el Icono del Móvil (App Shortcuts):** Accesos directos al mantener pulsado el icono en la pantalla de inicio (*Nueva Tarea*, *Horario*, *Copiloto IA*).
 
 ---
 
@@ -102,9 +102,9 @@ Bienvenido a la hoja de ruta oficial del proyecto **Agenda Escolar**. En este do
 - [x] ✅ **38. Atajos de Teclado Globales (Power-User Shortcuts):** Teclas rápidas (`N` nueva tarea, `E` nuevo examen, `Espacio` pausar Pomodoro, `1-4` cambiar de pestaña, `Esc` cerrar paneles).
 - [x] ✅ **39. Arrastrar y Soltar Tareas (Drag & Drop):** Mover tareas y reordenar interactivamente mediante gestos de arrastre nativos.
 - [x] ✅ **40. Menú Contextual con Clic Derecho:** Clic derecho sobre tareas y exámenes para opciones rápidas (*Cambiar prioridad*, *Preguntar al Copiloto IA*, *Crear fichas*, *Exportar a .ics*, *Eliminar*).
-- [ ] 💡 **41. Selección Múltiple y Acciones en Lote (`Shift`/`Ctrl` + Clic):** Marcar, mover o eliminar múltiples tareas o fichas simultáneamente.
-- [ ] 💡 **42. Arrastrar Archivos desde el Escritorio (Desktop Drag & Drop):** Arrastrar PDFs o fotos directamente desde el explorador de Windows o Mac hacia la app.
-- [ ] 💡 **43. Vista de Doble Panel (Split View sin modales emergentes):** Lista a la izquierda y visor/edición de detalles a la derecha aprovechando la pantalla ancha.
+- [x] ✅ **41. Selección Múltiple y Acciones en Lote (`Shift`/`Ctrl` + Clic):** Marcar, mover o eliminar múltiples tareas o fichas simultáneamente.
+- [x] ✅ **42. Arrastrar Archivos desde el Escritorio (Desktop Drag & Drop):** Arrastrar PDFs o fotos directamente desde el explorador de Windows o Mac hacia la app.
+- [x] ✅ **43. Vista de Doble Panel (Split View sin modales emergentes):** Lista a la izquierda y visor/edición de detalles a la derecha aprovechando la pantalla ancha.
 - [x] ✅ **44. Vista de Calendario Mensual Completo:** Cuadrícula de mes completo con badges de tareas y exámenes y panel de detalle por día.
 - [x] ✅ **45. Horario Semanal en Matriz Completa:** Visualización simultánea de todas las clases de lunes a viernes en una tabla espaciosa con botón de alternancia.
 - [x] ✅ **46. Temporizador Pomodoro Flotante (Picture-in-Picture):** Minimizar el reloj de estudio en ventana flotante PiP o widget superpuesto mientras usas otras apps.
@@ -113,7 +113,7 @@ Bienvenido a la hoja de ruta oficial del proyecto **Agenda Escolar**. En este do
 - [ ] 💡 **49. Rechazo de Palma (Palm Rejection):** Apoyo natural de la mano sobre la pantalla de la tablet sin trazos involuntarios.
 - [ ] 💡 **50. Compatibilidad con Pantalla Dividida de la Tablet (iPadOS / Android Split View):** Usar la agenda en una mitad y el PDF del libro escolar en la otra.
 - [ ] 💡 **51. Visor de PDFs de Doble Página (Modo Libro):** Lectura horizontal a dos páginas en monitores y tablets grandes.
-- [ ] 💡 **52. Cuaderno LM a 3 Columnas Simultáneas:** Documento a la izquierda, notas en el centro y chat de Gemini a la derecha en tiempo real.
+- [x] ✅ **52. Cuaderno LM a 3 Columnas Simultáneas:** Documento a la izquierda, notas en el centro y chat de Gemini a la derecha en tiempo real.
 - [x] ✅ **53. Modo Zen Pantalla Completa (Tecla F11 / Botón Zen):** Ocultar distracciones para sesiones intensivas de estudio con reloj grande y sonidos relajantes.
 
 ---
@@ -125,17 +125,17 @@ Bienvenido a la hoja de ruta oficial del proyecto **Agenda Escolar**. En este do
 - [x] ✅ **56. Modo Speaking por Voz con Detección y Pronunciación Nativa:** Síntesis y reconocimiento de voz nativo en inglés (`en-US`/`en-GB`).
 - [x] ✅ **57. Corrector de Redacciones (Writing & Essay Checker):** Análisis de redacciones escolares indicando errores ortográficos, tiempos verbales y conectores formales (*However, Furthermore, In addition*).
 - [x] ✅ **58. Conversor de Errores a Fichas con 1 Toque (Flashcards):** Botón directo en el Feedback Box para guardar cualquier fallo o vocabulario nuevo directamente en el mazo de repaso de inglés.
-- [ ] 💡 **59. Simulador de Examen Oral y Roleplay (Selectividad / Cambridge):** La IA actúa como examinador haciendo preguntas de prueba oral o guiando la descripción de imágenes.
+- [x] ✅ **59. Simulador de Examen Oral y Roleplay (Selectividad / Cambridge):** La IA actúa como examinador haciendo preguntas de prueba oral o guiando la descripción de imágenes.
 
 ---
 
 ## 📚 12. Cuaderno LM Avanzado (Entorno de Estudio Estilo NotebookLM)
 
 - [ ] 💡 **60. Subida Directa de Archivos PDF y Word (.docx):** Arrastrar o cargar libros de texto y temas completos en PDF extrayendo el contenido al instante con motor local.
-- [ ] 💡 **61. Múltiples Cuadernos Temáticos por Asignatura:** Crear libretas independientes (Historia, Biología, Filosofía) con sus propias fuentes y chats sin mezclar temas.
+- [x] ✅ **61. Múltiples Cuadernos Temáticos por Asignatura:** Crear libretas independientes (Historia, Biología, Filosofía) con sus propias fuentes y chats sin mezclar temas.
 - [x] ✅ **62. Podcast de Estudio a Dos Voces con Descarga y Síntesis:** Dos locutores virtuales (*Lucía & Mateo*) debatiendo y explicando tus apuntes de forma amena.
-- [ ] 💡 **63. Citas Interactivas con Resaltado en Vivo:** Al pulsar sobre una cita `[Fuente X]` en el chat, el visor de apuntes se abre y subraya en amarillo el fragmento exacto.
-- [ ] 💡 **64. Modo "Pregúntame a Mí" (Examen Oral IA):** La IA asume el rol de profesor y te hace preguntas sobre tus apuntes, evaluando si tu respuesta está completa o qué te faltó.
+- [x] ✅ **63. Citas Interactivas con Resaltado en Vivo:** Al pulsar sobre una cita `[Fuente X]` en el chat, el visor de apuntes se abre y subraya en amarillo el fragmento exacto.
+- [x] ✅ **64. Modo "Pregúntame a Mí" (Examen Oral IA):** La IA asume el rol de profesor y te hace preguntas sobre tus apuntes, evaluando si tu respuesta está completa o qué te faltó.
 - [ ] 💡 **65. Generador de Mapas Mentales y Esquemas Visuales:** Convertir apuntes extensos en diagramas interactivos y esquemas gráficos para aprendizaje visual.
 - [x] ✅ **66. Bloc de Notas Integrado (Scratchpad):** Espacio personal persistente y botón `📌 En mis Notas` en cada respuesta del chat y estudio para redactar tu propio resumen dentro de la app.
 

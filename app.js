@@ -133,6 +133,7 @@ import {
 import { initTheme } from './js/theme.js';
 import { initServiceWorker, initConnectionStatus, initPWAInstallPrompt } from './js/pwa.js';
 import { initGamification, updateGamificationUI } from './js/gamification-ui.js';
+import { openAIToolsModal } from './js/ai-tools.js';
 
 // ==========================================================================
 // INICIALIZACIÓN
@@ -6687,6 +6688,23 @@ function initAIAssistantModule() {
   const attachmentImg = document.getElementById('copilot-attachment-img');
   const btnRemoveAttachment = document.getElementById('btn-copilot-remove-attachment');
   const copilotStatusSubtext = document.getElementById('copilot-status-subtext');
+
+  // Botón de Herramientas de Estudio IA (Roadmap Items 2, 3, 4, 8, 18, 59 y 64)
+  const headerActions = copilotModal?.querySelector('.copilot-header-actions');
+  if (headerActions && !document.getElementById('btn-copilot-tools')) {
+    const toolsBtn = document.createElement('button');
+    toolsBtn.type = 'button';
+    toolsBtn.id = 'btn-copilot-tools';
+    toolsBtn.className = 'btn-icon';
+    toolsBtn.title = 'Herramientas de Estudio IA';
+    toolsBtn.style.fontSize = '1rem';
+    toolsBtn.textContent = '🧰';
+    toolsBtn.addEventListener('click', () => {
+      copilotModal.classList.add('hidden');
+      openAIToolsModal();
+    });
+    headerActions.insertBefore(toolsBtn, headerActions.firstChild);
+  }
 
   // Estado del Asistente
   let isSpeechEnabled = false; // Por defecto apagado para no asustar al usuario, activable con 1 toque
