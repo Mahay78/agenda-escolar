@@ -18,20 +18,131 @@ import { createFlashcard } from './flashcards.js';
 // Clave de API de Gemini compartida con la agenda
 const GEMINI_STORAGE_KEY = 'gemini_api_key';
 const NOTEBOOK_SOURCES_KEY = 'notebook_sources_v1';
+const NOTEBOOKS_KEY = 'notebook_books_v1';
 
 // Estado de la aplicación Cuaderno LM
 const NotebookState = {
+  notebooks: [],
+  activeNotebookId: null,
   sources: [],
   activeSourceIds: new Set(),
   chatHistory: [],
+  lastUserQuery: '',
   isAudioPlaying: false,
   currentAudioScript: '',
   audioUtterance: null,
   audioSpeed: 1.0
 };
 
+/**
+ * Valida y normaliza una fuente de estudio
+ */
+function normalizeSource(s) {
+  if (
+    s === null ||
+    typeof s !== 'object' ||
+    typeof s.id !== 'string' ||
+    s.id.trim() === '' ||
+    typeof s.content !== 'string'
+  ) {
+    return null;
+  }
+  return {
+    id: s.id,
+    title: typeof s.title === 'string' ? s.title : 'Fuente sin título',
+    type: typeof s.type === 'string' ? s.type : 'text',
+    content: s.content,
+    date: typeof s.date === 'string' ? s.date : new Date().toLocaleDateString('es-ES'),
+    active: s.active === true
+  };
+}
+
+/**
+ * Valida y normaliza un cuaderno temático
+ */
+function normalizeNotebook(book) {
+  const safeBook = book && typeof book === 'object' ? book : {};
+  return {
+    id: typeof safeBook.id === 'string' && safeBook.id ? safeBook.id : 'book_' + Math.random().toString(36).slice(2, 9),
+    name: typeof safeBook.name === 'string' && safeBook.name.trim() ? safeBook.name.trim() : 'Cuaderno',
+    icon: typeof safeBook.icon === 'string' ? safeBook.icon : '📚',
+    sources: Array.isArray(safeBook.sources) ? safeBook.sources.map(normalizeSource).filter(Boolean) : [],
+    activeIds: Array.isArray(safeBook.activeIds) ? safeBook.activeIds.filter((x) => typeof x === 'string') : [],
+    scratchpad: typeof safeBook.scratchpad === 'string' ? safeBook.scratchpad : ''
+  };
+}
+
+/**
+ * Carga el almacén de cuadernos temáticos. Devuelve true si existe y es válido.
+ */
+function loadNotebooksStore() {
+  let store = null;
+  try {
+    const raw = localStorage.getItem(NOTEBOOKS_KEY);
+    store = raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    store = null;
+  }
+  if (!store || !Array.isArray(store.notebooks) || store.notebooks.length === 0) return false;
+
+  NotebookState.notebooks = store.notebooks.map(normalizeNotebook);
+  NotebookState.activeNotebookId =
+    store.activeNotebookId && NotebookState.notebooks.some((b) => b.id === store.activeNotebookId)
+      ? store.activeNotebookId
+      : NotebookState.notebooks[0].id;
+  return true;
+}
+
+function getActiveNotebook() {
+  return NotebookState.notebooks.find((b) => b.id === NotebookState.activeNotebookId) || NotebookState.notebooks[0];
+}
+
+function activateNotebook(id) {
+  const book = NotebookState.notebooks.find((b) => b.id === id) || NotebookState.notebooks[0];
+  if (!book) return;
+  NotebookState.activeNotebookId = book.id;
+  NotebookState.sources = book.sources;
+  NotebookState.activeSourceIds = new Set(
+    book.activeIds && book.activeIds.length ? book.activeIds : book.sources.map((s) => s.id)
+  );
+}
+
+function persistNotebooks() {
+  const active = getActiveNotebook();
+  if (active) {
+    active.sources = NotebookState.sources;
+    active.activeIds = Array.from(NotebookState.activeSourceIds);
+  }
+  try {
+    localStorage.setItem(
+      NOTEBOOKS_KEY,
+      JSON.stringify({
+        activeNotebookId: NotebookState.activeNotebookId,
+        notebooks: NotebookState.notebooks
+      })
+    );
+  } catch (e) {
+    console.warn('No se pudieron guardar los cuadernos temáticos:', e);
+  }
+}
+
+function getActiveScratchpad() {
+  const book = getActiveNotebook();
+  return (book && book.scratchpad) || '';
+}
+
 // Cargar fuentes almacenadas o sembrar ejemplos
 function loadSources() {
+  // 1. Almacén de cuadernos temáticos (Roadmap Item 61)
+  if (loadNotebooksStore()) {
+    const book = getActiveNotebook();
+    NotebookState.sources = book.sources;
+    NotebookState.activeSourceIds = new Set(
+      book.activeIds && book.activeIds.length ? book.activeIds : book.sources.map((s) => s.id)
+    );
+    return;
+  }
+
   try {
     const raw = localStorage.getItem(NOTEBOOK_SOURCES_KEY);
     const parsed = raw ? JSON.parse(raw) : null;
@@ -106,10 +217,100 @@ Permite el crecimiento de organismos pluricelulares, la reparación de tejidos y
 
   // Activar todas por defecto
   NotebookState.sources.forEach((s) => NotebookState.activeSourceIds.add(s.id));
+
+  // Migrar el almacén antiguo al nuevo formato de cuadernos temáticos
+  NotebookState.notebooks = [
+    {
+      id: 'book_default',
+      name: 'Mis apuntes',
+      icon: '📚',
+      sources: NotebookState.sources,
+      activeIds: Array.from(NotebookState.activeSourceIds),
+      scratchpad: localStorage.getItem('notebook_scratchpad') || ''
+    }
+  ];
+  NotebookState.activeNotebookId = 'book_default';
+  persistNotebooks();
 }
 
 function saveSources() {
-  localStorage.setItem(NOTEBOOK_SOURCES_KEY, JSON.stringify(NotebookState.sources));
+  persistNotebooks();
+}
+
+/**
+ * Gestión de Cuadernos Temáticos (Roadmap Item 61)
+ */
+function renderNotebookSelector() {
+  const select = document.getElementById('notebook-select');
+  if (!select) return;
+  select.innerHTML = NotebookState.notebooks
+    .map(
+      (book) =>
+        `<option value="${escapeHtml(book.id)}">${escapeHtml(book.icon || '📚')} ${escapeHtml(
+          book.name
+        )} (${book.sources.length})</option>`
+    )
+    .join('');
+  select.value = NotebookState.activeNotebookId;
+}
+
+function switchNotebook(id) {
+  activateNotebook(id);
+  renderNotebookSelector();
+  renderSourcesList();
+  updateStudioStatus();
+  const area = document.getElementById('notebook-scratchpad-input');
+  if (area) area.value = getActiveScratchpad();
+  persistNotebooks();
+}
+
+function createNotebook() {
+  const name = (prompt('Nombre del nuevo cuaderno temático:', 'Nuevo cuaderno') || '').trim();
+  if (!name) return;
+  const book = {
+    id: 'book_' + Date.now().toString(36),
+    name,
+    icon: '📚',
+    sources: [],
+    activeIds: [],
+    scratchpad: ''
+  };
+  NotebookState.notebooks.push(book);
+  activateNotebook(book.id);
+  renderNotebookSelector();
+  renderSourcesList();
+  updateStudioStatus();
+  const area = document.getElementById('notebook-scratchpad-input');
+  if (area) area.value = '';
+  persistNotebooks();
+}
+
+function renameNotebook() {
+  const book = getActiveNotebook();
+  if (!book) return;
+  const name = (prompt('Nuevo nombre del cuaderno:', book.name) || '').trim();
+  if (!name) return;
+  book.name = name;
+  renderNotebookSelector();
+  persistNotebooks();
+}
+
+function deleteNotebook() {
+  const book = getActiveNotebook();
+  if (!book) return;
+  if (NotebookState.notebooks.length <= 1) {
+    alert('Debes conservar al menos un cuaderno temático.');
+    return;
+  }
+  if (!confirm(`¿Eliminar el cuaderno "${book.name}" y sus ${book.sources.length} fuente(s)?`)) return;
+  NotebookState.notebooks = NotebookState.notebooks.filter((b) => b.id !== book.id);
+  activateNotebook(NotebookState.notebooks[0].id);
+  renderNotebookSelector();
+  renderSourcesList();
+  updateStudioStatus();
+  const area = document.getElementById('notebook-scratchpad-input');
+  if (area) area.value = getActiveScratchpad();
+  persistNotebooks();
 }
 
 function getApiKey() {
@@ -179,6 +380,7 @@ function renderSourcesList() {
       }
       renderSourcesList();
       updateStudioStatus();
+      saveSources();
     });
   });
 
@@ -575,9 +777,11 @@ function renderArtifactCard(title, markdownContent, hasExportButton = false) {
 
   // Guardar en Bloc de Notas
   document.getElementById('btn-save-to-notes')?.addEventListener('click', () => {
-    const current = localStorage.getItem('notebook_scratchpad') || '';
+    const book = getActiveNotebook();
+    const current = (book && book.scratchpad) || '';
     const updated = (current ? current + '\n\n' : '') + `### ${title}\n` + markdownContent;
-    localStorage.setItem('notebook_scratchpad', updated);
+    if (book) book.scratchpad = updated;
+    saveSources();
     const area = document.getElementById('notebook-scratchpad-input');
     if (area) area.value = updated;
     alert('📌 Guardado en tu Bloc de Notas personal.');
@@ -640,10 +844,10 @@ function formatMarkdownToHTML(text) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
 
-  // Citas tipo [Fuente 1]
+  // Citas tipo [Fuente 1] interactivas con resaltado (Roadmap Item 63)
   html = html.replace(
     /\[Fuente\s*(\d+)\]/gi,
-    '<span class="chat-citation" title="Cita a la Fuente $1">[Fuente $1]</span>'
+    '<span class="chat-citation" role="button" tabindex="0" data-citation-source="$1" title="Ver la Fuente $1">[Fuente $1]</span>'
   );
 
   // Encabezados
@@ -701,6 +905,8 @@ function appendChatBubble(role, text) {
   const container = document.getElementById('chat-messages');
   if (!container) return;
 
+  if (role === 'user') NotebookState.lastUserQuery = text;
+
   const bubble = document.createElement('div');
   bubble.className = `chat-bubble chat-bubble-${role}`;
   bubble.innerHTML = formatMarkdownToHTML(text);
@@ -709,13 +915,97 @@ function appendChatBubble(role, text) {
   container.scrollTop = container.scrollHeight;
 }
 
+/**
+ * Resalta en un texto las palabras clave de la consulta del usuario
+ */
+function highlightKeywords(text, query) {
+  const safe = escapeHtml(text);
+  if (!query) return safe;
+  const words = [
+    ...new Set(
+      query
+        .toLowerCase()
+        .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+        .split(/\s+/)
+        .filter((w) => w.length >= 5)
+    )
+  ].slice(0, 8);
+  if (!words.length) return safe;
+
+  return words.reduce((acc, word) => {
+    const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return acc.replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
+  }, safe);
+}
+
+/**
+ * Muestra el modal de una cita con la fuente y su texto resaltado (Roadmap Item 63)
+ */
+function openCitationModal(sourceNumber) {
+  const activeSources = NotebookState.sources.filter((s) => NotebookState.activeSourceIds.has(s.id));
+  const src = activeSources[sourceNumber - 1];
+  const modal = document.getElementById('citation-modal');
+  const title = document.getElementById('citation-modal-title');
+  const body = document.getElementById('citation-modal-body');
+  if (!modal) return;
+
+  if (!src) {
+    if (title) title.textContent = `📌 Fuente ${sourceNumber}`;
+    if (body) {
+      body.textContent = 'No se encontró la fuente citada entre las fuentes activas. Actívala en el panel izquierdo.';
+    }
+    modal.classList.remove('hidden');
+    return;
+  }
+
+  if (title) title.textContent = `📌 Fuente ${sourceNumber}: ${src.title}`;
+  if (body)
+    body.innerHTML = highlightKeywords(src.content || '(Foto / Imagen cargada)', NotebookState.lastUserQuery || '');
+  modal.classList.remove('hidden');
+
+  const card = document.querySelector(`.source-card[data-source-id="${CSS.escape(src.id)}"]`);
+  if (card) {
+    card.classList.add('citation-flash');
+    card.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    setTimeout(() => card.classList.remove('citation-flash'), 1500);
+  }
+}
+
 // ==========================================================================
 // INICIALIZACIÓN Y EVENTOS
 // ==========================================================================
 document.addEventListener('DOMContentLoaded', () => {
   loadSources();
+  renderNotebookSelector();
   renderSourcesList();
   updateStudioStatus();
+
+  // Cuadernos temáticos (Roadmap Item 61)
+  document.getElementById('notebook-select')?.addEventListener('change', (e) => {
+    switchNotebook(e.target.value);
+  });
+  document.getElementById('btn-new-notebook')?.addEventListener('click', createNotebook);
+  document.getElementById('btn-rename-notebook')?.addEventListener('click', renameNotebook);
+  document.getElementById('btn-delete-notebook')?.addEventListener('click', deleteNotebook);
+
+  // Citas interactivas con resaltado (Roadmap Item 63)
+  const chatMessagesEl = document.getElementById('chat-messages');
+  chatMessagesEl?.addEventListener('click', (e) => {
+    const citation = e.target.closest('[data-citation-source]');
+    if (citation) openCitationModal(parseInt(citation.getAttribute('data-citation-source'), 10));
+  });
+  chatMessagesEl?.addEventListener('keydown', (e) => {
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[data-citation-source]')) {
+      e.preventDefault();
+      openCitationModal(parseInt(e.target.getAttribute('data-citation-source'), 10));
+    }
+  });
+  document.getElementById('btn-close-citation')?.addEventListener('click', () => {
+    document.getElementById('citation-modal')?.classList.add('hidden');
+  });
+  document.getElementById('citation-modal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'citation-modal') e.target.classList.add('hidden');
+  });
 
   // Navegación en móvil
   document.querySelectorAll('.mobile-tab-btn').forEach((btn) => {
@@ -1002,9 +1292,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // Bloc de Notas Personal (Scratchpad)
   const scratchpadArea = document.getElementById('notebook-scratchpad-input');
   if (scratchpadArea) {
-    scratchpadArea.value = localStorage.getItem('notebook_scratchpad') || '';
+    scratchpadArea.value = getActiveScratchpad();
     scratchpadArea.addEventListener('input', () => {
-      localStorage.setItem('notebook_scratchpad', scratchpadArea.value);
+      const book = getActiveNotebook();
+      if (book) book.scratchpad = scratchpadArea.value;
+      saveSources();
     });
   }
 
@@ -1015,7 +1307,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const scratchCard = document.getElementById('studio-scratchpad-card');
     if (scratchCard) {
       scratchCard.classList.remove('hidden');
-      if (scratchpadArea) scratchpadArea.value = localStorage.getItem('notebook_scratchpad') || '';
+      if (scratchpadArea) scratchpadArea.value = getActiveScratchpad();
     }
   });
 
@@ -1029,7 +1321,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('btn-clear-scratchpad')?.addEventListener('click', () => {
     if (confirm('¿Vaciar todo el contenido de tu Bloc de Notas?')) {
-      localStorage.removeItem('notebook_scratchpad');
+      const book = getActiveNotebook();
+      if (book) book.scratchpad = '';
+      saveSources();
       if (scratchpadArea) scratchpadArea.value = '';
     }
   });

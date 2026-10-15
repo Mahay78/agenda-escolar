@@ -47,7 +47,9 @@ export const AppState = {
     mode: 'work',
     timerId: null,
     countToday: 0,
-    totalFocusMinutes: 0
+    totalFocusMinutes: 0,
+    currentSubjectId: '',
+    bySubject: {}
   },
   trash: [],
   selectedTaskIds: [],

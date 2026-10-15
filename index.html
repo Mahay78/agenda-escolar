@@ -851,6 +851,11 @@
           <button id="pomo-mode-long" class="filter-chip" data-pomo-time="15">🌴 Descanso Largo (15m)</button>
         </div>
 
+        <div style="margin-bottom: 18px; text-align: left;">
+          <label for="pomo-subject-select" class="form-label" style="font-size: 0.8rem;">📚 Estudiando ahora (para las estadísticas)</label>
+          <select id="pomo-subject-select" class="form-select" aria-label="Asignatura que estás estudiando"></select>
+        </div>
+
         <div id="pomodoro-display" style="font-size: 4rem; font-weight: 800; font-variant-numeric: tabular-nums; margin: 10px 0; color: var(--text-main); letter-spacing: 2px;">25:00</div>
         <div id="pomodoro-status-text" class="section-subtitle" style="margin-bottom: 24px; font-weight: 600;">Modo Concentración 🎯</div>
 
@@ -870,6 +875,12 @@
             <div id="pomo-focus-time" style="font-size: 1.4rem; font-weight: 800; color: var(--success);">0 min</div>
             <div class="grade-metric-label">Tiempo Enfocado</div>
           </div>
+        </div>
+
+        <!-- Estadísticas de Tiempo por Asignatura (Roadmap Item 17) -->
+        <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-color); text-align: left;">
+          <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin-bottom: 12px;">📊 Tiempo de estudio por asignatura</div>
+          <div id="pomo-subject-stats"></div>
         </div>
 
         <!-- Selector de Sonido de Ambiente Modo Zen (Roadmap Items 16 & 53) -->

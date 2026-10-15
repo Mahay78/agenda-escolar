@@ -632,6 +632,33 @@
       color: #fff;
     }
 
+    /* Citas interactivas con resaltado (Roadmap Item 63) */
+    .chat-citation:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    #citation-modal-body mark {
+      background: rgba(250, 204, 21, 0.45);
+      color: inherit;
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+
+    .source-card.citation-flash {
+      animation: citationFlash 1.4s ease;
+    }
+
+    @keyframes citationFlash {
+      0%,
+      100% {
+        box-shadow: none;
+      }
+      40% {
+        box-shadow: 0 0 0 3px var(--primary);
+      }
+    }
+
     .chat-input-container {
       padding: 14px 16px;
       background: var(--bg-surface);
@@ -849,6 +876,15 @@
         </button>
       </div>
 
+      <!-- Selector de Cuadernos Temáticos (Roadmap Item 61) -->
+      <div id="notebook-selector-bar" style="display: flex; gap: 6px; align-items: center; padding: 8px 14px; border-bottom: 1px solid var(--border-color); background: var(--bg-surface-elevated);">
+        <span style="font-size: 0.95rem;">📚</span>
+        <select id="notebook-select" aria-label="Cuaderno temático activo" style="flex: 1; min-width: 0; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-surface); color: var(--text-main); font-size: 0.82rem;"></select>
+        <button type="button" id="btn-new-notebook" class="btn-add-source" style="padding: 6px 10px;" title="Nuevo cuaderno temático">➕</button>
+        <button type="button" id="btn-rename-notebook" class="btn-add-source" style="padding: 6px 10px;" title="Renombrar cuaderno">✏️</button>
+        <button type="button" id="btn-delete-notebook" class="btn-add-source" style="padding: 6px 10px;" title="Eliminar cuaderno">🗑️</button>
+      </div>
+
       <div class="sources-list" id="sources-list-container">
         <!-- Tarjetas de fuentes añadidas -->
       </div>
@@ -1020,6 +1056,17 @@
           </button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- MODAL: CITA / FUENTE CON RESALTADO (ROADMAP ITEM 63) -->
+  <div id="citation-modal" class="modal-overlay hidden">
+    <div class="modal-card" style="max-width: 640px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="citation-modal-title">📌 Fuente citada</h3>
+        <button type="button" class="btn-close-modal" id="btn-close-citation">&times;</button>
+      </div>
+      <div id="citation-modal-body" style="max-height: 55vh; overflow-y: auto; line-height: 1.6; font-size: 0.9rem; color: var(--text-main); white-space: pre-wrap;"></div>
     </div>
   </div>
 

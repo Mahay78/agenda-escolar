@@ -236,9 +236,13 @@ async function loadAllData() {
   });
 
   const savedPomo = await getSetting('pomodoroStats');
-  if (savedPomo && savedPomo.date === getTodayDateString()) {
-    AppState.pomodoro.countToday = savedPomo.countToday || 0;
-    AppState.pomodoro.totalFocusMinutes = savedPomo.totalFocusMinutes || 0;
+  if (savedPomo) {
+    AppState.pomodoro.bySubject = savedPomo.bySubject || {};
+    AppState.pomodoro.currentSubjectId = savedPomo.lastSubjectId || '';
+    if (savedPomo.date === getTodayDateString()) {
+      AppState.pomodoro.countToday = savedPomo.countToday || 0;
+      AppState.pomodoro.totalFocusMinutes = savedPomo.totalFocusMinutes || 0;
+    }
   }
 
   updateTrashCounters();
@@ -2316,6 +2320,9 @@ function renderPomodoroView() {
 
   if (countToday) countToday.textContent = AppState.pomodoro.countToday;
   if (focusTime) focusTime.textContent = `${AppState.pomodoro.totalFocusMinutes} min`;
+
+  renderPomodoroSubjectSelect();
+  renderPomodoroSubjectStats();
 
   if (btnStart && btnPause) {
     if (AppState.pomodoro.isRunning) {
@@ -4616,6 +4623,14 @@ function initPomodoro() {
   document.getElementById('btn-pomo-pause')?.addEventListener('click', pausePomodoro);
   document.getElementById('btn-pomo-reset')?.addEventListener('click', resetPomodoro);
 
+  // Asignatura en curso para las estadísticas de tiempo (Roadmap Item 17)
+  document.getElementById('pomo-subject-select')?.addEventListener('change', async (e) => {
+    AppState.pomodoro.currentSubjectId = e.target.value;
+    await savePomodoroStats();
+  });
+  renderPomodoroSubjectSelect();
+  renderPomodoroSubjectStats();
+
   // Sonidos de ambiente Modo Zen (Roadmap Item 16)
   const ambientSelect = document.getElementById('select-ambient-sound');
   const ambientVolume = document.getElementById('slider-ambient-volume');
@@ -4682,7 +4697,12 @@ function startPomodoro() {
       if (AppState.pomodoro.mode === 'work') {
         playPomodoroBell();
         AppState.pomodoro.countToday++;
-        AppState.pomodoro.totalFocusMinutes += Math.round(AppState.pomodoro.totalTime / 60);
+        const focusedMinutes = Math.round(AppState.pomodoro.totalTime / 60);
+        AppState.pomodoro.totalFocusMinutes += focusedMinutes;
+        if (AppState.pomodoro.currentSubjectId) {
+          AppState.pomodoro.bySubject[AppState.pomodoro.currentSubjectId] =
+            (AppState.pomodoro.bySubject[AppState.pomodoro.currentSubjectId] || 0) + focusedMinutes;
+        }
         savePomodoroStats();
         showToast('🔔 ¡Sesión de estudio completada! Tómate un descanso ☕', 'success');
         recordStudyActivity('pomodoro_completed').then(({ newlyUnlocked }) => {
@@ -4720,8 +4740,64 @@ async function savePomodoroStats() {
   await setSetting('pomodoroStats', {
     date: getTodayDateString(),
     countToday: AppState.pomodoro.countToday,
-    totalFocusMinutes: AppState.pomodoro.totalFocusMinutes
+    totalFocusMinutes: AppState.pomodoro.totalFocusMinutes,
+    bySubject: AppState.pomodoro.bySubject || {},
+    lastSubjectId: AppState.pomodoro.currentSubjectId || ''
   });
+}
+
+/**
+ * Estadísticas de tiempo de estudio por asignatura (Roadmap Item 17)
+ */
+function renderPomodoroSubjectSelect() {
+  const select = document.getElementById('pomo-subject-select');
+  if (!select) return;
+  const subjectCount = String(AppState.subjects.length);
+  if (select.dataset.subjectCount !== subjectCount) {
+    populateSubjectSelect(select, true);
+    select.dataset.subjectCount = subjectCount;
+  }
+  if (AppState.pomodoro.currentSubjectId) select.value = AppState.pomodoro.currentSubjectId;
+}
+
+function renderPomodoroSubjectStats() {
+  const container = document.getElementById('pomo-subject-stats');
+  if (!container) return;
+
+  const bySubject = AppState.pomodoro.bySubject || {};
+  const entries = AppState.subjects
+    .map((sub) => ({ sub, minutes: bySubject[sub.id] || 0 }))
+    .filter((entry) => entry.minutes > 0)
+    .sort((a, b) => b.minutes - a.minutes);
+
+  if (!entries.length) {
+    container.innerHTML =
+      '<p class="section-subtitle" style="font-size: 0.78rem;">Aún no has registrado sesiones con asignatura. Elige una arriba y estudia 💪</p>';
+    return;
+  }
+
+  const max = Math.max(...entries.map((entry) => entry.minutes));
+  const total = entries.reduce((acc, entry) => acc + entry.minutes, 0);
+
+  container.innerHTML =
+    entries
+      .map((entry) => {
+        const pct = Math.round((entry.minutes / max) * 100);
+        const hours = Math.floor(entry.minutes / 60);
+        const mins = entry.minutes % 60;
+        const label = hours > 0 ? `${hours}h ${mins}m` : `${mins} min`;
+        return `
+          <div style="margin-bottom: 10px;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-main); margin-bottom: 4px;">
+              <span>${escapeHTML(entry.sub.icon || '📖')} ${escapeHTML(entry.sub.name)}</span>
+              <span style="font-weight: 700;">${label}</span>
+            </div>
+            <div class="xp-bar-track"><div class="xp-bar-fill" style="width: ${pct}%; background: ${safeColor(entry.sub.color)};"></div></div>
+          </div>
+        `;
+      })
+      .join('') +
+    `<p class="section-subtitle" style="font-size: 0.75rem; margin-top: 8px;">Total registrado: ${Math.floor(total / 60)}h ${total % 60}m</p>`;
 }
 
 // --- MOCHILA Y MATERIALES ---
