@@ -173,6 +173,7 @@ async function bootApp() {
     initTasksBatchActions();
     initRecurringTasks();
     initScheduleRotation();
+    initDesktopFileDrop();
     initPdfExportModule();
     initIcsExportModule();
     initGoogleDriveModule();
@@ -188,6 +189,7 @@ async function bootApp() {
 
     // 4. Renderizar vistas
     renderAllViews();
+    renderTaskDetailPanel(null);
 
     // 5. Generar las tareas recurrentes de esta semana (Roadmap Item 12)
     const recurringCreated = await generateRecurringTasks();
@@ -1816,6 +1818,154 @@ async function applyTasksBatchAction(action) {
   showToast(`✅ Acción aplicada a ${ids.length} tarea(s)`, 'success');
 }
 
+/**
+ * Vista de doble panel: ficha de detalle de la tarea (Roadmap Item 43)
+ */
+function renderTaskDetailPanel(taskId) {
+  const panel = document.getElementById('task-detail-content');
+  if (!panel) return;
+  const task = taskId ? AppState.tasks.find((t) => t.id === taskId) : null;
+
+  if (!task) {
+    panel.className = 'task-detail-empty';
+    panel.innerHTML =
+      '<p class="section-subtitle">Pulsa sobre una tarea para ver aquí todos sus detalles sin abrir ventanas.</p>';
+    return;
+  }
+
+  const sub = AppState.subjects.find((s) => s.id === task.subjectId);
+  const isCompleted = task.status === 'completed';
+
+  panel.className = 'task-detail-body';
+  panel.innerHTML = `
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+      <h3 style="margin: 0; font-size: 1.05rem; color: var(--text-main);">${escapeHTML(task.title)}</h3>
+      <button class="btn-action-small" type="button" data-detail-close title="Cerrar">✕</button>
+    </div>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0;">
+      <span class="tag-subject" style="background: ${safeColor(sub?.color)}">${escapeHTML(sub?.icon || '')} ${escapeHTML(sub?.name || 'General')}</span>
+      <span class="tag-priority priority-${task.priority || 'media'}">${(task.priority || 'media').toUpperCase()}</span>
+      <span style="font-size: 0.8rem; color: var(--text-dim);">📅 ${escapeHTML(formatDateSpanish(task.dueDate))}</span>
+    </div>
+    <p style="font-size: 0.82rem; color: var(--text-main);">Estado: ${isCompleted ? '✅ Completada' : '⏳ Pendiente'}</p>
+    ${task.description ? `<p style="font-size: 0.85rem; color: var(--text-main); white-space: pre-wrap;">${escapeHTML(task.description)}</p>` : ''}
+    ${
+      task.photos && task.photos.length
+        ? `<div class="task-photos-grid">${task.photos
+            .map(
+              (p) =>
+                `<img src="${p}" alt="Foto tarea" class="photo-thumb" onclick="window.openImageViewer(${escapeJsArg(p)}, ${escapeJsArg(task.title)})" />`
+            )
+            .join('')}</div>`
+        : ''
+    }
+    ${
+      task.subtasks && task.subtasks.length
+        ? `<div style="margin-top: 10px; display: flex; flex-direction: column; gap: 4px;">${task.subtasks
+            .map(
+              (st) =>
+                `<div style="font-size: 0.82rem; color: ${st.done ? 'var(--text-dim)' : 'var(--text-main)'};">${st.done ? '☑️' : '⬜'} ${escapeHTML(st.title)}</div>`
+            )
+            .join('')}</div>`
+        : ''
+    }
+    <div style="display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap;">
+      <button class="btn-action-small" type="button" data-detail-edit="${escapeHTML(task.id)}">✏️ Editar</button>
+      <button class="btn-action-small" type="button" data-detail-toggle="${escapeHTML(task.id)}">${isCompleted ? '↩️ Pendiente' : '✅ Completar'}</button>
+      <button class="btn-action-small danger" type="button" data-detail-delete="${escapeHTML(task.id)}">🗑️ Eliminar</button>
+    </div>
+  `;
+
+  panel.querySelector('[data-detail-close]')?.addEventListener('click', () => renderTaskDetailPanel(null));
+  panel.querySelector('[data-detail-edit]')?.addEventListener('click', () => window.openTaskModal(task.id));
+  panel.querySelector('[data-detail-toggle]')?.addEventListener('click', () => window.toggleTaskComplete(task.id));
+  panel.querySelector('[data-detail-delete]')?.addEventListener('click', () => window.confirmDeleteTask(task.id));
+}
+
+/**
+ * Arrastrar archivos desde el escritorio (Roadmap Item 42)
+ */
+function initDesktopFileDrop() {
+  let overlay = null;
+  const showOverlay = () => {
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'desktop-drop-overlay';
+      overlay.style.cssText =
+        'position: fixed; inset: 0; z-index: 4000; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 10px; background: rgba(15, 23, 42, 0.85); color: #fff; font-size: 1.1rem; font-weight: 700; text-align: center; padding: 24px;';
+      overlay.innerHTML =
+        '<div style="font-size: 3rem;">📥</div><div>Suelta aquí tus archivos</div><div style="font-size: 0.85rem; font-weight: 400; opacity: 0.85;">Las fotos se añadirán a una nueva tarea; los documentos, a tu mochila.</div>';
+      document.body.appendChild(overlay);
+    }
+    overlay.style.display = 'flex';
+  };
+  const hideOverlay = () => {
+    if (overlay) overlay.style.display = 'none';
+  };
+
+  const hasFiles = (e) => e.dataTransfer && Array.from(e.dataTransfer.types || []).includes('Files');
+  let dragDepth = 0;
+
+  window.addEventListener('dragenter', (e) => {
+    if (!hasFiles(e)) return;
+    e.preventDefault();
+    dragDepth++;
+    showOverlay();
+  });
+  window.addEventListener('dragover', (e) => {
+    if (!hasFiles(e)) return;
+    e.preventDefault();
+  });
+  window.addEventListener('dragleave', (e) => {
+    if (!hasFiles(e)) return;
+    dragDepth = Math.max(0, dragDepth - 1);
+    if (dragDepth === 0) hideOverlay();
+  });
+  window.addEventListener('drop', async (e) => {
+    if (!hasFiles(e)) return;
+    e.preventDefault();
+    dragDepth = 0;
+    hideOverlay();
+    await handleDroppedFiles(Array.from(e.dataTransfer.files || []));
+  });
+}
+
+async function handleDroppedFiles(files) {
+  if (!files.length) return;
+  const images = files.filter((f) => f.type.startsWith('image/'));
+  const others = files.filter((f) => !f.type.startsWith('image/'));
+
+  if (images.length) {
+    if (typeof window.openTaskModal === 'function') window.openTaskModal();
+    for (const file of images) {
+      try {
+        const compressed = await compressImage(file, 1280, 1280, 0.78);
+        AppState.tempTaskPhotos.push(compressed);
+      } catch (err) {
+        console.warn('No se pudo procesar la imagen arrastrada:', err);
+      }
+    }
+    renderPhotosPreview('task-photos-preview', AppState.tempTaskPhotos);
+    showToast(`📥 ${images.length} imagen(es) lista(s) para tu nueva tarea`, 'success');
+  }
+
+  if (others.length) {
+    for (const file of others) {
+      const material = {
+        id: 'mat_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 5),
+        name: file.name,
+        subjectId: null,
+        icon: '📄',
+        isPacked: false
+      };
+      await saveItem('materials', material);
+    }
+    await loadAllData();
+    renderAllViews();
+    showToast(`📎 ${others.length} documento(s) añadido(s) a la Mochila`, 'success');
+  }
+}
+
 function initTasksBatchActions() {
   const toggleBtn = document.getElementById('btn-toggle-task-selection');
   const container = document.getElementById('tasks-container');
@@ -1841,6 +1991,8 @@ function initTasksBatchActions() {
     } else if (e.ctrlKey || e.metaKey) {
       e.preventDefault();
       toggleTaskSelection(taskId);
+    } else if (window.innerWidth >= 1100) {
+      renderTaskDetailPanel(taskId);
     }
   });
 

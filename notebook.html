@@ -795,6 +795,18 @@
     }
 
     /* RESPONSIVE MÓVIL */
+    @media (max-width: 1280px) and (min-width: 901px) {
+      .nlm-container {
+        grid-template-columns: 232px 1fr 320px;
+      }
+    }
+
+    /* 3 columnas forzadas en pantallas medianas/tablet (Roadmap Item 52) */
+    .nlm-container.force-3col {
+      grid-template-columns: 232px 1fr 320px;
+      height: calc(100vh - 60px);
+    }
+
     @media (max-width: 900px) {
       .mobile-tab-nav {
         display: flex;
@@ -813,6 +825,24 @@
       .col-studio.active-mobile-view,
       .col-chat.active-mobile-view {
         display: flex;
+      }
+
+      /* Forzar las 3 columnas simultáneas aunque la pantalla sea estrecha */
+      .nlm-container.force-3col {
+        grid-template-columns: minmax(150px, 1fr) minmax(0, 2fr) minmax(150px, 1fr);
+        height: calc(100vh - 105px);
+        overflow-x: auto;
+      }
+
+      .nlm-container.force-3col .col-sources,
+      .nlm-container.force-3col .col-studio,
+      .nlm-container.force-3col .col-chat {
+        display: flex;
+      }
+
+      .nlm-container.force-3col ~ .mobile-tab-nav,
+      body.force-3col .mobile-tab-nav {
+        display: none;
       }
     }
 
@@ -839,6 +869,9 @@
     </div>
 
     <div class="nlm-header-right">
+      <button type="button" id="btn-toggle-columns" class="btn-header-action" title="Mostrar u ocultar las 3 columnas simultáneas">
+        🖥️ 3 Columnas
+      </button>
       <button type="button" id="btn-config-key" class="btn-header-action btn-key-setup" title="Configurar clave de Gemini">
         ⚙️ Clave IA
       </button>
@@ -880,9 +913,9 @@
       <div id="notebook-selector-bar" style="display: flex; gap: 6px; align-items: center; padding: 8px 14px; border-bottom: 1px solid var(--border-color); background: var(--bg-surface-elevated);">
         <span style="font-size: 0.95rem;">📚</span>
         <select id="notebook-select" aria-label="Cuaderno temático activo" style="flex: 1; min-width: 0; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-surface); color: var(--text-main); font-size: 0.82rem;"></select>
-        <button type="button" id="btn-new-notebook" class="btn-add-source" style="padding: 6px 10px;" title="Nuevo cuaderno temático">➕</button>
-        <button type="button" id="btn-rename-notebook" class="btn-add-source" style="padding: 6px 10px;" title="Renombrar cuaderno">✏️</button>
-        <button type="button" id="btn-delete-notebook" class="btn-add-source" style="padding: 6px 10px;" title="Eliminar cuaderno">🗑️</button>
+        <button type="button" id="btn-book-new" class="btn-add-source" style="padding: 6px 10px;" title="Nuevo cuaderno temático">➕</button>
+        <button type="button" id="btn-book-rename" class="btn-add-source" style="padding: 6px 10px;" title="Renombrar cuaderno">✏️</button>
+        <button type="button" id="btn-book-delete" class="btn-add-source" style="padding: 6px 10px;" title="Eliminar cuaderno">🗑️</button>
       </div>
 
       <div class="sources-list" id="sources-list-container">

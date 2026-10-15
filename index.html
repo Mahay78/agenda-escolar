@@ -361,22 +361,33 @@
         </button>
       </div>
 
-      <!-- Filtros -->
-      <div class="filters-bar">
-        <button class="filter-chip active" data-task-filter="all">Todas</button>
-        <button class="filter-chip" data-task-filter="pending">⏳ Pendientes</button>
-        <button class="filter-chip" data-task-filter="today">📅 Para Hoy</button>
-        <button class="filter-chip" data-task-filter="week">📆 Esta Semana</button>
-        <button class="filter-chip" data-task-filter="photos">📸 Con Fotos</button>
-        <button class="filter-chip" data-task-filter="done">✅ Completadas</button>
-        <button class="filter-chip" id="btn-toggle-task-selection" type="button" title="Selección múltiple: activa y pulsa sobre las tareas para seleccionarlas">☑️ Seleccionar</button>
+      <!-- Filtros + Vista de Doble Panel (Roadmap Item 43) -->
+      <div class="tasks-split" id="tasks-split">
+        <div class="tasks-split-main">
+          <div class="filters-bar">
+            <button class="filter-chip active" data-task-filter="all">Todas</button>
+            <button class="filter-chip" data-task-filter="pending">⏳ Pendientes</button>
+            <button class="filter-chip" data-task-filter="today">📅 Para Hoy</button>
+            <button class="filter-chip" data-task-filter="week">📆 Esta Semana</button>
+            <button class="filter-chip" data-task-filter="photos">📸 Con Fotos</button>
+            <button class="filter-chip" data-task-filter="done">✅ Completadas</button>
+            <button class="filter-chip" id="btn-toggle-task-selection" type="button" title="Selección múltiple: activa y pulsa sobre las tareas para seleccionarlas">☑️ Seleccionar</button>
+          </div>
+
+          <!-- Lista de tareas -->
+          <div id="tasks-container">
+            <p class="section-subtitle">Cargando tareas...</p>
+          </div>
+        </div>
+
+        <!-- Panel de detalle (pantallas anchas) -->
+        <aside id="task-detail-panel" class="task-detail-panel" aria-live="polite">
+          <div id="task-detail-content" class="task-detail-empty">
+            <p class="section-subtitle">Pulsa sobre una tarea para ver aquí todos sus detalles sin abrir ventanas.</p>
+          </div>
+        </aside>
       </div>
 
-      <!-- Lista de tareas -->
-      <div id="tasks-container">
-        <p class="section-subtitle">Cargando tareas...</p>
-      </div>
-    
       </div>
 
       <!-- Subpanel 2: Exámenes -->

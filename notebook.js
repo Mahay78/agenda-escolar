@@ -984,9 +984,24 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('notebook-select')?.addEventListener('change', (e) => {
     switchNotebook(e.target.value);
   });
-  document.getElementById('btn-new-notebook')?.addEventListener('click', createNotebook);
-  document.getElementById('btn-rename-notebook')?.addEventListener('click', renameNotebook);
-  document.getElementById('btn-delete-notebook')?.addEventListener('click', deleteNotebook);
+  document.getElementById('btn-book-new')?.addEventListener('click', createNotebook);
+  document.getElementById('btn-book-rename')?.addEventListener('click', renameNotebook);
+  document.getElementById('btn-book-delete')?.addEventListener('click', deleteNotebook);
+
+  // Conmutador de 3 columnas simultáneas (Roadmap Item 52)
+  const columnsBtn = document.getElementById('btn-toggle-columns');
+  const applyColumns = (force) => {
+    document.querySelector('.nlm-container')?.classList.toggle('force-3col', force);
+    document.body.classList.toggle('force-3col', force);
+    if (columnsBtn) columnsBtn.textContent = force ? '📱 Paneles' : '🖥️ 3 Columnas';
+    localStorage.setItem('notebook_force_3col', force ? '1' : '0');
+  };
+  const savedForce = localStorage.getItem('notebook_force_3col') === '1';
+  applyColumns(savedForce);
+  columnsBtn?.addEventListener('click', () => {
+    const force = !document.querySelector('.nlm-container')?.classList.contains('force-3col');
+    applyColumns(force);
+  });
 
   // Citas interactivas con resaltado (Roadmap Item 63)
   const chatMessagesEl = document.getElementById('chat-messages');
@@ -1237,19 +1252,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Botón Nuevo Cuaderno
+  // Botón Nuevo Cuaderno (Roadmap Item 61)
   document.getElementById('btn-new-notebook')?.addEventListener('click', () => {
-    if (confirm('¿Deseas vaciar las fuentes actuales para iniciar un nuevo cuaderno de estudio?')) {
-      NotebookState.sources = [];
-      NotebookState.activeSourceIds.clear();
-      saveSources();
-      renderSourcesList();
-      updateStudioStatus();
-      document.getElementById('studio-welcome-card')?.classList.remove('hidden');
-      document.getElementById('artifact-dynamic-container').innerHTML = '';
-      document.getElementById('audio-overview-container')?.classList.add('hidden');
-      stopAudioOverview();
-    }
+    createNotebook();
+    document.getElementById('studio-welcome-card')?.classList.remove('hidden');
+    document.getElementById('artifact-dynamic-container').innerHTML = '';
+    document.getElementById('audio-overview-container')?.classList.add('hidden');
+    stopAudioOverview();
   });
 
   // Botones de Herramientas del Studio
