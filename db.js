@@ -405,14 +405,127 @@ export async function exportBackup() {
   return JSON.stringify(data, null, 2);
 }
 
-// Importar copia de seguridad desde JSON
-export async function importBackup(jsonString) {
-  try {
-    const data = JSON.parse(jsonString);
-    if (!data.subjects || !data.tasks) {
-      throw new Error('El archivo no contiene un formato de copia de seguridad válido');
+// --- VALIDACIÓN DE COPIAS DE SEGURIDAD IMPORTADAS ---
+
+// Claves prohibidas para evitar contaminación de prototipos (prototype pollution)
+const FORBIDDEN_KEYS = ['__proto__', 'constructor', 'prototype'];
+
+// Esquema esperado de una copia de seguridad: tienda -> clave primaria
+const BACKUP_SCHEMA = {
+  subjects: 'id',
+  schedule: 'id',
+  tasks: 'id',
+  exams: 'id',
+  grades: 'id',
+  projects: 'id',
+  materials: 'id',
+  flashcards: 'id',
+  trash: 'id',
+  settings: 'key'
+};
+
+function isPlainObject(value) {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+// Campos que actúan como identificadores: se restringen a un juego de
+// caracteres seguro para poder interpolarlos sin riesgo en atributos/HTML.
+const IDENTIFIER_KEYS = ['id', 'key', 'subjectId', 'originalId', 'originalStore'];
+const ID_SAFE_RE = /[^A-Za-z0-9_-]/g;
+
+// Elimina recursivamente claves peligrosas de un objeto importado y sanea identificadores
+function stripUnsafeKeys(value, depth = 0) {
+  if (depth > 20 || value === null || typeof value !== 'object') return value;
+  if (Array.isArray(value)) return value.map((v) => stripUnsafeKeys(v, depth + 1));
+  const clean = {};
+  for (const key of Object.keys(value)) {
+    if (FORBIDDEN_KEYS.includes(key)) continue;
+    let v = stripUnsafeKeys(value[key], depth + 1);
+    if (IDENTIFIER_KEYS.includes(key) && typeof v === 'string') {
+      v = v.replace(ID_SAFE_RE, '');
+    }
+    clean[key] = v;
+  }
+  return clean;
+}
+
+/**
+ * Valida y normaliza una copia de seguridad antes de restaurarla.
+ * Comprueba la estructura raíz, sanea cada colección y descarta los
+ * elementos sin clave primaria válida o con claves peligrosas.
+ * @param {*} data Datos ya parseados del JSON de copia de seguridad.
+ * @returns {{ data: Object, warnings: string[] }}
+ */
+export function validateBackupData(data) {
+  if (!isPlainObject(data)) {
+    throw new Error('El archivo no contiene un objeto válido de copia de seguridad.');
+  }
+
+  const hasAnyStore = Object.keys(BACKUP_SCHEMA).some((store) => Array.isArray(data[store]));
+  if (!hasAnyStore) {
+    throw new Error('El archivo no contiene un formato de copia de seguridad válido: no se encontró ninguna colección de datos reconocible.');
+  }
+
+  const warnings = [];
+  const normalized = {
+    version: typeof data.version === 'number' ? data.version : 4,
+    exportDate: typeof data.exportDate === 'string' ? data.exportDate : new Date().toISOString()
+  };
+
+  let dropped = 0;
+
+  for (const [store, keyPath] of Object.entries(BACKUP_SCHEMA)) {
+    const rawList = data[store];
+
+    if (rawList === undefined) {
+      normalized[store] = [];
+      continue;
     }
 
+    if (!Array.isArray(rawList)) {
+      warnings.push(`La sección «${store}» no es una lista válida y se ha omitido.`);
+      normalized[store] = [];
+      continue;
+    }
+
+    const cleanList = [];
+    for (const item of rawList) {
+      if (!isPlainObject(item)) { dropped++; continue; }
+      const cleaned = stripUnsafeKeys(item);
+      const pk = cleaned[keyPath];
+      if (typeof pk !== 'string' || pk.trim() === '') { dropped++; continue; }
+      cleanList.push(cleaned);
+    }
+    normalized[store] = cleanList;
+  }
+
+  if (dropped > 0) {
+    warnings.push(`Se han descartado ${dropped} elemento(s) con formato inválido o sin identificador.`);
+  }
+
+  return { data: normalized, warnings };
+}
+
+// Importar copia de seguridad desde JSON
+export async function importBackup(jsonString) {
+  let parsed;
+  try {
+    parsed = JSON.parse(jsonString);
+  } catch (error) {
+    throw new Error('El archivo no es un JSON válido: ' + error.message);
+  }
+
+  let validated;
+  try {
+    validated = validateBackupData(parsed);
+  } catch (error) {
+    console.error('Error al validar la copia de seguridad:', error);
+    throw error;
+  }
+
+  const { data, warnings } = validated;
+
+  try {
     // Limpiar tiendas actuales
     await clearStore('subjects');
     await clearStore('schedule');
@@ -425,19 +538,23 @@ export async function importBackup(jsonString) {
     await clearStore('trash');
     await clearStore('settings');
 
-    // Restaurar datos
-    for (const s of data.subjects || []) await saveItem('subjects', s);
-    for (const sc of data.schedule || []) await saveItem('schedule', sc);
-    for (const t of data.tasks || []) await saveItem('tasks', t);
-    for (const e of data.exams || []) await saveItem('exams', e);
-    for (const g of data.grades || []) await saveItem('grades', g);
-    for (const p of data.projects || []) await saveItem('projects', p);
-    for (const m of data.materials || []) await saveItem('materials', m);
-    for (const fc of data.flashcards || []) await saveItem('flashcards', fc);
-    for (const tr of data.trash || []) await saveItem('trash', tr);
-    for (const st of data.settings || []) await saveItem('settings', st);
+    // Restaurar datos ya validados y saneados
+    for (const s of data.subjects) await saveItem('subjects', s);
+    for (const sc of data.schedule) await saveItem('schedule', sc);
+    for (const t of data.tasks) await saveItem('tasks', t);
+    for (const e of data.exams) await saveItem('exams', e);
+    for (const g of data.grades) await saveItem('grades', g);
+    for (const p of data.projects) await saveItem('projects', p);
+    for (const m of data.materials) await saveItem('materials', m);
+    for (const fc of data.flashcards) await saveItem('flashcards', fc);
+    for (const tr of data.trash) await saveItem('trash', tr);
+    for (const st of data.settings) await saveItem('settings', st);
 
-    return true;
+    if (warnings.length) {
+      console.warn('Avisos al importar la copia de seguridad:', warnings);
+    }
+
+    return { success: true, warnings };
   } catch (error) {
     console.error('Error al importar la copia de seguridad:', error);
     throw error;

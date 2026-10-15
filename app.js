@@ -1658,12 +1658,12 @@ function renderTodayView() {
               <div class="schedule-slot-card">
                 <div class="slot-time">${slot.start} - ${slot.end}</div>
                 <div class="slot-info">
-                  <div class="slot-subject-name" style="color: ${sub ? sub.color : 'inherit'}">
-                    <span>${sub ? sub.icon || '📖' : '⚪'}</span> ${sub ? sub.name : 'Hora libre'}
+                  <div class="slot-subject-name" style="color: ${sub ? safeColor(sub.color) : 'inherit'}">
+                    <span>${escapeHTML(sub ? sub.icon || '📖' : '⚪')}</span> ${escapeHTML(sub ? sub.name : 'Hora libre')}
                   </div>
                   <div class="slot-details">
-                    <span>${match?.classroom || sub?.classroom || ''}</span>
-                    <span>${sub?.teacher || ''}</span>
+                    <span>${escapeHTML(match?.classroom || sub?.classroom || '')}</span>
+                    <span>${escapeHTML(sub?.teacher || '')}</span>
                   </div>
                 </div>
               </div>
@@ -1689,13 +1689,13 @@ function renderTodayView() {
         .map((task) => {
           const sub = AppState.subjects.find((s) => s.id === task.subjectId);
           return `
-            <div class="task-item" style="border-left-color: ${sub?.color || '#3b82f6'}">
+            <div class="task-item" style="border-left-color: ${safeColor(sub?.color)}">
               <div class="task-top">
-                <input type="checkbox" class="task-checkbox" onchange="window.toggleTaskComplete('${task.id}')" />
+                <input type="checkbox" class="task-checkbox" onchange="window.toggleTaskComplete('${escapeHTML(task.id)}')" />
                 <div class="task-content">
                   <div class="task-title">${escapeHTML(task.title)}</div>
                   <div class="task-meta">
-                    <span class="tag-subject" style="background: ${sub?.color || '#3b82f6'}">${sub?.icon || ''} ${sub?.name || 'General'}</span>
+                    <span class="tag-subject" style="background: ${safeColor(sub?.color)}">${escapeHTML(sub?.icon || '')} ${escapeHTML(sub?.name || 'General')}</span>
                   </div>
                 </div>
               </div>
@@ -1731,10 +1731,10 @@ function renderTodayView() {
       }
 
       nextExamContainer.innerHTML = `
-        <div class="exam-card" style="border-left: 5px solid ${sub?.color || '#8b5cf6'}">
+        <div class="exam-card" style="border-left: 5px solid ${safeColor(sub?.color, '#8b5cf6')}">
           <div style="display: flex; justify-content: space-between; align-items: flex-start;">
             <div>
-              <span class="tag-subject" style="background: ${sub?.color || '#8b5cf6'}">${sub?.icon || ''} ${sub?.name || ''}</span>
+              <span class="tag-subject" style="background: ${safeColor(sub?.color, '#8b5cf6')}">${escapeHTML(sub?.icon || '')} ${escapeHTML(sub?.name || '')}</span>
               <h4 style="font-size: 1.1rem; margin-top: 6px;">${escapeHTML(next.title)}</h4>
             </div>
             <span class="countdown-badge ${badgeClass}">${countdownText}</span>
@@ -1815,7 +1815,7 @@ function renderTasksView() {
               ${task.photos
                 .map(
                   (photo, idx) => `
-                <img src="${photo}" alt="Foto tarea" class="photo-thumb" onclick="window.openImageViewer('${photo}', '${escapeHTML(task.title)}')" />
+                <img src="${photo}" alt="Foto tarea" class="photo-thumb" onclick="window.openImageViewer(${escapeJsArg(photo)}, ${escapeJsArg(task.title)})" />
               `
                 )
                 .join('')}
@@ -1824,13 +1824,13 @@ function renderTasksView() {
           : '';
 
       return `
-        <div class="task-item ${isCompleted ? 'completed' : ''}" style="border-left-color: ${sub?.color || '#3b82f6'}" draggable="true" data-task-id="${task.id}">
+        <div class="task-item ${isCompleted ? 'completed' : ''}" style="border-left-color: ${safeColor(sub?.color)}" draggable="true" data-task-id="${escapeHTML(task.id)}">
           <div class="task-top">
-            <input type="checkbox" class="task-checkbox" ${isCompleted ? 'checked' : ''} onchange="window.toggleTaskComplete('${task.id}')" />
+            <input type="checkbox" class="task-checkbox" ${isCompleted ? 'checked' : ''} onchange="window.toggleTaskComplete('${escapeHTML(task.id)}')" />
             <div class="task-content">
               <div class="task-title">${escapeHTML(task.title)}</div>
               <div class="task-meta">
-                <span class="tag-subject" style="background: ${sub?.color || '#3b82f6'}">${sub?.icon || ''} ${sub?.name || 'General'}</span>
+                <span class="tag-subject" style="background: ${safeColor(sub?.color)}">${escapeHTML(sub?.icon || '')} ${escapeHTML(sub?.name || 'General')}</span>
                 <span class="tag-priority priority-${task.priority || 'media'}">${task.priority ? task.priority.toUpperCase() : 'NORMAL'}</span>
                 <span>📅 ${dateBadge}</span>
               </div>
@@ -1864,7 +1864,7 @@ function renderTasksView() {
                               .map(
                                 (st) => `
                               <label style="display: flex; align-items: center; gap: 8px; font-size: 0.8rem; cursor: pointer; color: ${st.done ? 'var(--text-dim)' : 'var(--text-main)'}; text-decoration: ${st.done ? 'line-through' : 'none'};">
-                                <input type="checkbox" ${st.done ? 'checked' : ''} onclick="event.stopPropagation(); window.toggleTaskSubtask('${task.id}', '${st.id}')" style="cursor: pointer;" />
+                                <input type="checkbox" ${st.done ? 'checked' : ''} onclick="event.stopPropagation(); window.toggleTaskSubtask('${escapeHTML(task.id)}', '${escapeHTML(st.id)}')" style="cursor: pointer;" />
                                 <span>${escapeHTML(st.title)}</span>
                               </label>
                             `
@@ -1879,8 +1879,8 @@ function renderTasksView() {
             </div>
           </div>
           <div class="task-actions">
-            <button class="btn-action-small" onclick="window.openTaskModal('${task.id}')">✏️ Editar</button>
-            <button class="btn-action-small danger" onclick="window.confirmDeleteTask('${task.id}')">🗑️ Eliminar</button>
+            <button class="btn-action-small" onclick="window.openTaskModal('${escapeHTML(task.id)}')">✏️ Editar</button>
+            <button class="btn-action-small danger" onclick="window.confirmDeleteTask('${escapeHTML(task.id)}')">🗑️ Eliminar</button>
           </div>
         </div>
       `;
@@ -1918,12 +1918,12 @@ function renderScheduleView() {
         <div class="schedule-slot-card" style="cursor: pointer;" onclick="window.openSlotModal(${day}, ${slot.index})">
           <div class="slot-time">${slot.start} - ${slot.end}</div>
           <div class="slot-info">
-            <div class="slot-subject-name" style="color: ${sub ? sub.color : 'inherit'}">
-              <span>${sub ? sub.icon || '📖' : '➕'}</span> ${sub ? sub.name : '<span style="color: var(--text-dim);">Tocar para asignar asignatura</span>'}
+            <div class="slot-subject-name" style="color: ${sub ? safeColor(sub.color) : 'inherit'}">
+              <span>${escapeHTML(sub ? sub.icon || '📖' : '➕')}</span> ${sub ? escapeHTML(sub.name) : '<span style="color: var(--text-dim);">Tocar para asignar asignatura</span>'}
             </div>
             <div class="slot-details">
-              <span>${match?.classroom || sub?.classroom || ''}</span>
-              <span>${sub?.teacher || ''}</span>
+              <span>${escapeHTML(match?.classroom || sub?.classroom || '')}</span>
+              <span>${escapeHTML(sub?.teacher || '')}</span>
             </div>
           </div>
           <button class="btn-action-small">✏️</button>
@@ -1988,18 +1988,18 @@ function renderBackpackView() {
       return `
         <div class="material-item-row ${isPacked ? 'is-packed' : ''}">
           <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
-            <input type="checkbox" class="task-checkbox" ${isPacked ? 'checked' : ''} onchange="window.toggleMaterialPacked('${mat.id}')" />
-            <span style="font-size: 1.3rem;">${mat.icon || '✏️'}</span>
+            <input type="checkbox" class="task-checkbox" ${isPacked ? 'checked' : ''} onchange="window.toggleMaterialPacked('${escapeHTML(mat.id)}')" />
+            <span style="font-size: 1.3rem;">${escapeHTML(mat.icon || '✏️')}</span>
             <div>
               <div class="material-name" style="font-weight: 700; font-size: 0.95rem;">${escapeHTML(mat.name)}</div>
               ${
                 sub
-                  ? `<span class="tag-subject" style="background: ${sub.color}; font-size: 0.7rem; margin-top: 3px;">${sub.icon || ''} ${sub.name}</span>`
+                  ? `<span class="tag-subject" style="background: ${safeColor(sub.color)}; font-size: 0.7rem; margin-top: 3px;">${escapeHTML(sub.icon || '')} ${escapeHTML(sub.name)}</span>`
                   : `<span class="tag-subject" style="background: #64748b; font-size: 0.7rem; margin-top: 3px;">Material General</span>`
               }
             </div>
           </div>
-          <button class="btn-action-small danger" onclick="window.confirmDeleteMaterial('${mat.id}')">🗑️</button>
+          <button class="btn-action-small danger" onclick="window.confirmDeleteMaterial('${escapeHTML(mat.id)}')">🗑️</button>
         </div>
       `;
     })
@@ -2048,7 +2048,7 @@ function renderProjectsView() {
               ${project.photos
                 .map(
                   (photo) => `
-                <img src="${photo}" alt="Foto proyecto" class="photo-thumb" onclick="window.openImageViewer('${photo}', '${escapeHTML(project.title)}')" />
+                <img src="${photo}" alt="Foto proyecto" class="photo-thumb" onclick="window.openImageViewer(${escapeJsArg(photo)}, ${escapeJsArg(project.title)})" />
               `
                 )
                 .join('')}
@@ -2057,10 +2057,10 @@ function renderProjectsView() {
           : '';
 
       return `
-        <div class="project-card" style="border-left: 5px solid ${sub?.color || '#ec4899'};">
+        <div class="project-card" style="border-left: 5px solid ${safeColor(sub?.color, '#ec4899')};">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px;">
             <div>
-              <span class="tag-subject" style="background: ${sub?.color || '#ec4899'}">${sub?.icon || '🎨'} ${sub?.name || 'Arte'}</span>
+              <span class="tag-subject" style="background: ${safeColor(sub?.color, '#ec4899')}">${escapeHTML(sub?.icon || '🎨')} ${escapeHTML(sub?.name || 'Arte')}</span>
               <h3 style="font-size: 1.15rem; margin-top: 6px;">${escapeHTML(project.title)}</h3>
             </div>
             <span class="project-stage-pill ${statusInfo.cls}">${statusInfo.label}</span>
@@ -2081,9 +2081,9 @@ function renderProjectsView() {
           }
 
           <div class="task-actions" style="margin-top: 12px;">
-            <button class="btn-action-small" onclick="window.handleExportProjectPDF('${project.id}')" title="Descargar Dossier del Proyecto en PDF">📄 Dossier PDF</button>
-            <button class="btn-action-small" onclick="window.openProjectModal('${project.id}')">✏️ Editar</button>
-            <button class="btn-action-small danger" onclick="window.confirmDeleteProject('${project.id}')">🗑️ Eliminar</button>
+            <button class="btn-action-small" onclick="window.handleExportProjectPDF('${escapeHTML(project.id)}')" title="Descargar Dossier del Proyecto en PDF">📄 Dossier PDF</button>
+            <button class="btn-action-small" onclick="window.openProjectModal('${escapeHTML(project.id)}')">✏️ Editar</button>
+            <button class="btn-action-small danger" onclick="window.confirmDeleteProject('${escapeHTML(project.id)}')">🗑️ Eliminar</button>
           </div>
         </div>
       `;
@@ -2207,7 +2207,7 @@ function renderExamsView() {
               ${exam.photos
                 .map(
                   (photo) => `
-                <img src="${photo}" alt="Temario examen" class="photo-thumb" onclick="window.openImageViewer('${photo}', '${escapeHTML(exam.title)}')" />
+                <img src="${photo}" alt="Temario examen" class="photo-thumb" onclick="window.openImageViewer(${escapeJsArg(photo)}, ${escapeJsArg(exam.title)})" />
               `
                 )
                 .join('')}
@@ -2216,10 +2216,10 @@ function renderExamsView() {
           : '';
 
       return `
-        <div class="exam-card" style="border-left: 5px solid ${sub?.color || '#8b5cf6'}" data-exam-id="${exam.id}">
+        <div class="exam-card" style="border-left: 5px solid ${safeColor(sub?.color, '#8b5cf6')}" data-exam-id="${escapeHTML(exam.id)}">
           <div style="display: flex; justify-content: space-between; align-items: flex-start;">
             <div>
-              <span class="tag-subject" style="background: ${sub?.color || '#8b5cf6'}">${sub?.icon || ''} ${sub?.name || 'General'}</span>
+              <span class="tag-subject" style="background: ${safeColor(sub?.color, '#8b5cf6')}">${escapeHTML(sub?.icon || '')} ${escapeHTML(sub?.name || 'General')}</span>
               <h3 style="font-size: 1.15rem; margin-top: 6px;">${escapeHTML(exam.title)}</h3>
             </div>
             ${countdownText ? `<span class="countdown-badge ${badgeClass}">${countdownText}</span>` : ''}
@@ -2237,9 +2237,9 @@ function renderExamsView() {
               : ''
           }
           <div class="task-actions">
-            <button class="btn-action-small" onclick="window.handleExportSingleExamICS('${exam.id}')" title="Añadir este examen a Google/Apple Calendar (.ics)">📅 Calendario</button>
-            <button class="btn-action-small" onclick="window.openExamModal('${exam.id}')">✏️ Editar</button>
-            <button class="btn-action-small danger" onclick="window.confirmDeleteExam('${exam.id}')">🗑️ Eliminar</button>
+            <button class="btn-action-small" onclick="window.handleExportSingleExamICS('${escapeHTML(exam.id)}')" title="Añadir este examen a Google/Apple Calendar (.ics)">📅 Calendario</button>
+            <button class="btn-action-small" onclick="window.openExamModal('${escapeHTML(exam.id)}')">✏️ Editar</button>
+            <button class="btn-action-small danger" onclick="window.confirmDeleteExam('${escapeHTML(exam.id)}')">🗑️ Eliminar</button>
           </div>
         </div>
       `;
@@ -2289,7 +2289,7 @@ function renderGradesView() {
         attitude: '🙋 Actitud'
       };
       const typeTag = grade.type
-        ? `<span class="badge" style="background: rgba(255, 255, 255, 0.06); font-size: 0.72rem; color: var(--text-muted); border: 1px solid var(--border-color);">${typeLabels[grade.type] || grade.type} (${grade.weight || 70}%)</span>`
+        ? `<span class="badge" style="background: rgba(255, 255, 255, 0.06); font-size: 0.72rem; color: var(--text-muted); border: 1px solid var(--border-color);">${escapeHTML(typeLabels[grade.type] || grade.type)} (${escapeHTML(grade.weight || 70)}%)</span>`
         : '';
 
       return `
@@ -2297,15 +2297,15 @@ function renderGradesView() {
           <div>
             <div style="font-weight: 700; font-size: 0.95rem;">${escapeHTML(grade.title)}</div>
             <div class="task-meta" style="flex-wrap: wrap; gap: 6px; margin-top: 4px;">
-              <span class="tag-subject" style="background: ${sub?.color || '#3b82f6'}">${sub?.icon || ''} ${sub?.name || 'General'}</span>
+              <span class="tag-subject" style="background: ${safeColor(sub?.color)}">${escapeHTML(sub?.icon || '')} ${escapeHTML(sub?.name || 'General')}</span>
               ${typeTag}
-              <span>Trimestre ${grade.term}º</span>
-              ${grade.date ? `<span>📅 ${grade.date}</span>` : ''}
+              <span>Trimestre ${escapeHTML(grade.term)}º</span>
+              ${grade.date ? `<span>📅 ${escapeHTML(grade.date)}</span>` : ''}
             </div>
           </div>
           <div style="display: flex; align-items: center; gap: 12px;">
             <div class="grade-score-pill ${scoreClass}">${score.toFixed(1)}</div>
-            <button class="btn-action-small danger" onclick="window.confirmDeleteGrade('${grade.id}')">🗑️</button>
+            <button class="btn-action-small danger" onclick="window.confirmDeleteGrade('${escapeHTML(grade.id)}')">🗑️</button>
           </div>
         </div>
       `;
@@ -2412,15 +2412,15 @@ function renderGalleryView() {
         .map((item) => {
           const hasOcr = !!getCachedOcrText(item.src);
           return `
-        <div class="card" style="padding: 8px; cursor: pointer; margin-bottom: 0; position: relative;" onclick="window.openImageViewer('${item.src}', '${escapeHTML(item.title)}')">
+        <div class="card" style="padding: 8px; cursor: pointer; margin-bottom: 0; position: relative;" onclick="window.openImageViewer(${escapeJsArg(item.src)}, ${escapeJsArg(item.title)})">
           <div style="position: relative;">
-            <img src="${item.src}" alt="${escapeHTML(item.title)}" style="width: 100%; height: 140px; object-fit: cover; border-radius: var(--radius-sm);" />
+            <img src="${escapeHTML(item.src)}" alt="${escapeHTML(item.title)}" style="width: 100%; height: 140px; object-fit: cover; border-radius: var(--radius-sm);" />
             ${hasOcr ? `<span style="position: absolute; bottom: 6px; right: 6px; background: rgba(16, 185, 129, 0.9); color: #fff; font-size: 0.68rem; font-weight: 700; padding: 2px 6px; border-radius: var(--radius-full);">🔍 OCR</span>` : ''}
           </div>
           <div style="margin-top: 6px; font-size: 0.8rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
             ${escapeHTML(item.title)}
           </div>
-          <span class="tag-subject" style="background: ${item.color}; font-size: 0.7rem; margin-top: 4px;">${item.icon} ${item.subject}</span>
+          <span class="tag-subject" style="background: ${safeColor(item.color)}; font-size: 0.7rem; margin-top: 4px;">${escapeHTML(item.icon)} ${escapeHTML(item.subject)}</span>
         </div>
       `;
         })
@@ -2450,13 +2450,13 @@ function renderSettingsView() {
         (sub) => `
       <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: var(--bg-input); border-radius: var(--radius-sm); margin-bottom: 6px;">
         <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="font-size: 1.2rem;">${sub.icon || '📖'}</span>
-          <span style="font-weight: 700; color: ${sub.color};">${escapeHTML(sub.name)}</span>
-          <span style="font-size: 0.8rem; color: var(--text-dim);">(${sub.teacher || 'Sin prof.'})</span>
+          <span style="font-size: 1.2rem;">${escapeHTML(sub.icon || '📖')}</span>
+          <span style="font-weight: 700; color: ${safeColor(sub.color)};">${escapeHTML(sub.name)}</span>
+          <span style="font-size: 0.8rem; color: var(--text-dim);">(${escapeHTML(sub.teacher || 'Sin prof.')})</span>
         </div>
         <div style="display: flex; gap: 6px;">
-          <button class="btn-action-small" onclick="window.openSubjectModal('${sub.id}')">✏️</button>
-          <button class="btn-action-small danger" onclick="window.confirmDeleteSubject('${sub.id}')">🗑️</button>
+          <button class="btn-action-small" onclick="window.openSubjectModal('${escapeHTML(sub.id)}')">✏️</button>
+          <button class="btn-action-small danger" onclick="window.confirmDeleteSubject('${escapeHTML(sub.id)}')">🗑️</button>
         </div>
       </div>
     `
@@ -3073,10 +3073,14 @@ async function handleImportBackup(e) {
     const reader = new FileReader();
     reader.onload = async (event) => {
       try {
-        await importBackup(event.target.result);
+        const result = await importBackup(event.target.result);
         await loadAllData();
         renderAllViews();
-        showToast('🎉 Copia de seguridad restaurada correctamente', 'success');
+        if (result && Array.isArray(result.warnings) && result.warnings.length) {
+          showToast('⚠️ Copia restaurada con avisos: ' + result.warnings.join(' '), 'warning');
+        } else {
+          showToast('🎉 Copia de seguridad restaurada correctamente', 'success');
+        }
       } catch (err) {
         alert('Error al restaurar: ' + err.message);
       }
@@ -4670,8 +4674,8 @@ function renderPhotosPreview(containerId, photosArray) {
     .map(
       (photo, idx) => `
     <div style="position: relative; display: inline-block;">
-      <img src="${photo}" class="photo-thumb" onclick="window.openImageViewer('${photo}')" />
-      <button type="button" style="position: absolute; top: -6px; right: -6px; background: var(--danger); color: #fff; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; cursor: pointer;" onclick="window.removeTempPhoto('${containerId}', ${idx})">&times;</button>
+      <img src="${escapeHTML(photo)}" class="photo-thumb" onclick="window.openImageViewer(${escapeJsArg(photo)})" />
+      <button type="button" style="position: absolute; top: -6px; right: -6px; background: var(--danger); color: #fff; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; cursor: pointer;" onclick="window.removeTempPhoto('${escapeHTML(containerId)}', ${idx})">&times;</button>
     </div>
   `
     )
@@ -4720,7 +4724,11 @@ export function showToast(message, type = 'info') {
 
   const toast = document.createElement('div');
   toast.className = 'toast';
-  toast.innerHTML = `<span>${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span> ${message}`;
+  const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+  const iconEl = document.createElement('span');
+  iconEl.textContent = icon;
+  toast.appendChild(iconEl);
+  toast.appendChild(document.createTextNode(' ' + message));
 
   container.appendChild(toast);
   setTimeout(() => {
@@ -4771,8 +4779,35 @@ function formatDateSpanish(dateStr) {
 }
 
 function escapeHTML(str) {
-  if (!str) return '';
-  return str.replace(/[&<>'"]/g, (tag) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+  if (str === null || str === undefined) return '';
+  return String(str).replace(/[&<>'"]/g, (tag) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+}
+
+// Valida un color CSS permitido (#hex, rgb, rgba, hsl, hsla o nombre simple)
+function safeColor(color, fallback = '#3b82f6') {
+  if (typeof color !== 'string') return fallback;
+  const value = color.trim();
+  if (/^#[0-9a-fA-F]{3,8}$/.test(value)) return value;
+  if (/^(rgb|rgba|hsl|hsla)\([0-9.,%\s/]+\)$/i.test(value)) return value;
+  if (/^[a-zA-Z]{3,20}$/.test(value)) return value;
+  return fallback;
+}
+
+// Serializa un valor como literal seguro para incrustar en un manejador inline
+// (onclick="..."), evitando el escape del contexto JS mediante entidades HTML.
+function escapeJsArg(value) {
+  const json = JSON.stringify(String(value ?? ''));
+  return escapeHTML(json);
+}
+
+// Sanea una URL para usarla en atributos href/src, bloqueando esquemas
+// peligrosos como javascript: o data: (excepto imágenes data:image).
+function safeUrl(url) {
+  if (typeof url !== 'string') return '#';
+  const value = url.trim();
+  if (/^(https?:|mailto:|tel:|\/|\.\/|\.\.\/|#)/i.test(value)) return value;
+  if (/^data:image\//i.test(value)) return value;
+  return '#';
 }
 
 // ==========================================================================
@@ -4961,7 +4996,7 @@ function renderTrashItems() {
     const dateStr = new Date(item.deletedAt).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' });
 
     return `
-      <div class="trash-item-card" id="trash-card-${item.id}">
+      <div class="trash-item-card" id="trash-card-${escapeHTML(item.id)}">
         <div class="trash-item-info">
           <div class="trash-item-title">${escapeHTML(item.label)}</div>
           <div class="trash-item-meta">
@@ -4970,10 +5005,10 @@ function renderTrashItems() {
           </div>
         </div>
         <div style="display: flex; gap: 6px;">
-          <button class="btn-action-small" onclick="window.handleRestoreTrash('${item.id}')" title="Restaurar elemento">
+          <button class="btn-action-small" onclick="window.handleRestoreTrash('${escapeHTML(item.id)}')" title="Restaurar elemento">
             🔄 Restaurar
           </button>
-          <button class="btn-action-small" style="color: var(--danger); border-color: rgba(239,68,68,0.3);" onclick="window.handlePermanentDeleteTrash('${item.id}')" title="Eliminar definitivamente">
+          <button class="btn-action-small" style="color: var(--danger); border-color: rgba(239,68,68,0.3);" onclick="window.handlePermanentDeleteTrash('${escapeHTML(item.id)}')" title="Eliminar definitivamente">
             ✕
           </button>
         </div>
@@ -5089,12 +5124,12 @@ function renderSubjectResourcesList() {
     const icon = iconMap[res.type] || '🔗';
     return `
       <div class="resource-link-item">
-        <a href="${escapeHTML(res.url)}" target="_blank" rel="noopener noreferrer" class="resource-link-btn" title="Abrir en nueva pestaña">
+        <a href="${escapeHTML(safeUrl(res.url))}" target="_blank" rel="noopener noreferrer" class="resource-link-btn" title="Abrir en nueva pestaña">
           <span>${icon}</span>
           <span>${escapeHTML(res.title)}</span>
           <span style="font-size: 0.72rem; opacity: 0.7;">↗</span>
         </a>
-        <button class="btn-action-small" style="color: var(--danger); border-color: rgba(239,68,68,0.25);" onclick="window.handleDeleteResource('${sub.id}', '${res.id}')" title="Eliminar recurso">
+        <button class="btn-action-small" style="color: var(--danger); border-color: rgba(239,68,68,0.25);" onclick="window.handleDeleteResource('${escapeHTML(sub.id)}', '${escapeHTML(res.id)}')" title="Eliminar recurso">
           ✕
         </button>
       </div>
@@ -5454,7 +5489,7 @@ function initGoogleDriveModule() {
               <div style="font-size: 0.74rem; color: var(--text-muted);">${dateStr} &bull; ${sizeKb}</div>
             </div>
             <div style="display: flex; gap: 6px; flex-shrink: 0;">
-              <button type="button" class="btn-action-small" onclick="window.handleRestoreFromGoogleDrive('${f.id}')" title="Restaurar esta copia de seguridad">
+              <button type="button" class="btn-action-small" onclick="window.handleRestoreFromGoogleDrive('${escapeHTML(f.id)}')" title="Restaurar esta copia de seguridad">
                 🔄 Restaurar
               </button>
             </div>
@@ -5708,8 +5743,8 @@ function renderFlashcardSubjectChips() {
   subjects.forEach((sub) => {
     const isActive = AppState.flashcardsSubjectFilter === sub.id;
     html += `
-      <button type="button" class="filter-chip ${isActive ? 'active' : ''}" data-fc-subject="${sub.id}">
-        <span>${sub.icon || '📖'}</span> ${escapeHTML(sub.name)}
+      <button type="button" class="filter-chip ${isActive ? 'active' : ''}" data-fc-subject="${escapeHTML(sub.id)}">
+        <span>${escapeHTML(sub.icon || '📖')}</span> ${escapeHTML(sub.name)}
       </button>
     `;
   });
@@ -5793,9 +5828,9 @@ function renderStudySession() {
   const btnHint = document.getElementById('btn-toggle-study-hint');
 
   if (subPill) {
-    subPill.innerHTML = `<span>${sub?.icon || '📖'}</span> ${escapeHTML(sub?.name || 'Materia')}`;
-    subPill.style.background = sub?.color ? `${sub.color}22` : 'rgba(59, 130, 246, 0.15)';
-    subPill.style.color = sub?.color || 'var(--primary)';
+    subPill.innerHTML = `<span>${escapeHTML(sub?.icon || '📖')}</span> ${escapeHTML(sub?.name || 'Materia')}`;
+    subPill.style.background = sub?.color ? `${safeColor(sub.color)}22` : 'rgba(59, 130, 246, 0.15)';
+    subPill.style.color = sub?.color ? safeColor(sub.color, 'var(--primary)') : 'var(--primary)';
   }
 
   // Pips Leitner (Cajas 1 a 5)
@@ -5893,11 +5928,11 @@ function renderManageGrid() {
     const nextDate = c.nextReviewDate ? formatDateSpanish(c.nextReviewDate) : 'Hoy';
 
     return `
-      <div class="flashcard-item-card" id="card-${c.id}">
+      <div class="flashcard-item-card" id="card-${escapeHTML(c.id)}">
         <div>
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <span class="flashcard-subject-pill" style="background: ${sub?.color ? `${sub.color}22` : 'rgba(59,130,246,0.15)'}; color: ${sub?.color || 'var(--primary)'};">
-              ${sub?.icon || '📖'} ${escapeHTML(sub?.name || 'Materia')}
+            <span class="flashcard-subject-pill" style="background: ${sub?.color ? `${safeColor(sub.color)}22` : 'rgba(59,130,246,0.15)'}; color: ${safeColor(sub?.color, 'var(--primary)')};">
+              ${escapeHTML(sub?.icon || '📖')} ${escapeHTML(sub?.name || 'Materia')}
             </span>
             <div class="flashcard-box-indicator" title="Caja Leitner ${boxNum} de 5">
               ${pipsHtml}
@@ -5909,10 +5944,10 @@ function renderManageGrid() {
         <div class="flashcard-item-footer">
           <span>📅 Repaso: ${nextDate}</span>
           <div style="display: flex; gap: 6px;">
-            <button type="button" class="btn-action-small" onclick="window.handleEditFlashcard('${c.id}')" title="Editar ficha">
+            <button type="button" class="btn-action-small" onclick="window.handleEditFlashcard('${escapeHTML(c.id)}')" title="Editar ficha">
               ✏️
             </button>
-            <button type="button" class="btn-action-small danger" onclick="window.handleDeleteFlashcard('${c.id}')" title="Eliminar ficha">
+            <button type="button" class="btn-action-small danger" onclick="window.handleDeleteFlashcard('${escapeHTML(c.id)}')" title="Eliminar ficha">
               🗑️
             </button>
           </div>
@@ -6078,7 +6113,7 @@ function initFlashcardsModule() {
       writingFeedback.classList.remove('hidden');
       writingFeedback.style.background = res.isCorrect ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)';
       writingFeedback.style.color = res.isCorrect ? '#10b981' : '#ef4444';
-      writingFeedback.innerHTML = `<div>${res.feedback}</div><div style="font-size: 0.75rem; margin-top: 2px; opacity: 0.85;">Coincidencia: ${res.similarity}%</div>`;
+      writingFeedback.innerHTML = `<div>${escapeHTML(res.feedback)}</div><div style="font-size: 0.75rem; margin-top: 2px; opacity: 0.85;">Coincidencia: ${escapeHTML(res.similarity)}%</div>`;
     }
 
     // Voltear tras un breve instante para que el alumno compare visualmente
@@ -6669,7 +6704,9 @@ function initAIAssistantModule() {
     let html = text
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
 
     // Negrita
     html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
@@ -6678,7 +6715,7 @@ function initAIAssistantModule() {
     // Código inline
     html = html.replace(/`([^`]+)`/g, '<code style="background:var(--bg-input);padding:2px 5px;border-radius:4px;">$1</code>');
     // Enlaces markdown [texto](url)
-    html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" style="color:var(--primary);text-decoration:underline;">$1 ↗</a>');
+    html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\)"\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" style="color:var(--primary);text-decoration:underline;">$1 ↗</a>');
 
     // Listas con viñetas
     const lines = html.split('\n');
@@ -6741,7 +6778,7 @@ function initAIAssistantModule() {
 
           bodyHtml += `
             <div class="copilot-action-card">
-              <span class="copilot-action-card-text">${act.message || 'Acción completada'}</span>
+              <span class="copilot-action-card-text">${escapeHTML(act.message || 'Acción completada')}</span>
               ${targetTab ? `<button type="button" class="copilot-action-btn-go" data-nav-target="${targetTab}">${btnLabel} ➔</button>` : ''}
             </div>
           `;
@@ -6752,11 +6789,11 @@ function initAIAssistantModule() {
       if (webSearch) {
         bodyHtml += `
           <div class="copilot-web-card">
-            ${webSearch.thumbnail ? `<img src="${webSearch.thumbnail}" alt="${webSearch.title}" class="copilot-web-thumb" />` : ''}
+            ${webSearch.thumbnail ? `<img src="${escapeHTML(safeUrl(webSearch.thumbnail))}" alt="${escapeHTML(webSearch.title)}" class="copilot-web-thumb" />` : ''}
             <div class="copilot-web-body">
-              <div class="copilot-web-title">📚 ${webSearch.title}</div>
-              <div class="copilot-web-desc">${webSearch.extract.substring(0, 180)}...</div>
-              <a href="${webSearch.url}" target="_blank" rel="noopener noreferrer" class="copilot-web-link">Leer artículo completo en Wikipedia ↗</a>
+              <div class="copilot-web-title">📚 ${escapeHTML(webSearch.title)}</div>
+              <div class="copilot-web-desc">${escapeHTML((webSearch.extract || '').substring(0, 180))}...</div>
+              <a href="${escapeHTML(safeUrl(webSearch.url))}" target="_blank" rel="noopener noreferrer" class="copilot-web-link">Leer artículo completo en Wikipedia ↗</a>
             </div>
           </div>
         `;
@@ -6993,9 +7030,9 @@ function initAIAssistantModule() {
       if (flashcardAiResultsGrid) {
         flashcardAiResultsGrid.innerHTML = cards.map((c, i) => `
           <div class="flashcards-ai-item-preview">
-            <div class="front-text">❓ ${c.front}</div>
-            <div class="back-text">💡 ${c.back}</div>
-            ${c.hint ? `<div class="hint-text">🔑 Pista: ${c.hint}</div>` : ''}
+            <div class="front-text">❓ ${escapeHTML(c.front)}</div>
+            <div class="back-text">💡 ${escapeHTML(c.back)}</div>
+            ${c.hint ? `<div class="hint-text">🔑 Pista: ${escapeHTML(c.hint)}</div>` : ''}
           </div>
         `).join('');
       }
@@ -7298,7 +7335,7 @@ function renderCalendarView() {
     let badgesHtml = '';
     dayExams.forEach((e) => {
       const sub = AppState.subjects.find((s) => s.id === e.subjectId);
-      badgesHtml += `<div class="calendar-badge-event calendar-badge-exam" title="Examen: ${escapeHTML(e.title)}">📝 ${sub?.name || 'Examen'}</div>`;
+      badgesHtml += `<div class="calendar-badge-event calendar-badge-exam" title="Examen: ${escapeHTML(e.title)}">📝 ${escapeHTML(sub?.name || 'Examen')}</div>`;
     });
     dayTasks.forEach((t) => {
       badgesHtml += `<div class="calendar-badge-event calendar-badge-task" title="Tarea: ${escapeHTML(t.title)}">📋 ${escapeHTML(t.title)}</div>`;
@@ -7354,7 +7391,7 @@ function renderCalendarDayDetails(dateStr) {
       const sub = AppState.subjects.find((s) => s.id === e.subjectId);
       html += `
         <div class="card" style="margin-bottom: 6px; padding: 10px; border-left: 3px solid #ef4444;">
-          <strong>${escapeHTML(e.title)}</strong> - ${sub?.name || 'General'}
+          <strong>${escapeHTML(e.title)}</strong> - ${escapeHTML(sub?.name || 'General')}
           ${e.topics ? `<div style="font-size: 0.8rem; color: var(--text-muted);">${escapeHTML(e.topics)}</div>` : ''}
         </div>
       `;
@@ -7369,9 +7406,9 @@ function renderCalendarDayDetails(dateStr) {
         <div class="card" style="margin-bottom: 6px; padding: 10px; border-left: 3px solid #3b82f6; display: flex; justify-content: space-between; align-items: center;">
           <div>
             <div style="font-weight: 600; text-decoration: ${t.status === 'completed' ? 'line-through' : 'none'};">${escapeHTML(t.title)}</div>
-            <div style="font-size: 0.78rem; color: var(--text-muted);">${sub?.name || 'General'} • Prioridad ${t.priority || 'normal'}</div>
+            <div style="font-size: 0.78rem; color: var(--text-muted);">${escapeHTML(sub?.name || 'General')} • Prioridad ${escapeHTML(t.priority || 'normal')}</div>
           </div>
-          <input type="checkbox" class="task-checkbox" ${t.status === 'completed' ? 'checked' : ''} onchange="window.toggleTaskComplete('${t.id}')" />
+          <input type="checkbox" class="task-checkbox" ${t.status === 'completed' ? 'checked' : ''} onchange="window.toggleTaskComplete('${escapeHTML(t.id)}')" />
         </div>
       `;
     });
@@ -7458,9 +7495,9 @@ function renderScheduleMatrixView() {
       if (sub) {
         html += `
           <td>
-            <div class="matrix-cell-card" style="border-left-color: ${sub.color || '#3b82f6'};" onclick="window.openSlotModal(${d.num}, ${slot.index})">
-              <span>${sub.icon || '📖'} ${escapeHTML(sub.name)}</span>
-              <span class="matrix-cell-room">${match.classroom || sub.classroom || 'Aula'} • ${sub.teacher || ''}</span>
+            <div class="matrix-cell-card" style="border-left-color: ${safeColor(sub.color)};" onclick="window.openSlotModal(${d.num}, ${slot.index})">
+              <span>${escapeHTML(sub.icon || '📖')} ${escapeHTML(sub.name)}</span>
+              <span class="matrix-cell-room">${escapeHTML(match.classroom || sub.classroom || 'Aula')} • ${escapeHTML(sub.teacher || '')}</span>
             </div>
           </td>
         `;
@@ -7587,28 +7624,50 @@ function initFlashcardShareModule() {
     if (!file) return;
     try {
       const text = await file.text();
-      const parsed = JSON.parse(text);
-      const cards = Array.isArray(parsed.flashcards) ? parsed.flashcards : Array.isArray(parsed) ? parsed : [];
+      let parsed;
+      try {
+        parsed = JSON.parse(text);
+      } catch (parseErr) {
+        showToast('El archivo no es un JSON válido.', 'error');
+        return;
+      }
+
+      if (parsed === null || typeof parsed !== 'object') {
+        showToast('El archivo no contiene fichas válidas.', 'error');
+        return;
+      }
+
+      const rawCards = Array.isArray(parsed.flashcards) ? parsed.flashcards : Array.isArray(parsed) ? parsed : [];
+      // Validación estricta: cada ficha debe ser un objeto con 'front' y 'back' de texto
+      const cards = rawCards.filter((c) => (
+        c !== null &&
+        typeof c === 'object' &&
+        typeof c.front === 'string' && c.front.trim() !== '' &&
+        typeof c.back === 'string' && c.back.trim() !== ''
+      ));
+
       if (cards.length === 0) {
         showToast('El archivo no contiene fichas válidas.', 'error');
         return;
       }
+
       let importedCount = 0;
       for (const c of cards) {
-        if (!c.front || !c.back) continue;
         const newCard = createFlashcard({
-          subjectId: c.subjectId || AppState.subjects[0]?.id || 'sub_general',
-          front: c.front,
-          back: c.back,
-          hint: c.hint || ''
+          subjectId: typeof c.subjectId === 'string' && c.subjectId ? c.subjectId : (AppState.subjects[0]?.id || 'sub_general'),
+          front: c.front.slice(0, 5000),
+          back: c.back.slice(0, 5000),
+          hint: typeof c.hint === 'string' ? c.hint.slice(0, 2000) : ''
         });
         await saveItem('flashcards', newCard);
         AppState.flashcards.push(newCard);
         importedCount++;
       }
+      const skipped = rawCards.length - importedCount;
       addXP(importedCount * 5);
       renderFlashcardsView();
-      showToast(`📥 ¡Éxito! Se han importado ${importedCount} fichas de estudio (+${importedCount * 5} XP)`, 'success');
+      const skippedMsg = skipped > 0 ? ` (${skipped} descartada(s) por formato inválido)` : '';
+      showToast(`📥 ¡Éxito! Se han importado ${importedCount} fichas de estudio (+${importedCount * 5} XP)${skippedMsg}`, 'success');
     } catch (err) {
       showToast('Error al importar archivo de fichas: ' + err.message, 'error');
     }
@@ -7634,7 +7693,7 @@ function initMockTestModule() {
   if (selectSubject) {
     let opts = '<option value="all">Todas las asignaturas / General</option>';
     AppState.subjects.forEach((s) => {
-      opts += `<option value="${s.id}">${s.icon || '📖'} ${escapeHTML(s.name)}</option>`;
+      opts += `<option value="${escapeHTML(s.id)}">${escapeHTML(s.icon || '📖')} ${escapeHTML(s.name)}</option>`;
     });
     selectSubject.innerHTML = opts;
   }
@@ -7697,7 +7756,7 @@ function renderMockTestView() {
   if (selectSubject && selectSubject.children.length <= 1) {
     let opts = '<option value="all">Todas las asignaturas / General</option>';
     AppState.subjects.forEach((s) => {
-      opts += `<option value="${s.id}">${s.icon || '📖'} ${escapeHTML(s.name)}</option>`;
+      opts += `<option value="${escapeHTML(s.id)}">${escapeHTML(s.icon || '📖')} ${escapeHTML(s.name)}</option>`;
     });
     selectSubject.innerHTML = opts;
   }

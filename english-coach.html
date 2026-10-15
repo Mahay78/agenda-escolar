@@ -2311,7 +2311,7 @@
               <div class="bubble-body tutor-bubble">
                 <p>${escapeHTML(cfg.initialGreeting)}</p>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                  <button class="audio-play-btn" onclick="speakText('${escapeQuotes(cfg.initialGreeting)}')">
+                  <button class="audio-play-btn" onclick="speakText(${escapeQuotes(cfg.initialGreeting)})">
                     <span class="material-symbols-outlined" style="font-size: 14px; color: var(--primary);">volume_up</span>
                     <span>Escuchar Audio (UK)</span>
                   </button>
@@ -2484,7 +2484,7 @@ Pedagogical Guidelines for CEFR ${cfg.key}:
               <div class="bubble-body tutor-bubble">
                 <p>${escapeHTML(reply)}</p>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                  <button class="audio-play-btn" onclick="speakText('${escapeQuotes(reply)}')">
+                  <button class="audio-play-btn" onclick="speakText(${escapeQuotes(reply)})">
                     <span class="material-symbols-outlined" style="font-size: 14px; color: var(--primary);">volume_up</span>
                     <span>Escuchar Audio (UK)</span>
                   </button>
@@ -2514,7 +2514,13 @@ Pedagogical Guidelines for CEFR ${cfg.key}:
       }
 
       function escapeQuotes(str) {
-        return str.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, ' ');
+        // Serializa como literal JS seguro y lo escapa para el atributo HTML
+        const json = JSON.stringify(String(str ?? ''));
+        return json
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
       }
 
       if (btnSend) btnSend.addEventListener('click', sendSpeakingMessage);
@@ -2550,7 +2556,7 @@ Pedagogical Guidelines for CEFR ${cfg.key}:
                 </div>
                 <div class="bubble-body tutor-bubble">
                   <p id="tutor-initial-bubble-text">${escapeHTML(cfg.initialGreeting)}</p>
-                  <button class="audio-play-btn" onclick="speakText('${escapeQuotes(cfg.initialGreeting)}')">
+                  <button class="audio-play-btn" onclick="speakText(${escapeQuotes(cfg.initialGreeting)})">
                     <span class="material-symbols-outlined" style="font-size: 14px; color: var(--primary);">volume_up</span>
                     <span>Escuchar Audio (UK)</span>
                   </button>
@@ -2563,7 +2569,8 @@ Pedagogical Guidelines for CEFR ${cfg.key}:
       }
 
       function escapeHTML(str) {
-        return str.replace(/[&<>'"]/g, tag => ({
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/[&<>'"]/g, tag => ({
           '&': '&amp;',
           '<': '&lt;',
           '>': '&gt;',
@@ -2774,7 +2781,7 @@ Pedagogical Guidelines for CEFR ${cfg.key}:
         const cfg = LEVELS_CONFIG[cardLvl] || LEVELS_CONFIG.C1;
 
         document.getElementById('card-front-term').textContent = card.term;
-        document.getElementById('card-front-ipa').innerHTML = `<span>${card.ipa || ''}</span> <span>• Caja ${card.box || 1} • <strong style="color: ${cfg.color}">${cardLvl}</strong></span>`;
+        document.getElementById('card-front-ipa').innerHTML = `<span>${escapeHTML(card.ipa || '')}</span> <span>• Caja ${escapeHTML(card.box || 1)} • <strong style="color: ${cfg.color}">${escapeHTML(cardLvl)}</strong></span>`;
         document.getElementById('card-back-def').textContent = `“${card.def || ''}”`;
         document.getElementById('card-back-ex').textContent = card.ex ? `Ejemplo Examen: “${card.ex}”` : '';
         document.getElementById('card-back-trans').textContent = card.trans ? `Traducción: ${card.trans}` : '';
@@ -2839,7 +2846,7 @@ Pedagogical Guidelines for CEFR ${cfg.key}:
                   <span style="font-size: 0.7rem; font-family: var(--font-mono); font-weight: 700; color: var(--primary);">CAJA ${c.box || 1}</span>
                   <span class="level-badge-tag" style="background: ${cfg.bgLight}; color: ${cfg.color};">${cardLvl}</span>
                 </div>
-                <button class="audio-play-btn" style="margin: 0; padding: 2px 6px;" onclick="speakText('${escapeQuotes(c.term)}')">
+                <button class="audio-play-btn" style="margin: 0; padding: 2px 6px;" onclick="speakText(${escapeQuotes(c.term)})">
                   <span class="material-symbols-outlined" style="font-size: 14px;">volume_up</span>
                 </button>
               </div>

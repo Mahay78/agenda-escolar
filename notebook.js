@@ -34,8 +34,24 @@ const NotebookState = {
 function loadSources() {
   try {
     const raw = localStorage.getItem(NOTEBOOK_SOURCES_KEY);
-    if (raw) {
-      NotebookState.sources = JSON.parse(raw);
+    const parsed = raw ? JSON.parse(raw) : null;
+    if (Array.isArray(parsed)) {
+      // Validación: cada fuente debe ser un objeto con id, title y content de texto
+      NotebookState.sources = parsed.filter((s) => (
+        s !== null &&
+        typeof s === 'object' &&
+        typeof s.id === 'string' && s.id.trim() !== '' &&
+        typeof s.content === 'string'
+      )).map((s) => ({
+        id: s.id,
+        title: typeof s.title === 'string' ? s.title : 'Fuente sin título',
+        type: typeof s.type === 'string' ? s.type : 'text',
+        content: s.content,
+        date: typeof s.date === 'string' ? s.date : new Date().toLocaleDateString('es-ES'),
+        active: s.active === true
+      }));
+    } else {
+      NotebookState.sources = [];
     }
   } catch (e) {
     NotebookState.sources = [];
@@ -96,6 +112,12 @@ function getApiKey() {
   return localStorage.getItem(GEMINI_STORAGE_KEY) || '';
 }
 
+// Escapa texto para insertarlo de forma segura en HTML
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str).replace(/[&<>'"]/g, (tag) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+}
+
 // ==========================================================================
 // RENDERIZADO DE FUENTES
 // ==========================================================================
@@ -122,17 +144,17 @@ function renderSourcesList() {
   container.innerHTML = NotebookState.sources.map((src, index) => {
     const isChecked = NotebookState.activeSourceIds.has(src.id);
     return `
-      <div class="source-card ${isChecked ? 'selected' : ''}" data-source-id="${src.id}">
+      <div class="source-card ${isChecked ? 'selected' : ''}" data-source-id="${escapeHtml(src.id)}">
         <div class="source-header">
-          <input type="checkbox" class="source-checkbox" data-source-checkbox="${src.id}" ${isChecked ? 'checked' : ''} style="margin-top: 3px; cursor: pointer;" />
+          <input type="checkbox" class="source-checkbox" data-source-checkbox="${escapeHtml(src.id)}" ${isChecked ? 'checked' : ''} style="margin-top: 3px; cursor: pointer;" />
           <span class="source-icon">${src.type === 'image' ? '📸' : '📝'}</span>
           <div class="source-info">
-            <div class="source-title" title="${src.title}">${src.title}</div>
-            <div class="source-meta">Fuente ${index + 1} • ${src.date || 'Reciente'}</div>
+            <div class="source-title" title="${escapeHtml(src.title)}">${escapeHtml(src.title)}</div>
+            <div class="source-meta">Fuente ${index + 1} • ${escapeHtml(src.date || 'Reciente')}</div>
           </div>
-          <button type="button" class="btn-delete-source" data-delete-source="${src.id}" title="Eliminar fuente">✕</button>
+          <button type="button" class="btn-delete-source" data-delete-source="${escapeHtml(src.id)}" title="Eliminar fuente">✕</button>
         </div>
-        <div class="source-preview">${src.content || '(Foto / Imagen cargada)'}</div>
+        <div class="source-preview">${escapeHtml(src.content || '(Foto / Imagen cargada)')}</div>
       </div>
     `;
   }).join('');
@@ -483,7 +505,7 @@ function showStudioLoading(message) {
     container.innerHTML = `
       <div class="generated-artifact-card" style="text-align:center; padding: 40px 20px;">
         <div style="font-size: 2rem; margin-bottom: 12px; animation: spin 1s infinite linear;">✨</div>
-        <p style="font-weight: 700; color: #fff;">${message}</p>
+        <p style="font-weight: 700; color: #fff;">${escapeHtml(message)}</p>
         <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 6px;">Analizando tus fuentes y sintetizando el contenido...</p>
       </div>
     `;
@@ -499,7 +521,7 @@ function renderArtifactCard(title, markdownContent, hasExportButton = false) {
   container.innerHTML = `
     <div class="generated-artifact-card">
       <div class="artifact-header">
-        <h3>${title}</h3>
+        <h3>${escapeHtml(title)}</h3>
         <div class="artifact-actions">
           ${hasExportButton ? `
             <button type="button" id="btn-export-to-agenda-flashcards" class="btn-header-action" style="background:#10b981; color:#fff; border:none;" title="Añadir estas fichas al mazo de la Agenda Escolar">
@@ -582,7 +604,9 @@ function formatMarkdownToHTML(text) {
   let html = text
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 
   // Citas tipo [Fuente 1]
   html = html.replace(/\[Fuente\s*(\d+)\]/gi, '<span class="chat-citation" title="Cita a la Fuente $1">[Fuente $1]</span>');
