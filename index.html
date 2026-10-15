@@ -361,21 +361,33 @@
         </button>
       </div>
 
-      <!-- Filtros -->
-      <div class="filters-bar">
-        <button class="filter-chip active" data-task-filter="all">Todas</button>
-        <button class="filter-chip" data-task-filter="pending">⏳ Pendientes</button>
-        <button class="filter-chip" data-task-filter="today">📅 Para Hoy</button>
-        <button class="filter-chip" data-task-filter="week">📆 Esta Semana</button>
-        <button class="filter-chip" data-task-filter="photos">📸 Con Fotos</button>
-        <button class="filter-chip" data-task-filter="done">✅ Completadas</button>
+      <!-- Filtros + Vista de Doble Panel (Roadmap Item 43) -->
+      <div class="tasks-split" id="tasks-split">
+        <div class="tasks-split-main">
+          <div class="filters-bar">
+            <button class="filter-chip active" data-task-filter="all">Todas</button>
+            <button class="filter-chip" data-task-filter="pending">⏳ Pendientes</button>
+            <button class="filter-chip" data-task-filter="today">📅 Para Hoy</button>
+            <button class="filter-chip" data-task-filter="week">📆 Esta Semana</button>
+            <button class="filter-chip" data-task-filter="photos">📸 Con Fotos</button>
+            <button class="filter-chip" data-task-filter="done">✅ Completadas</button>
+            <button class="filter-chip" id="btn-toggle-task-selection" type="button" title="Selección múltiple: activa y pulsa sobre las tareas para seleccionarlas">☑️ Seleccionar</button>
+          </div>
+
+          <!-- Lista de tareas -->
+          <div id="tasks-container">
+            <p class="section-subtitle">Cargando tareas...</p>
+          </div>
+        </div>
+
+        <!-- Panel de detalle (pantallas anchas) -->
+        <aside id="task-detail-panel" class="task-detail-panel" aria-live="polite">
+          <div id="task-detail-content" class="task-detail-empty">
+            <p class="section-subtitle">Pulsa sobre una tarea para ver aquí todos sus detalles sin abrir ventanas.</p>
+          </div>
+        </aside>
       </div>
 
-      <!-- Lista de tareas -->
-      <div id="tasks-container">
-        <p class="section-subtitle">Cargando tareas...</p>
-      </div>
-    
       </div>
 
       <!-- Subpanel 2: Exámenes -->
@@ -409,6 +421,7 @@
         <div>
           <h2 class="section-title"><span>📅</span> Horario Escolar</h2>
           <p class="section-subtitle">Selecciona el día de la semana para ver y editar tus clases</p>
+          <span id="schedule-week-badge" class="badge hidden" style="margin-top: 8px; display: inline-block; background: var(--bg-input); padding: 4px 12px; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 700;"></span>
         </div>
         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
           <button id="btn-export-schedule-pdf" class="btn-primary" style="width: auto; display: inline-flex; align-items: center; gap: 6px;" title="Descargar Horario Oficial en PDF">
@@ -849,6 +862,11 @@
           <button id="pomo-mode-long" class="filter-chip" data-pomo-time="15">🌴 Descanso Largo (15m)</button>
         </div>
 
+        <div style="margin-bottom: 18px; text-align: left;">
+          <label for="pomo-subject-select" class="form-label" style="font-size: 0.8rem;">📚 Estudiando ahora (para las estadísticas)</label>
+          <select id="pomo-subject-select" class="form-select" aria-label="Asignatura que estás estudiando"></select>
+        </div>
+
         <div id="pomodoro-display" style="font-size: 4rem; font-weight: 800; font-variant-numeric: tabular-nums; margin: 10px 0; color: var(--text-main); letter-spacing: 2px;">25:00</div>
         <div id="pomodoro-status-text" class="section-subtitle" style="margin-bottom: 24px; font-weight: 600;">Modo Concentración 🎯</div>
 
@@ -868,6 +886,12 @@
             <div id="pomo-focus-time" style="font-size: 1.4rem; font-weight: 800; color: var(--success);">0 min</div>
             <div class="grade-metric-label">Tiempo Enfocado</div>
           </div>
+        </div>
+
+        <!-- Estadísticas de Tiempo por Asignatura (Roadmap Item 17) -->
+        <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-color); text-align: left;">
+          <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin-bottom: 12px;">📊 Tiempo de estudio por asignatura</div>
+          <div id="pomo-subject-stats"></div>
         </div>
 
         <!-- Selector de Sonido de Ambiente Modo Zen (Roadmap Items 16 & 53) -->
@@ -1311,6 +1335,77 @@
             Estado: Comprobando...
           </span>
         </div>
+
+        <!-- Recordatorio Inteligente Vespertino (Roadmap Item 9) -->
+        <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color);">
+          <h4 style="margin: 0 0 6px 0; font-size: 0.92rem;">🌙 Recordatorio vespertino inteligente</h4>
+          <p class="section-subtitle" style="margin-bottom: 12px;">
+            Un aviso por la tarde con las asignaturas de mañana y los deberes que te quedan pendientes.
+          </p>
+          <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+              <input type="checkbox" id="setting-evening-reminder" checked />
+              <span>Activar recordatorio</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px;">
+              <span>Hora:</span>
+              <input type="time" id="setting-evening-reminder-time" value="19:30" style="padding: 6px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-input); color: var(--text-main);" />
+            </label>
+            <button id="btn-test-evening-reminder" class="btn-secondary" style="width: auto;">
+              <span>🌙</span> Probar recordatorio
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tareas Recurrentes / Plantillas (Roadmap Item 12) -->
+      <div class="card">
+        <h3 class="section-title" style="margin-bottom: 12px;">🔁 Tareas Recurrentes (Plantillas)</h3>
+        <p class="section-subtitle" style="margin-bottom: 16px;">
+          Crea deberes que se repiten cada semana (p. ej. "Estudiar vocabulario de inglés"). Se añadirán solos a tu agenda el día que elijas.
+        </p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;">
+          <input type="text" id="recurring-title" placeholder="Título de la tarea" maxlength="120" style="grid-column: 1 / -1; padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-input); color: var(--text-main);" />
+          <select id="recurring-subject" aria-label="Asignatura de la plantilla" style="padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-input); color: var(--text-main);"></select>
+          <select id="recurring-weekday" aria-label="Día de la semana" style="padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-input); color: var(--text-main);">
+            <option value="1">Lunes</option>
+            <option value="2">Martes</option>
+            <option value="3">Miércoles</option>
+            <option value="4">Jueves</option>
+            <option value="5">Viernes</option>
+            <option value="6">Sábado</option>
+            <option value="7">Domingo</option>
+          </select>
+          <select id="recurring-priority" aria-label="Prioridad" style="padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-input); color: var(--text-main);">
+            <option value="baja">Prioridad Baja</option>
+            <option value="media" selected>Prioridad Normal</option>
+            <option value="alta">Prioridad Alta</option>
+          </select>
+          <button id="btn-add-recurring" class="btn-primary" style="width: auto; grid-column: 1 / -1;">➕ Añadir plantilla recurrente</button>
+        </div>
+        <div id="recurring-templates-list"></div>
+      </div>
+
+      <!-- Horarios Rotativos Semanas A/B (Roadmap Item 10) -->
+      <div class="card">
+        <h3 class="section-title" style="margin-bottom: 12px;">🔀 Horarios Rotativos (Semanas A/B)</h3>
+        <p class="section-subtitle" style="margin-bottom: 16px;">
+          Algunos institutos alternan dos horarios cada semana. Actívalo para asignar clases a la Semana A o B.
+        </p>
+        <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <input type="checkbox" id="setting-rotating-weeks" />
+            <span>Activar semanas rotativas A/B</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px;">
+            <span>Esta semana es:</span>
+            <select id="setting-rotating-parity" aria-label="Paridad de la semana A" style="padding: 6px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-input); color: var(--text-main);">
+              <option value="odd">Semana A (semanas impares)</option>
+              <option value="even">Semana A (semanas pares)</option>
+            </select>
+          </label>
+        </div>
+        <p class="section-subtitle" id="rotating-weeks-hint" style="margin-top: 12px;"></p>
       </div>
 
       <!-- Papelera de Reciclaje Temporal -->
@@ -1735,6 +1830,14 @@
         <div class="form-group">
           <label for="slot-classroom-input" class="form-label">Aula / Ubicación (Opcional)</label>
           <input type="text" id="slot-classroom-input" class="form-input" placeholder="Ej: Aula 201 o Gimnasio" />
+        </div>
+        <div class="form-group">
+          <label for="slot-variant-select" class="form-label">Semana (para horarios rotativos A/B)</label>
+          <select id="slot-variant-select" class="form-select" aria-label="Semana a la que se aplica esta clase">
+            <option value="all">Todas las semanas</option>
+            <option value="A">Solo Semana A</option>
+            <option value="B">Solo Semana B</option>
+          </select>
         </div>
         <button type="submit" class="btn-primary">💾 Guardar en Horario</button>
       </form>
@@ -2316,8 +2419,14 @@
         </div>
       </div>
 
+      <!-- Retos y Desafíos Semanales (Roadmap Item 27) -->
+      <h4 style="margin: 16px 0 10px 0; font-size: 0.95rem; color: var(--text-main);">🎯 Retos de la Semana</h4>
+      <div id="weekly-challenges-container" class="achievements-grid">
+        <!-- Renderizado dinámico de retos semanales -->
+      </div>
+
       <!-- Cuadrícula de Medallas y Trofeos -->
-      <h4 style="margin: 0 0 10px 0; font-size: 0.95rem; color: var(--text-main);">Medallas y Desafíos</h4>
+      <h4 style="margin: 16px 0 10px 0; font-size: 0.95rem; color: var(--text-main);">Medallas y Desafíos</h4>
       <div id="achievements-container" class="achievements-grid">
         <!-- Renderizado dinámico de logros -->
       </div>

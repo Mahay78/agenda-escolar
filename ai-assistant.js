@@ -1,6 +1,6 @@
 /**
  * ai-assistant.js - Copiloto Escolar Inteligente integrado en toda la Agenda
- * 
+ *
  * Capacidades:
  * 1. Conexión multimodal y razonamiento con Google Gemini 1.5 Flash (y respaldo local/offline).
  * 2. Function Calling / Action Dispatcher: Ejecuta acciones directas sobre la agenda:
@@ -110,7 +110,11 @@ export async function testGeminiApiKey(key) {
       const err = await res.json().catch(() => ({}));
       const msg = err.error?.message || `Error HTTP ${res.status}`;
 
-      if (res.status === 400 || msg.toLowerCase().includes('api key not valid') || msg.toLowerCase().includes('invalid')) {
+      if (
+        res.status === 400 ||
+        msg.toLowerCase().includes('api key not valid') ||
+        msg.toLowerCase().includes('invalid')
+      ) {
         return { ok: false, error: 'Clave no válida. Asegúrate de copiarla completa desde Google AI Studio.' };
       }
       if (res.status === 429) {
@@ -134,8 +138,7 @@ export async function testGeminiApiKey(key) {
  * Comprueba si la IA nativa del navegador/teléfono está disponible (Chrome Prompt API / Gemini Nano)
  */
 export function isDevicePromptAIAvailable() {
-  return typeof window !== 'undefined' && 
-         (Boolean(window.ai?.languageModel) || Boolean(window.model?.languageModel));
+  return typeof window !== 'undefined' && (Boolean(window.ai?.languageModel) || Boolean(window.model?.languageModel));
 }
 
 /**
@@ -144,8 +147,21 @@ export function isDevicePromptAIAvailable() {
 export function getFriendlyDateTime() {
   const now = new Date();
   const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-  const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-  
+  const months = [
+    'Enero',
+    'Febrero',
+    'Marzo',
+    'Abril',
+    'Mayo',
+    'Junio',
+    'Julio',
+    'Agosto',
+    'Septiembre',
+    'Octubre',
+    'Noviembre',
+    'Diciembre'
+  ];
+
   const dayName = days[now.getDay()];
   const dayNum = now.getDate();
   const monthName = months[now.getMonth()];
@@ -174,29 +190,38 @@ export function buildLiveStudentContext() {
   }
 
   // 1. Perfil del alumno
-  const studentName = state.studentInfo?.studentName || state.studentName || localStorage.getItem('agenda_student_name') || 'Estudiante';
-  const studentCourse = state.studentInfo?.course || state.studentCourse || localStorage.getItem('agenda_student_course') || 'Secundaria / Bachillerato';
+  const studentName =
+    state.studentInfo?.studentName || state.studentName || localStorage.getItem('agenda_student_name') || 'Estudiante';
+  const studentCourse =
+    state.studentInfo?.course ||
+    state.studentCourse ||
+    localStorage.getItem('agenda_student_course') ||
+    'Secundaria / Bachillerato';
 
   // 2. Asignaturas disponibles
   const subjectsMap = {};
-  (state.subjects || []).forEach(s => {
+  (state.subjects || []).forEach((s) => {
     subjectsMap[s.id] = s.name;
   });
-  const subjectsListStr = (state.subjects || []).map(s => `- ID: "${s.id}" -> ${s.name} (Aula: ${s.room || 'General'}, Profesor: ${s.teacher || 'N/A'})`).join('\n');
+  const subjectsListStr = (state.subjects || [])
+    .map((s) => `- ID: "${s.id}" -> ${s.name} (Aula: ${s.room || 'General'}, Profesor: ${s.teacher || 'N/A'})`)
+    .join('\n');
 
   // 3. Horario de hoy y de mañana
   const todayDayIndex = dayOfWeek >= 1 && dayOfWeek <= 5 ? dayOfWeek : 1;
   const tomorrowDayIndex = (todayDayIndex % 5) + 1;
 
   const getScheduleForDay = (d) => {
-    return (state.schedule || [])
-      .filter(entry => Number(entry.day) === d)
-      .sort((a, b) => (Number(a.period) || 0) - (Number(b.period) || 0))
-      .map(entry => {
-        const subName = subjectsMap[entry.subjectId] || 'Clase';
-        return `   • Periodo ${entry.period || 1} (${entry.startTime || ''}-${entry.endTime || ''}): ${subName} (Aula: ${entry.room || 'Aula habitual'})`;
-      })
-      .join('\n') || '   • No hay clases registradas para este día.';
+    return (
+      (state.schedule || [])
+        .filter((entry) => Number(entry.day) === d)
+        .sort((a, b) => (Number(a.period) || 0) - (Number(b.period) || 0))
+        .map((entry) => {
+          const subName = subjectsMap[entry.subjectId] || 'Clase';
+          return `   • Periodo ${entry.period || 1} (${entry.startTime || ''}-${entry.endTime || ''}): ${subName} (Aula: ${entry.room || 'Aula habitual'})`;
+        })
+        .join('\n') || '   • No hay clases registradas para este día.'
+    );
   };
 
   const scheduleTodayStr = getScheduleForDay(todayDayIndex);
@@ -204,34 +229,40 @@ export function buildLiveStudentContext() {
 
   // 4. Deberes pendientes
   const pendingTasks = (state.tasks || [])
-    .filter(t => t.status !== 'completed' && !t.completed)
+    .filter((t) => t.status !== 'completed' && !t.completed)
     .sort((a, b) => (a.dueDate || '9999').localeCompare(b.dueDate || '9999'))
     .slice(0, 10);
 
-  const tasksStr = pendingTasks.map(t => {
-    const subName = subjectsMap[t.subjectId] || 'General';
-    return `   • [${t.dueDate || 'Sin fecha'}] ${subName}: ${t.title} (Prioridad: ${t.priority || 'normal'})`;
-  }).join('\n') || '   • ¡No hay deberes pendientes! Todo al día.';
+  const tasksStr =
+    pendingTasks
+      .map((t) => {
+        const subName = subjectsMap[t.subjectId] || 'General';
+        return `   • [${t.dueDate || 'Sin fecha'}] ${subName}: ${t.title} (Prioridad: ${t.priority || 'normal'})`;
+      })
+      .join('\n') || '   • ¡No hay deberes pendientes! Todo al día.';
 
   // 5. Próximos exámenes
   const upcomingExams = (state.exams || [])
-    .filter(e => !e.completed && (e.date || '') >= isoDate)
+    .filter((e) => !e.completed && (e.date || '') >= isoDate)
     .sort((a, b) => (a.date || '').localeCompare(b.date || ''))
     .slice(0, 5);
 
-  const examsStr = upcomingExams.map(e => {
-    const subName = subjectsMap[e.subjectId] || 'General';
-    return `   • [${e.date}] ${subName}: ${e.title} (Temas: ${e.topics || 'Temario general'})`;
-  }).join('\n') || '   • No hay exámenes programados próximamente.';
+  const examsStr =
+    upcomingExams
+      .map((e) => {
+        const subName = subjectsMap[e.subjectId] || 'General';
+        return `   • [${e.date}] ${subName}: ${e.title} (Temas: ${e.topics || 'Temario general'})`;
+      })
+      .join('\n') || '   • No hay exámenes programados próximamente.';
 
   // 6. Mochila / Materiales
   const materials = state.materials || [];
-  const checkedMaterialsCount = materials.filter(m => m.checked).length;
+  const checkedMaterialsCount = materials.filter((m) => m.checked).length;
   const totalMaterials = materials.length;
 
   // 7. Fichas de estudio
   const flashcards = state.flashcards || [];
-  const dueFlashcards = flashcards.filter(f => !f.nextReviewDate || f.nextReviewDate <= isoDate).length;
+  const dueFlashcards = flashcards.filter((f) => !f.nextReviewDate || f.nextReviewDate <= isoDate).length;
 
   return `
 --- CONTEXTO VIVO DEL ESTUDIANTE ---
@@ -287,7 +318,7 @@ export async function searchAcademicWeb(query) {
       extract: summaryData.extract || hits[0].snippet.replace(/<[^>]+>/g, ''),
       url: summaryData.content_urls?.desktop?.page || `https://es.wikipedia.org/wiki/${encodeURIComponent(bestTitle)}`,
       thumbnail: summaryData.thumbnail?.source || null,
-      related: hits.slice(1).map(h => ({
+      related: hits.slice(1).map((h) => ({
         title: h.title,
         url: `https://es.wikipedia.org/wiki/${encodeURIComponent(h.title)}`
       }))
@@ -309,10 +340,10 @@ export async function searchAcademicWeb(query) {
 export async function generateFlashcardsWithAI({ text, subjectId = 'all', count = 4, topic = '' }) {
   const apiKey = await getAIApiKey();
   const state = appActionCallbacks.getAppState ? appActionCallbacks.getAppState() : null;
-  
+
   // Asignatura de respaldo
-  const targetSubId = subjectId !== 'all' ? subjectId : (state?.subjects?.[0]?.id || 'sub_general');
-  const targetSubName = state?.subjects?.find(s => s.id === targetSubId)?.name || 'General';
+  const targetSubId = subjectId !== 'all' ? subjectId : state?.subjects?.[0]?.id || 'sub_general';
+  const targetSubName = state?.subjects?.find((s) => s.id === targetSubId)?.name || 'General';
 
   // Si hay API Key de Gemini, usar la IA avanzada
   if (apiKey) {
@@ -361,7 +392,7 @@ RESPONDE ÚNICAMENTE CON UN OBJETO JSON VÁLIDO CON ESTA ESTRUCTURA EXACTA (SIN 
             const jsonText = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
             const parsed = JSON.parse(jsonText);
             if (Array.isArray(parsed.flashcards) && parsed.flashcards.length > 0) {
-              return parsed.flashcards.map(c => ({
+              return parsed.flashcards.map((c) => ({
                 subjectId: targetSubId,
                 front: c.front || '',
                 back: c.back || '',
@@ -393,7 +424,7 @@ RESPONDE ÚNICAMENTE CON UN OBJETO JSON VÁLIDO CON ESTA ESTRUCTURA EXACTA (SIN 
 export async function generateMockTestWithAI({ subjectId = 'all', topic = '', questionCount = 5, customText = '' }) {
   const apiKey = await getAIApiKey();
   const state = appActionCallbacks.getAppState ? appActionCallbacks.getAppState() : null;
-  const targetSub = state?.subjects?.find(s => s.id === subjectId);
+  const targetSub = state?.subjects?.find((s) => s.id === subjectId);
   const subjectName = targetSub?.name || 'General';
   const cleanTopic = topic || 'Conceptos clave de la asignatura';
 
@@ -471,7 +502,7 @@ RESPONDE ÚNICAMENTE CON UN OBJETO JSON VÁLIDO CON ESTA ESTRUCTURA EXACTA (SIN 
  * Generador offline de simulacros de examen a partir de fichas o banco didáctico local
  */
 function generateOfflineMockTest(subjectName, topic, count, state, subjectId) {
-  const cards = (state?.flashcards || []).filter(c => subjectId === 'all' || c.subjectId === subjectId);
+  const cards = (state?.flashcards || []).filter((c) => subjectId === 'all' || c.subjectId === subjectId);
   const questions = [];
 
   if (cards.length >= 3) {
@@ -481,8 +512,8 @@ function generateOfflineMockTest(subjectName, topic, count, state, subjectId) {
     selected.forEach((card, idx) => {
       // Tomar distractores de otras fichas
       const otherAnswers = shuffled
-        .filter(c => c.id !== card.id)
-        .map(c => c.back.length > 60 ? c.back.substring(0, 57) + '...' : c.back)
+        .filter((c) => c.id !== card.id)
+        .map((c) => (c.back.length > 60 ? c.back.substring(0, 57) + '...' : c.back))
         .slice(0, 3);
 
       const correctAnswer = card.back.length > 60 ? card.back.substring(0, 57) + '...' : card.back;
@@ -492,7 +523,7 @@ function generateOfflineMockTest(subjectName, topic, count, state, subjectId) {
       }
       // Mezclar opciones
       const shuffledOpts = allOpts.map((opt, i) => ({ opt, original: i === 0 })).sort(() => 0.5 - Math.random());
-      const correctIndex = shuffledOpts.findIndex(o => o.original);
+      const correctIndex = shuffledOpts.findIndex((o) => o.original);
       const letters = ['A', 'B', 'C', 'D'];
 
       questions.push({
@@ -565,7 +596,10 @@ function generateOfflineMockTest(subjectName, topic, count, state, subjectId) {
  */
 function extractLocalFlashcardsHeuristic(text, subjectId, maxCount = 4) {
   if (!text) return [];
-  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  const lines = text
+    .split('\n')
+    .map((l) => l.trim())
+    .filter(Boolean);
   const cards = [];
 
   // Patrón 1: Concepto: Definición o Concepto - Definición
@@ -605,7 +639,10 @@ function extractLocalFlashcardsHeuristic(text, subjectId, maxCount = 4) {
 
   // Patrón 3: Si no detectó suficientes, crear preguntas de resumen por párrafos
   if (cards.length === 0) {
-    const paragraphs = text.split(/\n\s*\n/).map(p => p.trim()).filter(p => p.length > 25);
+    const paragraphs = text
+      .split(/\n\s*\n/)
+      .map((p) => p.trim())
+      .filter((p) => p.length > 25);
     for (let i = 0; i < Math.min(paragraphs.length, maxCount); i++) {
       const p = paragraphs[i];
       const firstSentence = p.split('.')[0] + '.';
@@ -773,7 +810,7 @@ export async function askAIAssistant({ userMessage, imageBase64 = null, history 
 
     // Incluir mensajes previos de historial si existen
     const recentHistory = (history || []).slice(-6);
-    recentHistory.forEach(item => {
+    recentHistory.forEach((item) => {
       contents.push({
         role: item.role === 'user' ? 'user' : 'model',
         parts: [{ text: item.text }]
@@ -813,11 +850,14 @@ export async function askAIAssistant({ userMessage, imageBase64 = null, history 
 
     for (const model of candidateModels) {
       try {
-        response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
+        response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          }
+        );
         if (response.ok) break;
         if (response.status === 404) continue;
         break;
@@ -827,17 +867,26 @@ export async function askAIAssistant({ userMessage, imageBase64 = null, history 
     if (!response.ok) {
       const errJson = await response.json().catch(() => ({}));
       const rawMsg = errJson.error?.message || `Error HTTP ${response.status}`;
-      if (response.status === 400 || rawMsg.toLowerCase().includes('api key not valid') || rawMsg.toLowerCase().includes('invalid')) {
-        throw new Error('Tu clave de Google Gemini no es válida o está incompleta. Pulsa en ⚙️ para revisarla o crear una nueva gratis en Google AI Studio.');
+      if (
+        response.status === 400 ||
+        rawMsg.toLowerCase().includes('api key not valid') ||
+        rawMsg.toLowerCase().includes('invalid')
+      ) {
+        throw new Error(
+          'Tu clave de Google Gemini no es válida o está incompleta. Pulsa en ⚙️ para revisarla o crear una nueva gratis en Google AI Studio.'
+        );
       }
       if (response.status === 429) {
-        throw new Error('Se ha superado temporalmente la cuota gratuita de Gemini. Espera unos momentos y vuelve a preguntar.');
+        throw new Error(
+          'Se ha superado temporalmente la cuota gratuita de Gemini. Espera unos momentos y vuelve a preguntar.'
+        );
       }
       throw new Error(rawMsg);
     }
 
     const resData = await response.json();
-    let rawReply = resData.candidates?.[0]?.content?.parts?.[0]?.text || 'No pude procesar la respuesta en este momento.';
+    let rawReply =
+      resData.candidates?.[0]?.content?.parts?.[0]?.text || 'No pude procesar la respuesta en este momento.';
 
     // Procesar y ejecutar acciones estructuradas emitidas por la IA
     const { cleanText, executedActions } = await processAndExecuteActions(rawReply);
@@ -892,12 +941,13 @@ async function executeSingleAction(actionObj) {
   // Resolver ID de asignatura por nombre si vino como texto
   const resolveSubjectId = (subQuery) => {
     if (!subQuery || !state?.subjects) return state?.subjects?.[0]?.id || 'sub_general';
-    const found = state.subjects.find(s => 
-      s.id === subQuery || 
-      s.name.toLowerCase().includes(subQuery.toLowerCase()) || 
-      subQuery.toLowerCase().includes(s.name.toLowerCase())
+    const found = state.subjects.find(
+      (s) =>
+        s.id === subQuery ||
+        s.name.toLowerCase().includes(subQuery.toLowerCase()) ||
+        subQuery.toLowerCase().includes(s.name.toLowerCase())
     );
-    return found ? found.id : (state.subjects[0]?.id || 'sub_general');
+    return found ? found.id : state.subjects[0]?.id || 'sub_general';
   };
 
   switch (action) {
@@ -923,7 +973,7 @@ async function executeSingleAction(actionObj) {
       if (state?.tasks) state.tasks.push(task);
       if (appActionCallbacks.onTaskCreated) appActionCallbacks.onTaskCreated(task);
 
-      const subName = state?.subjects?.find(s => s.id === subId)?.name || 'Asignatura';
+      const subName = state?.subjects?.find((s) => s.id === subId)?.name || 'Asignatura';
       return {
         type: 'task_created',
         message: `✅ Tarea añadida a **${subName}**: "${task.title}" (para el ${task.dueDate})`,
@@ -948,7 +998,7 @@ async function executeSingleAction(actionObj) {
       if (state?.exams) state.exams.push(exam);
       if (appActionCallbacks.onExamCreated) appActionCallbacks.onExamCreated(exam);
 
-      const subName = state?.subjects?.find(s => s.id === subId)?.name || 'Asignatura';
+      const subName = state?.subjects?.find((s) => s.id === subId)?.name || 'Asignatura';
       return {
         type: 'exam_created',
         message: `📝 Examen agendado en **${subName}**: "${exam.title}" el día ${exam.date}`,
@@ -976,7 +1026,7 @@ async function executeSingleAction(actionObj) {
 
       if (appActionCallbacks.onFlashcardsCreated) appActionCallbacks.onFlashcardsCreated(createdCards);
 
-      const subName = state?.subjects?.find(s => s.id === subId)?.name || 'Asignatura';
+      const subName = state?.subjects?.find((s) => s.id === subId)?.name || 'Asignatura';
       return {
         type: 'flashcards_created',
         message: `🧠 Se han creado y guardado **${createdCards.length} fichas de estudio** en **${subName}**.`,
@@ -1021,7 +1071,7 @@ async function handleOfflineLocalAssistant(userMessage, webSearchResult = null) 
 
   // 1. ¿Qué tengo hoy? / Deberes de hoy
   if (lower.includes('qué tengo') || lower.includes('deberes') || lower.includes('tareas')) {
-    const pending = (state?.tasks || []).filter(t => t.status !== 'completed' && !t.completed);
+    const pending = (state?.tasks || []).filter((t) => t.status !== 'completed' && !t.completed);
     if (pending.length === 0) {
       return {
         replyText: `🎉 **¡Buenas noticias!** Hoy (${dateString}) no tienes ningún deber pendiente registrado. ¡Todo al día!`,
@@ -1029,10 +1079,12 @@ async function handleOfflineLocalAssistant(userMessage, webSearchResult = null) 
         webSearch: null
       };
     }
-    const list = pending.map(t => {
-      const sName = state?.subjects?.find(s => s.id === t.subjectId)?.name || 'General';
-      return `• **${sName}**: ${t.title} *(Entrega: ${t.dueDate || 'Sin fecha'})*`;
-    }).join('\n');
+    const list = pending
+      .map((t) => {
+        const sName = state?.subjects?.find((s) => s.id === t.subjectId)?.name || 'General';
+        return `• **${sName}**: ${t.title} *(Entrega: ${t.dueDate || 'Sin fecha'})*`;
+      })
+      .join('\n');
 
     return {
       replyText: `📋 **Tus deberes pendientes para estos días:**\n\n${list}\n\n💡 *Consejo:* Puedes pedirme: *"Iniciar pomodoro de 25 minutos"* para comenzar a hacerlos.`,
@@ -1045,7 +1097,7 @@ async function handleOfflineLocalAssistant(userMessage, webSearchResult = null) 
   if (lower.includes('horario') || lower.includes('clase') || lower.includes('aula') || lower.includes('toca')) {
     const todayIndex = dayOfWeek >= 1 && dayOfWeek <= 5 ? dayOfWeek : 1;
     const entries = (state?.schedule || [])
-      .filter(e => Number(e.day) === todayIndex)
+      .filter((e) => Number(e.day) === todayIndex)
       .sort((a, b) => (Number(a.period) || 0) - (Number(b.period) || 0));
 
     if (entries.length === 0) {
@@ -1056,10 +1108,12 @@ async function handleOfflineLocalAssistant(userMessage, webSearchResult = null) 
       };
     }
 
-    const scheduleList = entries.map(e => {
-      const sName = state?.subjects?.find(s => s.id === e.subjectId)?.name || 'Clase';
-      return `• **${e.startTime || ''} - ${e.endTime || ''}**: ${sName} *(Aula: ${e.room || 'General'})*`;
-    }).join('\n');
+    const scheduleList = entries
+      .map((e) => {
+        const sName = state?.subjects?.find((s) => s.id === e.subjectId)?.name || 'Clase';
+        return `• **${e.startTime || ''} - ${e.endTime || ''}**: ${sName} *(Aula: ${e.room || 'General'})*`;
+      })
+      .join('\n');
 
     return {
       replyText: `📅 **Horario escolar para hoy (${dateString}):**\n\n${scheduleList}`,
@@ -1071,7 +1125,7 @@ async function handleOfflineLocalAssistant(userMessage, webSearchResult = null) 
   // 3. Mochila
   if (lower.includes('mochila') || lower.includes('libros')) {
     const materials = state?.materials || [];
-    const missing = materials.filter(m => !m.checked);
+    const missing = materials.filter((m) => !m.checked);
     if (missing.length === 0) {
       return {
         replyText: `🎒 **¡Mochila 100% lista!** Todos los libros y materiales están marcados como guardados.`,
@@ -1079,7 +1133,7 @@ async function handleOfflineLocalAssistant(userMessage, webSearchResult = null) 
         webSearch: null
       };
     }
-    const missingList = missing.map(m => `• ⭕ ${m.name}`).join('\n');
+    const missingList = missing.map((m) => `• ⭕ ${m.name}`).join('\n');
     return {
       replyText: `🎒 **Aún te faltan por meter en la mochila:**\n\n${missingList}\n\n*Revisa que no se te olvide nada antes de salir.*`,
       actionsExecuted: [],
@@ -1103,7 +1157,7 @@ async function handleOfflineLocalAssistant(userMessage, webSearchResult = null) 
 
   // 5. Exámenes
   if (lower.includes('examen') || lower.includes('exámenes')) {
-    const exams = (state?.exams || []).filter(e => !e.completed && (e.date || '') >= isoDate);
+    const exams = (state?.exams || []).filter((e) => !e.completed && (e.date || '') >= isoDate);
     if (exams.length === 0) {
       return {
         replyText: `📝 No tienes ningún examen próximo agendado. ¡Momento ideal para repasar fichas!`,
@@ -1111,10 +1165,12 @@ async function handleOfflineLocalAssistant(userMessage, webSearchResult = null) 
         webSearch: null
       };
     }
-    const examList = exams.map(e => {
-      const sName = state?.subjects?.find(s => s.id === e.subjectId)?.name || 'General';
-      return `• 📌 **${e.date}** -> **${sName}**: ${e.title} *(Temas: ${e.topics || 'Temario'})*`;
-    }).join('\n');
+    const examList = exams
+      .map((e) => {
+        const sName = state?.subjects?.find((s) => s.id === e.subjectId)?.name || 'General';
+        return `• 📌 **${e.date}** -> **${sName}**: ${e.title} *(Temas: ${e.topics || 'Temario'})*`;
+      })
+      .join('\n');
 
     return {
       replyText: `📝 **Tus próximos exámenes:**\n\n${examList}`,
@@ -1134,7 +1190,10 @@ async function handleOfflineLocalAssistant(userMessage, webSearchResult = null) 
 
   // 7. Búsqueda enciclopédica automática de dudas escolares en Wikipedia
   const cleanSubject = userMessage
-    .replace(/^(?:hola|buenas|hey|oye|por favor|dime|sabes|puedes|explícame|explica|cuéntame|qué es|que es|quién fue|quien fue|quién era|quien era|cuál es|cual es|cómo funciona|como funciona|definición de|definicion de|concepto de|resumen de|información de|informacion de|busca|investiga)\s+/i, '')
+    .replace(
+      /^(?:hola|buenas|hey|oye|por favor|dime|sabes|puedes|explícame|explica|cuéntame|qué es|que es|quién fue|quien fue|quién era|quien era|cuál es|cual es|cómo funciona|como funciona|definición de|definicion de|concepto de|resumen de|información de|informacion de|busca|investiga)\s+/i,
+      ''
+    )
     .replace(/[¿?\.\!¡]/g, '')
     .trim();
 
@@ -1212,9 +1271,24 @@ export function speakText(text, onEnd, lang = 'es-ES') {
   const voices = window.speechSynthesis.getVoices();
   let selectedVoice = null;
   if (lang.startsWith('en')) {
-    selectedVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Samantha') || v.name.includes('Daniel') || v.name.includes('George')));
+    selectedVoice = voices.find(
+      (v) =>
+        v.lang.startsWith('en') &&
+        (v.name.includes('Google') ||
+          v.name.includes('Natural') ||
+          v.name.includes('Samantha') ||
+          v.name.includes('Daniel') ||
+          v.name.includes('George'))
+    );
   } else {
-    selectedVoice = voices.find(v => v.lang.startsWith('es') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Helena') || v.name.includes('Pablo')));
+    selectedVoice = voices.find(
+      (v) =>
+        v.lang.startsWith('es') &&
+        (v.name.includes('Google') ||
+          v.name.includes('Natural') ||
+          v.name.includes('Helena') ||
+          v.name.includes('Pablo'))
+    );
   }
   if (selectedVoice) {
     utterance.voice = selectedVoice;

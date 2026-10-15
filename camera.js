@@ -189,29 +189,41 @@ function initZoomControls() {
 
   // Gesto táctil Pinch-to-Zoom en el video
   if (cameraVideo) {
-    cameraVideo.addEventListener('touchstart', (e) => {
-      if (e.touches.length === 2) {
-        const dx = e.touches[0].clientX - e.touches[1].clientX;
-        const dy = e.touches[0].clientY - e.touches[1].clientY;
-        initialPinchDistance = Math.hypot(dx, dy);
-        initialPinchZoom = currentZoom;
-      }
-    }, { passive: true });
+    cameraVideo.addEventListener(
+      'touchstart',
+      (e) => {
+        if (e.touches.length === 2) {
+          const dx = e.touches[0].clientX - e.touches[1].clientX;
+          const dy = e.touches[0].clientY - e.touches[1].clientY;
+          initialPinchDistance = Math.hypot(dx, dy);
+          initialPinchZoom = currentZoom;
+        }
+      },
+      { passive: true }
+    );
 
-    cameraVideo.addEventListener('touchmove', (e) => {
-      if (e.touches.length === 2 && initialPinchDistance) {
-        const dx = e.touches[0].clientX - e.touches[1].clientX;
-        const dy = e.touches[0].clientY - e.touches[1].clientY;
-        const dist = Math.hypot(dx, dy);
-        const factor = dist / initialPinchDistance;
-        const targetZoom = Math.min(Math.max(initialPinchZoom * factor, 1), 4);
-        applyZoom(targetZoom);
-      }
-    }, { passive: true });
+    cameraVideo.addEventListener(
+      'touchmove',
+      (e) => {
+        if (e.touches.length === 2 && initialPinchDistance) {
+          const dx = e.touches[0].clientX - e.touches[1].clientX;
+          const dy = e.touches[0].clientY - e.touches[1].clientY;
+          const dist = Math.hypot(dx, dy);
+          const factor = dist / initialPinchDistance;
+          const targetZoom = Math.min(Math.max(initialPinchZoom * factor, 1), 4);
+          applyZoom(targetZoom);
+        }
+      },
+      { passive: true }
+    );
 
-    cameraVideo.addEventListener('touchend', () => {
-      initialPinchDistance = null;
-    }, { passive: true });
+    cameraVideo.addEventListener(
+      'touchend',
+      () => {
+        initialPinchDistance = null;
+      },
+      { passive: true }
+    );
   }
 
   // Zoom de inspección en vista previa de la foto

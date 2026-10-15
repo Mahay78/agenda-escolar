@@ -31,18 +31,26 @@ export function initAnnotationModule() {
   canvas.addEventListener('mouseleave', endDraw);
 
   // Soporte táctil en móviles
-  canvas.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    const touch = e.touches[0];
-    const rect = canvas.getBoundingClientRect();
-    startDraw({ clientX: touch.clientX, clientY: touch.clientY });
-  }, { passive: false });
+  canvas.addEventListener(
+    'touchstart',
+    (e) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      const rect = canvas.getBoundingClientRect();
+      startDraw({ clientX: touch.clientX, clientY: touch.clientY });
+    },
+    { passive: false }
+  );
 
-  canvas.addEventListener('touchmove', (e) => {
-    e.preventDefault();
-    const touch = e.touches[0];
-    draw({ clientX: touch.clientX, clientY: touch.clientY });
-  }, { passive: false });
+  canvas.addEventListener(
+    'touchmove',
+    (e) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      draw({ clientX: touch.clientX, clientY: touch.clientY });
+    },
+    { passive: false }
+  );
 
   canvas.addEventListener('touchend', endDraw);
 

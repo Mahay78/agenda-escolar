@@ -107,7 +107,12 @@ server.listen(PORT, '0.0.0.0', () => {
   console.log('Pulsa Ctrl + C en esta consola para detener el servidor.\n');
 
   // Abrir navegador en Windows automáticamente
-  const startCommand = process.platform === 'win32' ? `start ${localUrl}` : process.platform === 'darwin' ? `open ${localUrl}` : `xdg-open ${localUrl}`;
+  const startCommand =
+    process.platform === 'win32'
+      ? `start ${localUrl}`
+      : process.platform === 'darwin'
+        ? `open ${localUrl}`
+        : `xdg-open ${localUrl}`;
   exec(startCommand, (err) => {
     if (err) console.log('Abre la URL en tu navegador:', localUrl);
   });

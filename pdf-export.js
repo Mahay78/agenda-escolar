@@ -36,14 +36,17 @@ async function loadJsPDF() {
 
 /**
  * Convierte color HEX a RGB [r, g, b]
- * @param {string} hex 
+ * @param {string} hex
  * @returns {[number, number, number]}
  */
 function hexToRgb(hex) {
   if (!hex || typeof hex !== 'string') return [70, 70, 70];
   let clean = hex.replace('#', '');
   if (clean.length === 3) {
-    clean = clean.split('').map(c => c + c).join('');
+    clean = clean
+      .split('')
+      .map((c) => c + c)
+      .join('');
   }
   const num = parseInt(clean, 16);
   if (isNaN(num)) return [70, 70, 70];
@@ -52,10 +55,10 @@ function hexToRgb(hex) {
 
 /**
  * Exporta el Horario Semanal a PDF apaisado de alta calidad
- * @param {Array} schedule 
- * @param {Array} subjects 
- * @param {Array} timeSlots 
- * @param {Object} studentInfo 
+ * @param {Array} schedule
+ * @param {Array} subjects
+ * @param {Array} timeSlots
+ * @param {Object} studentInfo
  */
 export async function exportSchedulePDF(schedule, subjects = [], timeSlots = [], studentInfo = {}) {
   const jsPDF = await loadJsPDF();
@@ -69,7 +72,7 @@ export async function exportSchedulePDF(schedule, subjects = [], timeSlots = [],
   const pageHeight = 210;
   const margin = 14;
 
-  const subjectMap = new Map((subjects || []).map(s => [s.id, s]));
+  const subjectMap = new Map((subjects || []).map((s) => [s.id, s]));
   const days = ['LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES'];
 
   // Encabezado decorativo
@@ -103,7 +106,7 @@ export async function exportSchedulePDF(schedule, subjects = [], timeSlots = [],
 
   doc.text('HORA', margin + colTimeWidth / 2, tableStartY + 5.5, { align: 'center' });
   days.forEach((day, i) => {
-    const x = margin + colTimeWidth + (i * colDayWidth) + (colDayWidth / 2);
+    const x = margin + colTimeWidth + i * colDayWidth + colDayWidth / 2;
     doc.text(day, x, tableStartY + 5.5, { align: 'center' });
   });
 
@@ -133,17 +136,19 @@ export async function exportSchedulePDF(schedule, subjects = [], timeSlots = [],
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(8);
     doc.setTextColor(30, 41, 59);
-    doc.text(slot.label || '', margin + colTimeWidth / 2, currentY + (rowHeight / 2) - 2, { align: 'center' });
+    doc.text(slot.label || '', margin + colTimeWidth / 2, currentY + rowHeight / 2 - 2, { align: 'center' });
 
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(7);
     doc.setTextColor(100, 116, 139);
-    doc.text(`${slot.start} - ${slot.end}`, margin + colTimeWidth / 2, currentY + (rowHeight / 2) + 3, { align: 'center' });
+    doc.text(`${slot.start} - ${slot.end}`, margin + colTimeWidth / 2, currentY + rowHeight / 2 + 3, {
+      align: 'center'
+    });
 
     // Días Lunes a Viernes
     for (let dayIndex = 0; dayIndex < 5; dayIndex++) {
-      const cellX = margin + colTimeWidth + (dayIndex * colDayWidth);
-      const match = schedule.find(s => s.day === dayIndex && s.slotIndex === slot.index);
+      const cellX = margin + colTimeWidth + dayIndex * colDayWidth;
+      const match = schedule.find((s) => s.day === dayIndex && s.slotIndex === slot.index);
 
       if (match && match.subjectId) {
         const sub = subjectMap.get(match.subjectId);
@@ -194,9 +199,9 @@ export async function exportSchedulePDF(schedule, subjects = [], timeSlots = [],
 
 /**
  * Exporta el Boletín Oficial de Calificaciones y Medias a PDF
- * @param {Array} grades 
- * @param {Array} subjects 
- * @param {Object} studentInfo 
+ * @param {Array} grades
+ * @param {Array} subjects
+ * @param {Object} studentInfo
  */
 export async function exportGradesReportPDF(grades = [], subjects = [], studentInfo = {}) {
   const jsPDF = await loadJsPDF();
@@ -266,8 +271,8 @@ export async function exportGradesReportPDF(grades = [], subjects = [], studentI
   doc.text('ASIGNATURA / MATERIA', margin + 4, tableStartY + 5.5);
   doc.text('1º EVAL.', margin + colSubjectWidth + 3, tableStartY + 5.5);
   doc.text('2º EVAL.', margin + colSubjectWidth + colTermWidth + 3, tableStartY + 5.5);
-  doc.text('3º EVAL.', margin + colSubjectWidth + (colTermWidth * 2) + 3, tableStartY + 5.5);
-  doc.text('NOTA FINAL', margin + colSubjectWidth + (colTermWidth * 3) + 2, tableStartY + 5.5);
+  doc.text('3º EVAL.', margin + colSubjectWidth + colTermWidth * 2 + 3, tableStartY + 5.5);
+  doc.text('NOTA FINAL', margin + colSubjectWidth + colTermWidth * 3 + 2, tableStartY + 5.5);
 
   let currentY = tableStartY + 8;
   const rowHeight = 9;
@@ -293,10 +298,10 @@ export async function exportGradesReportPDF(grades = [], subjects = [], studentI
     doc.text(sub.name, margin + 4, currentY + 6);
 
     // Obtener notas de trimestres 1, 2, 3
-    const subGrades = grades.filter(g => g.subjectId === sub.id);
-    const g1 = subGrades.find(g => String(g.term) === '1');
-    const g2 = subGrades.find(g => String(g.term) === '2');
-    const g3 = subGrades.find(g => String(g.term) === '3');
+    const subGrades = grades.filter((g) => g.subjectId === sub.id);
+    const g1 = subGrades.find((g) => String(g.term) === '1');
+    const g2 = subGrades.find((g) => String(g.term) === '2');
+    const g3 = subGrades.find((g) => String(g.term) === '3');
 
     const score1 = g1 && !isNaN(g1.score) ? Number(g1.score) : null;
     const score2 = g2 && !isNaN(g2.score) ? Number(g2.score) : null;
@@ -320,10 +325,10 @@ export async function exportGradesReportPDF(grades = [], subjects = [], studentI
 
     printScore(score1, margin + colSubjectWidth + 9);
     printScore(score2, margin + colSubjectWidth + colTermWidth + 9);
-    printScore(score3, margin + colSubjectWidth + (colTermWidth * 2) + 9);
+    printScore(score3, margin + colSubjectWidth + colTermWidth * 2 + 9);
 
     // Calcular media de la asignatura
-    const validScores = [score1, score2, score3].filter(s => s !== null);
+    const validScores = [score1, score2, score3].filter((s) => s !== null);
     if (validScores.length > 0) {
       const avg = validScores.reduce((a, b) => a + b, 0) / validScores.length;
       totalPoints += avg;
@@ -335,10 +340,10 @@ export async function exportGradesReportPDF(grades = [], subjects = [], studentI
       } else {
         doc.setTextColor(239, 68, 68);
       }
-      doc.text(avg.toFixed(2), margin + colSubjectWidth + (colTermWidth * 3) + 7, currentY + 6);
+      doc.text(avg.toFixed(2), margin + colSubjectWidth + colTermWidth * 3 + 7, currentY + 6);
     } else {
       doc.setTextColor(156, 163, 175);
-      doc.text('-', margin + colSubjectWidth + (colTermWidth * 3) + 7, currentY + 6);
+      doc.text('-', margin + colSubjectWidth + colTermWidth * 3 + 7, currentY + 6);
     }
 
     currentY += rowHeight;
@@ -423,14 +428,14 @@ export async function exportProjectDossierPDF(project, subject = {}) {
   doc.setTextColor(71, 85, 105);
 
   const statusMap = {
-    'idea': 'Boceto / Idea Inicial',
-    'boceto': 'Boceto / Idea Inicial',
-    'in_progress': 'En Proceso en Taller',
-    'proceso': 'En Proceso en Taller',
-    'finished': 'Obra Terminada',
-    'terminado': 'Obra Terminada',
-    'graded': 'Entregada y Evaluada',
-    'entregado': 'Entregada y Evaluada'
+    idea: 'Boceto / Idea Inicial',
+    boceto: 'Boceto / Idea Inicial',
+    in_progress: 'En Proceso en Taller',
+    proceso: 'En Proceso en Taller',
+    finished: 'Obra Terminada',
+    terminado: 'Obra Terminada',
+    graded: 'Entregada y Evaluada',
+    entregado: 'Entregada y Evaluada'
   };
 
   doc.text(`Estado: ${statusMap[project.status] || project.status || 'En Proceso'}`, margin + 6, currentY + 16);
@@ -452,7 +457,7 @@ export async function exportProjectDossierPDF(project, subject = {}) {
     doc.setTextColor(51, 65, 85);
     const splitDesc = doc.splitTextToSize(project.description, pageWidth - margin * 2);
     doc.text(splitDesc, margin, currentY);
-    currentY += (splitDesc.length * 4.5) + 6;
+    currentY += splitDesc.length * 4.5 + 6;
   }
 
   // Fotografías de evolución
@@ -473,7 +478,7 @@ export async function exportProjectDossierPDF(project, subject = {}) {
       if (!imgData) continue;
 
       const col = i % 2;
-      const x = margin + (col * (imgWidth + 10));
+      const x = margin + col * (imgWidth + 10);
 
       if (currentY + imgHeight > pageHeight - margin) {
         doc.addPage();

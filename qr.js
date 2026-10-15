@@ -393,15 +393,24 @@ const QRUtil = {
 
   getMask(maskPattern, i, j) {
     switch (maskPattern) {
-      case 0: return (i + j) % 2 == 0;
-      case 1: return i % 2 == 0;
-      case 2: return j % 3 == 0;
-      case 3: return (i + j) % 3 == 0;
-      case 4: return (Math.floor(i / 2) + Math.floor(j / 3)) % 2 == 0;
-      case 5: return ((i * j) % 2) + ((i * j) % 3) == 0;
-      case 6: return (((i * j) % 2) + ((i * j) % 3)) % 2 == 0;
-      case 7: return (((i * j) % 3) + ((i + j) % 2)) % 2 == 0;
-      default: throw new Error('Máscara QR inválida: ' + maskPattern);
+      case 0:
+        return (i + j) % 2 == 0;
+      case 1:
+        return i % 2 == 0;
+      case 2:
+        return j % 3 == 0;
+      case 3:
+        return (i + j) % 3 == 0;
+      case 4:
+        return (Math.floor(i / 2) + Math.floor(j / 3)) % 2 == 0;
+      case 5:
+        return ((i * j) % 2) + ((i * j) % 3) == 0;
+      case 6:
+        return (((i * j) % 2) + ((i * j) % 3)) % 2 == 0;
+      case 7:
+        return (((i * j) % 3) + ((i + j) % 2)) % 2 == 0;
+      default:
+        throw new Error('Máscara QR inválida: ' + maskPattern);
     }
   },
 
@@ -455,7 +464,9 @@ const QRMath = {
 };
 
 for (let i = 0; i < 8; i++) QRMath.EXP_TABLE[i] = 1 << i;
-for (let i = 8; i < 256; i++) QRMath.EXP_TABLE[i] = QRMath.EXP_TABLE[i - 4] ^ QRMath.EXP_TABLE[i - 5] ^ QRMath.EXP_TABLE[i - 6] ^ QRMath.EXP_TABLE[i - 8];
+for (let i = 8; i < 256; i++)
+  QRMath.EXP_TABLE[i] =
+    QRMath.EXP_TABLE[i - 4] ^ QRMath.EXP_TABLE[i - 5] ^ QRMath.EXP_TABLE[i - 6] ^ QRMath.EXP_TABLE[i - 8];
 for (let i = 0; i < 255; i++) QRMath.LOG_TABLE[QRMath.EXP_TABLE[i]] = i;
 
 class QRPolynomial {
@@ -465,8 +476,12 @@ class QRPolynomial {
     this.num = new Array(num.length - offset + shift);
     for (let i = 0; i < num.length - offset; i++) this.num[i] = num[i + offset];
   }
-  get(index) { return this.num[index]; }
-  getLength() { return this.num.length; }
+  get(index) {
+    return this.num[index];
+  }
+  getLength() {
+    return this.num.length;
+  }
   multiply(e) {
     const num = new Array(this.getLength() + e.getLength() - 1);
     for (let i = 0; i < this.getLength(); i++) {
@@ -508,9 +523,20 @@ class QRRSBlock {
   static getRsBlockTable(typeNumber) {
     // Nivel L (Low, 7% recuperación) para máxima capacidad en textos largos
     const table = [
-      [1, 26, 19], [1, 44, 34], [1, 70, 55], [1, 100, 80], [1, 134, 108],
-      [2, 86, 68], [2, 98, 78], [2, 121, 97], [2, 146, 116], [2, 86, 68, 2, 87, 69],
-      [4, 101, 81], [2, 116, 92, 2, 117, 93], [4, 133, 107], [3, 145, 115, 1, 146, 116]
+      [1, 26, 19],
+      [1, 44, 34],
+      [1, 70, 55],
+      [1, 100, 80],
+      [1, 134, 108],
+      [2, 86, 68],
+      [2, 98, 78],
+      [2, 121, 97],
+      [2, 146, 116],
+      [2, 86, 68, 2, 87, 69],
+      [4, 101, 81],
+      [2, 116, 92, 2, 117, 93],
+      [4, 133, 107],
+      [3, 145, 115, 1, 146, 116]
     ];
     return table[typeNumber - 1] || [1, 26, 19];
   }
@@ -530,7 +556,9 @@ class QRBitBuffer {
       this.putBit(((num >>> (length - i - 1)) & 1) == 1);
     }
   }
-  getLengthInBits() { return this.length; }
+  getLengthInBits() {
+    return this.length;
+  }
   putBit(bit) {
     const bufIndex = Math.floor(this.length / 8);
     if (this.buffer.length <= bufIndex) this.buffer.push(0);
@@ -566,7 +594,12 @@ export function renderQRCodeToCanvas(text, canvas, size = 260) {
   for (let row = 0; row < count; row++) {
     for (let col = 0; col < count; col++) {
       if (qr.isDark(row, col)) {
-        ctx.fillRect(Math.round(col * moduleSize), Math.round(row * moduleSize), Math.ceil(moduleSize), Math.ceil(moduleSize));
+        ctx.fillRect(
+          Math.round(col * moduleSize),
+          Math.round(row * moduleSize),
+          Math.ceil(moduleSize),
+          Math.ceil(moduleSize)
+        );
       }
     }
   }
@@ -637,9 +670,7 @@ export function formatExamsForWhatsApp(exams, subjects, studentInfo) {
   const now = new Date();
   const today = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 
-  const upcoming = exams
-    .filter((e) => e.date >= today)
-    .sort((a, b) => a.date.localeCompare(b.date));
+  const upcoming = exams.filter((e) => e.date >= today).sort((a, b) => a.date.localeCompare(b.date));
 
   if (upcoming.length === 0) {
     return `${header}\n🎉 No hay exámenes programados en este momento.`;
@@ -696,13 +727,15 @@ export function sendToWhatsApp(messageText) {
   const encoded = encodeURIComponent(messageText);
   // Web Share API si está soportada en móvil
   if (navigator.share && /mobile|android|iphone|ipad/i.test(navigator.userAgent)) {
-    navigator.share({
-      title: 'Agenda Escolar',
-      text: messageText
-    }).catch(() => {
-      // Fallback a URL de WhatsApp
-      window.open(`https://api.whatsapp.com/send?text=${encoded}`, '_blank');
-    });
+    navigator
+      .share({
+        title: 'Agenda Escolar',
+        text: messageText
+      })
+      .catch(() => {
+        // Fallback a URL de WhatsApp
+        window.open(`https://api.whatsapp.com/send?text=${encoded}`, '_blank');
+      });
   } else {
     // Abrir WhatsApp Web / App
     window.open(`https://api.whatsapp.com/send?text=${encoded}`, '_blank');

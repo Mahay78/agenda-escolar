@@ -79,8 +79,8 @@ export function isOcrReady() {
  *  - 'whiteboard': Elimina sombras tenues de fluorescente y resalta trazos de rotulador.
  *  - 'document': Escala de grises con umbral de alto contraste para libros, fotocopias y apuntes.
  *  - 'raw': Imagen original sin alteraciones.
- * 
- * @param {string|Blob|File} imageSource 
+ *
+ * @param {string|Blob|File} imageSource
  * @param {string} mode
  * @returns {Promise<{ canvas: HTMLCanvasElement, effectiveMode: string, dataUrl: string }>}
  */
@@ -202,7 +202,7 @@ export async function preprocessImage(imageSource, mode = 'auto') {
 
 /**
  * Limpieza y formateo inteligente del texto extraído por OCR
- * @param {string} rawText 
+ * @param {string} rawText
  * @returns {string}
  */
 export function cleanOcrText(rawText) {
@@ -234,7 +234,7 @@ export function cleanOcrText(rawText) {
 
 /**
  * Convierte el texto reconocido en una lista limpia de deberes o ejercicios
- * @param {string} text 
+ * @param {string} text
  * @returns {string}
  */
 export function formatAsBulletList(text) {
@@ -329,7 +329,8 @@ export async function recognizeImageText(imageSource, options = {}) {
           if (m.status === 'loading tesseract core') statusText = 'Cargando núcleo OCR WebAssembly...';
           else if (m.status === 'initializing tesseract') statusText = 'Iniciando diccionario lingüístico...';
           else if (m.status === 'loading language traineddata') statusText = 'Cargando modelo de idioma...';
-          else if (m.status === 'recognizing text') statusText = `Reconociendo caracteres: ${Math.round((m.progress || 0) * 100)}%`;
+          else if (m.status === 'recognizing text')
+            statusText = `Reconociendo caracteres: ${Math.round((m.progress || 0) * 100)}%`;
 
           onProgress({
             status: statusText,
@@ -562,12 +563,11 @@ export async function recognizeWithGemini(base64Image, apiKey) {
 3. Devuelve primero un resumen claro de los ejercicios o tareas a realizar en formato lista.`;
 
   const payload = {
-    contents: [{
-      parts: [
-        { text: prompt },
-        { inlineData: { mimeType: mimeType, data: base64Data } }
-      ]
-    }]
+    contents: [
+      {
+        parts: [{ text: prompt }, { inlineData: { mimeType: mimeType, data: base64Data } }]
+      }
+    ]
   };
 
   const candidateModels = ['gemini-2.5-flash', 'gemini-flash-latest', 'gemini-1.5-flash', 'gemini-2.0-flash'];
@@ -575,11 +575,14 @@ export async function recognizeWithGemini(base64Image, apiKey) {
 
   for (const model of candidateModels) {
     try {
-      response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${activeKey}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
+      response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${activeKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }
+      );
       if (response.ok) break;
       if (response.status === 404) continue;
       break;
@@ -587,7 +590,7 @@ export async function recognizeWithGemini(base64Image, apiKey) {
   }
 
   if (!response || !response.ok) {
-    const errorData = await response?.json().catch(() => ({})) || {};
+    const errorData = (await response?.json().catch(() => ({}))) || {};
     throw new Error(errorData.error?.message || `Error al conectar con Gemini (${response?.status || 'red'})`);
   }
 

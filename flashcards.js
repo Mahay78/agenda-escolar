@@ -7,11 +7,11 @@ import { getAll, saveItem, deleteItem } from './db.js';
 
 // Intervalos en días según la caja Leitner (1 a 5)
 export const LEITNER_INTERVALS = {
-  1: 1,   // Caja 1: Aprendizaje inicial -> Repasar cada día
-  2: 3,   // Caja 2: Familiar -> Repasar cada 3 días
-  3: 7,   // Caja 3: En progreso -> Repasar cada semana (7 días)
-  4: 14,  // Caja 4: Avanzado -> Repasar cada 2 semanas (14 días)
-  5: 30   // Caja 5: Dominado / Memoria a largo plazo -> Repasar cada mes (30 días)
+  1: 1, // Caja 1: Aprendizaje inicial -> Repasar cada día
+  2: 3, // Caja 2: Familiar -> Repasar cada 3 días
+  3: 7, // Caja 3: En progreso -> Repasar cada semana (7 días)
+  4: 14, // Caja 4: Avanzado -> Repasar cada 2 semanas (14 días)
+  5: 30 // Caja 5: Dominado / Memoria a largo plazo -> Repasar cada mes (30 días)
 };
 
 export const BOX_NAMES = {
@@ -42,7 +42,7 @@ export function addDaysToDateString(dateStr, days) {
   }
   const parts = dateStr.split('-').map(Number);
   const y = parts[0] || new Date().getFullYear();
-  const m = parts[1] || (new Date().getMonth() + 1);
+  const m = parts[1] || new Date().getMonth() + 1;
   const d = parts[2] || new Date().getDate();
   const date = new Date(y, m - 1, d);
   date.setDate(date.getDate() + (Number.isFinite(days) ? days : 1));
@@ -65,8 +65,8 @@ export function createFlashcard({ subjectId, front, back, hint = '' }) {
     hint: hint ? hint.trim() : '',
     box: 1,
     repetitions: 0,
-    easeFactor: 2.5,  // Factor de Facilidad SM-2 (por defecto 2.5)
-    interval: 0,     // Días de intervalo SM-2
+    easeFactor: 2.5, // Factor de Facilidad SM-2 (por defecto 2.5)
+    interval: 0, // Días de intervalo SM-2
     lastReviewed: null,
     nextReviewDate: today,
     createdAt: new Date().toISOString()
@@ -86,7 +86,7 @@ export function isCardDue(card, targetDate = getLocalTodayDateString()) {
  */
 export function getDueFlashcards(cards, targetDate = getLocalTodayDateString(), subjectId = 'all') {
   return cards
-    .filter(c => {
+    .filter((c) => {
       const matchesSubject = subjectId === 'all' || c.subjectId === subjectId;
       return matchesSubject && isCardDue(c, targetDate);
     })
@@ -102,10 +102,10 @@ export function calculateFlashcardStats(cards, targetDate = getLocalTodayDateStr
     return { total: 0, dueToday: 0, mastered: 0, learning: 0, masteryRate: 0 };
   }
 
-  const dueToday = cards.filter(c => isCardDue(c, targetDate)).length;
-  const mastered = cards.filter(c => c.box === 5).length;
-  const learning = cards.filter(c => (c.box || 1) <= 2).length;
-  const advanced = cards.filter(c => (c.box || 1) >= 4).length;
+  const dueToday = cards.filter((c) => isCardDue(c, targetDate)).length;
+  const mastered = cards.filter((c) => c.box === 5).length;
+  const learning = cards.filter((c) => (c.box || 1) <= 2).length;
+  const advanced = cards.filter((c) => (c.box || 1) >= 4).length;
   const masteryRate = Math.round((advanced / total) * 100);
 
   return {
@@ -147,16 +147,20 @@ export function checkAnswerSimilarity(userAnswer, correctAnswer) {
   // Comprobar si la respuesta del usuario está contenida en la respuesta larga o viceversa
   if (correctNorm.includes(userNorm) && userNorm.length > 3) {
     const similarity = Math.round((userNorm.length / correctNorm.length) * 100);
-    return { isCorrect: similarity >= 60, similarity, feedback: '¡Vas por muy buen camino! Cubre los conceptos clave.' };
+    return {
+      isCorrect: similarity >= 60,
+      similarity,
+      feedback: '¡Vas por muy buen camino! Cubre los conceptos clave.'
+    };
   }
 
   // Comparación por palabras clave
-  const userWords = new Set(userNorm.split(' ').filter(w => w.length > 3));
-  const correctWords = new Set(correctNorm.split(' ').filter(w => w.length > 3));
+  const userWords = new Set(userNorm.split(' ').filter((w) => w.length > 3));
+  const correctWords = new Set(correctNorm.split(' ').filter((w) => w.length > 3));
 
   if (correctWords.size > 0) {
     let matches = 0;
-    userWords.forEach(w => {
+    userWords.forEach((w) => {
       if (correctWords.has(w)) matches++;
     });
     const wordSimilarity = Math.round((matches / correctWords.size) * 100);
@@ -175,11 +179,7 @@ export function checkAnswerSimilarity(userAnswer, correctAnswer) {
   for (let i = 1; i <= a.length; i++) {
     for (let j = 1; j <= b.length; j++) {
       const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-      matrix[i][j] = Math.min(
-        matrix[i - 1][j] + 1,
-        matrix[i][j - 1] + 1,
-        matrix[i - 1][j - 1] + cost
-      );
+      matrix[i][j] = Math.min(matrix[i - 1][j] + 1, matrix[i][j - 1] + 1, matrix[i - 1][j - 1] + cost);
     }
   }
 
@@ -271,8 +271,8 @@ export async function seedSampleFlashcardsIfNeeded(subjects = []) {
   if (existing.length > 0) return existing;
 
   const findSubId = (keywords) => {
-    const found = subjects.find(s => keywords.some(k => s.name?.toLowerCase().includes(k)));
-    return found ? found.id : (subjects[0]?.id || 'sub_general');
+    const found = subjects.find((s) => keywords.some((k) => s.name?.toLowerCase().includes(k)));
+    return found ? found.id : subjects[0]?.id || 'sub_general';
   };
 
   const artId = findSubId(['historia', 'arte', 'dibujo']);

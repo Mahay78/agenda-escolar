@@ -255,7 +255,7 @@ export function startSpeechDictation({ targetInput, onStatusChange, lang = 'es-E
     recognition.lang = lang;
 
     currentDictationTarget = targetInput;
-    let baseText = targetInput ? (targetInput.value || '') : '';
+    let baseText = targetInput ? targetInput.value || '' : '';
     if (baseText && !baseText.endsWith(' ') && !baseText.endsWith('\n')) {
       baseText += ' ';
     }
@@ -348,21 +348,33 @@ export function stopAmbientSound(fadeDuration = 0.5) {
 
   const cleanupNodes = () => {
     if (ambientSourceNode) {
-      try { ambientSourceNode.stop(); } catch (e) {}
-      try { ambientSourceNode.disconnect(); } catch (e) {}
+      try {
+        ambientSourceNode.stop();
+      } catch (e) {}
+      try {
+        ambientSourceNode.disconnect();
+      } catch (e) {}
       ambientSourceNode = null;
     }
     if (ambientLfoNode) {
-      try { ambientLfoNode.stop(); } catch (e) {}
-      try { ambientLfoNode.disconnect(); } catch (e) {}
+      try {
+        ambientLfoNode.stop();
+      } catch (e) {}
+      try {
+        ambientLfoNode.disconnect();
+      } catch (e) {}
       ambientLfoNode = null;
     }
     if (ambientFilterNode) {
-      try { ambientFilterNode.disconnect(); } catch (e) {}
+      try {
+        ambientFilterNode.disconnect();
+      } catch (e) {}
       ambientFilterNode = null;
     }
     if (ambientGainNode) {
-      try { ambientGainNode.disconnect(); } catch (e) {}
+      try {
+        ambientGainNode.disconnect();
+      } catch (e) {}
       ambientGainNode = null;
     }
     currentAmbientType = 'none';
@@ -375,10 +387,13 @@ export function stopAmbientSound(fadeDuration = 0.5) {
 
   try {
     ambientGainNode.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + fadeDuration);
-    ambientStopTimeout = setTimeout(() => {
-      cleanupNodes();
-      ambientStopTimeout = null;
-    }, Math.round((fadeDuration + 0.05) * 1000));
+    ambientStopTimeout = setTimeout(
+      () => {
+        cleanupNodes();
+        ambientStopTimeout = null;
+      },
+      Math.round((fadeDuration + 0.05) * 1000)
+    );
   } catch (e) {
     cleanupNodes();
   }
@@ -398,15 +413,21 @@ export function startAmbientSound(type, volume = 0.5) {
     const data = buffer.getChannelData(0);
 
     // Generar Ruido Rosa suave (Algoritmo de Paul Kellet)
-    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+    let b0 = 0,
+      b1 = 0,
+      b2 = 0,
+      b3 = 0,
+      b4 = 0,
+      b5 = 0,
+      b6 = 0;
     for (let i = 0; i < bufferSize; i++) {
       const white = Math.random() * 2 - 1;
       b0 = 0.99886 * b0 + white * 0.0555179;
       b1 = 0.99332 * b1 + white * 0.0750759;
-      b2 = 0.96900 * b2 + white * 0.1538520;
-      b3 = 0.86650 * b3 + white * 0.3104856;
-      b4 = 0.55000 * b4 + white * 0.5329522;
-      b5 = -0.7616 * b5 - white * 0.0168980;
+      b2 = 0.969 * b2 + white * 0.153852;
+      b3 = 0.8665 * b3 + white * 0.3104856;
+      b4 = 0.55 * b4 + white * 0.5329522;
+      b5 = -0.7616 * b5 - white * 0.016898;
       data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.11;
       b6 = white * 0.115926;
     }

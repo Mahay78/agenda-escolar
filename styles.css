@@ -422,6 +422,68 @@ input, textarea, select, button {
   text-decoration: line-through;
 }
 
+/* Selección múltiple y acciones en lote (Roadmap Item 41) */
+.task-item.is-selected {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary), 0 6px 18px rgba(59, 130, 246, 0.25);
+  background: rgba(59, 130, 246, 0.08);
+}
+
+.task-item.is-selected::before {
+  content: '✓';
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Vista de doble panel de tareas (Roadmap Item 43) */
+.tasks-split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.task-detail-panel {
+  display: none;
+}
+
+@media (min-width: 1100px) {
+  .tasks-split {
+    grid-template-columns: minmax(0, 1fr) 380px;
+  }
+
+  .task-detail-panel {
+    display: block;
+    position: sticky;
+    top: 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
+  }
+
+  .task-detail-empty {
+    color: var(--text-dim);
+  }
+
+  .task-detail-body h3 {
+    word-break: break-word;
+  }
+}
+
 .task-top {
   display: flex;
   align-items: flex-start;

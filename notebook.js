@@ -1,6 +1,6 @@
 /**
  * notebook.js - Motor Inteligente de Estudio Estilo NotebookLM
- * 
+ *
  * Capacidades:
  * 1. Gestión de Fuentes (Sources): Textos, fotos de pizarra y apuntes.
  * 2. Grounded Chat: Chat con citas obligatorias [Fuente X].
@@ -18,24 +18,155 @@ import { createFlashcard } from './flashcards.js';
 // Clave de API de Gemini compartida con la agenda
 const GEMINI_STORAGE_KEY = 'gemini_api_key';
 const NOTEBOOK_SOURCES_KEY = 'notebook_sources_v1';
+const NOTEBOOKS_KEY = 'notebook_books_v1';
 
 // Estado de la aplicación Cuaderno LM
 const NotebookState = {
+  notebooks: [],
+  activeNotebookId: null,
   sources: [],
   activeSourceIds: new Set(),
   chatHistory: [],
+  lastUserQuery: '',
   isAudioPlaying: false,
   currentAudioScript: '',
   audioUtterance: null,
   audioSpeed: 1.0
 };
 
+/**
+ * Valida y normaliza una fuente de estudio
+ */
+function normalizeSource(s) {
+  if (
+    s === null ||
+    typeof s !== 'object' ||
+    typeof s.id !== 'string' ||
+    s.id.trim() === '' ||
+    typeof s.content !== 'string'
+  ) {
+    return null;
+  }
+  return {
+    id: s.id,
+    title: typeof s.title === 'string' ? s.title : 'Fuente sin título',
+    type: typeof s.type === 'string' ? s.type : 'text',
+    content: s.content,
+    date: typeof s.date === 'string' ? s.date : new Date().toLocaleDateString('es-ES'),
+    active: s.active === true
+  };
+}
+
+/**
+ * Valida y normaliza un cuaderno temático
+ */
+function normalizeNotebook(book) {
+  const safeBook = book && typeof book === 'object' ? book : {};
+  return {
+    id: typeof safeBook.id === 'string' && safeBook.id ? safeBook.id : 'book_' + Math.random().toString(36).slice(2, 9),
+    name: typeof safeBook.name === 'string' && safeBook.name.trim() ? safeBook.name.trim() : 'Cuaderno',
+    icon: typeof safeBook.icon === 'string' ? safeBook.icon : '📚',
+    sources: Array.isArray(safeBook.sources) ? safeBook.sources.map(normalizeSource).filter(Boolean) : [],
+    activeIds: Array.isArray(safeBook.activeIds) ? safeBook.activeIds.filter((x) => typeof x === 'string') : [],
+    scratchpad: typeof safeBook.scratchpad === 'string' ? safeBook.scratchpad : ''
+  };
+}
+
+/**
+ * Carga el almacén de cuadernos temáticos. Devuelve true si existe y es válido.
+ */
+function loadNotebooksStore() {
+  let store = null;
+  try {
+    const raw = localStorage.getItem(NOTEBOOKS_KEY);
+    store = raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    store = null;
+  }
+  if (!store || !Array.isArray(store.notebooks) || store.notebooks.length === 0) return false;
+
+  NotebookState.notebooks = store.notebooks.map(normalizeNotebook);
+  NotebookState.activeNotebookId =
+    store.activeNotebookId && NotebookState.notebooks.some((b) => b.id === store.activeNotebookId)
+      ? store.activeNotebookId
+      : NotebookState.notebooks[0].id;
+  return true;
+}
+
+function getActiveNotebook() {
+  return NotebookState.notebooks.find((b) => b.id === NotebookState.activeNotebookId) || NotebookState.notebooks[0];
+}
+
+function activateNotebook(id) {
+  const book = NotebookState.notebooks.find((b) => b.id === id) || NotebookState.notebooks[0];
+  if (!book) return;
+  NotebookState.activeNotebookId = book.id;
+  NotebookState.sources = book.sources;
+  NotebookState.activeSourceIds = new Set(
+    book.activeIds && book.activeIds.length ? book.activeIds : book.sources.map((s) => s.id)
+  );
+}
+
+function persistNotebooks() {
+  const active = getActiveNotebook();
+  if (active) {
+    active.sources = NotebookState.sources;
+    active.activeIds = Array.from(NotebookState.activeSourceIds);
+  }
+  try {
+    localStorage.setItem(
+      NOTEBOOKS_KEY,
+      JSON.stringify({
+        activeNotebookId: NotebookState.activeNotebookId,
+        notebooks: NotebookState.notebooks
+      })
+    );
+  } catch (e) {
+    console.warn('No se pudieron guardar los cuadernos temáticos:', e);
+  }
+}
+
+function getActiveScratchpad() {
+  const book = getActiveNotebook();
+  return (book && book.scratchpad) || '';
+}
+
 // Cargar fuentes almacenadas o sembrar ejemplos
 function loadSources() {
+  // 1. Almacén de cuadernos temáticos (Roadmap Item 61)
+  if (loadNotebooksStore()) {
+    const book = getActiveNotebook();
+    NotebookState.sources = book.sources;
+    NotebookState.activeSourceIds = new Set(
+      book.activeIds && book.activeIds.length ? book.activeIds : book.sources.map((s) => s.id)
+    );
+    return;
+  }
+
   try {
     const raw = localStorage.getItem(NOTEBOOK_SOURCES_KEY);
-    if (raw) {
-      NotebookState.sources = JSON.parse(raw);
+    const parsed = raw ? JSON.parse(raw) : null;
+    if (Array.isArray(parsed)) {
+      // Validación: cada fuente debe ser un objeto con id, title y content de texto
+      NotebookState.sources = parsed
+        .filter(
+          (s) =>
+            s !== null &&
+            typeof s === 'object' &&
+            typeof s.id === 'string' &&
+            s.id.trim() !== '' &&
+            typeof s.content === 'string'
+        )
+        .map((s) => ({
+          id: s.id,
+          title: typeof s.title === 'string' ? s.title : 'Fuente sin título',
+          type: typeof s.type === 'string' ? s.type : 'text',
+          content: s.content,
+          date: typeof s.date === 'string' ? s.date : new Date().toLocaleDateString('es-ES'),
+          active: s.active === true
+        }));
+    } else {
+      NotebookState.sources = [];
     }
   } catch (e) {
     NotebookState.sources = [];
@@ -85,15 +216,114 @@ Permite el crecimiento de organismos pluricelulares, la reparación de tejidos y
   }
 
   // Activar todas por defecto
-  NotebookState.sources.forEach(s => NotebookState.activeSourceIds.add(s.id));
+  NotebookState.sources.forEach((s) => NotebookState.activeSourceIds.add(s.id));
+
+  // Migrar el almacén antiguo al nuevo formato de cuadernos temáticos
+  NotebookState.notebooks = [
+    {
+      id: 'book_default',
+      name: 'Mis apuntes',
+      icon: '📚',
+      sources: NotebookState.sources,
+      activeIds: Array.from(NotebookState.activeSourceIds),
+      scratchpad: localStorage.getItem('notebook_scratchpad') || ''
+    }
+  ];
+  NotebookState.activeNotebookId = 'book_default';
+  persistNotebooks();
 }
 
 function saveSources() {
-  localStorage.setItem(NOTEBOOK_SOURCES_KEY, JSON.stringify(NotebookState.sources));
+  persistNotebooks();
+}
+
+/**
+ * Gestión de Cuadernos Temáticos (Roadmap Item 61)
+ */
+function renderNotebookSelector() {
+  const select = document.getElementById('notebook-select');
+  if (!select) return;
+  select.innerHTML = NotebookState.notebooks
+    .map(
+      (book) =>
+        `<option value="${escapeHtml(book.id)}">${escapeHtml(book.icon || '📚')} ${escapeHtml(
+          book.name
+        )} (${book.sources.length})</option>`
+    )
+    .join('');
+  select.value = NotebookState.activeNotebookId;
+}
+
+function switchNotebook(id) {
+  activateNotebook(id);
+  renderNotebookSelector();
+  renderSourcesList();
+  updateStudioStatus();
+  const area = document.getElementById('notebook-scratchpad-input');
+  if (area) area.value = getActiveScratchpad();
+  persistNotebooks();
+}
+
+function createNotebook() {
+  const name = (prompt('Nombre del nuevo cuaderno temático:', 'Nuevo cuaderno') || '').trim();
+  if (!name) return;
+  const book = {
+    id: 'book_' + Date.now().toString(36),
+    name,
+    icon: '📚',
+    sources: [],
+    activeIds: [],
+    scratchpad: ''
+  };
+  NotebookState.notebooks.push(book);
+  activateNotebook(book.id);
+  renderNotebookSelector();
+  renderSourcesList();
+  updateStudioStatus();
+  const area = document.getElementById('notebook-scratchpad-input');
+  if (area) area.value = '';
+  persistNotebooks();
+}
+
+function renameNotebook() {
+  const book = getActiveNotebook();
+  if (!book) return;
+  const name = (prompt('Nuevo nombre del cuaderno:', book.name) || '').trim();
+  if (!name) return;
+  book.name = name;
+  renderNotebookSelector();
+  persistNotebooks();
+}
+
+function deleteNotebook() {
+  const book = getActiveNotebook();
+  if (!book) return;
+  if (NotebookState.notebooks.length <= 1) {
+    alert('Debes conservar al menos un cuaderno temático.');
+    return;
+  }
+  if (!confirm(`¿Eliminar el cuaderno "${book.name}" y sus ${book.sources.length} fuente(s)?`)) return;
+  NotebookState.notebooks = NotebookState.notebooks.filter((b) => b.id !== book.id);
+  activateNotebook(NotebookState.notebooks[0].id);
+  renderNotebookSelector();
+  renderSourcesList();
+  updateStudioStatus();
+  const area = document.getElementById('notebook-scratchpad-input');
+  if (area) area.value = getActiveScratchpad();
+  persistNotebooks();
 }
 
 function getApiKey() {
   return localStorage.getItem(GEMINI_STORAGE_KEY) || '';
+}
+
+// Escapa texto para insertarlo de forma segura en HTML
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str).replace(
+    /[&<>'"]/g,
+    (tag) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[tag] || tag
+  );
 }
 
 // ==========================================================================
@@ -119,26 +349,28 @@ function renderSourcesList() {
     return;
   }
 
-  container.innerHTML = NotebookState.sources.map((src, index) => {
-    const isChecked = NotebookState.activeSourceIds.has(src.id);
-    return `
-      <div class="source-card ${isChecked ? 'selected' : ''}" data-source-id="${src.id}">
+  container.innerHTML = NotebookState.sources
+    .map((src, index) => {
+      const isChecked = NotebookState.activeSourceIds.has(src.id);
+      return `
+      <div class="source-card ${isChecked ? 'selected' : ''}" data-source-id="${escapeHtml(src.id)}">
         <div class="source-header">
-          <input type="checkbox" class="source-checkbox" data-source-checkbox="${src.id}" ${isChecked ? 'checked' : ''} style="margin-top: 3px; cursor: pointer;" />
+          <input type="checkbox" class="source-checkbox" data-source-checkbox="${escapeHtml(src.id)}" ${isChecked ? 'checked' : ''} style="margin-top: 3px; cursor: pointer;" />
           <span class="source-icon">${src.type === 'image' ? '📸' : '📝'}</span>
           <div class="source-info">
-            <div class="source-title" title="${src.title}">${src.title}</div>
-            <div class="source-meta">Fuente ${index + 1} • ${src.date || 'Reciente'}</div>
+            <div class="source-title" title="${escapeHtml(src.title)}">${escapeHtml(src.title)}</div>
+            <div class="source-meta">Fuente ${index + 1} • ${escapeHtml(src.date || 'Reciente')}</div>
           </div>
-          <button type="button" class="btn-delete-source" data-delete-source="${src.id}" title="Eliminar fuente">✕</button>
+          <button type="button" class="btn-delete-source" data-delete-source="${escapeHtml(src.id)}" title="Eliminar fuente">✕</button>
         </div>
-        <div class="source-preview">${src.content || '(Foto / Imagen cargada)'}</div>
+        <div class="source-preview">${escapeHtml(src.content || '(Foto / Imagen cargada)')}</div>
       </div>
     `;
-  }).join('');
+    })
+    .join('');
 
   // Listeners de checkboxes
-  container.querySelectorAll('[data-source-checkbox]').forEach(chk => {
+  container.querySelectorAll('[data-source-checkbox]').forEach((chk) => {
     chk.addEventListener('change', (e) => {
       const id = e.target.getAttribute('data-source-checkbox');
       if (e.target.checked) {
@@ -148,16 +380,17 @@ function renderSourcesList() {
       }
       renderSourcesList();
       updateStudioStatus();
+      saveSources();
     });
   });
 
   // Listeners de eliminación
-  container.querySelectorAll('[data-delete-source]').forEach(btn => {
+  container.querySelectorAll('[data-delete-source]').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       const id = btn.getAttribute('data-delete-source');
       if (confirm('¿Deseas eliminar esta fuente de estudio?')) {
-        NotebookState.sources = NotebookState.sources.filter(s => s.id !== id);
+        NotebookState.sources = NotebookState.sources.filter((s) => s.id !== id);
         NotebookState.activeSourceIds.delete(id);
         saveSources();
         renderSourcesList();
@@ -177,12 +410,14 @@ function updateStudioStatus() {
 
 // Obtiene el texto de todas las fuentes activas estructurado para Gemini
 function getActiveSourcesContext() {
-  const activeSources = NotebookState.sources.filter(s => NotebookState.activeSourceIds.has(s.id));
+  const activeSources = NotebookState.sources.filter((s) => NotebookState.activeSourceIds.has(s.id));
   if (activeSources.length === 0) return '';
 
-  return activeSources.map((s, idx) => {
-    return `[FUENTE ${idx + 1}: "${s.title}"]:\n${s.content}\n[FIN DE FUENTE ${idx + 1}]`;
-  }).join('\n\n');
+  return activeSources
+    .map((s, idx) => {
+      return `[FUENTE ${idx + 1}: "${s.title}"]:\n${s.content}\n[FIN DE FUENTE ${idx + 1}]`;
+    })
+    .join('\n\n');
 }
 
 // ==========================================================================
@@ -218,11 +453,14 @@ ${userPrompt}`;
 
   for (const model of candidateModels) {
     try {
-      response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
+      response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }
+      );
       if (response.ok) break;
       if (response.status === 404) continue;
       break;
@@ -230,13 +468,17 @@ ${userPrompt}`;
   }
 
   if (!response || !response.ok) {
-    const errData = await response?.json().catch(() => ({})) || {};
+    const errData = (await response?.json().catch(() => ({}))) || {};
     const rawMsg = errData.error?.message || `Error HTTP ${response?.status || 'red'}`;
     if (response?.status === 400 || rawMsg.toLowerCase().includes('api key not valid')) {
-      throw new Error('Tu clave de Google Gemini no es válida. Abre el botón ⚙️ Clave IA para configurarla o crear una nueva gratis en Google AI Studio.');
+      throw new Error(
+        'Tu clave de Google Gemini no es válida. Abre el botón ⚙️ Clave IA para configurarla o crear una nueva gratis en Google AI Studio.'
+      );
     }
     if (response?.status === 429) {
-      throw new Error('Límite de cuota gratuita alcanzado temporalmente. Espera un momento antes de volver a solicitarlo.');
+      throw new Error(
+        'Límite de cuota gratuita alcanzado temporalmente. Espera un momento antes de volver a solicitarlo.'
+      );
     }
     throw new Error(rawMsg);
   }
@@ -247,11 +489,14 @@ ${userPrompt}`;
 
 // Fallback local enriquecido en caso de estar offline o sin clave
 function generateLocalFallback(promptType, context) {
-  const lines = context.split('\n').map(l => l.trim()).filter(Boolean);
+  const lines = context
+    .split('\n')
+    .map((l) => l.trim())
+    .filter(Boolean);
   const keyPoints = lines
-    .filter(l => l.startsWith('-') || l.startsWith('•') || l.includes(':'))
+    .filter((l) => l.startsWith('-') || l.startsWith('•') || l.includes(':'))
     .slice(0, 10)
-    .map(l => `• ${l.replace(/^[\-\•\d\.]\s*/, '')}`);
+    .map((l) => `• ${l.replace(/^[\-\•\d\.]\s*/, '')}`);
 
   const isQuiz = /examen|quiz|prueba|test/i.test(promptType);
   const isFlashcards = /ficha|flashcard/i.test(promptType);
@@ -278,7 +523,13 @@ ${keyPoints.slice(0, 5).join('\n') || '• Revisa los títulos y definiciones de
 
 > 💡 **Nota:** Con la IA de Google Gemini activa, se generan tarjetas con pistas mnemotécnicas profundas. Conéctala en **⚙️ Clave IA**.
 
-${keyPoints.slice(0, 6).map((kp, i) => `**Ficha ${i + 1}:**\n- **Pregunta:** ¿Qué define o explica: "${kp.substring(2, 60)}..."?\n- **Respuesta:** ${kp.substring(2)}\n- **Pista:** [Fuente seleccionada]`).join('\n\n')}`;
+${keyPoints
+  .slice(0, 6)
+  .map(
+    (kp, i) =>
+      `**Ficha ${i + 1}:**\n- **Pregunta:** ¿Qué define o explica: "${kp.substring(2, 60)}..."?\n- **Respuesta:** ${kp.substring(2)}\n- **Pista:** [Fuente seleccionada]`
+  )
+  .join('\n\n')}`;
   }
 
   if (isPodcast) {
@@ -463,10 +714,10 @@ function updateAudioPlayButton() {
 // ==========================================================================
 function switchToMobileStudio() {
   if (window.innerWidth <= 900) {
-    document.querySelectorAll('.mobile-tab-btn').forEach(b => {
+    document.querySelectorAll('.mobile-tab-btn').forEach((b) => {
       b.classList.toggle('active', b.getAttribute('data-mobile-view') === 'col-studio');
     });
-    document.querySelectorAll('.col-sources, .col-studio, .col-chat').forEach(col => {
+    document.querySelectorAll('.col-sources, .col-studio, .col-chat').forEach((col) => {
       col.classList.remove('active-mobile-view');
     });
     document.getElementById('col-studio')?.classList.add('active-mobile-view');
@@ -483,7 +734,7 @@ function showStudioLoading(message) {
     container.innerHTML = `
       <div class="generated-artifact-card" style="text-align:center; padding: 40px 20px;">
         <div style="font-size: 2rem; margin-bottom: 12px; animation: spin 1s infinite linear;">✨</div>
-        <p style="font-weight: 700; color: #fff;">${message}</p>
+        <p style="font-weight: 700; color: #fff;">${escapeHtml(message)}</p>
         <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 6px;">Analizando tus fuentes y sintetizando el contenido...</p>
       </div>
     `;
@@ -499,13 +750,17 @@ function renderArtifactCard(title, markdownContent, hasExportButton = false) {
   container.innerHTML = `
     <div class="generated-artifact-card">
       <div class="artifact-header">
-        <h3>${title}</h3>
+        <h3>${escapeHtml(title)}</h3>
         <div class="artifact-actions">
-          ${hasExportButton ? `
+          ${
+            hasExportButton
+              ? `
             <button type="button" id="btn-export-to-agenda-flashcards" class="btn-header-action" style="background:#10b981; color:#fff; border:none;" title="Añadir estas fichas al mazo de la Agenda Escolar">
               📥 Exportar a Agenda
             </button>
-          ` : ''}
+          `
+              : ''
+          }
           <button type="button" class="btn-header-action" id="btn-save-to-notes" title="Guardar este resumen en tu bloc de notas">
             📌 En mis Notas
           </button>
@@ -522,9 +777,11 @@ function renderArtifactCard(title, markdownContent, hasExportButton = false) {
 
   // Guardar en Bloc de Notas
   document.getElementById('btn-save-to-notes')?.addEventListener('click', () => {
-    const current = localStorage.getItem('notebook_scratchpad') || '';
+    const book = getActiveNotebook();
+    const current = (book && book.scratchpad) || '';
     const updated = (current ? current + '\n\n' : '') + `### ${title}\n` + markdownContent;
-    localStorage.setItem('notebook_scratchpad', updated);
+    if (book) book.scratchpad = updated;
+    saveSources();
     const area = document.getElementById('notebook-scratchpad-input');
     if (area) area.value = updated;
     alert('📌 Guardado en tu Bloc de Notas personal.');
@@ -541,7 +798,8 @@ function renderArtifactCard(title, markdownContent, hasExportButton = false) {
   document.getElementById('btn-export-to-agenda-flashcards')?.addEventListener('click', async () => {
     try {
       // Parsear preguntas y respuestas del markdown
-      const regex = /Pregunta:\s*(.*?)\n\s*-\s*Respuesta:\s*(.*?)(?:\n\s*-\s*Pista:\s*(.*?))?(?=\n\s*\*\*Ficha|\n\s*$)/gs;
+      const regex =
+        /Pregunta:\s*(.*?)\n\s*-\s*Respuesta:\s*(.*?)(?:\n\s*-\s*Pista:\s*(.*?))?(?=\n\s*\*\*Ficha|\n\s*$)/gs;
       let match;
       let count = 0;
 
@@ -582,10 +840,15 @@ function formatMarkdownToHTML(text) {
   let html = text
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 
-  // Citas tipo [Fuente 1]
-  html = html.replace(/\[Fuente\s*(\d+)\]/gi, '<span class="chat-citation" title="Cita a la Fuente $1">[Fuente $1]</span>');
+  // Citas tipo [Fuente 1] interactivas con resaltado (Roadmap Item 63)
+  html = html.replace(
+    /\[Fuente\s*(\d+)\]/gi,
+    '<span class="chat-citation" role="button" tabindex="0" data-citation-source="$1" title="Ver la Fuente $1">[Fuente $1]</span>'
+  );
 
   // Encabezados
   html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
@@ -642,6 +905,8 @@ function appendChatBubble(role, text) {
   const container = document.getElementById('chat-messages');
   if (!container) return;
 
+  if (role === 'user') NotebookState.lastUserQuery = text;
+
   const bubble = document.createElement('div');
   bubble.className = `chat-bubble chat-bubble-${role}`;
   bubble.innerHTML = formatMarkdownToHTML(text);
@@ -650,22 +915,121 @@ function appendChatBubble(role, text) {
   container.scrollTop = container.scrollHeight;
 }
 
+/**
+ * Resalta en un texto las palabras clave de la consulta del usuario
+ */
+function highlightKeywords(text, query) {
+  const safe = escapeHtml(text);
+  if (!query) return safe;
+  const words = [
+    ...new Set(
+      query
+        .toLowerCase()
+        .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+        .split(/\s+/)
+        .filter((w) => w.length >= 5)
+    )
+  ].slice(0, 8);
+  if (!words.length) return safe;
+
+  return words.reduce((acc, word) => {
+    const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return acc.replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
+  }, safe);
+}
+
+/**
+ * Muestra el modal de una cita con la fuente y su texto resaltado (Roadmap Item 63)
+ */
+function openCitationModal(sourceNumber) {
+  const activeSources = NotebookState.sources.filter((s) => NotebookState.activeSourceIds.has(s.id));
+  const src = activeSources[sourceNumber - 1];
+  const modal = document.getElementById('citation-modal');
+  const title = document.getElementById('citation-modal-title');
+  const body = document.getElementById('citation-modal-body');
+  if (!modal) return;
+
+  if (!src) {
+    if (title) title.textContent = `📌 Fuente ${sourceNumber}`;
+    if (body) {
+      body.textContent = 'No se encontró la fuente citada entre las fuentes activas. Actívala en el panel izquierdo.';
+    }
+    modal.classList.remove('hidden');
+    return;
+  }
+
+  if (title) title.textContent = `📌 Fuente ${sourceNumber}: ${src.title}`;
+  if (body)
+    body.innerHTML = highlightKeywords(src.content || '(Foto / Imagen cargada)', NotebookState.lastUserQuery || '');
+  modal.classList.remove('hidden');
+
+  const card = document.querySelector(`.source-card[data-source-id="${CSS.escape(src.id)}"]`);
+  if (card) {
+    card.classList.add('citation-flash');
+    card.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    setTimeout(() => card.classList.remove('citation-flash'), 1500);
+  }
+}
+
 // ==========================================================================
 // INICIALIZACIÓN Y EVENTOS
 // ==========================================================================
 document.addEventListener('DOMContentLoaded', () => {
   loadSources();
+  renderNotebookSelector();
   renderSourcesList();
   updateStudioStatus();
 
+  // Cuadernos temáticos (Roadmap Item 61)
+  document.getElementById('notebook-select')?.addEventListener('change', (e) => {
+    switchNotebook(e.target.value);
+  });
+  document.getElementById('btn-book-new')?.addEventListener('click', createNotebook);
+  document.getElementById('btn-book-rename')?.addEventListener('click', renameNotebook);
+  document.getElementById('btn-book-delete')?.addEventListener('click', deleteNotebook);
+
+  // Conmutador de 3 columnas simultáneas (Roadmap Item 52)
+  const columnsBtn = document.getElementById('btn-toggle-columns');
+  const applyColumns = (force) => {
+    document.querySelector('.nlm-container')?.classList.toggle('force-3col', force);
+    document.body.classList.toggle('force-3col', force);
+    if (columnsBtn) columnsBtn.textContent = force ? '📱 Paneles' : '🖥️ 3 Columnas';
+    localStorage.setItem('notebook_force_3col', force ? '1' : '0');
+  };
+  const savedForce = localStorage.getItem('notebook_force_3col') === '1';
+  applyColumns(savedForce);
+  columnsBtn?.addEventListener('click', () => {
+    const force = !document.querySelector('.nlm-container')?.classList.contains('force-3col');
+    applyColumns(force);
+  });
+
+  // Citas interactivas con resaltado (Roadmap Item 63)
+  const chatMessagesEl = document.getElementById('chat-messages');
+  chatMessagesEl?.addEventListener('click', (e) => {
+    const citation = e.target.closest('[data-citation-source]');
+    if (citation) openCitationModal(parseInt(citation.getAttribute('data-citation-source'), 10));
+  });
+  chatMessagesEl?.addEventListener('keydown', (e) => {
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[data-citation-source]')) {
+      e.preventDefault();
+      openCitationModal(parseInt(e.target.getAttribute('data-citation-source'), 10));
+    }
+  });
+  document.getElementById('btn-close-citation')?.addEventListener('click', () => {
+    document.getElementById('citation-modal')?.classList.add('hidden');
+  });
+  document.getElementById('citation-modal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'citation-modal') e.target.classList.add('hidden');
+  });
+
   // Navegación en móvil
-  document.querySelectorAll('.mobile-tab-btn').forEach(btn => {
+  document.querySelectorAll('.mobile-tab-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.mobile-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.mobile-tab-btn').forEach((b) => b.classList.remove('active'));
       btn.classList.add('active');
 
       const targetId = btn.getAttribute('data-mobile-view');
-      document.querySelectorAll('.col-sources, .col-studio, .col-chat').forEach(col => {
+      document.querySelectorAll('.col-sources, .col-studio, .col-chat').forEach((col) => {
         col.classList.remove('active-mobile-view');
       });
       document.getElementById(targetId)?.classList.add('active-mobile-view');
@@ -820,11 +1184,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     for (const model of candidateModels) {
       try {
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${candidate}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ contents: [{ parts: [{ text: 'OK' }] }] })
-        });
+        const res = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${candidate}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contents: [{ parts: [{ text: 'OK' }] }] })
+          }
+        );
 
         if (res.ok) {
           verified = true;
@@ -885,19 +1252,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Botón Nuevo Cuaderno
+  // Botón Nuevo Cuaderno (Roadmap Item 61)
   document.getElementById('btn-new-notebook')?.addEventListener('click', () => {
-    if (confirm('¿Deseas vaciar las fuentes actuales para iniciar un nuevo cuaderno de estudio?')) {
-      NotebookState.sources = [];
-      NotebookState.activeSourceIds.clear();
-      saveSources();
-      renderSourcesList();
-      updateStudioStatus();
-      document.getElementById('studio-welcome-card')?.classList.remove('hidden');
-      document.getElementById('artifact-dynamic-container').innerHTML = '';
-      document.getElementById('audio-overview-container')?.classList.add('hidden');
-      stopAudioOverview();
-    }
+    createNotebook();
+    document.getElementById('studio-welcome-card')?.classList.remove('hidden');
+    document.getElementById('artifact-dynamic-container').innerHTML = '';
+    document.getElementById('audio-overview-container')?.classList.add('hidden');
+    stopAudioOverview();
   });
 
   // Botones de Herramientas del Studio
@@ -932,16 +1293,19 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-clear-chat')?.addEventListener('click', () => {
     const container = document.getElementById('chat-messages');
     if (container) {
-      container.innerHTML = '<div class="chat-bubble chat-bubble-bot">👋 Conversación reiniciada. Pregúntame lo que quieras sobre tus fuentes.</div>';
+      container.innerHTML =
+        '<div class="chat-bubble chat-bubble-bot">👋 Conversación reiniciada. Pregúntame lo que quieras sobre tus fuentes.</div>';
     }
   });
 
   // Bloc de Notas Personal (Scratchpad)
   const scratchpadArea = document.getElementById('notebook-scratchpad-input');
   if (scratchpadArea) {
-    scratchpadArea.value = localStorage.getItem('notebook_scratchpad') || '';
+    scratchpadArea.value = getActiveScratchpad();
     scratchpadArea.addEventListener('input', () => {
-      localStorage.setItem('notebook_scratchpad', scratchpadArea.value);
+      const book = getActiveNotebook();
+      if (book) book.scratchpad = scratchpadArea.value;
+      saveSources();
     });
   }
 
@@ -952,7 +1316,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const scratchCard = document.getElementById('studio-scratchpad-card');
     if (scratchCard) {
       scratchCard.classList.remove('hidden');
-      if (scratchpadArea) scratchpadArea.value = localStorage.getItem('notebook_scratchpad') || '';
+      if (scratchpadArea) scratchpadArea.value = getActiveScratchpad();
     }
   });
 
@@ -966,7 +1330,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('btn-clear-scratchpad')?.addEventListener('click', () => {
     if (confirm('¿Vaciar todo el contenido de tu Bloc de Notas?')) {
-      localStorage.removeItem('notebook_scratchpad');
+      const book = getActiveNotebook();
+      if (book) book.scratchpad = '';
+      saveSources();
       if (scratchpadArea) scratchpadArea.value = '';
     }
   });

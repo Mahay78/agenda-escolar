@@ -56,6 +56,26 @@ export async function sendTestNotification() {
 }
 
 /**
+ * Envía una notificación local genérica (si hay permiso y están activadas)
+ * @param {string} title Título de la notificación
+ * @param {string} body Cuerpo del mensaje
+ * @param {string} tag Etiqueta para agrupar/reemplazar notificaciones
+ */
+export async function sendNotification(title, body, tag = 'agenda-escolar') {
+  if (!areNotificationsSupported() || Notification.permission !== 'granted') return null;
+
+  const enabled = await getSetting('notificationsEnabled', true);
+  if (!enabled) return null;
+
+  return new Notification(title, {
+    body,
+    icon: './icon.svg',
+    badge: './icon.svg',
+    tag
+  });
+}
+
+/**
  * Comprueba tareas y exámenes pendientes y dispara notificaciones locales
  * @param {Array} tasks Lista de tareas
  * @param {Array} exams Lista de exámenes
@@ -69,12 +89,12 @@ export async function checkDueReminders(tasks = [], exams = [], subjects = []) {
   const enabled = await getSetting('notificationsEnabled', true);
   if (!enabled) return;
 
-  const subjectMap = new Map((subjects || []).map(s => [s.id, s]));
+  const subjectMap = new Map((subjects || []).map((s) => [s.id, s]));
 
   const pad = (n) => String(n).padStart(2, '0');
   const now = new Date();
   const todayStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
-  
+
   const tomorrow = new Date(now);
   tomorrow.setDate(tomorrow.getDate() + 1);
   const tomorrowStr = `${tomorrow.getFullYear()}-${pad(tomorrow.getMonth() + 1)}-${pad(tomorrow.getDate())}`;

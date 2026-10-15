@@ -106,6 +106,59 @@ export const RANKS = [
   { level: 4, title: 'Máster Académico', icon: '👑', minXp: 700, maxXp: Infinity, color: '#f59e0b' }
 ];
 
+/**
+ * Retos y desafíos semanales (Roadmap Item 27). Se reinician cada semana.
+ * `metric` debe coincidir con un contador de `stats.week`.
+ */
+export const WEEKLY_CHALLENGES = [
+  { id: 'wc_tasks', icon: '✅', title: 'Entrega 5 deberes', metric: 'tasks', target: 5, xp: 50 },
+  { id: 'wc_pomodoro', icon: '⏱️', title: 'Completa 4 Pomodoros', metric: 'pomodoros', target: 4, xp: 40 },
+  { id: 'wc_flashcards', icon: '🃏', title: 'Repasa 20 fichas', metric: 'flashcards', target: 20, xp: 40 },
+  { id: 'wc_backpack', icon: '🎒', title: 'Prepara la mochila 3 días', metric: 'backpack', target: 3, xp: 30 }
+];
+
+/**
+ * Calcula la clave de la semana ISO (p. ej. "2026-W42") para una fecha dada
+ */
+function getWeekKey(date = new Date()) {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const dayNum = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  const weekNo = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+  return `${d.getUTCFullYear()}-W${String(weekNo).padStart(2, '0')}`;
+}
+
+/**
+ * Devuelve el bloque semanal de estadísticas, reiniciándolo si cambió la semana
+ */
+function ensureWeekBlock(stats) {
+  const key = getWeekKey();
+  if (!stats.week || stats.week.key !== key) {
+    stats.week = {
+      key,
+      tasks: 0,
+      pomodoros: 0,
+      flashcards: 0,
+      backpack: 0,
+      awarded: []
+    };
+  }
+  return stats.week;
+}
+
+/**
+ * Progreso de los retos semanales a partir de las estadísticas
+ * @returns {Array} Retos con `progress` y `completed`
+ */
+export function getWeeklyChallenges(stats = {}) {
+  const week = stats.week || {};
+  return WEEKLY_CHALLENGES.map((challenge) => {
+    const progress = Math.min(week[challenge.metric] || 0, challenge.target);
+    return { ...challenge, progress, completed: progress >= challenge.target };
+  });
+}
+
 const DEFAULT_STATS = {
   currentStreak: 1,
   bestStreak: 1,
@@ -118,7 +171,8 @@ const DEFAULT_STATS = {
   xp: 0,
   activityLog: {},
   streakFreeze: { available: 1, usedDates: [] },
-  unlockedAchievements: []
+  unlockedAchievements: [],
+  week: null
 };
 
 /**
@@ -216,7 +270,7 @@ export async function getGamificationStats() {
 
 /**
  * Registra una acción de estudio y actualiza la racha, XP y logros
- * @param {'task_completed'|'pomodoro_completed'|'backpack_packed'|'grade_added'|'flashcards_reviewed'|'app_opened'} actionType 
+ * @param {'task_completed'|'pomodoro_completed'|'backpack_packed'|'grade_added'|'flashcards_reviewed'|'app_opened'} actionType
  * @returns {Promise<{ stats: Object, newlyUnlocked: Array, xpGained: number, streakSavedByFreeze: boolean }>}
  */
 export async function recordStudyActivity(actionType) {
@@ -249,7 +303,24 @@ export async function recordStudyActivity(actionType) {
     xpGained = 2;
   }
 
+  // Retos semanales: contabilizar la actividad de la semana en curso
+  const week = ensureWeekBlock(stats);
+  if (actionType === 'task_completed') week.tasks++;
+  else if (actionType === 'pomodoro_completed') week.pomodoros++;
+  else if (actionType === 'flashcards_reviewed') week.flashcards++;
+  else if (actionType === 'backpack_packed') week.backpack++;
+
   stats.xp += xpGained;
+
+  // Bonus automático por retos semanales completados (una sola vez por semana)
+  const awardedChallenges = new Set(week.awarded || []);
+  for (const challenge of WEEKLY_CHALLENGES) {
+    if ((week[challenge.metric] || 0) >= challenge.target && !awardedChallenges.has(challenge.id)) {
+      awardedChallenges.add(challenge.id);
+      stats.xp += challenge.xp;
+    }
+  }
+  week.awarded = Array.from(awardedChallenges);
 
   // Registrar en el log de actividad diario
   stats.activityLog[today] = (stats.activityLog[today] || 0) + 1;
@@ -303,4 +374,34 @@ export async function recordStudyActivity(actionType) {
   await setSetting('gamificationStats', stats);
 
   return { stats, newlyUnlocked, xpGained, streakSavedByFreeze };
+}
+
+/**
+ * Otorga una cantidad de XP arbitraria (importaciones, simulacros, etc.),
+ * registra la actividad del día y comprueba los logros desbloqueados.
+ * @param {number} amount Cantidad de XP a sumar (se redondea y nunca es negativa)
+ * @returns {Promise<{stats: Object, newlyUnlocked: Array}>}
+ */
+export async function addXP(amount = 0) {
+  const gained = Math.max(0, Math.round(Number(amount) || 0));
+  const stats = await getGamificationStats();
+  const today = getTodayDateStr();
+
+  stats.xp = (stats.xp || 0) + gained;
+  stats.activityLog = stats.activityLog || {};
+  stats.activityLog[today] = (stats.activityLog[today] || 0) + 1;
+  ensureWeekBlock(stats);
+
+  const newlyUnlocked = [];
+  const currentUnlocked = new Set(stats.unlockedAchievements || []);
+  for (const ach of ACHIEVEMENTS) {
+    if (!currentUnlocked.has(ach.id) && ach.condition(stats)) {
+      currentUnlocked.add(ach.id);
+      newlyUnlocked.push(ach);
+    }
+  }
+  stats.unlockedAchievements = Array.from(currentUnlocked);
+  await setSetting('gamificationStats', stats);
+
+  return { stats, newlyUnlocked };
 }
